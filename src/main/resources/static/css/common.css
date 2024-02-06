@@ -1,10 +1,10 @@
 @font-face {
     font-family: 'Default-Font';
-    src: url(/static/font/TmoneyRoundWindRegular.otf);
+    src: url(/font/TmoneyRoundWindRegular.otf);
 }
 @font-face {
     font-family: 'Default-Bold-Font';
-    src: url(/static/font/TmoneyRoundWindExtraBold.otf);
+    src: url(/font/TmoneyRoundWindExtraBold.otf);
 }
 
 :root {
