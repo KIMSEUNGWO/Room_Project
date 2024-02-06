@@ -1,0 +1,166 @@
+body {
+    height: 100vh;
+    max-height: 100vh;
+}
+.container {
+    display: grid;
+    grid-template-columns: 75% 25%;
+    height: calc(100% - 5rem);
+}
+.main-container {
+    display: grid;
+    grid-template-rows: 8% 92%;
+
+}
+.room-title {
+    display: flex;
+    align-items: center;
+    justify-content: left;
+    padding: 1rem;
+    gap: 1rem;
+    background-color: var(--room-bg-color);
+    height: 4rem;
+}
+
+.container-content {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    height: calc(100vh - 4rem);
+
+}
+.room-notice {
+    position: absolute;
+    top: 1rem;
+    left: 1rem;
+    width: calc(100% - 2rem);
+
+    background-color: rgb(245, 245, 245);
+    border-radius: 1rem;
+}
+.notice {
+    display: flex;
+    gap: 1rem;
+    padding: 0.5rem 1rem 2rem 1rem;
+    vertical-align: top;
+}
+.room-notice pre {
+    width: 100%;
+    color: black;
+}
+.room-notice svg {
+    fill: black
+}
+.speaker {
+    width: 25px;
+    height: 25px;
+}
+.folder {
+    margin-top: 0.5rem;
+    width: 2rem;
+    height: 2rem;
+}
+.folder svg {
+    width: 90%;
+    height: 90%;
+    pointer-events: none;
+}
+
+
+.send-message {
+    background-color: var(--room-bg-hover-color);
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+.send-message textarea {
+    width: 100%;
+    font-size: 1rem;
+    max-height: 10rem;
+    border: none;
+    outline: none;
+    padding: 0.3rem 1rem;
+    background-color: rgba(0, 0, 0, 0);
+    vertical-align: middle;
+    height: auto;
+    resize: none;
+}
+#send {
+    width: 3rem;
+    height: 3rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: var(--room-bg-hover-color);
+}
+#send svg {
+    pointer-events: none;
+}
+
+.chat-history {
+    display: flex;
+    flex-direction: column-reverse;
+    justify-content: flex-start;
+    width: 100%;
+    overflow-y: scroll;
+    padding: 8rem 1rem 0 1rem;
+}
+.you {
+    text-align: left;
+
+    display: flex;
+}
+.profile-box img {
+    width: 2.5rem;
+    height: 2.5rem;
+    border-radius: 100%;
+}
+.name-box {
+    margin-left: 0.5rem;
+    margin-bottom: 0.5rem;
+    line-height: 2.5rem;
+}
+/* .name-box {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin-bottom: 1rem;
+    img {
+        width: 2.5rem;
+        height: 2.5rem;
+        border-radius: 100%;
+    }
+} */
+
+
+
+.me {
+    text-align: right;
+}
+.message-box {
+    margin-bottom: 1rem;
+    vertical-align: bottom;
+}
+.message-content {
+    display: inline-block;
+    border-radius: 1rem;
+    padding: 0.3rem 0.5rem;
+    background-color: rgb(56, 54, 54);
+    width: auto;
+}
+
+.time {
+    display: inline-block;
+    font-size: 0.8rem;
+}
+.date {
+    text-align: center;
+    margin: 1.5rem 0;
+}
+.date span {
+    background-color: rgb(77, 74, 74);
+    font-size: 0.85rem;
+    border-radius: 2rem;
+    padding: 0.3rem 0.5rem;
+}
