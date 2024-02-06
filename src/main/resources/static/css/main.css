@@ -1,0 +1,348 @@
+.container {
+    width: 100%;
+    min-height: 40rem;
+    padding: 0 2rem;
+    position: relative;
+}
+
+/* 타이핑 효과 */
+.typing {
+    position: relative;
+    margin-right: 1rem;
+}
+.typing::after {
+    content: "";
+    display: block;
+    position: absolute;
+    top: 0;
+    right: -10px;
+    width: 4px;
+    height: 100%;
+    background-color: white;
+    border-radius: 2rem;
+}
+.typing.active::after {
+    display: none;
+}
+
+.slogan-box {
+    height: 25rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.slogan-text {
+    display: block;
+    font-size: 3.5rem;
+    font-weight: bolder;
+}
+.slogan-text *:first-child {
+    color: var(--important-color);
+}
+
+.slogan-text b {
+    font-family: 'Default-Font';
+    color: var(--important-color);
+}
+
+.decoreate {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: -1;
+
+    .de-code {
+        position: absolute;
+        top: 10rem;
+        left: 15rem;
+        width: 80px;
+        height: 80px;
+        animation: moveDeco 3s infinite;
+        fill: rgb(130, 203, 184);
+    }
+}
+
+@keyframes moveDeco {
+    0% {
+        top: 10rem;
+    }
+    50% {
+        top: 9.5rem;
+    }
+    100% {
+        top: 10rem;
+    }
+}
+
+/* 검색폼 */
+:root {
+    --on : green;
+    --off : blue;
+    --onoff : red;
+}
+.search-form {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 6rem;
+}
+.search-wrapper {
+    width: 30rem;
+    height: 3rem;
+    border-radius: 2rem;
+    background-color: rgb(245, 245, 245);  
+    padding: 0.3rem 1rem;
+}
+.search-wrap {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+.search-wrap input {
+    width: 100%;
+    height: 100%;
+    color: black;
+    font-size: 1rem;
+    background-color: rgb(245, 245, 245);
+}
+#searchBtn {
+    width: 3rem;
+    height: 100%;
+    background-color: rgb(245, 245, 245);
+    padding: 0;
+}
+#searchBtn svg {
+    pointer-events: none;
+    width: 23px;
+    height: 23px;
+
+}
+#searchBtn:hover {
+    border-radius: 0;
+    background-color: rgb(245, 245, 245);;
+}
+
+
+/* 방 리스트 */
+.room-template {
+    margin-bottom: 2rem;
+}
+.room-template > h2 {
+    margin-bottom: 2rem;
+}
+
+.room-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1.5rem;
+}
+
+.room {
+    width: 20rem;
+    height: 35rem;
+    border-radius: 1rem;
+    padding: 1rem;
+    background-color: var(--room-bg-color);
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+.room :not(.room-top) {
+    text-align: center;
+}
+.room-top {
+    display: flex;
+    align-items: center;
+    justify-content: right;
+    gap: 0.5rem;
+}
+.onoff-box {
+    font-size: 0.8rem;
+    border-radius: 1rem;
+    padding: 0.1rem 0.5rem;
+    display: flex;
+    align-items: center;
+    gap: 0.3rem;
+}
+.onoff-box::before {
+    content: '';
+    display: inline-block;
+    width: 3px;
+    height: 3px;
+    border-radius: 1rem;
+}
+.onoff-box.onoff span {
+    color: var(--onoff);
+}
+.onoff-box.onoff::before {
+    background-color: var(--onoff);
+    border: 0.1rem solid var(--onoff)
+}
+.onoff-box.on span {
+    color: var(--on);
+}
+.onoff-box.on::before {
+    background-color: var(--on);
+    border: 0.1rem solid var(--on)
+}
+.onoff-box.off span {
+    color: var(--off);
+}
+.onoff-box.off::before {
+    background-color: var(--off);
+    border: 0.1rem solid var(--off);
+}
+
+.more {
+    background-color: var(--room-bg-color);
+    width: 2rem;
+    height: 2rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: var(--border-radius);
+    position: relative;
+    transition: background-color 0.2s ease-in-out;
+}
+
+
+.more svg {
+    pointer-events: none;
+    width: 80%;
+    height: 80%;
+}
+
+.more:hover {
+    transition: background-color 0.2s ease-in-out;
+    background-color: var(--room-bg-hover-color);
+}
+
+.more-menu {
+    position: absolute;
+    border-radius: 0.5rem;;
+    top: 2.6rem;
+    right: 0;
+    width: 10rem;
+    padding: 0.5rem 0.3rem;
+    background-color: var(--room-bg-hover-color);
+}
+.more-menu.disabled {
+    display: none;
+}
+.more-menu li:last-child {
+    margin-bottom: 1rem;
+}
+.more-menu li {
+    width: 100%;
+    height: 2.3rem;
+    display: grid;
+    grid-template-columns: 30% 70%;
+    align-items: center;
+    border-radius: var(--border-radius);
+    padding: 0.3rem 1rem;
+    font-size: 0.9rem;
+    margin-bottom: 0.5rem;
+}
+.more-menu li span {
+    color: var(--gray)
+}
+.more-menu li:hover {
+    background-color: rgb(48, 59, 74);
+}
+.more-menu li.room-exit * {
+    fill: rgb(240, 72, 72);
+    color: rgb(240, 72, 72);
+}
+
+.room-image-box {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.room-image-box img {
+    width: 8rem;
+    height: 8rem;
+    border-radius: 100%;
+}
+.room-title {
+    font-size: 1.2rem;
+    display: block;
+}
+.room-content {
+    display: block;
+
+    color: var(--gray);
+}
+
+.tag-list {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    row-gap: 0.5rem;
+    column-gap: 0.7rem;
+}
+.tag {
+    border-radius: var(--border-radius);
+    background-color: rgb(62, 62, 62);
+    display: flex;
+    align-items: center;
+    gap: 0.3rem;
+    padding: 0.3rem 0.5rem;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    font-size: 0.9rem;
+
+    transition: background-color 0.2s ease-in-out;
+}
+.tag:hover {
+    background-color: rgb(88, 88, 88);
+    transition: background-color 0.2s ease-in-out;
+}
+
+.weeks {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    flex-wrap: nowrap;
+    justify-content: center;
+}
+.weeks .week {
+    width: 2.5rem;
+    height: 2.5rem;
+    border-radius: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: rgb(58, 57, 88);
+}
+
+.enterBtn {
+    height: 2.8rem;
+    border-radius: 2rem;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0 1rem;
+    justify-content: space-between;
+    background-color: rgb(75, 75, 96);
+}
+.enterBtn:hover {
+    background-color: rgb(59, 59, 75);
+
+    * {
+        fill: rgb(236, 236, 236);
+        color: rgb(236, 236, 236);;
+    }
+}
+.enterBtn * {
+    fill: white;
+    color: white;
+    font-size: 0.9rem;
+    pointer-events: none;
+}
