@@ -22,7 +22,19 @@ public class Freeze {
     private Member member;
 
     private String freezeReason;
-    private LocalDateTime freezeStartDate;
     private LocalDateTime freezeEndDate;
 
+
+    public boolean isFinish() {
+        LocalDateTime now = LocalDateTime.now();
+        return now.isAfter(freezeEndDate);
+    }
+
+    public LocalDateTime getFreezeEndDate() {
+        return freezeEndDate;
+    }
+
+    public String getFreezeReason() {
+        return freezeReason;
+    }
 }

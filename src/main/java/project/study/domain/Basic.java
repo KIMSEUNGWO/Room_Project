@@ -23,4 +23,15 @@ public class Basic {
     @JoinColumn(name = "memberId")
     private Member member;
 
+    public String getPassword() {
+        return password;
+    }
+
+    public String getSalt() {
+        return salt;
+    }
+
+    public Member getMember() {
+        return member;
+    }
 }
