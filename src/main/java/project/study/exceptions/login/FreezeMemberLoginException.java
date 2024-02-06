@@ -1,16 +1,13 @@
 package project.study.exceptions.login;
 
 import project.study.dto.abstractentity.ResponseDto;
-import project.study.exceptions.RestFulException;
+
+import static project.study.constant.WebConst.ERROR;
 
 public class FreezeMemberLoginException extends LoginException {
 
 
-    public FreezeMemberLoginException(Throwable cause, ResponseDto responseDto) {
-        super(cause, responseDto);
-    }
-
-    public FreezeMemberLoginException(ResponseDto responseDto) {
-        super(responseDto);
+    public FreezeMemberLoginException(String message) {
+        super(new ResponseDto(ERROR, message));
     }
 }
