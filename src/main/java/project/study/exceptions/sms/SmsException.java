@@ -7,4 +7,8 @@ public class SmsException extends RestFulException {
     public SmsException(Throwable cause, ResponseDto responseDto) {
         super(cause, responseDto);
     }
+
+    public SmsException(ResponseDto responseDto) {
+        super(responseDto);
+    }
 }

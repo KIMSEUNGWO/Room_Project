@@ -8,5 +8,9 @@ public class InvalidLoginException extends LoginException {
     public InvalidLoginException(Throwable cause, ResponseDto responseDto) {
         super(cause, responseDto);
     }
+
+    public InvalidLoginException(ResponseDto responseDto) {
+        super(responseDto);
+    }
 }
 

@@ -8,4 +8,8 @@ public class LoginException extends RestFulException {
     public LoginException(Throwable cause, ResponseDto responseDto) {
         super(cause, responseDto);
     }
+
+    public LoginException(ResponseDto responseDto) {
+        super(responseDto);
+    }
 }

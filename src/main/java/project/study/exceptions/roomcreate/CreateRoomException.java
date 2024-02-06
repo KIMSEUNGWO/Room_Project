@@ -7,4 +7,8 @@ public class CreateRoomException extends RestFulException {
     public CreateRoomException(Throwable cause, ResponseDto responseDto) {
         super(cause, responseDto);
     }
+
+    public CreateRoomException(ResponseDto responseDto) {
+        super(responseDto);
+    }
 }
