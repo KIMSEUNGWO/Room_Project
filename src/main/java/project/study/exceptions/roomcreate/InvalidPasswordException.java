@@ -6,4 +6,8 @@ public class InvalidPasswordException extends CreateRoomException{
     public InvalidPasswordException(Throwable cause, ResponseDto responseDto) {
         super(cause, responseDto);
     }
+
+    public InvalidPasswordException(ResponseDto responseDto) {
+        super(responseDto);
+    }
 }

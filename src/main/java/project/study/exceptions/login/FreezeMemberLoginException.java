@@ -9,4 +9,8 @@ public class FreezeMemberLoginException extends LoginException {
     public FreezeMemberLoginException(Throwable cause, ResponseDto responseDto) {
         super(cause, responseDto);
     }
+
+    public FreezeMemberLoginException(ResponseDto responseDto) {
+        super(responseDto);
+    }
 }

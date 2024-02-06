@@ -6,4 +6,8 @@ public class RegexPhoneException extends IllegalPhoneException{
     public RegexPhoneException(Throwable cause, ResponseDto responseDto) {
         super(cause, responseDto);
     }
+
+    public RegexPhoneException(ResponseDto responseDto) {
+        super(responseDto);
+    }
 }

@@ -12,4 +12,10 @@ public class RestFulException extends RuntimeException {
         super(cause);
         this.responseDto = responseDto;
     }
+
+    public RestFulException(ResponseDto responseDto) {
+        this.responseDto = responseDto;
+    }
+
+
 }
