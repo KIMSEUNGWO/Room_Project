@@ -1,4 +1,4 @@
-package project.study.dto.login;
+package project.study.dto.login.requestdto;
 
 import lombok.Getter;
 

@@ -1,4 +1,4 @@
-package project.study.dto.login;
+package project.study.dto.login.requestdto;
 
 public class RequestSocialSignupDto implements RequestSignupDto{
 }

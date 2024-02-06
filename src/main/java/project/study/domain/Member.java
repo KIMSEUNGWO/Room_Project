@@ -33,4 +33,19 @@ public class Member {
     private Phone phone;
     @OneToOne(mappedBy = "member", fetch = FetchType.LAZY)
     private Freeze freeze;
+
+    public void changeStatusToNormal() {
+        memberStatus = MemberStatusEnum.정상;
+    }
+    public boolean isFreezeMember() {
+        return memberStatus.isFreezeMember();
+    }
+
+    public boolean isExpireMember() {
+        return memberStatus.isExpireMember();
+    }
+
+    public Long getMemberId() {
+        return memberId;
+    }
 }
