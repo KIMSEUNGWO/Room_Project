@@ -1,30 +1,23 @@
 package project.study.dto.login.validator;
 
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Component;
-import project.study.collection.PasswordManager;
-import project.study.domain.Basic;
 import project.study.domain.Freeze;
 import project.study.domain.Member;
-import project.study.dto.abstractentity.ResponseDto;
-import project.study.dto.login.requestdto.RequestDefaultLoginDto;
-import project.study.dto.login.requestdto.RequestLoginDto;
+import project.study.dto.login.requestdto.RequestDefaultSignupDto;
 import project.study.dto.login.requestdto.RequestSignupDto;
 import project.study.exceptions.login.ExpireMemberLoginException;
 import project.study.exceptions.login.FreezeMemberLoginException;
-import project.study.exceptions.login.InvalidLoginException;
-import project.study.jpaRepository.BasicJpaRepository;
-import project.study.jpaRepository.FreezeJpaRepository;
-import project.study.jpaRepository.MemberJpaRepository;
 import project.study.repository.FreezeRepository;
 
 import java.time.LocalDateTime;
 import java.util.Optional;
 
+
 @Component
 @RequiredArgsConstructor
 public class DefaultMemberValidator implements MemberValidator {
+
 
     private final FreezeRepository freezeRepository;
 
@@ -69,6 +62,7 @@ public class DefaultMemberValidator implements MemberValidator {
 
     @Override
     public void validSignup(RequestSignupDto signupDto) {
+        RequestDefaultSignupDto data = (RequestDefaultSignupDto) signupDto;
 
     }
 }

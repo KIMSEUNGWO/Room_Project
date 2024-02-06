@@ -4,20 +4,16 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 import project.study.dto.abstractentity.ResponseDto;
-import project.study.dto.login.DefaultMemberFactory;
-import project.study.dto.login.MemberFactory;
 import project.study.dto.login.requestdto.RequestDefaultLoginDto;
 import project.study.dto.login.requestdto.RequestDefaultSignupDto;
-import project.study.jpaRepository.BasicJpaRepository;
-import project.study.jpaRepository.MemberJpaRepository;
-import project.study.repository.FreezeRepository;
 import project.study.service.LoginService;
+import project.study.service.SignupService;
 
 @RestController
 @RequiredArgsConstructor
@@ -25,6 +21,7 @@ import project.study.service.LoginService;
 public class LoginController {
 
     private final LoginService loginService;
+    private final SignupService signupService;
 
     @PostMapping("/login")
     public ResponseEntity<ResponseDto> defaultLogin(@RequestBody RequestDefaultLoginDto data, HttpServletRequest request) {
@@ -32,7 +29,7 @@ public class LoginController {
         HttpSession session = request.getSession();
         loginService.login(data, session);
 
-        return null;
+        return new ResponseEntity<>(new ResponseDto("ok", "로그인 성공"), HttpStatus.OK);
 
     }
 
@@ -40,6 +37,19 @@ public class LoginController {
     public ResponseEntity<ResponseDto> defaultSignup(@RequestBody RequestDefaultSignupDto data) {
         loginService.signup(data);
 
-        return null;
+        return new ResponseEntity<>(new ResponseDto("ok", "회원가입 성공"), HttpStatus.OK);
+    }
+
+    @PostMapping("/distinct/account")
+    public ResponseEntity<ResponseDto> distinctAccount(@RequestBody String account) {
+        signupService.distinctAccount(account);
+
+        return new ResponseEntity<>(new ResponseDto("ok", "사용할 수 있는 아이디입니다."), HttpStatus.OK);
+    }
+    @PostMapping("/distinct/nickname")
+    public ResponseEntity<ResponseDto> distinctNickname(@RequestBody String nickname) {
+        signupService.distinctNickname(nickname);
+
+        return new ResponseEntity<>(new ResponseDto("ok", "사용할 수 있는 닉네임입니다."), HttpStatus.OK);
     }
 }
