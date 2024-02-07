@@ -5,5 +5,5 @@ import project.study.domain.Member;
 
 public interface MemberJpaRepository extends JpaRepository<Member, Long> {
 
-    boolean existsByNickname(String nickName);
+    boolean existsByMemberNickname(String nickName);
 }
