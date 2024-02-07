@@ -7,7 +7,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 public class RoomController {
 
 
-    @GetMapping("/room/create")
+    @GetMapping("/room")
     public String roomCreate(){
         return "room";
     }
