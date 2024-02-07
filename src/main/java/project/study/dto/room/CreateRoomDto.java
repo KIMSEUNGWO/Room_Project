@@ -1,4 +1,4 @@
-package project.study.dto;
+package project.study.dto.room;
 
 import jakarta.validation.constraints.NotBlank;
 import lombok.Getter;

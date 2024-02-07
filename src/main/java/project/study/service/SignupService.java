@@ -23,7 +23,7 @@ public class SignupService {
 
 
     public void distinctNickname(String nickname) {
-        boolean existsByNickname = memberJpaRepository.existsByNickname(nickname);
+        boolean existsByNickname = memberJpaRepository.existsByMemberNickname(nickname);
         if (existsByNickname) throw new DistinctNicknameException();
     }
 }

@@ -1,0 +1,293 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="/static/css/common.css">
+    <link rel="stylesheet" href="/static/css/header.css">
+    <link rel="stylesheet" href="/static/css/admin_menu.css">
+    <link rel="stylesheet" href="/static/css/admin_members.css">
+    <script src="/static/js/header.js"></script>
+    <title>이용중인 회원</title>
+</head>
+<body>
+    <header>
+        <div class="l-header">
+            <img src="/static/image/logo.svg" alt="" srcset="" style="background-color: white;">
+        </div>
+        <div class="menu-header"></div>
+        <div class="r-header">
+            <button type="button" id="btn-login">로그인</button>
+            <button type="button" id="btn-create-room">방 생성</button>
+            <img src="/static/image/IMG_8012.jpeg" id="btn-mypage" alt="" srcset="">
+        </div>
+        <div class="modal disabled">
+            <div class="modal-wrap">
+                <div class="modal-title">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512" class="modal-exit"><path d="M376.6 84.5c11.3-13.6 9.5-33.8-4.1-45.1s-33.8-9.5-45.1 4.1L192 206 56.6 43.5C45.3 29.9 25.1 28.1 11.5 39.4S-3.9 70.9 7.4 84.5L150.3 256 7.4 427.5c-11.3 13.6-9.5 33.8 4.1 45.1s33.8 9.5 45.1-4.1L192 306 327.4 468.5c11.3 13.6 31.5 15.4 45.1 4.1s15.4-31.5 4.1-45.1L233.7 256 376.6 84.5z"/></svg>
+                </div>
+                <div class="modal-content">
+
+                </div>
+            </div>
+        </div>
+        <div class="modal disabled">
+            <div class="modal-wrap modal-create-room">
+                <div class="modal-title">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512" class="modal-exit"><path d="M376.6 84.5c11.3-13.6 9.5-33.8-4.1-45.1s-33.8-9.5-45.1 4.1L192 206 56.6 43.5C45.3 29.9 25.1 28.1 11.5 39.4S-3.9 70.9 7.4 84.5L150.3 256 7.4 427.5c-11.3 13.6-9.5 33.8 4.1 45.1s33.8 9.5 45.1-4.1L192 306 327.4 468.5c11.3 13.6 31.5 15.4 45.1 4.1s15.4-31.5 4.1-45.1L233.7 256 376.6 84.5z"/></svg>
+                </div>
+                <div class="modal-content">
+                    <div class="room-image-box">
+                        <button type="button" id="img">
+                            <img src="/static/image/IMG_8012.jpeg" width="100%" height="100%" id="myProfile">
+                            <input type="file" name="roomImage" id="roomImage" accept="image/*">
+                            <svg width="36" height="36" viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg" class="g68VV5Ghc0ymGpbFWhEx"><circle cx="18" cy="18" r="18" fill="#000"></circle><path d="M11.375 22.658v2.969h2.969l8.756-8.756-2.97-2.969-8.755 8.756zm14.02-8.083a.788.788 0 000-1.116l-1.852-1.852a.788.788 0 00-1.116 0l-1.45 1.448 2.97 2.97 1.448-1.45z" fill="#fff"></path></svg>
+                        </button>
+                    </div>
+                    <div class="input-box">
+                        <h4>방 제목</h4>
+                        <input type="text" name="title" id="title" maxlength="10">
+                    </div>
+                    <div class="input-box">
+                        <h4>소개글</h4>
+                        <input type="text" name="intro" id="intro" maxlength="50">
+                    </div>
+
+                    <div class="input-box">
+                        <h4>인원 수
+                            <input type="radio" name="max" id="m2">
+                            <input type="radio" name="max" id="m3">
+                            <input type="radio" name="max" id="m4" checked>
+                            <input type="radio" name="max" id="m5">
+                            <input type="radio" name="max" id="m6">
+                        </h4>
+                        <div class="radio-wrap">
+                            <label for="m2" aria-selected="false">2명</label>
+                            <label for="m3" aria-selected="false">3명</label>
+                            <label for="m4" aria-selected="true">4명</label>
+                            <label for="m5" aria-selected="false">5명</label>
+                            <label for="m6" aria-selected="false">6명</label>
+                        </div>
+                    </div>
+                    <div class="input-box tag-wrap">
+                        <h4>태그</h4>
+                        <div class="tag-list">
+                            <div class="tag-box">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="tagSvg" viewBox="0 0 448 512"><path d="M0 80V229.5c0 17 6.7 33.3 18.7 45.3l176 176c25 25 65.5 25 90.5 0L418.7 317.3c25-25 25-65.5 0-90.5l-176-176c-12-12-28.3-18.7-45.3-18.7H48C21.5 32 0 53.5 0 80zm112 32a32 32 0 1 1 0 64 32 32 0 1 1 0-64z"/></svg>
+                                <span type="text" name="tag" id="" value="백엔드">백엔드</span>
+                                <svg xmlns="http://www.w3.org/2000/svg" class="xSvg" viewBox="0 0 384 512"><path d="M376.6 84.5c11.3-13.6 9.5-33.8-4.1-45.1s-33.8-9.5-45.1 4.1L192 206 56.6 43.5C45.3 29.9 25.1 28.1 11.5 39.4S-3.9 70.9 7.4 84.5L150.3 256 7.4 427.5c-11.3 13.6-9.5 33.8 4.1 45.1s33.8 9.5 45.1-4.1L192 306 327.4 468.5c11.3 13.6 31.5 15.4 45.1 4.1s15.4-31.5 4.1-45.1L233.7 256 376.6 84.5z"/></svg>
+                            </div>
+                            <div class="tag-box">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="tagSvg" viewBox="0 0 448 512"><path d="M0 80V229.5c0 17 6.7 33.3 18.7 45.3l176 176c25 25 65.5 25 90.5 0L418.7 317.3c25-25 25-65.5 0-90.5l-176-176c-12-12-28.3-18.7-45.3-18.7H48C21.5 32 0 53.5 0 80zm112 32a32 32 0 1 1 0 64 32 32 0 1 1 0-64z"/></svg>
+                                <span type="text" name="tag" id="" value="백엔드">백엔드</span>
+                                <svg xmlns="http://www.w3.org/2000/svg" class="xSvg" viewBox="0 0 384 512"><path d="M376.6 84.5c11.3-13.6 9.5-33.8-4.1-45.1s-33.8-9.5-45.1 4.1L192 206 56.6 43.5C45.3 29.9 25.1 28.1 11.5 39.4S-3.9 70.9 7.4 84.5L150.3 256 7.4 427.5c-11.3 13.6-9.5 33.8 4.1 45.1s33.8 9.5 45.1-4.1L192 306 327.4 468.5c11.3 13.6 31.5 15.4 45.1 4.1s15.4-31.5 4.1-45.1L233.7 256 376.6 84.5z"/></svg>
+                            </div>
+                            <div class="tag-add-box">
+                                <span>#</span>
+                                <input type="text" name="tag-add" id="tag-add" placeholder="태그입력" maxlength="10">
+                            </div>
+                        </div>
+                    </div>
+                    <!-- <div class="input-box">
+                        <h4>모이는 날 
+                            <input type="checkbox" name="MON" id="MON" checked>
+                            <input type="checkbox" name="TUE" id="TUE">
+                            <input type="checkbox" name="WEN" id="WEN">
+                            <input type="checkbox" name="THU" id="THU">
+                            <input type="checkbox" name="FRI" id="FRI">
+                            <input type="checkbox" name="SAT" id="SAT">
+                            <input type="checkbox" name="SUN" id="SUN">
+                        </h4>
+                        <div class="weeks">
+                            <label for="MON" aria-selected="true">월</label>
+                            <label for="TUE" aria-selected="false">화</label>
+                            <label for="WEN" aria-selected="false">수</label>
+                            <label for="THU" aria-selected="false">목</label>
+                            <label for="FRI" aria-selected="false">금</label>
+                            <label for="SAT" aria-selected="false">토</label>
+                            <label for="SUN" aria-selected="false">일</label>
+                        </div>
+                    </div>
+                    <div class="input-wrap">
+                        <h4>온오프설정
+                            <input type="radio" name="onoff" id="onoff" value="onoff" checked>
+                            <input type="radio" name="on" id="on" value="on">
+                            <input type="radio" name="off" id="off" value="off">
+                        </h4>
+                        <div class="radio-wrap">
+                            <label for="onoff" aria-selected="true">온/오프 모두</label>
+                            <label for="on" aria-selected="false">온라인만</label>
+                            <label for="off" aria-selected="false">오프라인만</label>
+                        </div>
+                    </div>
+                    <div class="input-wrap">
+                        <h4>공개여부
+                            <input type="radio" name="public" id="public" value="public" checked>
+                            <input type="radio" name="private" id="private" value="private">
+                        </h4>
+                        <div class="radio-wrap">
+                            <label for="public" aria-selected="true">공개방</label>
+                            <label for="private" aria-selected="false">비공개방</label>
+                        </div>
+                    </div>
+                    <div class="input-box">
+                        <h4>비밀번호 설정</h4>
+                        <input type="text" name="room-password" id="room-password">
+                    </div> -->
+                    <div class="buttons">
+                        <button type="button" id="room-cancel">취소</button>
+                        <button type="button" id="room-create">생성</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+    <div class="container">
+        <aside>
+            <div class="admin-name-wrap">
+                <span class="admin-name">오승찬 <span>신고 관리자</span></span>
+            </div>
+            <div class="menu-list-wrap">
+                <div class="category">
+                    <h4>일반</h4>
+                    <div class="menu-list">
+                        <a href="/admin/members" aria-selected="true">이용중인 회원</a>
+                        <a href="/admin/expire" aria-selected="false">탈퇴한 회원</a>
+                        <a href="/admin/rooms" aria-selected="false">방 관리</a>
+                    </div>
+                </div>
+                <div class="category">
+                    <h4>신고</h4>
+                    <div class="menu-list">
+                        <a href="/admin/notify" aria-selected="false">신고된 회원</a>
+                    </div>
+                </div>
+                <div class="category">
+                    <h4>문의</h4>
+                    <div class="menu-list">
+                        <a href="/admin/inquiry" aria-selected="false">문의사항</a>
+                    </div>
+                </div>
+            </div>
+        </aside>
+        <div class="main-content">
+            <div class="search-box">
+                
+            </div>
+            <div class="table-form">
+                <div class="table-title">
+                    <h3>회원 리스트</h3>
+                    <ul class="table-option-list">
+                        <li>
+                            <input type="checkbox" name="onlyFreezeMembers" id="onlyFreezeMembers">
+                            <label for="onlyFreezeMembers">정지된 회원만 보기</label>
+                        </li>
+                        <li>
+                            <div class="search-wrap">
+                                <input type="text" name="word" id="word" placeholder="검색어를 입력하세요">
+                                <button type="button" id="searchBtn">
+                                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><path d="M416 208c0 45.9-14.9 88.3-40 122.7L502.6 457.4c12.5 12.5 12.5 32.8 0 45.3s-32.8 12.5-45.3 0L330.7 376c-34.4 25.2-76.8 40-122.7 40C93.1 416 0 322.9 0 208S93.1 0 208 0S416 93.1 416 208zM208 352a144 144 0 1 0 0-288 144 144 0 1 0 0 288z"/></svg>
+                                </button>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+                <div class="table-content members">
+                    <div class="table-top">
+                        <div class="email">이메일</div>
+                        <div class="name">이름</div>
+                        <div class="nickname">닉네임</div>
+                        <div class="phone">휴대폰</div>
+                        <div class="registerdate">가입일</div>
+                        <div class="notifycount">누적신고수</div>
+                        <div class="social">소셜</div>
+                        <div class="status">상태</div>
+                    </div>
+                    <div class="table-list">
+                        <div class="entity">
+                            <div class="email">starosc</div>
+                            <div class="name">오승찬하하</div>
+                            <div class="nickname">닉네임</div>
+                            <div class="phone">010-3567-4431</div>
+                            <div class="registerdate">2024-02-07</div>
+                            <div class="notifycount">2회</div>
+                            <div class="social">소셜</div>
+                            <div class="status">상태</div>
+                        </div>
+                        <div class="entity">
+                            <div class="email">starosc</div>
+                            <div class="name">오승찬하하</div>
+                            <div class="nickname">닉네임</div>
+                            <div class="phone">010-3567-4431</div>
+                            <div class="registerdate">2024-02-07</div>
+                            <div class="notifycount">2회</div>
+                            <div class="social">소셜</div>
+                            <div class="status">상태</div>
+                        </div>
+                        <div class="entity">
+                            <div class="email">starosc</div>
+                            <div class="name">오승찬하하</div>
+                            <div class="nickname">닉네임</div>
+                            <div class="phone">010-3567-4431</div>
+                            <div class="registerdate">2024-02-07</div>
+                            <div class="notifycount">2회</div>
+                            <div class="social">소셜</div>
+                            <div class="status">상태</div>
+                        </div>
+                        <div class="entity">
+                            <div class="email">starosc37@gmail.com</div>
+                            <div class="name">이름</div>
+                            <div class="nickname">가나다라마바사아</div>
+                            <div class="phone">010-3567-4431</div>
+                            <div class="registerdate">2024-02-07</div>
+                            <div class="notifycount">13회</div>
+                            <div class="social">KAKAO</div>
+                            <div class="status">정지</div>
+                        </div>
+                        <div class="entity">
+                            <div class="email">이메일</div>
+                            <div class="name">이름</div>
+                            <div class="nickname">닉네임</div>
+                            <div class="phone">010-3567-4431</div>
+                            <div class="registerdate">2024-02-07</div>
+                            <div class="notifycount">7회</div>
+                            <div class="social">소셜</div>
+                            <div class="status">상태</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="pagination">
+                    <div class="buttons">
+                        <button type="button" id="last-left">
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><path d="M41.4 233.4c-12.5 12.5-12.5 32.8 0 45.3l160 160c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L109.3 256 246.6 118.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0l-160 160zm352-160l-160 160c-12.5 12.5-12.5 32.8 0 45.3l160 160c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L301.3 256 438.6 118.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0z"/></svg>
+                        </button>
+                        <button type="button" id="left">
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><path d="M41.4 233.4c-12.5 12.5-12.5 32.8 0 45.3l160 160c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L109.3 256 246.6 118.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0l-160 160z"/></svg>
+                        </button>
+                    </div>
+                    <div id="page">
+                        <button type="button" class="page-num" value="1" aria-pressed="true">1</button>
+                        <button type="button" class="page-num" value="2" aria-pressed="false">2</button>
+                        <button type="button" class="page-num" value="3" aria-pressed="false">3</button>
+                        <button type="button" class="page-num" value="4" aria-pressed="false">4</button>
+                        <button type="button" class="page-num" value="5" aria-pressed="false">5</button>
+                        <button type="button" class="page-num" value="6" aria-pressed="false">6</button>
+                        <button type="button" class="page-num" value="7" aria-pressed="false">7</button>
+                        <button type="button" class="page-num" value="8" aria-pressed="false">8</button>
+                        <button type="button" class="page-num" value="9" aria-pressed="false">9</button>
+                        <button type="button" class="page-num" value="10" aria-pressed="false">10</button>
+                    </div>
+                    <div class="buttons">
+                        <button type="button" id="right">
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><path d="M278.6 233.4c12.5 12.5 12.5 32.8 0 45.3l-160 160c-12.5 12.5-32.8 12.5-45.3 0s-12.5-32.8 0-45.3L210.7 256 73.4 118.6c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0l160 160z"/></svg>
+                        </button>
+                        <button type="button" class="last-right">
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><path d="M470.6 278.6c12.5-12.5 12.5-32.8 0-45.3l-160-160c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3L402.7 256 265.4 393.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0l160-160zm-352 160l160-160c12.5-12.5 12.5-32.8 0-45.3l-160-160c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3L210.7 256 73.4 393.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0z"/></svg>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
