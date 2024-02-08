@@ -36,6 +36,6 @@ public class LoginService {
     @Transactional
     public void signup(RequestDefaultSignupDto data) {
         MemberFactory factory = new DefaultMemberFactory(basicJpaRepository, memberJpaRepository, freezeRepository, encoder);
-
+        factory.signup(data);
     }
 }

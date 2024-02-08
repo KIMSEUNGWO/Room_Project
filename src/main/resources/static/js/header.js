@@ -4,10 +4,6 @@ window.addEventListener('load', () => {
     const modal = document.querySelector('.modal');
     const modal_content = document.querySelector('.modal-content');
 
-    // 테스트 코드
-    insertModalSize('modal-find');
-    // insertModalSize('modal-signup');
-
     const loginBtn = document.querySelector('#btn-login');
     if (loginBtn != null)  {
         loginBtn.addEventListener('click', () => {
@@ -102,12 +98,42 @@ window.addEventListener('load', () => {
             signup();
             return;
         }
+        if (target.id == 'login') {
+            login();
+        }
 
         // 인풋 포커스 (포커스 했을 때 메세지 삭제)
         focusEventListener();
     })
 
+
 })
+
+function login() {
+    let loginAccount = document.querySelector('input[name="loginAccount"]');
+    let loginPassword = document.querySelector('input[name="loginPassword"]');
+    if (loginAccount == null || loginPassword == null) {
+        alert('잘못된 접근입니다. 다시 시도해주세요');
+        location.reload();
+        return;
+    }
+
+    let json = {account : loginAccount.value, password : loginPassword};
+    loginResult({result : 'error', message : '아이디/비밀번호를 확인해주세요.'});
+    // fetchPost('/login', json, loginResult);
+}
+function loginResult(json) {
+    if (json.result == 'ok') {
+        location.reload();
+    } else if (json.result == 'error') {
+        let m_login = document.querySelector('.m-login');
+        let loginAccount = document.querySelector('input[name="loginAccount"]');
+        let loginPassword = document.querySelector('input[name="loginPassword"]');
+        loginAccount.value = '';
+        loginPassword.value = '';
+        printMessage(json, m_login);
+    }
+}
 
 function focusEventListener() {
     let account = document.querySelector('input[name="account"]');
@@ -179,7 +205,7 @@ function signupPost() {
     let name = document.querySelector('input[name="name"]');
     let nickname = document.querySelector('input[name="nickname"]');
     if (account == null || password == null || passwordCheck == null || name == null || nickname == null) {
-        alert('잘못된 접근방식입니다. 다시 시도해주세요');
+        alert('잘못된 접근입니다. 다시 시도해주세요');
         location.reload();
         return;
     }
@@ -499,7 +525,7 @@ return  '<div class="modal-input-box">' +
             '<input type="password" name="loginPassword" id="loginPassword" placeholder="비밀번호" minlength="8">' +
         '</div>' +
         '<div class="error-box">' +
-            '<span class="error">아이디/비밀번호를 확인해주세요.</span>' +
+            '<span class="error m-login"></span>' +
         '</div>' +
         '<button type="button" id="login">로그인</button>' +
         '<div class="modal-sub-menu">' +
