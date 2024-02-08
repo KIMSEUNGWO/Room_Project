@@ -16,6 +16,9 @@
     --room-bg-color : rgb(22, 27, 34);
     --room-bg-hover-color : rgb(35, 43, 54);
     --gray : rgb(168, 168, 168);
+
+    --confirm-color : rgb(98, 217, 98);
+    --error-color : rgb(255, 83, 83);
 }
 
 * {
@@ -75,10 +78,10 @@ pre {
     padding: 1rem 0 0 0;
 }
 .error {
-    color: rgb(255, 83, 83);
+    color: var(--error-color);
 }
 .non-error {
-    color: rgb(98, 217, 98);
+    color: var(--confirm-color);
 }
 
 /* 모달창 */
