@@ -150,6 +150,10 @@ header {
         background-color: #f3da01;
     }
 
+    .m-login.disabled {
+        display: none;
+    }
+
 }
 .modal-content.change {
     transition: opacity 0.5s ease;
