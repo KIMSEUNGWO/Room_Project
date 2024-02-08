@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="/static/css/common.css">
+    <link rel="stylesheet" href="/static/css/main.css">
+    <link rel="stylesheet" href="/static/css/notify_read_more.css">
+    <title>신고 자세히 보기</title>
+</head>
+<body>
+    <div class="container">
+        <div class="notify-info">
+            <div class="notify-box">
+                    <div class="title-notify-number">신고번호</div>
+                    <input type="text" name="notify-number" id="notify-number" class="notify-number" value="1" readonly>
+            </div>
+            <div class="notify-box">
+                <div class="title-notify-date">신고일시</div>
+                <input type="text" name="notify-date" id="notify-date" class="notify-dater" value="2024-02-08" readonly>
+            </div>
+            <div class="notify-box">
+                <div class="title-donotify-member">신고한 회원</div>
+                <input type="text" name="donotify-member" id="donotify-member" class="donotify-member" value="가나다라마바사" readonly>
+            </div>
+            <div class="notify-box">
+                <div class="title-benotified-member">신고된 회원</div>
+                <input type="text" name="benotified-member" id="benotified-member" class="benotified-member" value="아자차카타파하" readonly>
+            </div>
+            <div class="notify-box">
+                <div class="title-notify-reason">신고 사유</div>
+                <input type="text" name="notify-reason" id="notify-reason" class="notify-reason" value="abcde" readonly>
+            </div>
+            <div class="notify-box">
+                <div class="title-notify-content">신고 내용</div>
+                <textarea class="notify-content" name="notify-content" id="notify-content" cols="30" rows="10" readonly>agwaegwaet</textarea>
+            </div>
+            <div class="notify-box">
+                <div class="title-notify-image">첨부파일</div>
+                <div class="notify-image">
+                    <a href="#">1.png</a>
+                </div>
+            </div>
+        <hr>
+            <div class="process-box">
+                <div class="title-process-result">처리 결과</div>
+                <input type="text" name="process-result" id="process-result" class="process-result" value="정지 0일">
+            </div>
+            <div class="process-box">
+                <div class="title-process-reason">처리 사유</div>
+                <input type="text" name="process-reason" id="process-reason" class="process-reason" value="욕설 인정">
+            </div>
+            <div class="process-box">
+                <div class="title-process-status">처리 상태</div>
+                <input type="text" name="process-status" id="process-status" class="process-status" value="처리 완료">
+            </div>
+        </div>
+        <div class="button-box">
+            <div class="button">
+                <button class="completeBtn">완료</button>
+            </div>
+            <div class="button">
+                <button class="cancelBtn">취소</button>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
