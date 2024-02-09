@@ -3,6 +3,8 @@ package project.study.service;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import project.study.exceptions.signup.DistinctAccountException;
+import project.study.exceptions.signup.DistinctNicknameException;
 import project.study.jpaRepository.BasicJpaRepository;
 import project.study.jpaRepository.MemberJpaRepository;
 
