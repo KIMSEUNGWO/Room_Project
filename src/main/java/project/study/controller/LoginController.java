@@ -35,6 +35,7 @@ public class LoginController {
 
     @PostMapping("/signup")
     public ResponseEntity<ResponseDto> defaultSignup(@RequestBody RequestDefaultSignupDto data) {
+        System.out.println("data = " + data);
         loginService.signup(data);
 
         return new ResponseEntity<>(new ResponseDto("ok", "회원가입 성공"), HttpStatus.OK);

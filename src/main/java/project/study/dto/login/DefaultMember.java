@@ -4,6 +4,7 @@ import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.transaction.annotation.Transactional;
 import project.study.collection.PasswordManager;
 import project.study.domain.Basic;
 import project.study.domain.Member;
@@ -11,11 +12,14 @@ import project.study.dto.login.requestdto.RequestDefaultLoginDto;
 import project.study.dto.login.requestdto.RequestDefaultSignupDto;
 import project.study.dto.login.requestdto.RequestLoginDto;
 import project.study.dto.login.requestdto.RequestSignupDto;
+import project.study.enums.MemberStatusEnum;
 import project.study.exceptions.login.InvalidLoginException;
 import project.study.jpaRepository.BasicJpaRepository;
 import project.study.jpaRepository.MemberJpaRepository;
 
+import java.time.LocalDateTime;
 import java.util.Optional;
+import java.util.UUID;
 
 import static project.study.constant.WebConst.*;
 
@@ -28,11 +32,28 @@ public class DefaultMember implements MemberInterface {
     private final BCryptPasswordEncoder encoder;
 
 
+    @Transactional
     @Override
     public Member signup(RequestSignupDto signupDto) {
         RequestDefaultSignupDto data = (RequestDefaultSignupDto) signupDto;
 
-        return null;
+        Member saveMember = Member.builder()
+                .memberName(data.getName())
+                .memberNickname(data.getNickName())
+                .memberCreateDate(LocalDateTime.now())
+                .memberStatus(MemberStatusEnum.정상)
+                .build();
+        memberJpaRepository.save(saveMember);
+
+        Basic saveBasic = Basic.builder()
+                .account(data.getAccount())
+                .password(encoder.encode(data.getPassword()))
+                .salt(UUID.randomUUID().toString().substring(0, 6))
+                .member(saveMember)
+                .build();
+        basicJpaRepository.save(saveBasic);
+
+        return saveMember;
     }
 
     @Override
