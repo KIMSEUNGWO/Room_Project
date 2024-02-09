@@ -1,6 +1,5 @@
 package project.study.exceptions.signup;
 
-import project.study.constant.WebConst;
 import project.study.dto.abstractentity.ResponseDto;
 
 import static project.study.constant.WebConst.ERROR;
