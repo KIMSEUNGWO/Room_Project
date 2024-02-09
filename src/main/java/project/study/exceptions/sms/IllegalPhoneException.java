@@ -7,7 +7,7 @@ public class IllegalPhoneException extends SmsException{
         super(cause, responseDto);
     }
 
-    public IllegalPhoneException(ResponseDto responseDto) {
-        super(responseDto);
+    public IllegalPhoneException() {
+        super(new ResponseDto("error", "휴대폰 번호를 다시 확인해주세요."));
     }
 }
