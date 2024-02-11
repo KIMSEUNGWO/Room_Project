@@ -42,6 +42,9 @@ dependencies {
 	annotationProcessor "jakarta.annotation:jakarta.annotation-api"
 	annotationProcessor "jakarta.persistence:jakarta.persistence-api"
 
+	// JSON Parser
+	implementation group: 'com.nimbusds', name: 'nimbus-jose-jwt', version: '9.38-rc3'
+
 	// 문자 인증
 	implementation 'net.nurigo:sdk:4.2.7'
 }

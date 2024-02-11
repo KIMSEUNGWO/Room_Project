@@ -1,0 +1,31 @@
+package project.study.controller.api.kakaologin;
+
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpSession;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
+import project.study.dto.abstractentity.ResponseDto;
+
+@Controller
+@RequiredArgsConstructor
+@Slf4j
+public class KakaoLoginController {
+
+    private final KakaoLoginService kakaoLoginService;
+    @ResponseBody
+    @GetMapping("/login/kakao")
+    public ResponseEntity<ResponseDto> kakaologin(@RequestParam(name = "code") String code, HttpServletRequest request) {
+        HttpSession session = request.getSession();
+
+        kakaoLoginService.login(code, session);
+
+
+
+        return null;
+    }
+}

@@ -34,4 +34,8 @@ public class Social {
     public String getSocialEmail() {
         return socialEmail;
     }
+
+    public Member getMember() {
+        return member;
+    }
 }

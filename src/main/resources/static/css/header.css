@@ -134,10 +134,13 @@ header {
         gap: 1rem;
         font-size: 1rem;
     }
+    .social * {
+        pointer-events: none;
+    }
 
     #kakao {
         background-color: #FEE500;
-        svg {
+        svg {f
             fill: #000000;
         }
         span {
