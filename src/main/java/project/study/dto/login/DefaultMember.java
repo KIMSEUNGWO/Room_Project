@@ -45,10 +45,12 @@ public class DefaultMember implements MemberInterface {
                 .build();
         memberJpaRepository.save(saveMember);
 
+        String salt = UUID.randomUUID().toString().substring(0, 6);
+
         Basic saveBasic = Basic.builder()
                 .account(data.getAccount())
-                .password(encoder.encode(data.getPassword()))
-                .salt(UUID.randomUUID().toString().substring(0, 6))
+                .password(encoder.encode(data.getPassword() + salt))
+                .salt(salt)
                 .member(saveMember)
                 .build();
         basicJpaRepository.save(saveBasic);
@@ -57,14 +59,12 @@ public class DefaultMember implements MemberInterface {
     }
 
     @Override
-    public Member login(RequestLoginDto loginDto, HttpSession session) {
+    public Member login(RequestLoginDto loginDto) {
         RequestDefaultLoginDto data = (RequestDefaultLoginDto) loginDto;
 
         Basic basic = checkAccount(data);
         checkPassword(basic, data);
 
-        Member member = basic.getMember();
-        session.setAttribute(LOGIN_MEMBER, member.getMemberId());
         return basic.getMember();
     }
 

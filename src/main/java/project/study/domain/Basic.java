@@ -3,16 +3,18 @@ package project.study.domain;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
+import lombok.NoArgsConstructor;
 
 @Builder
+@NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@Table(name = "SOCIAL")
-@SequenceGenerator(name = "SEQ_SOCIAL", sequenceName = "SEQ_SOCIAL_ID", allocationSize = 1)
+@Table(name = "BASIC")
+@SequenceGenerator(name = "SEQ_BASIC", sequenceName = "SEQ_BASIC_ID", allocationSize = 1)
 public class Basic {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "SEQ_SOCIAL")
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "SEQ_BASIC")
     private Long basicId;
 
     private String account;

@@ -1,11 +1,13 @@
 package project.study.dto.login.responsedto;
 
 import lombok.Getter;
+import lombok.Setter;
 
 import java.util.ArrayList;
 import java.util.List;
 
 @Getter
+@Setter
 public class DefaultSignupErrorList {
 
     private final List<DefaultSignupError> errorList;
@@ -20,5 +22,9 @@ public class DefaultSignupErrorList {
 
     public boolean hasError() {
         return !errorList.isEmpty();
+    }
+
+    public List<DefaultSignupError> getErrors() {
+        return errorList;
     }
 }

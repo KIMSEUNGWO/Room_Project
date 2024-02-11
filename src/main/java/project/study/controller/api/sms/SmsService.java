@@ -36,7 +36,7 @@ public class SmsService {
 
     protected void sendSMS(RequestSms data) {
         String certificationNumber = smsRepository.createCertificationNumber();
-
+        System.out.println("certificationNumber = " + certificationNumber);
 //        Message message = smsRepository.createMessage(data, certificationNumber);
 //
 //        smsRepository.sendSms(message);
@@ -139,5 +139,10 @@ public class SmsService {
         String password = encoder.encode(data.getPassword());
         basic.changePassword(password);
 
+    }
+
+    @Transactional
+    public void deleteAllByCertification(RequestFindAccount data) {
+        certificationJpaRepository.deleteAllByNameAndPhone(data.getName(), data.getPhone());
     }
 }

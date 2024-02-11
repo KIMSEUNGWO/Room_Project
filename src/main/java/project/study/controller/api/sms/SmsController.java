@@ -40,6 +40,8 @@ public class SmsController {
 
         FindAccount findAccount = smsService.getFindAccount(data);
 
+        smsService.deleteAllByCertification(data);
+
         return new ResponseEntity<>(new ResponseAccountDto("ok", "인증이 완료되었습니다.", findAccount), HttpStatus.OK);
     }
 

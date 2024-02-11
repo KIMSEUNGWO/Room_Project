@@ -61,7 +61,6 @@ window.addEventListener('load', () => {
 })
 // 문자인증 텀
 function blocker() {
-    console.log(clickLimit);
     if (clickLimit) {
         al('error', '메시지', "잠시 후에 시도해주세요.");
         return false;
@@ -78,17 +77,8 @@ function fetchPostSMS(url, json, callback) {
 					, headers : {'Content-Type' : 'application/json'}
 					, body : JSON.stringify(json)
 				})
-    .then(res => {
-        let json = res.json();
-        if (json.result == 'NotConnected') {
-            throw Error(json.message);
-        }
-        return res.json();
-    })
-    .then(map => callback(map))
-    .catch(error => {
-        al('error', 'SMS 서버 연결 실패', error.message);
-    })
+    .then(res => res.json())
+    .then(map => callback(map));
 }
 
 function requestSendSMS() {
@@ -109,8 +99,8 @@ function requestSendSMS() {
 
     if (!blocker()) return;
 
-    smsSend({result : 'ok', message : '인증번호를 발송했습니다.'});
-    // fetchPostSMS('/sms/send', json, smsSend);
+    // smsSend({result : 'ok', message : '인증번호를 발송했습니다.'});
+    fetchPostSMS('/sms/send', json, smsSend);
 
 }
 
@@ -126,10 +116,13 @@ function smsSend(json) {
             findAccount_result.classList.add('disabled');
         }
     }
+    if (json.result == 'NotConnected') {
+        al('error', 'SMS 서버 연결 실패', error.message);
+    }
 }
 function accountConfirm(json) {
     let m_findCertification = document.querySelector('.m-findCertification');
-    printMessage(json, m_findCertification);
+
     /* 
         예상 JSON 형식
         {
@@ -153,7 +146,9 @@ function accountConfirm(json) {
     findAccount_result.innerHTML = '';
 
     if (json.result == 'ok') {
-
+        clearInterval(timerInterval);
+        clearInterval(clickLimit);
+        clickLimit = undefined;
 
         if (json.findAccount.social != null) {
 
@@ -164,6 +159,10 @@ function accountConfirm(json) {
         findAccount_result.innerHTML += '<span id="result">' + json.findAccount.account + '</span>'
 
         findAccount_result.classList.remove('disabled');
+    }
+    if (json.result == 'error') {
+        al('error', '에러', json.message);
+        changeToFindAccount();
     }
 }
 
@@ -185,24 +184,17 @@ function findAccountCertificationConfirm() {
     
     let json = {name : name.value, phone : phone.value, certification : certification.value};
 
-
-    clearInterval(timerInterval);
-    clearInterval(clickLimit);
-    clickLimit = undefined;
-
-    console.log('clear Interval', clickLimit);
-
-    accountConfirm(        
-        {
-            result : 'ok',
-            message : '인증이 완료되었습니다.',
-            findAccount :   {
-                            social : null,
-                            account : '회원 정보가 없습니다.'
-                            }
-        }
-    );
-    // fetchPostSMS('/sms/account/confirm', json, accountConfirm);
+    // accountConfirm(        
+    //     {
+    //         result : 'ok',
+    //         message : '인증이 완료되었습니다.',
+    //         findAccount :   {
+    //                         social : null,
+    //                         account : '회원 정보가 없습니다.'
+    //                         }
+    //     }
+    // );
+    fetchPostSMS('/sms/account/confirm', json, accountConfirm);
 
 }
 
@@ -222,25 +214,22 @@ function findPasswordCertificationConfirm() {
     validFindName(errorList, name);
     validFindPhone(errorList, phone);
     if (errorList.length != 0) return;
-
-    clearInterval(timerInterval);
-    clearInterval(clickLimit);
-    clickLimit = undefined;
     
     let json = {account : id.value, name : name.value, phone : phone.value, certification : certification.value};
-    passwordConfirm({result : 'ok', message : '인증되었습니다.'});
-    // fetchPostSMS('/sms/password/confirm', json, passwordConfirm);
+    // passwordConfirm({result : 'ok', message : '인증되었습니다.'});
+    fetchPostSMS('/sms/password/confirm', json, passwordConfirm);
 }
 
 function passwordConfirm(json) {
     let m_findCertification = document.querySelector('.m-findCertification');
-    printMessage(json, m_findCertification);
     
     clearInterval(timerInterval);
     clearInterval(clickLimit);
 
     if (json.result == 'ok') {
-
+        clearInterval(timerInterval);
+        clearInterval(clickLimit);
+        clickLimit = undefined;
 
         let inputBoxList = document.querySelectorAll('.find .input-box');
         inputBoxList.forEach(inputBox => inputBox.classList.add('disabled'));
@@ -248,6 +237,10 @@ function passwordConfirm(json) {
         createChangePasswordForm(divFind);
         let buttons = document.querySelector('.buttons');
         buttons.innerHTML += '<button type="button" id="change-password">변경</button>';
+    }
+    if (json.result == 'error') {
+        al('error', '에러', json.message);
+        changeToFindPassword();
     }
 }
 function createChangePasswordForm(divFind) {
@@ -329,8 +322,8 @@ function changePassword() {
     }
     let json = {account : id.value, name : name.value, phone : phone.value, certification : certification.value, changePassword : changePassword.value, changePasswordCheck : changePasswordCheck.value};
 
-    changePasswordResult({result : 'ok', message : '비밀번호 변경 완료'});
-    // fetchPost('/changePassword', json, changePasswordResult);
+    // changePasswordResult({result : 'ok', message : '비밀번호 변경 완료'});
+    fetchPost('/changePassword', json, changePasswordResult);
 }
 
 function changePasswordResult(json) {

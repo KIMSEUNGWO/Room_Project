@@ -11,5 +11,5 @@ public interface MemberInterface {
     Member signup(RequestSignupDto signupDto);
 
 
-    Member login(RequestLoginDto loginDto, HttpSession session);
+    Member login(RequestLoginDto loginDto);
 }

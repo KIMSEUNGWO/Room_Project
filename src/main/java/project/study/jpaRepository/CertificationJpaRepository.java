@@ -9,4 +9,6 @@ import java.util.Optional;
 public interface CertificationJpaRepository extends JpaRepository<Certification, Long> {
 
     Optional<Certification> findTopByCertificationNumberOrderByCertificationId(String phone);
+
+    void deleteAllByNameAndPhone(String name, String phone);
 }
