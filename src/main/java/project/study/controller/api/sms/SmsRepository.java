@@ -100,14 +100,15 @@ public class SmsRepository {
     }
 
     public Optional<Member> findByNameAndPhone(String name, String phone) {
-        Member findMember = query.select(member)
-            .from(member)
-            .join(member, phone1.member)
-            .where(member.memberName.eq(name).and(phone1.phone.eq(phone)))
-            .fetchFirst();
-        if (findMember == null) {
-            return Optional.empty();
-        }
-        return Optional.of(findMember);
+        QMember member = QMember.member;
+
+        return Optional.ofNullable(query
+                .selectFrom(member)
+                .innerJoin(member.phone).on(member.memberId.eq(member.phone.member.memberId))
+                .innerJoin(member.basic).on(member.memberId.eq(member.basic.member.memberId))
+                .innerJoin(member.social).on(member.memberId.eq(member.social.member.memberId))
+                .where(member.memberName.eq(name)
+                        .and(member.phone.phone.eq(phone)))
+                .fetchFirst());
     }
 }

@@ -16,7 +16,7 @@ public class RestGlobalExceptionHandler {
     @ExceptionHandler(RestFulException.class)
     public ResponseEntity<ResponseDto> globalRestFulException(RestFulException e) {
         e.printStackTrace();
-        log.error("[Global RestFul Exception 발생!] : {}", e.getMessage());
+        log.error("[Global RestFul Exception 발생!] : {}", e.getResponseDto().getMessage());
 
         return new ResponseEntity<>(e.getResponseDto(), HttpStatus.BAD_REQUEST);
     }

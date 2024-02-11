@@ -39,11 +39,11 @@ window.addEventListener('load', () => {
         let target = e.target;
 
         if (target.name == 'account') {
-            fetchPost('/distinct/account', target, distinctAccountResult);
+            fetchDistinct('/distinct/account', target.value, distinctAccountResult);
             return;
         }
-        if (target.name == 'name') {
-            fetchPost('/distinct/name', target, distinctNameResult);
+        if (target.name == 'nickname') {
+            fetchDistinct('/distinct/nickname', target.value, distinctNameResult);
             return;
         }
         if (target.name == 'password') {
@@ -118,9 +118,9 @@ function login() {
         return;
     }
 
-    let json = {account : loginAccount.value, password : loginPassword};
-    loginResult({result : 'error', message : '아이디/비밀번호를 확인해주세요.'});
-    // fetchPost('/login', json, loginResult);
+    let json = {account : loginAccount.value, password : loginPassword.value};
+    // loginResult({result : 'error', message : '아이디/비밀번호를 확인해주세요.'});
+    fetchPost('/login', json, loginResult);
 }
 function loginResult(json) {
     if (json.result == 'ok') {
@@ -160,8 +160,8 @@ function messageInit(messageTag) {
 }
 
 function distinctNameResult(json) {
-    const m_name = document.querySelector('.m-name');
-    printMessage(json, m_name);
+    const m_nickname = document.querySelector('.m-nickname');
+    printMessage(json, m_nickname);
 }
 
 function distinctAccountResult(json) {
@@ -189,6 +189,14 @@ function fetchPost(url, json, callback) {
     .then(res => res.json())
     .then(map => callback(map));;
 }
+function fetchDistinct(url, data, callback) {
+    fetch(url , { method : 'post'
+					, headers : {'Content-Type' : 'application/json'}
+					, body : data
+				})
+    .then(res => res.json())
+    .then(map => callback(map));
+}
 
 function signup() {
     let errorList = [];
@@ -209,10 +217,11 @@ function signupPost() {
         location.reload();
         return;
     }
-    let json ={account : account.value, password : password.value, passwordCheck : passwordCheck.value, name : name.value, nickname : nickname.value};
+    let json ={account : account.value, password : password.value, passwordCheck : passwordCheck.value, name : name.value, nickName : nickname.value};
     fetchPost('/signup', json, signupResult);
 }
 function signupResult(json) {
+    console.log(json);
     if (json.result == 'error') {
         // 예상 JSON 형식
         /*
@@ -311,7 +320,6 @@ function validPasswordCheck(errorList, passwordInput, passwordCheckInput) {
     if (password !== passwordCheck) {
         let result = {result : 'error', message : '비밀번호가 일치하지 않습니다.'};
         printMessage(result, m_passwordCheck);
-        passwordCheck.classList.add('invalid');
         if (errorList != null) {
             errorList.push(passwordCheckInput);
         }

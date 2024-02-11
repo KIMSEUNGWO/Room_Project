@@ -1,22 +1,17 @@
 package project.study.jpaRepository;
 
 import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.data.jpa.repository.Query;
 import project.study.domain.Member;
 
-import java.util.Optional;
 
 public interface MemberJpaRepository extends JpaRepository<Member, Long> {
 
     boolean existsByMemberNickname(String nickName);
 
-
-    /***
-     * SELECT * FROM MEMBER M
-     * JOIN PHONE P ON (M.MEMBER_ID = P.MEMBER_ID)
-     * JOIN BASIC B ON (M.MEMBER_ID = B.MEMBER_ID)
-     * JOIN SOCIAL S ON (M.MEMBER_ID = S.MEMBER_ID)
-     * WHERE M.MEMBER_NAME = '1' AND P.PHONE = '2'
-     */
-    Optional<Member> findByMemberNameAndMemberPhone(String name, String phone);
+//    @Query("SELECT m FROM MEMBER m " +
+//            "JOIN PHONE p ON m.MEMBER_ID = p.MEMBER_ID " +
+//            "JOIN BASIC b ON m.MEMBER_ID = b.MEMBER_ID " +
+//            "JOIN SOCIAL s ON m.MEMBER_ID = s.MEMBER_ID " +
+//            "WHERE m.MEMBER_NAME = :name AND p.PHONE = :phone")
+//    Optional<Member> findByMemberNameAndMemberPhone(@Param("name") String name, @Param("phone") String phone);
 }

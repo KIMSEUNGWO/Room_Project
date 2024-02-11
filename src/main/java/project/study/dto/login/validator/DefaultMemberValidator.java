@@ -83,7 +83,7 @@ public class DefaultMemberValidator implements MemberValidator {
         validNickName(errorList, data.getNickName());
 
         if (errorList.hasError()) {
-            throw new SignupException(new ResponseSignupdto("error", "회원가입 오류", errorList));
+            throw new SignupException(new ResponseSignupdto("error", "회원가입 오류", errorList.getErrorList()));
         }
 
     }

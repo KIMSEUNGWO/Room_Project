@@ -3,6 +3,7 @@ package project.study.domain;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
+import lombok.NoArgsConstructor;
 import project.study.controller.api.sms.RequestSms;
 import project.study.dto.abstractentity.ResponseDto;
 import project.study.exceptions.sms.ExceedExpireException;
@@ -11,6 +12,7 @@ import project.study.exceptions.sms.SmsException;
 import java.time.LocalDateTime;
 
 @AllArgsConstructor
+@NoArgsConstructor
 @Builder
 @Entity
 @Table(name = "CERTIFICATION")
