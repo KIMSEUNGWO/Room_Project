@@ -429,7 +429,6 @@ function limitTimer() {
         // 시간이 0이면 타이머 중지
         if (minutes === 0 && seconds === 0) {
             clearInterval(timerId);
-            alert('타이머 종료!');
             return true;
         }
     }, 1000);
