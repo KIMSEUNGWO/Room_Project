@@ -24,6 +24,6 @@ public class DefaultMemberFactory implements MemberFactory{
 
     @Override
     public MemberValidator validator() {
-        return new DefaultMemberValidator(freezeRepository);
+        return new DefaultMemberValidator(freezeRepository, basicJpaRepository, memberJpaRepository);
     }
 }

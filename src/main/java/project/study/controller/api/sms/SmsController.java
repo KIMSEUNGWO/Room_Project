@@ -13,37 +13,63 @@ import project.study.dto.abstractentity.ResponseDto;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/sms")
 @Slf4j
 public class SmsController {
 
-
-
-
     private final SmsService smsService;
 
-    @PostMapping("/account/find")
-    public ResponseEntity<ResponseDto> accountSendSMS(@RequestBody RequestSms data) {
+    @PostMapping("/sms/send")
+    public ResponseEntity<ResponseDto> accountSendSMS(@RequestBody RequestFindAccount data) {
         System.out.println("/account/find data = " + data);
 
         smsService.regexPhone(data.getPhone());
 
-        String certification = smsService.sendSMS(data);
+        smsService.sendSMS(data);
 
-        data.setCertification(certification);
         smsService.saveCertification(data);
 
         return new ResponseEntity<>(new ResponseDto("ok", "인증번호를 발송했습니다."), HttpStatus.OK);
     }
 
-    @PostMapping("/account/confirm")
-    public ResponseEntity<ResponseDto> accountConfirm(@RequestBody RequestSms data) {
+    @PostMapping("/sms/account/confirm")
+    public ResponseEntity<ResponseDto> accountConfirm(@RequestBody RequestFindAccount data) {
 
         Certification certification = smsService.findCertification(data.getCertification());
 
+        smsService.validFindAccountCertification(certification, data);
 
+        FindAccount findAccount = smsService.getFindAccount(data);
 
-        return new ResponseEntity<>(new ResponseDto("ok", "인증번호를 발송했습니다."), HttpStatus.OK);
+        return new ResponseEntity<>(new ResponseAccountDto("ok", "인증이 완료되었습니다.", findAccount), HttpStatus.OK);
+    }
+
+    @PostMapping("/sms/password/confirm")
+    public ResponseEntity<ResponseDto> passwordConfirm(@RequestBody RequestFindPassword data) {
+
+        Certification certification = smsService.findCertification(data.getCertification());
+
+        smsService.validFindPasswordCertification(certification, data);
+
+        smsService.checkSocialMember(data);
+
+        return new ResponseEntity<>(new ResponseDto("ok", "인증이 완료되었습니다."), HttpStatus.OK);
+    }
+
+    @PostMapping("/changePassword")
+    public ResponseEntity<ResponseDto> changePassword(@RequestBody RequestChangePassword data) {
+
+        Certification certification = smsService.findCertification(data.getCertification());
+
+        smsService.validFindPasswordCertification(certification, data);
+
+        smsService.checkSocialMember(data);
+
+        smsService.validChangePassword(data);
+
+        smsService.changePassword(data);
+
+        return new ResponseEntity<>(new ResponseDto("ok", "비밀번호 변경 완료"), HttpStatus.OK);
+
     }
 
 }

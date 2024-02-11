@@ -32,7 +32,7 @@ window.addEventListener('load', () => {
 
         // 아이디 찾기에서 인증요청
         if (target.id == 'request-account-certification') {
-            findAccountCertification();
+            requestSendSMS();
             return;
         }
         // 아이디 찾기에서 인증확인
@@ -43,7 +43,7 @@ window.addEventListener('load', () => {
 
         // 비밀번호 찾기에서 인증요청
         if (target.id == 'request-password-certification') {
-            findPasswordCertification();
+            requestSendSMS();
             return;
         }
         // 비밀번호 찾기에서 인증확인
@@ -91,7 +91,7 @@ function fetchPostSMS(url, json, callback) {
     })
 }
 
-function findAccountCertification() {
+function requestSendSMS() {
     let name = document.querySelector('input[name="findName"]');
     let phone = document.querySelector('input[name="findPhone"]');
     if (name == null || phone == null) {
@@ -110,7 +110,7 @@ function findAccountCertification() {
     if (!blocker()) return;
 
     smsSend({result : 'ok', message : '인증번호를 발송했습니다.'});
-    // fetchPostSMS('/sms/account/send', json, smsSend);
+    // fetchPostSMS('/sms/send', json, smsSend);
 
 }
 
@@ -205,29 +205,7 @@ function findAccountCertificationConfirm() {
     // fetchPostSMS('/sms/account/confirm', json, accountConfirm);
 
 }
-function findPasswordCertification() {
-    let id = document.querySelector('input[name="findId"]');
-    let name = document.querySelector('input[name="findName"]');
-    let phone = document.querySelector('input[name="findPhone"]');
-    if (id == null || name == null || phone == null) {
-        alert('잘못된 접근방식입니다. 다시 시도해주세요');
-        location.reload();
-        return;
-    }
-    let errorList = [];
 
-    validFindId(errorList, id);
-    validFindName(errorList, name);
-    validFindPhone(errorList, phone);
-    if (errorList.length != 0) return;
-    
-    let json = {account : id.value, name : name.value, phone : phone.value};
-
-    if (!blocker()) return;
-
-    smsSend({result : 'ok', message : '인증번호를 발송했습니다.'});
-    // fetchPostSMS('/sms/password/send', json, smsSend);
-}
 function findPasswordCertificationConfirm() {
     let id = document.querySelector('input[name="findId"]');
     let name = document.querySelector('input[name="findName"]');
