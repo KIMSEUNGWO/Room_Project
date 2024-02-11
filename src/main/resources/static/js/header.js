@@ -101,6 +101,10 @@ window.addEventListener('load', () => {
         if (target.id == 'login') {
             login();
         }
+        if (target.id == 'kakao') {
+            var options = 'width=500, height=600, top=100, left=100, resizable=yes, scrollbars=yes';
+            window.open('https://kauth.kakao.com/oauth/authorize?response_type=code&client_id=fa213830a457faaa52a9dbf35a13500e&redirect_uri=http://localhost:8080/login/kakao', '_blank', options);
+        }
 
         // 인풋 포커스 (포커스 했을 때 메세지 삭제)
         focusEventListener();
