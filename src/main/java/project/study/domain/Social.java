@@ -24,4 +24,12 @@ public class Social {
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "memberId")
     private Member member;
+
+    public SocialEnum getSocialType() {
+        return socialType;
+    }
+
+    public String getSocialEmail() {
+        return socialEmail;
+    }
 }

@@ -12,4 +12,5 @@ public abstract class RequestSms {
     private String name;
     private String phone;
     private String certification;
+
 }

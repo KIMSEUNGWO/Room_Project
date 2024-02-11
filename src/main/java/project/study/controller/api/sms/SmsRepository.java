@@ -1,5 +1,8 @@
 package project.study.controller.api.sms;
 
+import com.querydsl.core.QueryFactory;
+import com.querydsl.jpa.impl.JPAQueryFactory;
+import jakarta.persistence.EntityManager;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import net.nurigo.sdk.NurigoApp;
@@ -10,14 +13,25 @@ import net.nurigo.sdk.message.model.Message;
 import net.nurigo.sdk.message.service.DefaultMessageService;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
+import project.study.domain.Certification;
+import project.study.domain.Member;
+import project.study.domain.QMember;
+import project.study.domain.QPhone;
 import project.study.dto.abstractentity.ResponseDto;
+import project.study.exceptions.sms.ExceedExpireException;
 import project.study.exceptions.sms.MessageSendException;
+import project.study.exceptions.sms.SmsException;
+import project.study.jpaRepository.CertificationJpaRepository;
 
+import java.util.Optional;
 import java.util.Random;
 import java.util.stream.Collectors;
 
+import static project.study.domain.QMember.member;
+import static project.study.domain.QPhone.phone1;
+
 @Repository
-@RequiredArgsConstructor
 @Slf4j
 public class SmsRepository {
 
@@ -28,6 +42,15 @@ public class SmsRepository {
     @Value("${sms.phone}")
     private String fromPhone;
     private final String url = "https://api.coolsms.co.kr";
+
+    private final CertificationJpaRepository certificationJpaRepository;
+
+    private final JPAQueryFactory query;
+
+    public SmsRepository(CertificationJpaRepository certificationJpaRepository, EntityManager em) {
+        this.certificationJpaRepository = certificationJpaRepository;
+        this.query = new JPAQueryFactory(em);
+    }
 
     protected Message createMessage(RequestSms data, String certificationNumber) {
         Message message = new Message();
@@ -62,5 +85,29 @@ public class SmsRepository {
                 .limit(5)
                 .mapToObj(String::valueOf)
                 .collect(Collectors.joining());
+    }
+
+    // TODO
+    // noRollbackFor 나중에 확인해봐야 함
+    @Transactional(noRollbackFor = {SmsException.class})
+    protected void validCertification(Certification certification, RequestSms data) {
+        try {
+            certification.valid(data);
+        } catch (ExceedExpireException e) { // 인증시간 만료이면 인증 삭제 후 Exception 발생
+            certificationJpaRepository.delete(certification);
+            throw new SmsException(new ResponseDto("error", "인증이 만료되었습니다."));
+        }
+    }
+
+    public Optional<Member> findByNameAndPhone(String name, String phone) {
+        Member findMember = query.select(member)
+            .from(member)
+            .join(member, phone1.member)
+            .where(member.memberName.eq(name).and(phone1.phone.eq(phone)))
+            .fetchFirst();
+        if (findMember == null) {
+            return Optional.empty();
+        }
+        return Optional.of(findMember);
     }
 }

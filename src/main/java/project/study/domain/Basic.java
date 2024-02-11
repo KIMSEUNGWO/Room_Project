@@ -23,6 +23,10 @@ public class Basic {
     @JoinColumn(name = "memberId")
     private Member member;
 
+    public String getAccount() {
+        return account;
+    }
+
     public String getPassword() {
         return password;
     }
@@ -33,5 +37,9 @@ public class Basic {
 
     public Member getMember() {
         return member;
+    }
+
+    public void changePassword(String changePassword) {
+        password = changePassword;
     }
 }

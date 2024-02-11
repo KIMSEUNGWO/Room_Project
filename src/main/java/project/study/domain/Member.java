@@ -28,6 +28,11 @@ public class Member {
 
     // Not Columns
     @OneToOne(mappedBy = "member", fetch = FetchType.LAZY)
+    private Social social;
+    @OneToOne(mappedBy = "member", fetch = FetchType.LAZY)
+    private Basic basic;
+
+    @OneToOne(mappedBy = "member", fetch = FetchType.LAZY)
     private Profile profile;
     @OneToOne(mappedBy = "member", fetch = FetchType.LAZY)
     private Phone phone;
@@ -45,7 +50,22 @@ public class Member {
         return memberStatus.isExpireMember();
     }
 
+    public boolean isSocialMember() {
+        return social != null;
+    }
+
+    public boolean isBasicMember() {
+        return basic != null;
+    }
     public Long getMemberId() {
         return memberId;
+    }
+
+    public Social getSocial() {
+        return social;
+    }
+
+    public Basic getBasic() {
+        return basic;
     }
 }
