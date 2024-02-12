@@ -171,9 +171,13 @@ header {
 /* 모달 방 생성 */
 .modal-create-room {
     width: 30rem;
-    height: 40rem;
     padding: 1rem 2rem;
-    
+    .msg {
+        font-size: 0.9rem;
+    }
+    .msg.disabled {
+        display: none;
+    }
     .modal-content {
         display: flex;
         flex-direction: column;
@@ -211,6 +215,11 @@ header {
         height: 2.5rem;
         bottom: 0;
         right: 0%;
+        border: 0.05rem solid rgb(60, 60, 60);
+        border-radius: 100%;
+    }
+    .modal-content button#img * {
+        pointer-events: none;
     }
 
     .modal-wrapper {
@@ -344,6 +353,9 @@ header {
         width: 10px;
         height: 10px;
     }
+    .xSvg * {
+        pointer-events: none;
+    }
 
     .weeks {
         display: flex;
@@ -466,10 +478,9 @@ header {
         background-color: rgb(9, 9, 12);
     }
 
-    .invalid {
-        animation: shake-input 0.2s alternate;
-    }
-
+}
+.invalid {
+    animation: shake-input 0.2s alternate;
 }
 
 @keyframes shake-input {
