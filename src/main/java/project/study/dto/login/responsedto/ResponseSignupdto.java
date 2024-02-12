@@ -10,9 +10,9 @@ import java.util.List;
 @Setter
 public class ResponseSignupdto extends ResponseDto {
 
-    private List<DefaultSignupError> errorList;
+    private List<Error> errorList;
 
-    public ResponseSignupdto(String result, String message, List<DefaultSignupError> errorList) {
+    public ResponseSignupdto(String result, String message, List<Error> errorList) {
         super(result, message);
         this.errorList = errorList;
     }

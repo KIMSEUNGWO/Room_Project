@@ -93,15 +93,33 @@ function roomCreateSubmit() {
         }, 500);
         return;
     }
-    let json = {
-                    roomProfile : image.files.item(0), 
-                    title : title.value, 
-                    intro : intro.value, 
-                    max : max.value, 
-                    tags : convertTags(tags)
-                };
-    fetchPost('/room/create', json, roomCreateResult);
+    // 자바스크립트 코드
+    let formData = new FormData();
+    formData.append('profile', image.files.item(0));
+    formData.append('title', title.value);
+    formData.append('intro', intro.value);
+    formData.append('max', max.value);
+    formData.append('tags', convertTags(tags));
+    // JSON 데이터를 객체로 만들어 FormData에 추가
+    let jsonData = { 
+                        profile : image.files.item(0),
+                        title: title.value, 
+                        intro: intro.value, 
+                        max: max.value, 
+                        tags: convertTags(tags) 
+                    };
+    // formData.append('data', new Blob([JSON.stringify(jsonData)], { type: 'application/json' }));
+    
+    fetchCreateRoom('/room/create', formData, roomCreateResult);
 
+}
+function fetchCreateRoom(url, formData, callback) {
+    fetch(url , { 
+                    method : 'post',
+                    body: formData,
+				})
+    .then(res => res.json())
+    .then(map => callback(map));
 }
 /**
  * 예상 결과

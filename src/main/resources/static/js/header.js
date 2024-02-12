@@ -581,7 +581,7 @@ function createCreateRoomModal() {
     return  '<div class="modal-wrapper">' +
                 '<div class="create-room-image-box">' +
                     '<button type="button" id="img">' +
-                        '<img src="/image/basic-room-profile.jpg" width="100%" height="100%" id="roomProfile" name="roomProfile">' +
+                        '<img src="/images/basic-room-profile.jpg" width="100%" height="100%" id="roomProfile" name="roomProfile">' +
                         '<input type="file" name="roomImage" id="roomImage" accept="image/*">' +
                         '<svg width="36" height="36" viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg" class="g68VV5Ghc0ymGpbFWhEx"><circle cx="18" cy="18" r="18" fill="#000"></circle><path d="M11.375 22.658v2.969h2.969l8.756-8.756-2.97-2.969-8.755 8.756zm14.02-8.083a.788.788 0 000-1.116l-1.852-1.852a.788.788 0 00-1.116 0l-1.45 1.448 2.97 2.97 1.448-1.45z" fill="#fff"></path></svg>' +
                     '</button>' +

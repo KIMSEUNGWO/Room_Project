@@ -5,7 +5,7 @@ import lombok.Getter;
 
 @Getter
 @AllArgsConstructor
-public class DefaultSignupError {
+public class Error {
 
     private String location;
     private String message;
