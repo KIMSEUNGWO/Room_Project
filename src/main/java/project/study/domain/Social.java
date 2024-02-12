@@ -27,6 +27,9 @@ public class Social {
     @JoinColumn(name = "memberId")
     private Member member;
 
+    @OneToOne(mappedBy = "social")
+    private KakaoToken kakaoToken;
+
     public SocialEnum getSocialType() {
         return socialType;
     }
@@ -37,5 +40,9 @@ public class Social {
 
     public Member getMember() {
         return member;
+    }
+
+    public KakaoToken getToken() {
+        return kakaoToken;
     }
 }

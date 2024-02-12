@@ -23,6 +23,7 @@ import project.study.exceptions.sms.ExceedExpireException;
 import project.study.exceptions.sms.MessageSendException;
 import project.study.exceptions.sms.SmsException;
 import project.study.jpaRepository.CertificationJpaRepository;
+import project.study.jpaRepository.MemberJpaRepository;
 
 import java.util.Optional;
 import java.util.Random;
@@ -32,6 +33,7 @@ import static project.study.domain.QMember.member;
 import static project.study.domain.QPhone.phone1;
 
 @Repository
+@RequiredArgsConstructor
 @Slf4j
 public class SmsRepository {
 
@@ -44,13 +46,8 @@ public class SmsRepository {
     private final String url = "https://api.coolsms.co.kr";
 
     private final CertificationJpaRepository certificationJpaRepository;
+    private final MemberJpaRepository memberJpaRepository;
 
-    private final JPAQueryFactory query;
-
-    public SmsRepository(CertificationJpaRepository certificationJpaRepository, EntityManager em) {
-        this.certificationJpaRepository = certificationJpaRepository;
-        this.query = new JPAQueryFactory(em);
-    }
 
     protected Message createMessage(RequestSms data, String certificationNumber) {
         Message message = new Message();
@@ -100,15 +97,6 @@ public class SmsRepository {
     }
 
     public Optional<Member> findByNameAndPhone(String name, String phone) {
-        QMember member = QMember.member;
-
-        return Optional.ofNullable(query
-                .selectFrom(member)
-                .innerJoin(member.phone).on(member.memberId.eq(member.phone.member.memberId))
-                .innerJoin(member.basic).on(member.memberId.eq(member.basic.member.memberId))
-                .innerJoin(member.social).on(member.memberId.eq(member.social.member.memberId))
-                .where(member.memberName.eq(name)
-                        .and(member.phone.phone.eq(phone)))
-                .fetchFirst());
+        return memberJpaRepository.findByMemberNameAndMemberPhone(name, phone);
     }
 }

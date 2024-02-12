@@ -12,7 +12,7 @@ public class RoomController {
         return "room";
     }
 
-    @GetMapping("/main")
+    @GetMapping("/")
     public String main(){
         return "main";
     }

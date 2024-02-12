@@ -34,7 +34,9 @@ public interface MemberFactory {
         MemberValidator validator = validator();
         validator.validLogin(member);
 
-        session.setAttribute(LOGIN_MEMBER, member.getMemberId());
+        if (member != null) {
+            session.setAttribute(LOGIN_MEMBER, member.getMemberId());
+        }
 
         return member;
     }

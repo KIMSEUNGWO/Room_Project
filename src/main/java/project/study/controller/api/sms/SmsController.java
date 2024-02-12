@@ -34,6 +34,7 @@ public class SmsController {
     @PostMapping("/sms/account/confirm")
     public ResponseEntity<ResponseDto> accountConfirm(@RequestBody RequestFindAccount data) {
 
+        System.out.println("data = " + data);
         Certification certification = smsService.findCertification(data.getCertification());
 
         smsService.validFindAccountCertification(certification, data);
