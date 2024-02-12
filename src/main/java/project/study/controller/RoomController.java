@@ -1,19 +1,30 @@
 package project.study.controller;
 
-import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.GetMapping;
+import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+import project.study.dto.abstractentity.ResponseDto;
+import project.study.dto.room.RequestCreateRoomDto;
+import project.study.dto.room.ResponseCreateRoomDto;
+import project.study.service.RoomService;
 
-@Controller
+@RestController
+@RequiredArgsConstructor
 public class RoomController {
 
+    private final RoomService roomService;
 
-    @GetMapping("/room")
-    public String roomCreate(){
-        return "room";
+    @PostMapping(value = "/room/create")
+    public ResponseEntity<ResponseDto> createRoom(@ModelAttribute RequestCreateRoomDto data) {
+        System.out.println("data = " + data);
+
+        roomService.validRoomData(data);
+        roomService.createRoom(data);
+
+        String redirectURI = "/room/";
+        return new ResponseEntity<>(new ResponseCreateRoomDto("ok", "방 생성 완료", redirectURI), HttpStatus.OK);
     }
 
-    @GetMapping("/")
-    public String main(){
-        return "main";
-    }
+
 }

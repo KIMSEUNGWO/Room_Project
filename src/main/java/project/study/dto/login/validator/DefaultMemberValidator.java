@@ -6,8 +6,8 @@ import project.study.domain.Freeze;
 import project.study.domain.Member;
 import project.study.dto.login.requestdto.RequestDefaultSignupDto;
 import project.study.dto.login.requestdto.RequestSignupDto;
-import project.study.dto.login.responsedto.DefaultSignupError;
-import project.study.dto.login.responsedto.DefaultSignupErrorList;
+import project.study.dto.login.responsedto.Error;
+import project.study.dto.login.responsedto.ErrorList;
 import project.study.dto.login.responsedto.ResponseSignupdto;
 import project.study.exceptions.login.ExpireMemberLoginException;
 import project.study.exceptions.login.FreezeMemberLoginException;
@@ -74,7 +74,7 @@ public class DefaultMemberValidator implements MemberValidator {
     public void validSignup(RequestSignupDto signupDto) {
         RequestDefaultSignupDto data = (RequestDefaultSignupDto) signupDto;
 
-        DefaultSignupErrorList errorList = new DefaultSignupErrorList();
+        ErrorList errorList = new ErrorList();
 
         validAccountDistinct(errorList, data.getAccount());
         validPassword(errorList, data.getPassword());
@@ -88,16 +88,16 @@ public class DefaultMemberValidator implements MemberValidator {
 
     }
 
-    private void validNickName(DefaultSignupErrorList errorList, String nickName) {
+    private void validNickName(ErrorList errorList, String nickName) {
         if (nickName == null || nickName.length() == 0) {
-            DefaultSignupError error = new DefaultSignupError("nickname", "닉네임을 입력해주세요.");
+            Error error = new Error("nickname", "닉네임을 입력해주세요.");
             errorList.addError(error);
             return;
         }
 
         // 특수문자 여부 확인
         if (isIncludeSpecialCharacter(nickName)) {
-            DefaultSignupError error = new DefaultSignupError("nickname", "특수문자를 사용할 수 없습니다.");
+            Error error = new Error("nickname", "특수문자를 사용할 수 없습니다.");
             errorList.addError(error);
             return;
         }
@@ -105,48 +105,48 @@ public class DefaultMemberValidator implements MemberValidator {
         // 중복확인
         boolean distinctNickname = memberJpaRepository.existsByMemberNickname(nickName);
         if (distinctNickname) {
-            DefaultSignupError error = new DefaultSignupError("nickname", "이미 사용중인 닉네임입니다.");
+            Error error = new Error("nickname", "이미 사용중인 닉네임입니다.");
             errorList.addError(error);
             return;
         }
     }
 
-    private void validName(DefaultSignupErrorList errorList, String name) {
+    private void validName(ErrorList errorList, String name) {
         if (name == null || name.length() == 0) {
-            DefaultSignupError error = new DefaultSignupError("name", "이름을 입력해주세요.");
+            Error error = new Error("name", "이름을 입력해주세요.");
             errorList.addError(error);
             return;
         }
         if (isIncludeSpecialCharacter(name)) {
-            DefaultSignupError error = new DefaultSignupError("name", "특수문자를 사용할 수 없습니다.");
+            Error error = new Error("name", "특수문자를 사용할 수 없습니다.");
             errorList.addError(error);
             return;
         }
     }
 
-    private void validPasswordCheck(DefaultSignupErrorList errorList, String password, String passwordCheck) {
+    private void validPasswordCheck(ErrorList errorList, String password, String passwordCheck) {
         // 빈 문자열 확인
         if (password == null || password.length() == 0) {
             return;
         }
         if (passwordCheck == null || passwordCheck.length() == 0) {
-            DefaultSignupError error = new DefaultSignupError("passwordCheck", "비밀번호를 한번 더 입력해주세요.");
+            Error error = new Error("passwordCheck", "비밀번호를 한번 더 입력해주세요.");
             errorList.addError(error);
             return;
         }
 
         // 비밀번호와 비밀번호확인 문자열이 일치하는지 확인
         if (!password.equals(passwordCheck)) {
-            DefaultSignupError error = new DefaultSignupError("passwordCheck", "비밀번호가 일치하지 않습니다.");
+            Error error = new Error("passwordCheck", "비밀번호가 일치하지 않습니다.");
             errorList.addError(error);
             return;
         }
     }
 
-    private void validPassword(DefaultSignupErrorList errorList, String password) {
+    private void validPassword(ErrorList errorList, String password) {
         // 빈 문자열 확인
         if (password == null || password.length() == 0) {
-            DefaultSignupError error = new DefaultSignupError("password", "비밀번호를 입력해주세요.");
+            Error error = new Error("password", "비밀번호를 입력해주세요.");
             errorList.addError(error);
             return;
         }
@@ -155,34 +155,34 @@ public class DefaultMemberValidator implements MemberValidator {
         String regex = "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[!@#$%])[A-Za-z\\d!@#$%]{8,}$"; // 비밀번호 정규식
         boolean matches = password.matches(regex);
         if (!matches) {
-            DefaultSignupError error = new DefaultSignupError("password", "8자 이상 대,소문자, 숫자, 특수문자(!@#$%)를 포함해야 합니다.");
+            Error error = new Error("password", "8자 이상 대,소문자, 숫자, 특수문자(!@#$%)를 포함해야 합니다.");
             errorList.addError(error);
             return;
         }
     }
 
-    private void validAccountDistinct(DefaultSignupErrorList errorList, String account) {
+    private void validAccountDistinct(ErrorList errorList, String account) {
         // 빈문자열인지 확인
         if (account == null || account.length() == 0) {
-            errorList.addError(new DefaultSignupError("account", "아이디를 입력해주세요."));
+            errorList.addError(new Error("account", "아이디를 입력해주세요."));
             return;
         }
         // 아이디가 5 ~ 15자의 영문, 숫자로만 이루어져있는지 확인
         if (account.length() < 5 || account.length() > 15) {
-            errorList.addError(new DefaultSignupError("account", "5자 이상 15자 이하의 영문,숫자만 가능합니다."));
+            errorList.addError(new Error("account", "5자 이상 15자 이하의 영문,숫자만 가능합니다."));
             return;
         }
 
         // 모든 특수문자 포함 여부 확인
         if (isIncludeSpecialCharacter(account)) {
-            errorList.addError(new DefaultSignupError("account", "특수문자는 사용할 수 없습니다."));
+            errorList.addError(new Error("account", "특수문자는 사용할 수 없습니다."));
             return;
         }
 
         // 아이디 중복 확인
         boolean distinctAccount = basicJpaRepository.existsByAccount(account);
         if (distinctAccount) {
-            errorList.addError(new DefaultSignupError("account", "이미 사용중인 아이디입니다."));
+            errorList.addError(new Error("account", "이미 사용중인 아이디입니다."));
         }
     }
 

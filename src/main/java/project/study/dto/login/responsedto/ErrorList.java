@@ -8,15 +8,15 @@ import java.util.List;
 
 @Getter
 @Setter
-public class DefaultSignupErrorList {
+public class ErrorList {
 
-    private final List<DefaultSignupError> errorList;
+    private final List<Error> errorList;
 
-    public DefaultSignupErrorList() {
+    public ErrorList() {
         this.errorList = new ArrayList<>();
     }
 
-    public void addError(DefaultSignupError error) {
+    public void addError(Error error) {
         errorList.add(error);
     }
 
@@ -24,7 +24,7 @@ public class DefaultSignupErrorList {
         return !errorList.isEmpty();
     }
 
-    public List<DefaultSignupError> getErrors() {
+    public List<Error> getErrors() {
         return errorList;
     }
 }
