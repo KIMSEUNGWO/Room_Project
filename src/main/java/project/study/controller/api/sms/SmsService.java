@@ -94,6 +94,7 @@ public class SmsService {
     }
 
     public FindAccount getFindAccount(RequestFindAccount data) {
+        System.out.println("getFindAccount()");
         Optional<Member> findMember = smsRepository.findByNameAndPhone(data.getName(), data.getPhone());
         if (findMember.isEmpty()) {
             return new FindAccount(null, "회원 정보가 없습니다.");
