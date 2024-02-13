@@ -1,6 +1,5 @@
 package project.study.dto.login;
 
-import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -20,8 +19,6 @@ import project.study.jpaRepository.MemberJpaRepository;
 import java.time.LocalDateTime;
 import java.util.Optional;
 import java.util.UUID;
-
-import static project.study.constant.WebConst.*;
 
 @RequiredArgsConstructor
 @Slf4j
