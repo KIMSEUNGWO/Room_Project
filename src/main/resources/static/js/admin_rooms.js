@@ -27,7 +27,8 @@ function roomOptionClose(){
     container.addEventListener('click', function(event){
         let s = event.target;
 
-        if(!s.classList.contains('option-more') && !s.classList.contains('option-exit')){
+        if(!s.classList.contains('option-more') && !s.classList.contains('option-exit')
+            && !optionMenu.classList.contains('disabled')){
             optionMenu.classList.add('disabled');
         }
     });
