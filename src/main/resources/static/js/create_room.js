@@ -12,21 +12,25 @@ window.addEventListener('load', () => {
 
         if (target.id == 'room-cancel') {
             modalExit();
+            return;
         }
         if (target.id =='room-create') {
             roomCreateSubmit();
+            return;
         }
 
         if (target.id == 'img') {
             let changeImageInput = document.querySelector('input[name="roomImage"]');
             changeImageInput.click();
             imageInputAddEventListener(changeImageInput);
+            return;
         }
 
         if (target.name == 'max') {
             clearLabel();
             let label = document.querySelector('label[for="' + target.id + '"]');
             label.setAttribute('aria-selected', 'true');
+            return;
         }
 
         if (target.classList.contains('xSvg')) {
@@ -35,6 +39,25 @@ window.addEventListener('load', () => {
             if (!isTagMax() && tagAddNotContains()) {
                 createTagAddBox();
             }
+            return;
+        }
+
+        if (target.getAttribute('for') == 'private') {
+            let public = document.querySelector('label[for="public"]');
+            public.setAttribute('aria-selected', 'false');
+            target.setAttribute('aria-selected', 'true');
+            let password_box = document.querySelector('.password-box');
+            password_box.classList.remove('disabled');
+        }
+        if (target.getAttribute('for') == 'public') {
+            let private = document.querySelector('label[for="private"]');
+            private.setAttribute('aria-selected', 'false');
+            target.setAttribute('aria-selected', 'true');
+            let password_box = document.querySelector('.password-box');
+            password_box.classList.add('disabled');
+            let passwordInput = document.querySelector('input[name="room-password"]');
+            passwordInput.value = '';
+
         }
     })
 
@@ -59,12 +82,14 @@ window.addEventListener('load', () => {
 function createRoomMessageInit() {
     let title = document.querySelector('input[name="title"]');
     let intro = document.querySelector('input[name="intro"]');
+    let password = document.querySelector('input[name="room-password"]');
 
-    if (title == null || intro == null) {
+    if (title == null || intro == null || password == null) {
         return;
     }
     title.addEventListener('focus', () => messageInit(document.querySelector('.m-title')));
     intro.addEventListener('focus', () => messageInit(document.querySelector('.m-intro')));
+    password.addEventListener('focus', () => messageInit(document.querySelector('.m-private-password')));
 }
 function roomCreateSubmit() {
     let image = document.querySelector('input[name="roomImage"]');
@@ -72,11 +97,15 @@ function roomCreateSubmit() {
     let intro = document.querySelector('input[name="intro"]');
     let max = document.querySelector('input[name="max"]:checked');
     let tags = document.querySelectorAll('span[name="tag"]');
-    if (image == null || title == null || intro == null) {
+    let public = document.querySelector('input[name="public"]:checked');
+    let roomPassword = document.querySelector('input[name="room-password"]');
+
+    if (image == null || title == null || intro == null || public == null || roomPassword == null) {
         alert('잘못된 접근입니다. 다시 시도해주세요');
         location.reload();
         return;
     }
+
     let errorList = [];
     let validImage = isImage(image.files);
     if (!validImage) {
@@ -85,6 +114,7 @@ function roomCreateSubmit() {
     validTitle(errorList, title);
     validIntro(errorList, intro);
     validMax(max);
+    validPublic(errorList, public);
 
     if (errorList != 0) {
         errorList.forEach(errorInput => errorInput.classList.add('invalid'));
@@ -102,6 +132,10 @@ function roomCreateSubmit() {
     formData.append('intro', intro.value);
     formData.append('max', max.value);
     formData.append('tags', convertTags(tags));
+    formData.append('roomPublic', public.value);
+    if (public.id != 'public') {
+        formData.append('password', roomPassword.value);
+    }
 
     fetchCreateRoom('/room/create', formData, roomCreateResult);
 
@@ -184,6 +218,26 @@ function validValue(value) {
         return value;
     }
 }
+function validPublic(errorList, public) {
+    if (public.id != 'private') return;
+
+    let message = document.querySelector('.m-private-password');
+
+    let roomPassword = document.querySelector('input[name="room-password"]').value;
+    if (roomPassword.length == 0) {
+        let json = {result : 'error', message : '비밀번호를 설정해주세요.'};
+        printMessage(json, message);
+        errorList.push(intro);
+        return;
+    }
+    if (roomPassword.length != 4) {
+        let json = {result : 'error', message : '비밀번호 4자리를 입력해주세요.'};
+        printMessage(json, message);
+        errorList.push(intro);
+        return;
+    }
+    
+}
 
 function createTagAddBox() {
     
@@ -259,7 +313,7 @@ function createTag(value) {
     
 }
 function clearLabel() {
-    let labelList = document.querySelectorAll('.radio-wrap label');
+    let labelList = document.querySelectorAll('.max-wrap label');
     labelList.forEach(label => label.setAttribute('aria-selected', 'false'));
 }
 

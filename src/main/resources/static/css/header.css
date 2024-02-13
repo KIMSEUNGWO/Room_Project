@@ -140,7 +140,7 @@ header {
 
     #kakao {
         background-color: #FEE500;
-        svg {f
+        svg {
             fill: #000000;
         }
         span {
@@ -172,6 +172,19 @@ header {
 .modal-create-room {
     width: 30rem;
     padding: 1rem 2rem;
+
+    .msg {
+        margin-top: 0.3rem;
+        display: block;
+    }
+
+    .modal-title {
+        height: 1.5rem;
+        svg {
+            z-index: 2;
+        }
+
+    }
     .msg {
         font-size: 0.9rem;
     }
@@ -245,10 +258,13 @@ header {
         display: flex;
         gap: 0.5rem;
         align-items: center;
-        margin-top: 1rem;
+        margin: 0.5rem 0;
         h4 {
             margin-bottom: 0;
         }
+    }
+    .password-box.disabled {
+        display: none;
     }
     
 
@@ -355,30 +371,6 @@ header {
     }
     .xSvg * {
         pointer-events: none;
-    }
-
-    .weeks {
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        gap: 2rem;
-        margin-top: 0.6rem;
-    }
-    .weeks label {
-        width: 3.5rem;
-        height: 3.5rem;
-        background-color: rgb(58, 57, 88);
-        border-radius: 100%;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-
-    }
-    .weeks label[aria-selected="true"] {
-        background-color: rgb(136, 132, 202);
-    }
-    .input-box h4 input[type="checkbox"] {
-        visibility: hidden;
     }
 
     div.buttons {

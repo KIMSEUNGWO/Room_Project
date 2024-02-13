@@ -37,5 +37,8 @@ application.properties
 /nbdist/
 /.nb-gradle/
 
+**/resources/static/images/
+!**/resources/static/images/room_profile/basic-room-profile.jpg
+
 ### VS Code ###
 .vscode/

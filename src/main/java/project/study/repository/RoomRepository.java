@@ -7,9 +7,12 @@ import org.springframework.transaction.annotation.Transactional;
 import project.study.controller.image.FileUpload;
 import project.study.controller.image.FileUploadType;
 import project.study.domain.Room;
+import project.study.domain.RoomPassword;
 import project.study.domain.Tag;
 import project.study.dto.room.RequestCreateRoomDto;
+import project.study.enums.PublicEnum;
 import project.study.jpaRepository.RoomJpaRepository;
+import project.study.jpaRepository.RoomPasswordJpaRepository;
 import project.study.jpaRepository.TagJpaRepository;
 
 import java.util.List;
@@ -21,6 +24,7 @@ public class RoomRepository {
 
     private final RoomJpaRepository roomJpaRepository;
     private final TagJpaRepository tagJpaRepository;
+    private final RoomPasswordJpaRepository roomPasswordJpaRepository;
     private final FileUpload fileUpload;
 
     public void validRoomTitle(String title) {
@@ -45,6 +49,7 @@ public class RoomRepository {
             .roomTitle(data.getTitle())
             .roomIntro(data.getIntro())
             .roomLimit(Integer.parseInt(data.getMax()))
+            .roomPublic(data.getRoomPublic())
             .build();
         return roomJpaRepository.save(saveRoom);
     }
@@ -62,5 +67,17 @@ public class RoomRepository {
                 .build();
             tagJpaRepository.save(saveTag);
         }
+    }
+
+    @Transactional
+    public void createPassword(RequestCreateRoomDto data, Room room) {
+        if (data.getRoomPublic() != PublicEnum.PUBLIC) return;
+
+        RoomPassword saveRoomPassword = RoomPassword.builder()
+            .roomPassword(data.getPassword())
+            .room(room)
+            .build();
+
+        roomPasswordJpaRepository.save(saveRoomPassword);
     }
 }

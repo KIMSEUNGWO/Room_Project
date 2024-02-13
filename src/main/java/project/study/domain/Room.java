@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.NoArgsConstructor;
+import project.study.enums.PublicEnum;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -25,6 +26,9 @@ public class Room implements ImageFileEntity {
 
     private int roomLimit;
 
+    @Enumerated(EnumType.STRING)
+    private PublicEnum roomPublic;
+
     @OneToMany(mappedBy = "room")
     private List<Tag> tags;
 
@@ -33,9 +37,6 @@ public class Room implements ImageFileEntity {
 
     @OneToOne(mappedBy = "room", fetch = FetchType.LAZY)
     private RoomPassword roomPassword;
-
-    @OneToMany(mappedBy = "room")
-    private List<RoomSchedule> roomSchedules;
 
     @OneToOne(mappedBy = "room", fetch = FetchType.LAZY)
     private RoomNotice roomNotice;

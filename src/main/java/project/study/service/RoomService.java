@@ -21,6 +21,7 @@ public class RoomService {
         Room room = roomRepository.createRoom(data);
         roomRepository.createRoomImage(data, room);
         roomRepository.createTags(data, room);
+        roomRepository.createPassword(data, room);
 
         return room.getRoomId();
     }
