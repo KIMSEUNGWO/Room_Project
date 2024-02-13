@@ -272,4 +272,46 @@ aside .buttons button:hover {
     color: white;
 }
 
+.member-more > svg {
+    pointer-events: none;
+}
+
+.member-option-menu.disabled {
+    display: none;
+}
+
+.member-option-menu {
+    position: absolute;
+    border-radius: 0.5rem;
+    width: 10rem;
+    top: 4.4rem;
+    right: 1rem;
+    padding: 0.5rem 0.3rem;
+    background-color: var(--room-bg-hover-color);
+}
+
+.member-notify-box {
+    width: 100%;
+    height: 2.3rem;
+    display: grid;
+    grid-template-columns: 30% 70%;
+    align-items: center;
+    border-radius: var(--border-radius);
+    padding: 0.3rem 1rem;
+    font-size: 0.9rem;
+}
+
+.member-notify-box > span {
+    fill: rgb(240, 72, 72);
+    color: rgb(240, 72, 72);
+}
+
+.member-notify-box > svg {
+    fill: rgb(240, 72, 72);
+    color: rgb(240, 72, 72);
+    pointer-events: none;
+    opacity: unset;
+}
+
+
 
