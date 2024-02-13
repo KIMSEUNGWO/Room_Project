@@ -6,6 +6,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import project.study.exceptions.authority.AuthorizationException;
 import project.study.dto.abstractentity.ResponseDto;
 import project.study.exceptions.RestFulException;
 import project.study.exceptions.kakaologin.SocialException;
@@ -30,6 +31,14 @@ public class RestGlobalExceptionHandler {
     public ResponseEntity<String> globalSocialException(SocialException e) {
         e.printStackTrace();
         log.error("[Global SocialException Exception 발생!]");
+        execute(e.getResponse(), e.getAlertMessage());
+        return null;
+    }
+
+    @ExceptionHandler(AuthorizationException.class)
+    public ResponseEntity<String> globalAuthorizationException(AuthorizationException e) {
+        e.printStackTrace();
+        log.error("[Global AuthorizationException Exception 발생!]");
         execute(e.getResponse(), e.getAlertMessage());
         return null;
     }
