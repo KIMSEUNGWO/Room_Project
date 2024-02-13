@@ -13,7 +13,7 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 @SequenceGenerator(name = "SEQ_ROOM", sequenceName = "SEQ_ROOM_ID", allocationSize = 1)
-public class Room {
+public class Room implements ImageFileEntity {
 
     @Id @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "SEQ_ROOM")
     @Column(name = "room_id")
@@ -39,4 +39,8 @@ public class Room {
 
     @OneToOne(mappedBy = "room", fetch = FetchType.LAZY)
     private RoomNotice roomNotice;
+
+    public Long getRoomId() {
+        return roomId;
+    }
 }
