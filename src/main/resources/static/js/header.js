@@ -604,13 +604,28 @@ function createCreateRoomModal() {
                         '<input type="radio" name="max" id="m5" value="5">' +
                         '<input type="radio" name="max" id="m6" value="6">' +
                     '</h4>' +
-                    '<div class="radio-wrap">' +
+                    '<div class="radio-wrap max-wrap">' +
                         '<label for="m2" aria-selected="false">2명</label>' +
                         '<label for="m3" aria-selected="false">3명</label>' +
                         '<label for="m4" aria-selected="true">4명</label>' +
                         '<label for="m5" aria-selected="false">5명</label>' +
                         '<label for="m6" aria-selected="false">6명</label>' +
                     '</div>' +
+                '</div>' +
+                '<div class="input-wrap">' +
+                    '<h4>공개여부' +
+                        '<input type="radio" name="public" id="public" value="PUBLIC" checked>' +
+                        '<input type="radio" name="public" id="private" value="PRIVATE">' +
+                    '</h4>' +
+                    '<div class="radio-wrap">' +
+                        '<label for="public" aria-selected="true">공개방</label>' +
+                        '<label for="private" aria-selected="false">비공개방</label>' +
+                    '</div>' +
+                '</div>' +
+                '<div class="input-box password-box disabled">' +
+                    '<h4>비밀번호 설정</h4>' +
+                    '<input type="password" name="room-password" id="room-password" placeholder="비밀번호 4자리를 설정해주세요." minlength="4" maxlength="4">' +
+                    '<span class="msg disabled m-private-password"></span>' +
                 '</div>' +
                 '<span class="msg disabled m-max"></span>' +
                 '<div class="input-wrap tag-wrap">' +
