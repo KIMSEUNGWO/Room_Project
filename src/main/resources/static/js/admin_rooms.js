@@ -30,10 +30,7 @@ function roomOptionClose(){
         if(!s.classList.contains('option-more') && !s.classList.contains('option-exit')){
             optionMenu.classList.add('disabled');
         }
-    })
-    
-
-    
+    });
 };
 
 function deleteRoom(){
