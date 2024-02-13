@@ -1,4 +1,4 @@
-package project.study.dto.room;
+package project.study.authority.member.dto;
 
 import lombok.Getter;
 import lombok.Setter;

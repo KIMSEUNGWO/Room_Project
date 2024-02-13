@@ -41,6 +41,9 @@ public class Room implements ImageFileEntity {
     @OneToOne(mappedBy = "room", fetch = FetchType.LAZY)
     private RoomNotice roomNotice;
 
+    @OneToMany(mappedBy = "room", fetch = FetchType.LAZY)
+    private List<JoinRoom> joinRoomList;
+
     public Long getRoomId() {
         return roomId;
     }

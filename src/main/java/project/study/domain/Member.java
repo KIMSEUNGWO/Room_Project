@@ -7,6 +7,7 @@ import lombok.NoArgsConstructor;
 import project.study.enums.MemberStatusEnum;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @AllArgsConstructor
 @NoArgsConstructor
@@ -38,6 +39,8 @@ public class Member implements ImageFileEntity {
     private Phone phone;
     @OneToOne(mappedBy = "member", fetch = FetchType.LAZY)
     private Freeze freeze;
+    @OneToMany(mappedBy = "member", fetch = FetchType.LAZY)
+    private List<JoinRoom> joinRoomList;
 
     public void changeStatusToNormal() {
         memberStatus = MemberStatusEnum.정상;
