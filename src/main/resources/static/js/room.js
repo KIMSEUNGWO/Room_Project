@@ -154,7 +154,7 @@ function createNotify() {
                 '<div class="notify-image-box">' +
                     '<div class="notify-image-text">' +
                         '<h4>파일 첨부</h4>' +
-                        '<h5>(1MB)</h5>' +
+                        '<h5>(2MB)</h5>' +
                     '</div>' +
                     '<input type="file" name="notifyImage" id="notifyImage" accept="image/*" multiple>' +
                 '</div>' +
