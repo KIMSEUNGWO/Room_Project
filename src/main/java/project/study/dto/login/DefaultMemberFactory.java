@@ -2,11 +2,9 @@ package project.study.dto.login;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import project.study.collection.PasswordManager;
 import project.study.dto.login.validator.DefaultMemberValidator;
 import project.study.dto.login.validator.MemberValidator;
 import project.study.jpaRepository.BasicJpaRepository;
-import project.study.jpaRepository.FreezeJpaRepository;
 import project.study.jpaRepository.MemberJpaRepository;
 import project.study.repository.FreezeRepository;
 
