@@ -9,7 +9,7 @@ import project.study.controller.image.FileUploadType;
 import project.study.domain.Room;
 import project.study.domain.RoomPassword;
 import project.study.domain.Tag;
-import project.study.dto.room.RequestCreateRoomDto;
+import project.study.authority.member.dto.RequestCreateRoomDto;
 import project.study.enums.PublicEnum;
 import project.study.jpaRepository.RoomJpaRepository;
 import project.study.jpaRepository.RoomPasswordJpaRepository;
