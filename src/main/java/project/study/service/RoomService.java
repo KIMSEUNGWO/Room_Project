@@ -17,12 +17,12 @@ public class RoomService {
     private final RoomRepository roomRepository;
 
     @Transactional
-    public void createRoom(RequestCreateRoomDto data) {
+    public Long createRoom(RequestCreateRoomDto data) {
         Room room = roomRepository.createRoom(data);
-        RoomImage roomImage = roomRepository.createRoomImage(data, room);
+        roomRepository.createRoomImage(data, room);
         roomRepository.createTags(data, room);
 
-
+        return room.getRoomId();
     }
 
     public void validRoomData(RequestCreateRoomDto data) {

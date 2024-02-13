@@ -1,5 +1,6 @@
 package project.study.controller;
 
+import jakarta.annotation.Nullable;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -20,9 +21,9 @@ public class RoomController {
         System.out.println("data = " + data);
 
         roomService.validRoomData(data);
-        roomService.createRoom(data);
+        Long roomId = roomService.createRoom(data);
 
-        String redirectURI = "/room/";
+        String redirectURI = "/room/" + roomId;
         return new ResponseEntity<>(new ResponseCreateRoomDto("ok", "방 생성 완료", redirectURI), HttpStatus.OK);
     }
 
