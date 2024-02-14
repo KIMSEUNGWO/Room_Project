@@ -4,4 +4,8 @@ public enum PublicEnum {
 
     PUBLIC,
     PRIVATE;
+
+    public boolean isPublic() {
+        return this == PUBLIC;
+    }
 }

@@ -29,6 +29,6 @@ public class MemberAuthorityImpl implements MemberAuthority{
 
     @Override
     public List<ResponseMyRoomListDto> getMyRoomList(Member member) {
-        return null;
+        return roomService.getMyRoomList(member);
     }
 }

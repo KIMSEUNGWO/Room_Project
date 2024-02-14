@@ -32,4 +32,12 @@ public class JoinRoom {
     public AuthorityMemberEnum getAuthority() {
         return authorityEnum;
     }
+
+    public Room getRoom() {
+        return room;
+    }
+
+    public Long getJoinRoomId() {
+        return joinRoomId;
+    }
 }
