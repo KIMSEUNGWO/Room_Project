@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 import project.study.exceptions.authority.AuthorizationException;
 import project.study.dto.abstractentity.ResponseDto;
 import project.study.exceptions.RestFulException;
+import project.study.exceptions.authority.NotLoginMemberException;
 import project.study.exceptions.kakaologin.SocialException;
 
 import java.io.IOException;

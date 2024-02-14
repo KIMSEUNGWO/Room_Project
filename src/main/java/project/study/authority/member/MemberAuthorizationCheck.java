@@ -10,6 +10,7 @@ import project.study.enums.AuthorityMemberEnum;
 import project.study.exceptions.authority.NotAuthorizedException;
 import project.study.exceptions.authority.NotFoundRoomException;
 import project.study.exceptions.authority.NotJoinRoomException;
+import project.study.exceptions.authority.NotLoginMemberException;
 import project.study.jpaRepository.JoinRoomJpaRepository;
 
 import java.util.Optional;
@@ -22,7 +23,7 @@ public class MemberAuthorizationCheck {
     private final ManagerMember managerMember;
     private final JoinRoomJpaRepository joinRoomJpaRepository;
 
-    public void authorizationCheck(HttpServletResponse response,  Member member, Room room) {
+    private void authorizationCheck(HttpServletResponse response,  Member member, Room room) {
         if (room == null) throw new NotFoundRoomException(response);
 
         Optional<JoinRoom> findJoinRoom = joinRoomJpaRepository.findByMemberAndRoom(member, room);
@@ -38,7 +39,8 @@ public class MemberAuthorizationCheck {
         return managerMember;
     }
 
-    public CommonMember getCommonMember() {
+    public CommonMember getCommonMember(HttpServletResponse response, Member member) {
+        if (member == null) throw new NotLoginMemberException(response);
         return commonMember;
     }
 }

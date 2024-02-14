@@ -1,5 +1,6 @@
 package project.study.config;
 
+import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Primary;
@@ -8,9 +9,13 @@ import project.study.authority.member.authority.ManagerAuthority;
 import project.study.authority.member.authority.ManagerAuthorityImpl;
 import project.study.authority.member.authority.MemberAuthority;
 import project.study.authority.member.authority.MemberAuthorityImpl;
+import project.study.service.RoomService;
 
 @Configuration
+@RequiredArgsConstructor
 public class AuthorityConfig {
+
+    private final RoomService roomService;
 
     @Bean
     @Primary
@@ -41,6 +46,6 @@ public class AuthorityConfig {
     @Bean
     @Primary
     public MemberAuthority memberAuthority() {
-        return new MemberAuthorityImpl();
+        return new MemberAuthorityImpl(roomService);
     }
 }

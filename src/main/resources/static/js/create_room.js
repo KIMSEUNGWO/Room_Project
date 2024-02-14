@@ -163,6 +163,7 @@ function fetchCreateRoom(url, formData, callback) {
 function roomCreateResult(json) {
     if (json.result == 'ok') {
         al(json.result, json.message, '');
+        modalExit();
         setTimeout(() => window.location.href = json.redirectURI, 1000);
     }
     if (json.result == 'error') {

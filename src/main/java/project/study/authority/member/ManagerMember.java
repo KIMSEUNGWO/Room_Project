@@ -8,6 +8,8 @@ import project.study.authority.member.dto.*;
 import project.study.domain.Member;
 import project.study.jpaRepository.MemberJpaRepository;
 
+import java.util.List;
+
 @Component
 @RequiredArgsConstructor
 public class ManagerMember implements MemberAuthority, ManagerAuthority {
@@ -32,11 +34,16 @@ public class ManagerMember implements MemberAuthority, ManagerAuthority {
         managerAuthority.kickMember(member, data);
     }
     @Override
-    public void createRoom(Member member, RequestCreateRoomDto data) {
-        memberAuthority.createRoom(member, data);
+    public Long createRoom(Member member, RequestCreateRoomDto data) {
+        return memberAuthority.createRoom(member, data);
     }
     @Override
     public void notify(Member member, RequestNotifyDto data) {
         memberAuthority.notify(member, data);
+    }
+
+    @Override
+    public List<ResponseMyRoomListDto> getMyRoomList(Member member) {
+        return memberAuthority.getMyRoomList(member);
     }
 }
