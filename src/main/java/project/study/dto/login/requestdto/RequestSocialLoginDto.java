@@ -3,7 +3,7 @@ package project.study.dto.login.requestdto;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
-import project.study.domain.KakaoToken;
+import project.study.domain.SocialToken;
 import project.study.enums.SocialEnum;
 
 
@@ -13,7 +13,7 @@ import project.study.enums.SocialEnum;
 public class RequestSocialLoginDto implements RequestLoginDto {
 
     private final String code;
-    private KakaoToken token;
+    private SocialToken token;
     private SocialEnum socialEnum;
     private String name;
     private String email;

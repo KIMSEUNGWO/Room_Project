@@ -2,15 +2,14 @@ package project.study.dto.login.requestdto;
 
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.Getter;
-import lombok.Setter;
-import project.study.domain.KakaoToken;
+import project.study.domain.SocialToken;
 import project.study.enums.SocialEnum;
 
 @Getter
 public class RequestSocialSignupDto implements RequestSignupDto{
 
     private final SocialEnum socialEnum;
-    private final KakaoToken token;
+    private final SocialToken token;
     private final String name;
     private final String email;
     private String nickName;

@@ -195,8 +195,8 @@ function validTitle(errorList, title) {
         errorList.push(title);
         return;
     }
-    if (title.value.length > 50) {
-        let json = {result : 'error', message : '방 제목은 50자 이하만 가능합니다.'};
+    if (title.value.length > 10) {
+        let json = {result : 'error', message : '방 제목은 10자 이하만 가능합니다.'};
         printMessage(json, message);
         errorList.push(title);
         return;
@@ -206,6 +206,12 @@ function validIntro(errorList, intro) {
     let message = document.querySelector('.m-intro');
     if (intro.value.length == 0) {
         let json = {result : 'error', message : '소개글을 작성해주세요.'};
+        printMessage(json, message);
+        errorList.push(intro);
+        return;
+    }
+    if (intro.value.length > 50) {
+        let json = {result : 'error', message : '소개글 50자 이하만 가능합니다.'};
         printMessage(json, message);
         errorList.push(intro);
         return;
@@ -230,8 +236,8 @@ function validPublic(errorList, public) {
         errorList.push(intro);
         return;
     }
-    if (roomPassword.length != 4) {
-        let json = {result : 'error', message : '비밀번호 4자리를 입력해주세요.'};
+    if (roomPassword.length < 4 || roomPassword.length > 6) {
+        let json = {result : 'error', message : '비밀번호 4~6자리를 입력해주세요.'};
         printMessage(json, message);
         errorList.push(intro);
         return;

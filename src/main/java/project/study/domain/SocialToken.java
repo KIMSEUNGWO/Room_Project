@@ -2,21 +2,22 @@ package project.study.domain;
 
 import jakarta.persistence.*;
 import lombok.NoArgsConstructor;
+import project.study.enums.SocialEnum;
 
 @Entity
-@Table(name = "KAKAO_TOKEN")
-@SequenceGenerator(name = "SEQ_KAKAO_TOKEN", sequenceName = "SEQ_KAKAO_TOKEN_ID", allocationSize = 1)
+@Table(name = "SOCIAL_TOKEN")
+@SequenceGenerator(name = "SEQ_SOCIAL_TOKEN", sequenceName = "SEQ_SOCIAL_TOKEN_ID", allocationSize = 1)
 @NoArgsConstructor
-public class KakaoToken{
+public class SocialToken {
 
-    public KakaoToken(String access_token, String refresh_token) {
+    public SocialToken(String access_token, String refresh_token) {
         this.access_token = access_token;
         this.refresh_token = refresh_token;
     }
 
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "SEQ_KAKAO_TOKEN")
-    private Long kakaoTokenId;
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "SEQ_SOCIAL_TOKEN")
+    private Long socialTokenId;
 
     @OneToOne
     @JoinColumn(name = "socialId")
