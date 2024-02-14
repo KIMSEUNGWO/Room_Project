@@ -8,7 +8,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
-import project.study.domain.KakaoToken;
+import project.study.domain.SocialToken;
 import project.study.domain.Member;
 import project.study.domain.Social;
 import project.study.dto.login.requestdto.RequestSocialLoginDto;
@@ -31,7 +31,7 @@ public class KakaoLoginRepository {
     @Value("${kakaoLogin.restApi}")
     private String restApiKey;
 
-    public KakaoToken getKakaoAccessToken(String code) {
+    public SocialToken getKakaoAccessToken(String code) {
         String accessToken = "";
         String refreshToken = "";
         String requestURL = "https://kauth.kakao.com/oauth/token";
@@ -81,10 +81,10 @@ public class KakaoLoginRepository {
             e.printStackTrace();
         }
 
-        return new KakaoToken(accessToken, refreshToken);
+        return new SocialToken(accessToken, refreshToken);
     }
 
-    public void getUserInfo(RequestSocialLoginDto data, KakaoToken kakaoToken) {
+    public void getUserInfo(RequestSocialLoginDto data, SocialToken socialToken) {
         String postURL = "https://kapi.kakao.com/v2/user/me";
 
         try {
@@ -92,7 +92,7 @@ public class KakaoLoginRepository {
             HttpURLConnection conn = (HttpURLConnection) url.openConnection();
             conn.setRequestMethod("POST");
 
-            conn.setRequestProperty("Authorization", "Bearer " + kakaoToken.getAccess_token());
+            conn.setRequestProperty("Authorization", "Bearer " + socialToken.getAccess_token());
 
             int responseCode = conn.getResponseCode();
             System.out.println("responseCode : " + responseCode);
@@ -122,7 +122,7 @@ public class KakaoLoginRepository {
             data.setNickName(nickname);
             data.setEmail(email);
             data.setPhone(phone);
-            data.setToken(kakaoToken);
+            data.setToken(socialToken);
 
         } catch (IOException e) {
             e.printStackTrace();
@@ -135,10 +135,10 @@ public class KakaoLoginRepository {
     }
 
     @Transactional
-    public void updateKakaoToken(Member loginMember, KakaoToken newToken) {
-        KakaoToken kakaoToken = loginMember.getSocial().getToken();
-        if (kakaoToken.getAccess_token() == null) kakaoToken.setAccess_token(newToken.getAccess_token());
-        if (kakaoToken.getRefresh_token() == null) kakaoToken.setRefresh_token(newToken.getRefresh_token());
+    public void updateKakaoToken(Member loginMember, SocialToken newToken) {
+        SocialToken socialToken = loginMember.getSocial().getToken();
+        if (socialToken.getAccess_token() == null) socialToken.setAccess_token(newToken.getAccess_token());
+        if (socialToken.getRefresh_token() == null) socialToken.setRefresh_token(newToken.getRefresh_token());
         String postURL = "https://kauth.kakao.com/oauth/token";
 
         try {
@@ -151,7 +151,7 @@ public class KakaoLoginRepository {
             BufferedWriter bufferedWriter = new BufferedWriter(new OutputStreamWriter(conn.getOutputStream()));
             String sb = "grant_type=refresh_token" +
                 "&client_id=" + restApiKey + // REST_API_KEY
-                "&refresh_token=" + kakaoToken.getRefresh_token(); // REFRESH_TOKEN
+                "&refresh_token=" + socialToken.getRefresh_token(); // REFRESH_TOKEN
             bufferedWriter.write(sb);
             bufferedWriter.flush();
 
@@ -179,9 +179,9 @@ public class KakaoLoginRepository {
                 refreshToken = element.getAsJsonObject().get("refresh_token").getAsString();
             }
 
-            kakaoToken.setAccess_token(accessToken);
+            socialToken.setAccess_token(accessToken);
             if(!refreshToken.equals("")) {
-                kakaoToken.setRefresh_token(refreshToken);
+                socialToken.setRefresh_token(refreshToken);
             }
 
             bufferedReader.close();

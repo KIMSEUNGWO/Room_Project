@@ -28,7 +28,7 @@ public class Social {
     private Member member;
 
     @OneToOne(mappedBy = "social")
-    private KakaoToken kakaoToken;
+    private SocialToken socialToken;
 
     public SocialEnum getSocialType() {
         return socialType;
@@ -42,7 +42,7 @@ public class Social {
         return member;
     }
 
-    public KakaoToken getToken() {
-        return kakaoToken;
+    public SocialToken getToken() {
+        return socialToken;
     }
 }

@@ -3,14 +3,14 @@ package project.study.dto.login;
 import lombok.RequiredArgsConstructor;
 import org.springframework.transaction.annotation.Transactional;
 import project.study.controller.api.kakaologin.KakaoLoginRepository;
-import project.study.domain.KakaoToken;
+import project.study.domain.SocialToken;
 import project.study.domain.Member;
 import project.study.domain.Phone;
 import project.study.domain.Social;
 import project.study.dto.login.requestdto.*;
 import project.study.enums.MemberStatusEnum;
 import project.study.enums.SocialEnum;
-import project.study.jpaRepository.KakaoTokenJpaRepository;
+import project.study.jpaRepository.SocialTokenJpaRepository;
 import project.study.jpaRepository.MemberJpaRepository;
 import project.study.jpaRepository.PhoneJpaRepository;
 import project.study.jpaRepository.SocialJpaRepository;
@@ -24,7 +24,7 @@ public class KakaoMember implements MemberInterface{
     private final KakaoLoginRepository kakaoLoginRepository;
     private final MemberJpaRepository memberJpaRepository;
     private final SocialJpaRepository socialJpaRepository;
-    private final KakaoTokenJpaRepository kakaoTokenJpaRepository;
+    private final SocialTokenJpaRepository socialTokenJpaRepository;
     private final PhoneJpaRepository phoneJpaRepository;
 
     @Transactional
@@ -55,9 +55,9 @@ public class KakaoMember implements MemberInterface{
         socialJpaRepository.save(saveSocial);
 
 
-        KakaoToken token = data.getToken();
+        SocialToken token = data.getToken();
         token.setSocial(saveSocial);
-        kakaoTokenJpaRepository.save(token);
+        socialTokenJpaRepository.save(token);
 
         return saveMember;
     }
@@ -66,8 +66,8 @@ public class KakaoMember implements MemberInterface{
     public Member login(RequestLoginDto loginDto) {
         RequestSocialLoginDto data = (RequestSocialLoginDto) loginDto;
 
-        KakaoToken kakaoToken = kakaoLoginRepository.getKakaoAccessToken(data.getCode());
-        kakaoLoginRepository.getUserInfo(data, kakaoToken);
+        SocialToken socialToken = kakaoLoginRepository.getKakaoAccessToken(data.getCode());
+        kakaoLoginRepository.getUserInfo(data, socialToken);
 
         System.out.println("loginDto = " + loginDto);
 
@@ -75,7 +75,7 @@ public class KakaoMember implements MemberInterface{
         if (findMember.isEmpty()) return null;
         Social social = findMember.get();
 
-        kakaoLoginRepository.updateKakaoToken(social.getMember(), kakaoToken);
+        kakaoLoginRepository.updateKakaoToken(social.getMember(), socialToken);
 
         return social.getMember();
     }

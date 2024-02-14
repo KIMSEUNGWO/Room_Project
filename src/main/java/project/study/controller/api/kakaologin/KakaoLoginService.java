@@ -10,7 +10,7 @@ import project.study.dto.login.KakaoMemberFactory;
 import project.study.dto.login.MemberFactory;
 import project.study.dto.login.requestdto.RequestSocialLoginDto;
 import project.study.dto.login.requestdto.RequestSocialSignupDto;
-import project.study.jpaRepository.KakaoTokenJpaRepository;
+import project.study.jpaRepository.SocialTokenJpaRepository;
 import project.study.jpaRepository.MemberJpaRepository;
 import project.study.jpaRepository.PhoneJpaRepository;
 import project.study.jpaRepository.SocialJpaRepository;
@@ -28,13 +28,13 @@ public class KakaoLoginService {
     private final KakaoLoginRepository kakaoLoginRepository;
     private final MemberJpaRepository memberJpaRepository;
     private final SocialJpaRepository socialJpaRepository;
-    private final KakaoTokenJpaRepository kakaoTokenJpaRepository;
+    private final SocialTokenJpaRepository socialTokenJpaRepository;
     private final PhoneJpaRepository phoneJpaRepository;
 
     public void login(String code, HttpSession session, HttpServletResponse response) {
         RequestSocialLoginDto data = new RequestSocialLoginDto(code);
 
-        MemberFactory factory = new KakaoMemberFactory(kakaoLoginRepository, memberJpaRepository, socialJpaRepository, kakaoTokenJpaRepository, phoneJpaRepository);
+        MemberFactory factory = new KakaoMemberFactory(kakaoLoginRepository, memberJpaRepository, socialJpaRepository, socialTokenJpaRepository, phoneJpaRepository);
         Member loginMember = factory.login(data, session);
         if (loginMember == null) {
             RequestSocialSignupDto signupDto = new RequestSocialSignupDto(data, response);
