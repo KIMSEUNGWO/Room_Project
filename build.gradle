@@ -47,6 +47,9 @@ dependencies {
 
 	// 문자 인증
 	implementation 'net.nurigo:sdk:4.2.7'
+
+	implementation group: 'com.oracle.ojdbc', name: 'orai18n', version: '19.3.0.0'
+
 }
 
 tasks.named('test') {
