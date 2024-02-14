@@ -1,12 +1,14 @@
 package project.study.authority.member.dto;
 
-import lombok.Builder;
-import lombok.Getter;
+import lombok.*;
 
 import java.util.List;
 
 @Getter
 @Builder
+@ToString
+@NoArgsConstructor
+@AllArgsConstructor
 public class ResponseMyRoomListDto {
 
     private Long roomId; // 방번호

@@ -21,4 +21,8 @@ public class Tag {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "room_id")
     private Room room;
+
+    public String getTagName() {
+        return tagName;
+    }
 }

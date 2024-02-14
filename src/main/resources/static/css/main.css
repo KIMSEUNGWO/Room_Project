@@ -290,7 +290,6 @@
 .room-content {
     display: block;
     max-height: 5.5rem;
-    overflow-y: scroll;
     text-overflow: ellipsis;
     color: var(--gray);
 }
