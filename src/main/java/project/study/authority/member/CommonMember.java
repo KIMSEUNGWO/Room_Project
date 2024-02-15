@@ -1,12 +1,11 @@
 package project.study.authority.member;
 
-import lombok.NoArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 import project.study.authority.member.authority.MemberAuthority;
 import project.study.authority.member.dto.RequestCreateRoomDto;
 import project.study.authority.member.dto.RequestNotifyDto;
-import project.study.authority.member.dto.ResponseMyRoomListDto;
+import project.study.authority.member.dto.ResponseRoomListDto;
 import project.study.domain.Member;
 
 import java.util.List;
@@ -27,7 +26,7 @@ public class CommonMember implements MemberAuthority{
     }
 
     @Override
-    public List<ResponseMyRoomListDto> getMyRoomList(Member member) {
+    public List<ResponseRoomListDto> getMyRoomList(Member member) {
         return memberAuthority.getMyRoomList(member);
     }
 }
