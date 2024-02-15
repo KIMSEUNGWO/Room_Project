@@ -31,7 +31,7 @@ public class MemberAuthorizationCheck {
 
         JoinRoom joinRoom = findJoinRoom.get();
         AuthorityMemberEnum authority = joinRoom.getAuthority();
-        if (authority == AuthorityMemberEnum.일반) throw new NotAuthorizedException(response);
+        if (!authority.isManager()) throw new NotAuthorizedException(response);
     }
 
     public ManagerMember getManagerMember(HttpServletResponse response,  Member member, Room room) {

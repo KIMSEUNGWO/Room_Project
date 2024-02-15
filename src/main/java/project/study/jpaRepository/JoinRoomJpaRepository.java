@@ -1,7 +1,6 @@
 package project.study.jpaRepository;
 
 import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.data.jpa.repository.Query;
 import project.study.domain.JoinRoom;
 import project.study.domain.Member;
 import project.study.domain.Room;
@@ -15,4 +14,5 @@ public interface JoinRoomJpaRepository extends JpaRepository<JoinRoom, Long> {
     List<JoinRoom> findAllByMember(Member member);
 
     int countByRoom(Room room);
+
 }
