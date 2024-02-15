@@ -9,7 +9,7 @@ import java.util.List;
 @ToString
 @NoArgsConstructor
 @AllArgsConstructor
-public class ResponseMyRoomListDto {
+public class ResponseRoomListDto {
 
     private Long roomId; // 방번호
     private String roomImage; // 방대표이미지
@@ -20,4 +20,7 @@ public class ResponseMyRoomListDto {
     private String roomMaxPerson; // 1/5 형식, (현재참가자수/최대참가자수)
     private List<String> tagList; // {"태그명", "태그명", "태그명", ... }
 
+    public void setTagList(List<String> tagList) {
+        this.tagList = tagList;
+    }
 }

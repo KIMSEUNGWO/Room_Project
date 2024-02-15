@@ -6,7 +6,6 @@ import project.study.authority.member.authority.ManagerAuthority;
 import project.study.authority.member.authority.MemberAuthority;
 import project.study.authority.member.dto.*;
 import project.study.domain.Member;
-import project.study.jpaRepository.MemberJpaRepository;
 
 import java.util.List;
 
@@ -43,7 +42,7 @@ public class ManagerMember implements MemberAuthority, ManagerAuthority {
     }
 
     @Override
-    public List<ResponseMyRoomListDto> getMyRoomList(Member member) {
+    public List<ResponseRoomListDto> getMyRoomList(Member member) {
         return memberAuthority.getMyRoomList(member);
     }
 }
