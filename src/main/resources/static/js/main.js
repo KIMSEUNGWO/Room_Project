@@ -1,5 +1,10 @@
+let page = 0;
+let size = 10;
+let lastPage = false;
+
 window.addEventListener('load', () => {
 
+    scrollToEvent();
     // fetchGet('/myrooms', myroomsResult);
 
     const searchInput = document.querySelector('input[name="word"]');
@@ -7,17 +12,59 @@ window.addEventListener('load', () => {
 
     const searchBtn = document.querySelector('#searchBtn');
     searchBtn.addEventListener('click', () => {
-        let myRoom = document.querySelector('.my-room');
-        if(myRoom != null) myRoom.remove();
+
+        let searchTemplate = document.querySelector('.search-result');
+        let searchResultTag = document.querySelector('.search-result .room-list')
+        searchTemplate.classList.remove('disabled');
+        searchTemplate.classList.add('change');
+        setTimeout(() => {
+           searchResultTag.innerHTML = ''; 
+        }, 300);
+
+        pageInit();
+
+        console.log(searchInput.value, page, size);
+        fetchGet(`/search?word=${searchInput.value}&page=${page++}&size=${size}`, searchResult);
+    })
+})
+function pageInit() {
+    page = 0;
+    size = 10;
+    lastPage = false;
+}
+function scrollToEvent() {
+
+    function scrollEvent() {
+        if (!isScrollOver() || lastPage) {
+            return;
+        }
+        window.removeEventListener('scroll', scrollEvent); // 이벤트 제거
 
         let searchTemplate = document.querySelector('.search-result');
         searchTemplate.classList.remove('disabled');
-        searchTemplate.classList.add('change');
+        const searchInput = document.querySelector('input[name="word"]');
+        fetchGet(`/search?word=${searchInput.value}&page=${page++}&size=${size}`, searchResult);
 
+    }
+    
+    window.addEventListener('scroll', scrollEvent);
+}
+function isScrollOver() {
+    // 현재 스크롤 위치
+    var scrollPosition = window.scrollY || window.pageYOffset || document.documentElement.scrollTop;
 
-        fetchGet('/search?word=' + searchInput.value, searchResult);
-    })
-})
+    // 문서의 높이
+    var documentHeight = document.documentElement.scrollHeight;
+
+    // 브라우저 창의 높이
+    var windowHeight = window.innerHeight || document.documentElement.clientHeight || document.body.clientHeight;
+
+    // 스크롤이 가장 아래에서 90% 이상 되었을 때 실행할 코드
+    if (scrollPosition > (documentHeight - windowHeight) * 0.999) {
+        return true;
+    }
+    return false;
+}
 function myroomsResult(json) {
     if (json.result == 'ok') {
         let myRoom = document.querySelector('.my-room .room-list')
@@ -50,7 +97,7 @@ function myroomsResult(json) {
  * }
  */
 function searchResult(json) {
-    let searchResult = document.querySelector('.search-result .room-list')
+    let searchResultTag = document.querySelector('.search-result .room-list')
     let searchTemplate = document.querySelector('.search-result');
     if (json.result == 'ok') {
 
@@ -59,8 +106,11 @@ function searchResult(json) {
             searchTemplate.classList.remove('change');
             return;
         }
+        if (json.roomList.length < size) {
+            lastPage = true;
+        }
         setTimeout(() => {
-            searchResult.innerHTML = createRoomTemplate(json.roomList);
+            searchResultTag.innerHTML += createRoomTemplate(json.roomList);
             highlight(json.word);
             searchTemplate.classList.remove('change');
         }, 500);
@@ -69,8 +119,7 @@ function searchResult(json) {
         al('error', '검색 실패', '방 정보를 가져오지 못했습니다.');
         searchTemplate.classList.remove('change');
     }
-
-
+    scrollToEvent();
 }
 
 function changeTemplate(template) {
@@ -104,7 +153,7 @@ function createRoom(room) {
                         '</button>' +
                     '</div>' +
                     '<div class="room-image-box">' +
-                        '<img src="/images/' + room.roomImage + '" alt="">' +
+                        '<img src="/images/room_profile/' + room.roomImage + '" alt="">' +
                     '</div>' +
                     '<span class="room-title">' + room.roomTitle +'</span>' +
                     '<span class="room-content">' + room.roomIntro + '</span>' +
@@ -152,7 +201,7 @@ function highlight(pattern) {
 
     pattern = pattern.split('').join(' ');
     const patternWithoutSpaces = pattern.replace(/\s/g, '\\s*');
-    const regex = new RegExp(patternWithoutSpaces, 'g');
+    const regex = new RegExp(patternWithoutSpaces, 'gi');
     
     tagList.forEach(element => {
         let text = element.textContent;

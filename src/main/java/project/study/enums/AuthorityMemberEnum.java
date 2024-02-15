@@ -9,5 +9,7 @@ public enum AuthorityMemberEnum {
     일반;
 
 
-
+    public boolean isManager() {
+        return this == 방장;
+    }
 }

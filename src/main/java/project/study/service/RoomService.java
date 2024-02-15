@@ -2,18 +2,18 @@ package project.study.service;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import project.study.authority.member.dto.ResponseRoomListDto;
+import project.study.domain.JoinRoom;
 import project.study.domain.Member;
 import project.study.domain.Room;
 import project.study.authority.member.dto.RequestCreateRoomDto;
-import project.study.domain.Tag;
 import project.study.repository.JoinRoomRepository;
 import project.study.repository.RoomRepository;
 import project.study.repository.TagRepository;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -51,11 +51,14 @@ public class RoomService {
         return roomInfo;
     }
 
-    private List<String> convertTagList(List<Tag> tags) {
-        List<String> temp = new ArrayList<>();
-        for (Tag tag : tags) {
-            temp.add(tag.getTagName());
+
+    public List<ResponseRoomListDto> searchRoomList(Member member, String word, Pageable pageable) {
+        List<ResponseRoomListDto> roomInfo = joinRoomRepository.search(member, word, pageable);
+        for (ResponseRoomListDto data : roomInfo) {
+            List<String> tagList = tagRepository.findAllByRoomId(data.getRoomId());
+            data.setTagList(tagList);
         }
-        return temp;
+        return roomInfo;
     }
+
 }

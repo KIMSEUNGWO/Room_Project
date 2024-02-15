@@ -9,6 +9,7 @@ import project.study.domain.Member;
 
 @Component
 public class ManagerAuthorityImpl implements ManagerAuthority{
+
     @Override
     public void editRoom(Member member, RequestEditRoomDto data) {
         System.out.println("editRoom 실행");
