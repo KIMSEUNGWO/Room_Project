@@ -631,3 +631,42 @@ header {
         font-size: 0.85rem;
     }
 }
+
+.enter-room-confirm {
+    width: 20rem;
+    transition: all 0.3 ease;
+
+    .confirm-message {
+        height: 3rem;
+        display: flex;
+        justify-content: center;
+        font-size: 1.1rem;
+    }
+    .buttons {
+        display: flex;
+        justify-content: space-around;
+        align-items: center;
+        margin-top: 1rem;
+    }
+    .buttons button {
+        width: 45%;
+        height: 3rem;
+        border-radius: 0.5rem;
+    }
+
+    #room-enter {
+        background-color: rgb(28, 28, 40);
+        font-size: 1rem;
+    }
+    #room-enter:hover {
+        background-color: rgb(28, 28, 40);
+    }
+
+    #room-cancel {
+        background-color: rgb(30, 30, 37);
+        font-size: 1rem;
+    }
+    #room-cancel:hover {
+        background-color: rgb(17, 17, 20);
+    }
+}

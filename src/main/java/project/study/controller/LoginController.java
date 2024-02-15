@@ -6,14 +6,15 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+import project.study.constant.WebConst;
 import project.study.dto.abstractentity.ResponseDto;
 import project.study.dto.login.requestdto.RequestDefaultLoginDto;
 import project.study.dto.login.requestdto.RequestDefaultSignupDto;
 import project.study.service.LoginService;
 import project.study.service.SignupService;
+
+import static project.study.constant.WebConst.LOGIN_MEMBER;
 
 @RestController
 @RequiredArgsConstructor
@@ -55,5 +56,13 @@ public class LoginController {
         signupService.distinctNickname(nickname);
 
         return new ResponseEntity<>(new ResponseDto("ok", "사용할 수 있는 닉네임입니다."), HttpStatus.OK);
+    }
+
+    @GetMapping("/login/check")
+    public ResponseEntity<ResponseDto> hasLogin(@SessionAttribute(value = LOGIN_MEMBER, required = false) Long memberId) {
+        if (memberId == null) {
+            return new ResponseEntity<>(new ResponseDto("error", "Require Login"), HttpStatus.OK);
+        }
+        return new ResponseEntity<>(new ResponseDto("ok", "Login User"), HttpStatus.OK);
     }
 }

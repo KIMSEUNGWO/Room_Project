@@ -1,6 +1,6 @@
 .container {
     width: 100%;
-    min-height: 40rem;
+    min-height: 60rem;
     padding: 0 2rem;
     position: relative;
 }
@@ -317,6 +317,9 @@
     transition: background-color 0.2s ease-in-out;
     max-width: 8.5rem;
 }
+.tag * {
+    pointer-events: none;
+}
 .tag span {
     text-overflow: ellipsis;
     overflow-x: hidden;
@@ -355,4 +358,11 @@
     color: white;
     font-size: 0.9rem;
     pointer-events: none;
+}
+
+.enterBtn.disabled {
+    background-color: rgb(33, 33, 42);
+}
+.enterBtn.disabled:hover {
+    background-color: rgb(33, 33, 42);
 }

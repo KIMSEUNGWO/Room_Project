@@ -425,6 +425,7 @@ function changeToLogin() {
     setTimeout(() => {
         modal_wrap.classList.remove('modal-signup');
         modal_wrap.classList.remove('modal-find');
+        modal_wrap.classList.remove('enter-room-confirm');
         modal_content.innerHTML = createLoginModal();
         modal_wrap.classList.add('modal-login');
         modal_content.classList.remove('change');
