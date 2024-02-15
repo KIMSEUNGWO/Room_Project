@@ -76,7 +76,8 @@ public class JoinRoomRepository {
                 r.roomIntro.as("roomIntro"),
                 r.roomPublic.eq(PublicEnum.PUBLIC).as("roomPublic"),
                 ExpressionUtils.as(getRoomJoin(member, j, r), "roomJoin"),
-                ExpressionUtils.as(getRoomMaxPerson(j, r), "roomMaxPerson")
+                ExpressionUtils.as(getRoomMaxPerson(j, r), "nowPerson"),
+                r.roomLimit.as("maxPerson")
             ))
             .from(r)
             .join(ri).on(r.roomImage.eq(ri))
@@ -90,9 +91,9 @@ public class JoinRoomRepository {
 
     }
 
-    private static JPQLQuery<String> getRoomMaxPerson(QJoinRoom j, QRoom r) {
+    private static JPQLQuery<Integer> getRoomMaxPerson(QJoinRoom j, QRoom r) {
         return JPAExpressions
-            .select(j.count().stringValue().concat("/").concat(r.roomLimit.stringValue()))
+            .select(j.count().intValue())
             .from(j)
             .where(j.room.eq(r));
     }
