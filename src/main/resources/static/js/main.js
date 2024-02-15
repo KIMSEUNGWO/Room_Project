@@ -3,30 +3,78 @@ let size = 10;
 let lastPage = false;
 
 window.addEventListener('load', () => {
+    const modal = document.querySelector('.modal');
+    const modal_content = document.querySelector('.modal-content');
 
     scrollToEvent();
-    // fetchGet('/myrooms', myroomsResult);
-
     const searchInput = document.querySelector('input[name="word"]');
     searchInput.addEventListener('keydown', (e) => (e.keyCode == 13) ? searchBtn.click() : '');
 
     const searchBtn = document.querySelector('#searchBtn');
-    searchBtn.addEventListener('click', () => {
+    searchBtn.addEventListener('click', () => search(searchInput.value));
 
-        let searchTemplate = document.querySelector('.search-result');
-        let searchResultTag = document.querySelector('.search-result .room-list')
-        searchTemplate.classList.remove('disabled');
-        searchTemplate.classList.add('change');
-        setTimeout(() => {
-           searchResultTag.innerHTML = ''; 
-        }, 300);
+    const roomWrapper = document.querySelector('.room-wrapper');
+    roomWrapper.addEventListener('click', (e) => {
+        
+        if (e.target.classList.contains('tag')) {
+            search(e.target.value);
+            return;
+        }
 
-        pageInit();
+        if (e.target.classList.contains('more')) {
+            let moreMenu = e.target.children.namedItem('more-menu');
+            moreMenu.classList.toggle('disabled');
+            clearMoreMenu(moreMenu);
+        }
 
-        console.log(searchInput.value, page, size);
-        fetchGet(`/search?word=${searchInput.value}&page=${page++}&size=${size}`, searchResult);
+        if (e.target.classList.contains('enterBtn')) {
+            insertModalSize('enter-room-confirm')
+            modal_content.innerHTML = createEnterRoomModal(e.target.value);
+            modal.classList.remove(disabled);
+        }
+    })
+
+    modal_content.addEventListener('click', (e) => {
+        let target = e.target;
+
+        if (target.id == 'room-enter') { // 로그인페이지에서 회원가입 버튼클릭
+            fetchGet('/login/check', hasLogin);
+
+            function hasLogin(json) {
+                if (json.result == 'ok') {
+                    modalExit();
+                    window.location.href='/room/' + target.value;
+                } else {
+                    al('error', '경고', '로그인이 필요합니다.')
+                    changeToLogin();
+                }
+            }
+            return;
+        }
     })
 })
+
+function search(searchWord) {
+    let searchTemplate = document.querySelector('.search-result');
+    let searchResultTag = document.querySelector('.search-result .room-list')
+    searchTemplate.classList.remove('disabled');
+    searchTemplate.classList.add('change');
+    setTimeout(() => {
+       searchResultTag.innerHTML = ''; 
+    }, 300);
+
+    pageInit();
+
+    fetchGet(`/search?word=${searchWord}&page=${page++}&size=${size}`, searchResult);
+}
+function clearMoreMenu(nowMoreMenu) {
+    let moreMenus = document.querySelectorAll('.more-menu');
+    moreMenus.forEach(moreMenu => {
+        if (moreMenu != nowMoreMenu) {
+            moreMenu.classList.add('disabled')
+        }
+    });
+}
 function pageInit() {
     page = 0;
     size = 10;
@@ -64,14 +112,6 @@ function isScrollOver() {
         return true;
     }
     return false;
-}
-function myroomsResult(json) {
-    if (json.result == 'ok') {
-        let myRoom = document.querySelector('.my-room .room-list')
-        myRoom.innerHTML = createRoomTemplate(json.roomList);
-    } else if (json.error == 'error') {
-        al('error', '검색 실패', '방 정보를 가져오지 못했습니다.');
-    }
 }
 /**
  * 예상 JSON 결과값
@@ -122,10 +162,6 @@ function searchResult(json) {
     scrollToEvent();
 }
 
-function changeTemplate(template) {
-    template.classList.add('change');
-    
-}
 function createRoomTemplate(roomList) {
     let temp = '';
     for (let i=0;i<roomList.length;i++) {
@@ -163,14 +199,19 @@ function createRoom(room) {
                             createTagList(room.tagList) +
                     '</div>' +
                     '<div class="button-box">' +
-                        '<button type="button" class="enterBtn">' +
+                        '<button type="button" class="enterBtn ' + checkFull(room.roomJoin, room.nowPerson, room.maxPerson) + '" ' + checkFull(room.roomJoin, room.nowPerson, room.maxPerson) + ' value="' + room.roomId + '">' +
                             createPublic(room.roomPublic) +                            
-                            '<span>입장하기 <span class="person">' + room.roomMaxPerson + '</span></span>' +
+                            '<span>입장하기 <span class="person">' + room.nowPerson + '/' + room.maxPerson + '</span></span>' +
                             '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><path d="M217.9 105.9L340.7 228.7c7.2 7.2 11.3 17.1 11.3 27.3s-4.1 20.1-11.3 27.3L217.9 406.1c-6.4 6.4-15 9.9-24 9.9c-18.7 0-33.9-15.2-33.9-33.9l0-62.1L32 320c-17.7 0-32-14.3-32-32l0-64c0-17.7 14.3-32 32-32l128 0 0-62.1c0-18.7 15.2-33.9 33.9-33.9c9 0 17.6 3.6 24 9.9zM352 416l64 0c17.7 0 32-14.3 32-32l0-256c0-17.7-14.3-32-32-32l-64 0c-17.7 0-32-14.3-32-32s14.3-32 32-32l64 0c53 0 96 43 96 96l0 256c0 53-43 96-96 96l-64 0c-17.7 0-32-14.3-32-32s14.3-32 32-32z"/></svg>' +
                         '</button>' +
                     '</div>' +
                 '</div>' +
             '</div>';
+}
+function checkFull(roomJoin, nowPerson, maxPerson) {
+    if (roomJoin) return '';
+    if (nowPerson == maxPerson) return 'disabled';
+    return '';
 }
 function alreadyJoinRoom(roomJoin) {
     if (roomJoin) return 'join';
@@ -218,33 +259,12 @@ function fetchGet(url, callback) {
     .then(map => callback(map));
 }
 
-function testJson() {
-    const searchInput = document.querySelector('input[name="word"]');
-    return   {
-        result : 'ok',
-        message : '검색성공',
-        word : searchInput.value,
-        roomList :  [
-                        {
-                            roonId : 1,
-                            roomImage : '$sfln4.jpg',
-                            roomTitle : '방 제목 방제목',
-                            roomIntro : '소개글소개글소개글',
-                            roomPublic : true,
-                            roomJoin : false,
-                            roomMaxPerson : '1/5',
-                            tagList :   ['백엔드','자바','어쩌구','저쩌구']
-                        },
-                        {
-                            roonId : 1,
-                            roomImage : '$sfln4.jpg',
-                            roomTitle : '방 제목 방제목',
-                            roomIntro : '소개글소개글소개글',
-                            roomPublic : true,
-                            roomJoin : false,
-                            roomMaxPerson : '1/5',
-                            tagList :   ['백엔드','자바','어쩌구','저쩌구']
-                        }
-                    ]
-   }
+function createEnterRoomModal(value) {
+    return  `<div class="confirm-message">
+                <span>방에 입장하시겠습니까?</span>
+            </div>
+            <div class="buttons">
+                <button type="button" id="room-cancel">이전</button>
+                <button type="button" id="room-enter" value="${value}">입장</button>
+            </div>`
 }
