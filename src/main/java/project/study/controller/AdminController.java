@@ -21,4 +21,19 @@ public class AdminController {
         model.addAttribute("member", adminMembersDtos);
         return "/admin/admin_members";
     }
+
+    @GetMapping("/admin/rooms/get")
+    public String roomList(){
+        return "/admin/admin_rooms";
+    }
+
+    @GetMapping("/admin/expire/get")
+    public String expireMemberList(){
+        return "/admin/admin_expire";
+    }
+
+    @GetMapping("/admin/notify/get")
+    public String notifyMemberList(){
+        return "/admin/admin_notify";
+    }
 }

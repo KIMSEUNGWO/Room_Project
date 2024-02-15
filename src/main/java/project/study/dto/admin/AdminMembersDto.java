@@ -5,6 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
+import org.springframework.format.annotation.DateTimeFormat;
 import project.study.domain.Phone;
 import project.study.domain.Social;
 import project.study.enums.MemberStatusEnum;
@@ -23,13 +24,13 @@ public class AdminMembersDto {
     private String memberName;
     private String memberNickname;
     private String phone;
-    private LocalDateTime memberCreateDate;
+    private String memberCreateDate;
     private int memberNotifyCount;
     private SocialEnum socialType;
     private MemberStatusEnum memberStatusEnum;
 
     @QueryProjection
-    public AdminMembersDto(String account, String socialEmail, String memberName, String memberNickname, String phone, LocalDateTime memberCreateDate, int memberNotifyCount, SocialEnum socialType, MemberStatusEnum memberStatusEnum) {
+    public AdminMembersDto(String account, String socialEmail, String memberName, String memberNickname, String phone, String memberCreateDate, int memberNotifyCount, SocialEnum socialType, MemberStatusEnum memberStatusEnum) {
         this.account = account;
         this.socialEmail = socialEmail;
         this.memberName = memberName;

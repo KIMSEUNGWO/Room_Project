@@ -1,10 +1,19 @@
 package project.study.repository;
 
+import com.querydsl.core.types.Expression;
+import com.querydsl.core.types.ExpressionUtils;
+import com.querydsl.core.types.Projections;
+import com.querydsl.core.types.dsl.*;
+import com.querydsl.jpa.JPQLQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import jakarta.persistence.EntityManager;
 import org.springframework.stereotype.Repository;
 import project.study.dto.admin.AdminMembersDto;
 import project.study.dto.admin.QAdminMembersDto;
+
+import java.time.DateTimeException;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 
 import static project.study.domain.QBasic.*;
@@ -29,7 +38,7 @@ public class AdminRepository {
                 member.memberName,
                 member.memberNickname,
                 phone1.phone,
-                member.memberCreateDate,
+                Expressions.stringTemplate("TO_CHAR({0}, {1})", member.memberCreateDate, "YYYY-MM-DD"),
                 member.memberNotifyCount,
                 social.socialType,
                 member.memberStatus))
@@ -40,4 +49,5 @@ public class AdminRepository {
             .orderBy(member.memberCreateDate.desc())
             .fetch();
     }
+
 }

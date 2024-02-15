@@ -21,15 +21,15 @@
                 <div class="category">
                     <h4>일반</h4>
                     <div class="menu-list">
-                        <a href="/admin/members" aria-selected="true">이용중인 회원</a>
-                        <a href="/admin/expire" aria-selected="false">탈퇴한 회원</a>
-                        <a href="/admin/rooms" aria-selected="false">방 관리</a>
+                        <a href="/admin/members/get" aria-selected="true">이용중인 회원</a>
+                        <a href="/admin/expire/get" aria-selected="false">탈퇴한 회원</a>
+                        <a href="/admin/rooms/get" aria-selected="false">방 관리</a>
                     </div>
                 </div>
                 <div class="category">
                     <h4>신고</h4>
                     <div class="menu-list">
-                        <a href="/admin/notify" aria-selected="false">신고된 회원</a>
+                        <a href="/admin/notify/get" aria-selected="false">신고된 회원</a>
                     </div>
                 </div>
                 <div class="category">
@@ -84,7 +84,7 @@
                             <div class="name" th:text="${member.memberName}">오승찬하하</div>
                             <div class="nickname" th:text="${member.memberNickname}">닉네임</div>
                             <div class="phone" th:text="${member.phone}">010-3567-4431</div>
-                            <div class="registerdate" th:text="${#temporals.format(member.memberCreateDate, 'yyyy-MM-dd')}">2024-02-07</div>
+                            <div class="registerdate" th:text="${member.memberCreateDate}">2024-02-07</div>
                             <div class="notifycount" th:text="${member.memberNotifyCount}">2회</div>
                             <div class="social" th:text="${member.socialType}">소셜</div>
                             <div class="status" th:text="${member.memberStatusEnum}">상태</div>
