@@ -5,7 +5,9 @@ import org.springframework.stereotype.Component;
 import project.study.authority.member.authority.ManagerAuthority;
 import project.study.authority.member.authority.MemberAuthority;
 import project.study.authority.member.dto.*;
+import project.study.domain.JoinRoom;
 import project.study.domain.Member;
+import project.study.domain.Room;
 
 import java.util.List;
 
@@ -44,5 +46,15 @@ public class ManagerMember implements MemberAuthority, ManagerAuthority {
     @Override
     public List<ResponseRoomListDto> getMyRoomList(Member member) {
         return memberAuthority.getMyRoomList(member);
+    }
+
+    @Override
+    public void deleteRoom(Member member, RequestDeleteRoomDto data) {
+        managerAuthority.deleteRoom(member, data);
+    }
+
+    @Override
+    public JoinRoom joinRoom(Member member, Room room) {
+        return memberAuthority.joinRoom(member, room);
     }
 }

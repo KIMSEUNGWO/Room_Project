@@ -1,10 +1,7 @@
 package project.study.authority.member.authority;
 
 import org.springframework.stereotype.Component;
-import project.study.authority.member.dto.RequestEditRoomDto;
-import project.study.authority.member.dto.RequestEntrustDto;
-import project.study.authority.member.dto.RequestKickDto;
-import project.study.authority.member.dto.RequestNoticeDto;
+import project.study.authority.member.dto.*;
 import project.study.domain.Member;
 
 @Component
@@ -28,5 +25,10 @@ public class ManagerAuthorityImpl implements ManagerAuthority{
     @Override
     public void kickMember(Member member, RequestKickDto data) {
         System.out.println("kickMember 실행");
+    }
+
+    @Override
+    public void deleteRoom(Member member, RequestDeleteRoomDto data) {
+        System.out.println("deleteRoom 실행");
     }
 }

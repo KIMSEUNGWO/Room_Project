@@ -1,9 +1,6 @@
 package project.study.authority.member.authority;
 
-import project.study.authority.member.dto.RequestEditRoomDto;
-import project.study.authority.member.dto.RequestEntrustDto;
-import project.study.authority.member.dto.RequestKickDto;
-import project.study.authority.member.dto.RequestNoticeDto;
+import project.study.authority.member.dto.*;
 import project.study.domain.Member;
 
 public interface ManagerAuthority {
@@ -12,4 +9,5 @@ public interface ManagerAuthority {
     void managerEntrust(Member member, RequestEntrustDto data);
     void editNotice(Member member, RequestNoticeDto data);
     void kickMember(Member member, RequestKickDto data);
+    void deleteRoom(Member member, RequestDeleteRoomDto data);
 }

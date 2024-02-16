@@ -6,7 +6,9 @@ import project.study.authority.member.authority.MemberAuthority;
 import project.study.authority.member.dto.RequestCreateRoomDto;
 import project.study.authority.member.dto.RequestNotifyDto;
 import project.study.authority.member.dto.ResponseRoomListDto;
+import project.study.domain.JoinRoom;
 import project.study.domain.Member;
+import project.study.domain.Room;
 
 import java.util.List;
 
@@ -28,5 +30,10 @@ public class CommonMember implements MemberAuthority{
     @Override
     public List<ResponseRoomListDto> getMyRoomList(Member member) {
         return memberAuthority.getMyRoomList(member);
+    }
+
+    @Override
+    public JoinRoom joinRoom(Member member, Room room) {
+        return memberAuthority.joinRoom(member, room);
     }
 }
