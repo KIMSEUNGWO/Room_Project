@@ -56,6 +56,7 @@ public class MemberAuthorityImpl implements MemberAuthority{
 
         // 비공개방인지 확인
         if (!room.isPublic()) {
+
             execute(response, room.getRoomId());
             return;
         }

@@ -71,4 +71,8 @@ public class Member implements ImageFileEntity {
     public Basic getBasic() {
         return basic;
     }
+
+    public List<JoinRoom> getJoinRoomList() {
+        return joinRoomList;
+    }
 }

@@ -14,6 +14,8 @@ import project.study.customAnnotation.PathRoom;
 import project.study.customAnnotation.SessionLogin;
 import project.study.domain.Member;
 import project.study.domain.Room;
+import project.study.dto.room.ResponsePrivateRoomInfoDto;
+import project.study.service.RoomService;
 
 import java.util.List;
 
@@ -25,12 +27,22 @@ import static project.study.constant.WebConst.REQUIRE_LOGIN;
 public class MainController {
 
     private final MemberAuthorizationCheck memberAuthorizationCheck;
+    private final RoomService roomService;
 
     @GetMapping("/room/{room}")
-    public String roomCreate(@SessionLogin(required = true) Member member, @PathRoom("room") Room room, HttpServletResponse response){
+    public String joinRoom(@SessionLogin(required = true) Member member, @PathRoom("room") Room room, HttpServletResponse response){
         CommonMember commonMember = memberAuthorizationCheck.getCommonMember(response, member);
         commonMember.joinRoom(new RequestJoinRoomDto(member, room, response, null));
         return "room";
+    }
+    @GetMapping("/room/{room}/private")
+    public String roomPrivate(@SessionLogin(required = true) Member member, @PathRoom("room") Room room, Model model) {
+        if (room.isPublic()) {
+            return "redirect:/";
+        }
+        ResponsePrivateRoomInfoDto data = roomService.getResponsePrivateRoomInfoDto(room);
+        model.addAttribute("room", data);
+        return "room_private";
     }
 
     @GetMapping("/")

@@ -21,4 +21,8 @@ public class RoomPassword {
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "room_id")
     private Room room;
+
+    public String getRoomPassword() {
+        return roomPassword;
+    }
 }
