@@ -1,9 +1,9 @@
 package project.study.dto.login;
 
 
+import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.transaction.annotation.Transactional;
-import project.study.constant.WebConst;
 import project.study.domain.Member;
 import project.study.dto.login.requestdto.RequestLoginDto;
 import project.study.dto.login.requestdto.RequestSignupDto;
@@ -27,12 +27,12 @@ public interface MemberFactory {
     }
 
     @Transactional
-    default Member login(RequestLoginDto loginDto, HttpSession session) {
+    default Member login(RequestLoginDto loginDto, HttpSession session, HttpServletResponse response) {
         MemberInterface memberInterface = createMember();
         Member member = memberInterface.login(loginDto);
 
         MemberValidator validator = validator();
-        validator.validLogin(member);
+        validator.validLogin(member, response);
 
         if (member != null) {
             session.setAttribute(LOGIN_MEMBER, member.getMemberId());

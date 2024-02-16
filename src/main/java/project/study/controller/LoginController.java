@@ -1,6 +1,7 @@
 package project.study.controller;
 
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -25,10 +26,10 @@ public class LoginController {
     private final SignupService signupService;
 
     @PostMapping("/login")
-    public ResponseEntity<ResponseDto> defaultLogin(@RequestBody RequestDefaultLoginDto data, HttpServletRequest request) {
+    public ResponseEntity<ResponseDto> defaultLogin(@RequestBody RequestDefaultLoginDto data, HttpServletRequest request, HttpServletResponse response) {
         System.out.println("data = " + data);
         HttpSession session = request.getSession();
-        loginService.login(data, session);
+        loginService.login(data, session, response);
 
         return new ResponseEntity<>(new ResponseDto("ok", "로그인 성공"), HttpStatus.OK);
 

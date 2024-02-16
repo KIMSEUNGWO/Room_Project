@@ -1,6 +1,7 @@
 package project.study.customAnnotation.argumentresolver;
 
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -37,14 +38,13 @@ public class SessionLoginArgumentResolver implements HandlerMethodArgumentResolv
 
         HttpServletRequest request = (HttpServletRequest) webRequest.getNativeRequest();
         HttpSession session = request.getSession(false);
-        if (session == null) return null;
 
         Long memberId = (Long) session.getAttribute(LOGIN_MEMBER);
         Optional<Member> findMember = memberJpaRepository.findById(memberId);
         if (findMember.isEmpty()) {
-            session.removeAttribute(LOGIN_MEMBER);
             return null;
         }
+
         return findMember.get();
     }
 }

@@ -14,6 +14,7 @@ import project.study.jpaRepository.SocialTokenJpaRepository;
 import project.study.jpaRepository.MemberJpaRepository;
 import project.study.jpaRepository.PhoneJpaRepository;
 import project.study.jpaRepository.SocialJpaRepository;
+import project.study.repository.FreezeRepository;
 
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -25,6 +26,7 @@ import static project.study.constant.WebConst.LOGIN_MEMBER;
 @Slf4j
 public class KakaoLoginService {
 
+    private final FreezeRepository freezeRepository;
     private final KakaoLoginRepository kakaoLoginRepository;
     private final MemberJpaRepository memberJpaRepository;
     private final SocialJpaRepository socialJpaRepository;
@@ -34,8 +36,8 @@ public class KakaoLoginService {
     public void login(String code, HttpSession session, HttpServletResponse response) {
         RequestSocialLoginDto data = new RequestSocialLoginDto(code);
 
-        MemberFactory factory = new KakaoMemberFactory(kakaoLoginRepository, memberJpaRepository, socialJpaRepository, socialTokenJpaRepository, phoneJpaRepository);
-        Member loginMember = factory.login(data, session);
+        MemberFactory factory = new KakaoMemberFactory(freezeRepository, kakaoLoginRepository, memberJpaRepository, socialJpaRepository, socialTokenJpaRepository, phoneJpaRepository);
+        Member loginMember = factory.login(data, session, response);
         if (loginMember == null) {
             RequestSocialSignupDto signupDto = new RequestSocialSignupDto(data, response);
             log.info("카카오 회원가입 진행");

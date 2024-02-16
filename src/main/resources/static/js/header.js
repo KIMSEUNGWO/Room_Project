@@ -4,6 +4,13 @@ window.addEventListener('load', () => {
     const modal = document.querySelector('.modal');
     const modal_content = document.querySelector('.modal-content');
 
+    // 타임리프로 Model에서 로그인여부 확인 후 로그인 페이지 이동
+    if (requireLogin) {
+        insertModalSize('modal-login');
+        modal_content.innerHTML = createLoginModal();
+        modal.classList.remove(disabled);
+    }
+
     const loginBtn = document.querySelector('#btn-login');
     if (loginBtn != null)  {
         loginBtn.addEventListener('click', () => {
@@ -129,12 +136,17 @@ function login() {
     }
 
     let json = {account : loginAccount.value, password : loginPassword.value};
-    // loginResult({result : 'error', message : '아이디/비밀번호를 확인해주세요.'});
     fetchPost('/login', json, loginResult);
 }
 function loginResult(json) {
     if (json.result == 'ok') {
-        location.reload();
+        modalExit();
+        let redirectURI = getRedirectURI();
+        if (redirectURI != null) {
+            window.location.href= redirectURI;
+        } else {
+            location.reload();
+        }
     } else if (json.result == 'error') {
         let m_login = document.querySelector('.m-login');
         let loginAccount = document.querySelector('input[name="loginAccount"]');
@@ -143,6 +155,11 @@ function loginResult(json) {
         loginPassword.value = '';
         printMessage(json, m_login);
     }
+}
+function getRedirectURI() {
+    let queryString = window.location.search;
+    let searchParam = new URLSearchParams(queryString);
+    return searchParam.get('redirectURI');
 }
 
 function focusEventListener() {
