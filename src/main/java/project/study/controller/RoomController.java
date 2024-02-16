@@ -6,15 +6,20 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import project.study.authority.member.CommonMember;
 import project.study.authority.member.MemberAuthorizationCheck;
 import project.study.authority.member.dto.ResponseRoomListDto;
+import project.study.customAnnotation.PathRoom;
 import project.study.customAnnotation.SessionLogin;
 import project.study.domain.Member;
+import project.study.domain.Room;
+import project.study.domain.RoomPassword;
 import project.study.dto.abstractentity.ResponseDto;
 import project.study.authority.member.dto.RequestCreateRoomDto;
 import project.study.dto.room.ResponseCreateRoomDto;
+import project.study.dto.room.ResponsePrivateRoomInfoDto;
 import project.study.dto.room.SearchRoomListDto;
 import project.study.service.RoomService;
 
@@ -51,6 +56,23 @@ public class RoomController {
         }
 
         return new ResponseEntity<>(new SearchRoomListDto("ok", "검색성공", word, roomList), HttpStatus.OK);
+    }
+
+    @ResponseBody
+    @PostMapping("/room/{room}/private")
+    public ResponseEntity<ResponseDto> roomPrivate(@SessionLogin(required = true) Member member,
+                                                   @PathRoom("room") Room room,
+                                                   @RequestBody String password,
+                                                   Model model) {
+        if (room.isPublic() || room.getRoomPassword() == null) return new ResponseEntity<>(new ResponseDto("error", "잘못된 접근입니다."), HttpStatus.OK);
+
+        RoomPassword rp = room.getRoomPassword();
+        String roomPassword = rp.getRoomPassword();
+        if (!roomPassword.equals(password)) {
+            return new ResponseEntity<>(new ResponseDto("invalidPassword", "비밀번호가 일치하지 않습니다."), HttpStatus.OK);
+        }
+
+        return new ResponseEntity<>(new ResponseDto("ok", "비밀번호 일치"), HttpStatus.OK);
     }
 
 

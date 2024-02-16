@@ -71,7 +71,7 @@ public class RoomRepository {
 
     @Transactional
     public void createPassword(RequestCreateRoomDto data, Room room) {
-        if (data.getRoomPublic() != PublicEnum.PUBLIC) return;
+        if (data.getRoomPublic() == PublicEnum.PUBLIC) return;
 
         RoomPassword saveRoomPassword = RoomPassword.builder()
             .roomPassword(data.getPassword())

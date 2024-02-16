@@ -11,6 +11,7 @@ import project.study.domain.Member;
 import project.study.domain.Room;
 import project.study.authority.member.dto.RequestCreateRoomDto;
 import project.study.dto.abstractentity.ResponseDto;
+import project.study.dto.room.ResponsePrivateRoomInfoDto;
 import project.study.enums.AuthorityMemberEnum;
 import project.study.exceptions.roomcreate.CreateExceedRoomException;
 import project.study.repository.JoinRoomRepository;
@@ -67,5 +68,13 @@ public class RoomService {
     public void validMaxCreateRoom(Member member) {
         int nowCount = joinRoomRepository.countByMemberAndAuthority(member, AuthorityMemberEnum.방장);
         if (nowCount >= WebConst.MAX_CREATE_ROOM_COUNT) throw new CreateExceedRoomException(new ResponseDto(WebConst.ERROR, "방 생성 최대개수를 초과하였습니다."));
+    }
+
+    public ResponsePrivateRoomInfoDto getResponsePrivateRoomInfoDto(Room room) {
+        return ResponsePrivateRoomInfoDto.builder()
+                .image(room.getRoomImage().getRoomImageStoreName())
+                .title(room.getRoomTitle())
+                .intro(room.getRoomIntro())
+                .build();
     }
 }

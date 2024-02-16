@@ -5,12 +5,6 @@ let lastPage = false;
 window.addEventListener('load', () => {
     const modal = document.querySelector('.modal');
     const modal_content = document.querySelector('.modal-content');
-    
-    if (requireLogin) {
-        insertModalSize('modal-login');
-        modal_content.innerHTML = createLoginModal();
-        modal.classList.remove(disabled);
-    }
 
     scrollToEvent();
     const searchInput = document.querySelector('input[name="word"]');
