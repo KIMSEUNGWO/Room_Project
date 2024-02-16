@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
+import project.study.authority.member.dto.RequestJoinRoomDto;
 import project.study.controller.image.FileUpload;
 import project.study.controller.image.FileUploadType;
 import project.study.domain.Room;
@@ -11,6 +12,7 @@ import project.study.domain.RoomPassword;
 import project.study.domain.Tag;
 import project.study.authority.member.dto.RequestCreateRoomDto;
 import project.study.enums.PublicEnum;
+import project.study.exceptions.authority.joinroom.FullRoomException;
 import project.study.jpaRepository.RoomJpaRepository;
 import project.study.jpaRepository.RoomPasswordJpaRepository;
 import project.study.jpaRepository.TagJpaRepository;
@@ -79,5 +81,12 @@ public class RoomRepository {
             .build();
 
         roomPasswordJpaRepository.save(saveRoomPassword);
+    }
+
+    public void validFullRoom(RequestJoinRoomDto data) {
+        Room room = data.getRoom();
+        int maxPerson = room.getRoomLimit();
+        int nowPerson = room.getJoinRoomList().size();
+        if (nowPerson >= maxPerson) throw new FullRoomException(data.getResponse(), "방이 가득찼습니다.");
     }
 }
