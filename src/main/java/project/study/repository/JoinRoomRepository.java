@@ -51,7 +51,8 @@ public class JoinRoomRepository {
                 r.roomIntro.as("roomIntro"),
                 r.roomPublic.eq(PublicEnum.PUBLIC).as("roomPublic"),
                 j.member.eq(member).as("roomJoin"),
-                ExpressionUtils.as(getRoomMaxPerson(j,r), "roomMaxPerson")
+                ExpressionUtils.as(getRoomMaxPerson(j, r), "nowPerson"),
+                r.roomLimit.as("maxPerson")
             ))
             .from(j)
             .join(r).on(j.room.eq(r))
@@ -119,16 +120,17 @@ public class JoinRoomRepository {
 
 
     public boolean exitsByMemberAndRoom(Member member, Room room) {
-        return joinRoomJpaRepository.exitsByMemberAndRoom(member, room);
+        return joinRoomJpaRepository.existsByMemberAndRoom(member, room);
     }
 
     public int countByMemberAndAuthority(Member member, AuthorityMemberEnum authorityEnum) {
-        QJoinRoom j = QJoinRoom.joinRoom;
-        QMember m = QMember.member;
-        return query.select(j.count().intValue())
-                .from(j)
-                .join(m).on(j.member.eq(m))
-                .where(j.member.eq(member).and(j.authorityEnum.eq(authorityEnum)))
-                .fetchFirst();
+        return (int) member.getJoinRoomList().stream().filter(x -> x.getAuthority() != authorityEnum).count();
+//        QJoinRoom j = QJoinRoom.joinRoom;
+//        QMember m = QMember.member;
+//        return query
+//                .select(j.count().intValue())
+//                .from(j)
+//                .where(j.member.eq(member).and(j.authorityEnum.eq(authorityEnum)))
+//                .fetchFirst();
     }
 }
