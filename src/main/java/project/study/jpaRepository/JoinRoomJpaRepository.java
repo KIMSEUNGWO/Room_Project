@@ -11,8 +11,6 @@ import java.util.Optional;
 public interface JoinRoomJpaRepository extends JpaRepository<JoinRoom, Long> {
     Optional<JoinRoom> findByMemberAndRoom(Member member, Room room);
 
-    List<JoinRoom> findAllByMember(Member member);
-
-    int countByRoom(Room room);
+    boolean exitsByMemberAndRoom(Member member, Room room);
 
 }

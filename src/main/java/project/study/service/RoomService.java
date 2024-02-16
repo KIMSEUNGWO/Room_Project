@@ -6,10 +6,13 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import project.study.authority.member.dto.ResponseRoomListDto;
-import project.study.domain.JoinRoom;
+import project.study.constant.WebConst;
 import project.study.domain.Member;
 import project.study.domain.Room;
 import project.study.authority.member.dto.RequestCreateRoomDto;
+import project.study.dto.abstractentity.ResponseDto;
+import project.study.enums.AuthorityMemberEnum;
+import project.study.exceptions.roomcreate.CreateExceedRoomException;
 import project.study.repository.JoinRoomRepository;
 import project.study.repository.RoomRepository;
 import project.study.repository.TagRepository;
@@ -61,4 +64,8 @@ public class RoomService {
         return roomInfo;
     }
 
+    public void validMaxCreateRoom(Member member) {
+        int nowCount = joinRoomRepository.countByMemberAndAuthority(member, AuthorityMemberEnum.방장);
+        if (nowCount >= WebConst.MAX_CREATE_ROOM_COUNT) throw new CreateExceedRoomException(new ResponseDto(WebConst.ERROR, "방 생성 최대개수를 초과하였습니다."));
+    }
 }

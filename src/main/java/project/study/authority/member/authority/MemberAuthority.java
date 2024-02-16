@@ -1,6 +1,8 @@
 package project.study.authority.member.authority;
 
+import jakarta.servlet.http.HttpServletResponse;
 import project.study.authority.member.dto.RequestCreateRoomDto;
+import project.study.authority.member.dto.RequestJoinRoomDto;
 import project.study.authority.member.dto.RequestNotifyDto;
 import project.study.authority.member.dto.ResponseRoomListDto;
 import project.study.domain.JoinRoom;
@@ -13,7 +15,7 @@ public interface MemberAuthority {
 
     Long createRoom(Member member, RequestCreateRoomDto data);
     void notify(Member member, RequestNotifyDto data);
-    JoinRoom joinRoom(Member member, Room room);
+    void joinRoom(RequestJoinRoomDto data);
 
     List<ResponseRoomListDto> getMyRoomList(Member member);
 }

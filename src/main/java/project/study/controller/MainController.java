@@ -7,6 +7,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import project.study.authority.member.CommonMember;
 import project.study.authority.member.MemberAuthorizationCheck;
+import project.study.authority.member.dto.RequestJoinRoomDto;
 import project.study.authority.member.dto.ResponseRoomListDto;
 import project.study.constant.WebConst;
 import project.study.customAnnotation.PathRoom;
@@ -25,9 +26,10 @@ public class MainController {
 
     private final MemberAuthorizationCheck memberAuthorizationCheck;
 
-    @GetMapping("/room/{roomId}")
-    public String roomCreate(@PathRoom("roomId") Room roomId){
-        System.out.println("roomId = " + roomId.getRoomId());
+    @GetMapping("/room/{room}")
+    public String roomCreate(@SessionLogin(required = true) Member member, @PathRoom("room") Room room, HttpServletResponse response){
+        CommonMember commonMember = memberAuthorizationCheck.getCommonMember(response, member);
+        commonMember.joinRoom(new RequestJoinRoomDto(member, room, response, null));
         return "room";
     }
 
@@ -38,7 +40,6 @@ public class MainController {
             List<ResponseRoomListDto> myRoomList = commonMember.getMyRoomList(member);
             model.addAttribute("myRoomList", myRoomList);
         }
-        model.addAttribute(REQUIRE_LOGIN, true);
 
         return "main";
     }

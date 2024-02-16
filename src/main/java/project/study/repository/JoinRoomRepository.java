@@ -16,7 +16,6 @@ import project.study.enums.AuthorityMemberEnum;
 import project.study.enums.PublicEnum;
 import project.study.jpaRepository.JoinRoomJpaRepository;
 
-import java.time.LocalDateTime;
 import java.util.List;
 
 @Repository
@@ -119,5 +118,17 @@ public class JoinRoomRepository {
     }
 
 
+    public boolean exitsByMemberAndRoom(Member member, Room room) {
+        return joinRoomJpaRepository.exitsByMemberAndRoom(member, room);
+    }
 
+    public int countByMemberAndAuthority(Member member, AuthorityMemberEnum authorityEnum) {
+        QJoinRoom j = QJoinRoom.joinRoom;
+        QMember m = QMember.member;
+        return query.select(j.count().intValue())
+                .from(j)
+                .join(m).on(j.member.eq(m))
+                .where(j.member.eq(member).and(j.authorityEnum.eq(authorityEnum)))
+                .fetchFirst();
+    }
 }
