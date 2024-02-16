@@ -31,7 +31,7 @@ function enterRoomResult(json) {
     msg.textContent = '';
 
     if (json.result == 'ok') {
-
+        window.location.href = json.message
     } else if (json.result == 'invalidPassword') {
         msg.textContent = json.message;
     } else {
