@@ -1,4 +1,4 @@
-package project.study.dto.admin;
+package project.study.authority.admin.dto;
 
 import com.querydsl.core.annotations.QueryProjection;
 import lombok.AllArgsConstructor;
@@ -19,8 +19,7 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 public class AdminMembersDto {
 
-    private String account;
-    private String socialEmail;
+    private String memberAccount;
     private String memberName;
     private String memberNickname;
     private String phone;
@@ -30,9 +29,9 @@ public class AdminMembersDto {
     private MemberStatusEnum memberStatusEnum;
 
     @QueryProjection
-    public AdminMembersDto(String account, String socialEmail, String memberName, String memberNickname, String phone, String memberCreateDate, int memberNotifyCount, SocialEnum socialType, MemberStatusEnum memberStatusEnum) {
-        this.account = account;
-        this.socialEmail = socialEmail;
+
+    public AdminMembersDto(String memberAccount, String memberName, String memberNickname, String phone, String memberCreateDate, int memberNotifyCount, SocialEnum socialType, MemberStatusEnum memberStatusEnum) {
+        this.memberAccount = memberAccount;
         this.memberName = memberName;
         this.memberNickname = memberNickname;
         this.phone = phone;

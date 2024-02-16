@@ -1,10 +1,12 @@
 package project.study.authority.admin;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Component;
 import project.study.authority.admin.authority.BanAuthority;
 import project.study.authority.admin.authority.MemberInfoAuthority;
 import project.study.authority.admin.authority.NotifyMemberInfoAuthority;
 import project.study.authority.admin.authority.RoomInfoAuthority;
+import project.study.authority.admin.dto.AdminMembersDto;
 import project.study.authority.admin.dto.SearchMemberDto;
 import project.study.authority.admin.dto.SearchNotifyDto;
 import project.study.authority.admin.dto.SearchRoomDto;
@@ -17,6 +19,7 @@ import project.study.enums.NotifyStatus;
 import java.util.List;
 import java.util.Optional;
 
+@Component
 @RequiredArgsConstructor
 public class OverallAdmin implements MemberInfoAuthority, NotifyMemberInfoAuthority, BanAuthority, RoomInfoAuthority {
 
@@ -38,7 +41,7 @@ public class OverallAdmin implements MemberInfoAuthority, NotifyMemberInfoAuthor
         roomInfoAuthority.deleteByRoomId(roomId);
     }
     @Override
-    public List<Member> findAllByMember() {
+    public List<AdminMembersDto> findAllByMember() {
         return memberInfoAuthority.findAllByMember();
     }
     @Override

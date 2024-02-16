@@ -4,7 +4,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
-import project.study.dto.admin.AdminMembersDto;
+import project.study.authority.admin.dto.AdminExpireMembersDto;
+import project.study.authority.admin.dto.AdminMembersDto;
 import project.study.service.AdminService;
 
 import java.util.List;
@@ -16,9 +17,9 @@ public class AdminController {
     private final AdminService adminService;
 
     @GetMapping("/admin/members/get")
-    public String memberList(Model model){
-        List<AdminMembersDto> adminMembersDtos = adminService.memberList();
-        model.addAttribute("member", adminMembersDtos);
+    public String findAllByMember(Model model){
+        List<AdminMembersDto> adminMembersDtoList = adminService.findAllByMember();
+        model.addAttribute("member", adminMembersDtoList);
         return "/admin/admin_members";
     }
 
@@ -28,7 +29,9 @@ public class AdminController {
     }
 
     @GetMapping("/admin/expire/get")
-    public String expireMemberList(){
+    public String expireMemberList(Model model){
+        List<AdminExpireMembersDto> adminExpireMembersDtoList = adminService.findAllByExpireMember();
+        model.addAttribute("member", adminExpireMembersDtoList);
         return "/admin/admin_expire";
     }
 
