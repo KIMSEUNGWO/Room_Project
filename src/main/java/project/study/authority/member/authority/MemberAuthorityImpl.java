@@ -3,6 +3,7 @@ package project.study.authority.member.authority;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 import project.study.authority.member.dto.RequestCreateRoomDto;
 import project.study.authority.member.dto.RequestJoinRoomDto;
 import project.study.authority.member.dto.RequestNotifyDto;
@@ -10,6 +11,8 @@ import project.study.authority.member.dto.ResponseRoomListDto;
 import project.study.domain.JoinRoom;
 import project.study.domain.Member;
 import project.study.domain.Room;
+import project.study.exceptions.authority.joinroom.InvalidPublicPasswordException;
+import project.study.exceptions.roomjoin.IllegalRoomException;
 import project.study.service.JoinRoomService;
 import project.study.service.RoomService;
 
@@ -20,6 +23,7 @@ import java.util.Optional;
 
 @RequiredArgsConstructor
 @Component
+@Transactional
 public class MemberAuthorityImpl implements MemberAuthority{
 
     private final RoomService roomService;
@@ -46,6 +50,7 @@ public class MemberAuthorityImpl implements MemberAuthority{
         Member member = data.getMember();
         Room room = data.getRoom();
         HttpServletResponse response = data.getResponse();
+        String password = data.getPassword();
 
         // 이미 참여한 회원인지 확인
         boolean alreadyParticipated = joinRoomService.exitsByMemberAndRoom(member, room);
@@ -56,15 +61,14 @@ public class MemberAuthorityImpl implements MemberAuthority{
 
         // 비공개방인지 확인
         if (!room.isPublic()) {
+            if (password == null) execute(response, room.getRoomId());
 
-            execute(response, room.getRoomId());
-            return;
+            if (room.getRoomPassword() == null) throw new InvalidPublicPasswordException(response, "문제가 생겼습니다. 관리자에게 문의해주세요.");
+
+            if (!room.getRoomPassword().getRoomPassword().equals(password)) throw new InvalidPublicPasswordException(response, "비밀번호가 일치하지 않습니다..");
         }
 
-
-
-        System.out.println("joinRoom 실행");
-        return;
+        joinRoomService.joinRoom(data);
     }
 
     private String execute(HttpServletResponse response, Long roomId) {

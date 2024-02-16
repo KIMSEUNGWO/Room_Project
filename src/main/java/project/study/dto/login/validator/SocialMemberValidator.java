@@ -17,6 +17,7 @@ import project.study.repository.FreezeRepository;
 import java.time.LocalDateTime;
 import java.util.Optional;
 import java.util.Random;
+import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
 @Slf4j
@@ -72,7 +73,7 @@ public class SocialMemberValidator implements MemberValidator {
             boolean distinctNickname = memberJpaRepository.existsByMemberNickname(nickname);
             if (!distinctNickname) break;
 
-            String random = "#" + new Random().ints(0, 9).limit(5).toString();
+            String random = "#" + new Random().ints(0, 9).limit(5).mapToObj(String::valueOf).collect(Collectors.joining());
             int index = nickname.indexOf("#");
             if (index == -1) {
                 nickname += random;

@@ -133,4 +133,8 @@ public class JoinRoomRepository {
 //                .where(j.member.eq(member).and(j.authorityEnum.eq(authorityEnum)))
 //                .fetchFirst();
     }
+
+    public void save(JoinRoom saveJoinRoom) {
+        joinRoomJpaRepository.save(saveJoinRoom);
+    }
 }

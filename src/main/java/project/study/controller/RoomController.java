@@ -1,15 +1,19 @@
 package project.study.controller;
 
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import project.study.authority.member.CommonMember;
 import project.study.authority.member.MemberAuthorizationCheck;
+import project.study.authority.member.dto.RequestJoinRoomDto;
 import project.study.authority.member.dto.ResponseRoomListDto;
 import project.study.customAnnotation.PathRoom;
 import project.study.customAnnotation.SessionLogin;
@@ -23,11 +27,13 @@ import project.study.dto.room.ResponsePrivateRoomInfoDto;
 import project.study.dto.room.SearchRoomListDto;
 import project.study.service.RoomService;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
+@Slf4j
 public class RoomController {
 
     private final MemberAuthorizationCheck authorizationCheck;
@@ -63,7 +69,8 @@ public class RoomController {
     public ResponseEntity<ResponseDto> roomPrivate(@SessionLogin(required = true) Member member,
                                                    @PathRoom("room") Room room,
                                                    @RequestBody String password,
-                                                   Model model) {
+                                                   HttpServletResponse response) {
+
         if (room.isPublic() || room.getRoomPassword() == null) return new ResponseEntity<>(new ResponseDto("error", "잘못된 접근입니다."), HttpStatus.OK);
 
         RoomPassword rp = room.getRoomPassword();
@@ -71,8 +78,11 @@ public class RoomController {
         if (!roomPassword.equals(password)) {
             return new ResponseEntity<>(new ResponseDto("invalidPassword", "비밀번호가 일치하지 않습니다."), HttpStatus.OK);
         }
+        CommonMember commonMember = authorizationCheck.getCommonMember(response, member);
+        commonMember.joinRoom(new RequestJoinRoomDto(member, room, response, password));
 
-        return new ResponseEntity<>(new ResponseDto("ok", "비밀번호 일치"), HttpStatus.OK);
+        return new ResponseEntity<>(new ResponseDto("ok", "/room/" + room.getRoomId()), HttpStatus.OK);
+
     }
 
 
