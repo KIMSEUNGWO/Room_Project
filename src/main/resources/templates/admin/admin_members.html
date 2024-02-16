@@ -75,12 +75,7 @@
                     </div>
                     <div class="table-list">
                         <div class="entity" th:each="member : ${member}">
-                            <th:block th:if="${member.account==null}">
-                                <div class="email" th:text="${member.socialEmail}">starosc</div>
-                            </th:block>
-                            <th:block th:if="${member.socialEmail==null}">
-                                <div class="email" th:text="${member.account}">starosc</div>
-                            </th:block>
+                            <div class="email" th:text="${member.memberAccount}">starosc</div>
                             <div class="name" th:text="${member.memberName}">오승찬하하</div>
                             <div class="nickname" th:text="${member.memberNickname}">닉네임</div>
                             <div class="phone" th:text="${member.phone}">010-3567-4431</div>

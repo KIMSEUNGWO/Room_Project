@@ -3,8 +3,8 @@ package project.study.service;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import project.study.domain.Member;
-import project.study.dto.admin.AdminMembersDto;
+import project.study.authority.admin.dto.AdminExpireMembersDto;
+import project.study.authority.admin.dto.AdminMembersDto;
 import project.study.jpaRepository.AdminJpaRepository;
 import project.study.repository.AdminRepository;
 
@@ -18,7 +18,11 @@ public class AdminService {
     private final AdminJpaRepository adminJpaRepository;
     private final AdminRepository adminRepository;
 
-    public List<AdminMembersDto> memberList(){
-        return adminRepository.memberList();
+    public List<AdminMembersDto> findAllByMember(){
+        return adminRepository.findAllByMember();
+    }
+
+    public List<AdminExpireMembersDto> findAllByExpireMember(){
+        return adminRepository.findAllByExpireMember();
     }
 }

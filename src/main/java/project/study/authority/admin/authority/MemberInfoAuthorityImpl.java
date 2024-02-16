@@ -1,19 +1,24 @@
 package project.study.authority.admin.authority;
 
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
+import project.study.authority.admin.dto.AdminMembersDto;
 import project.study.authority.admin.dto.SearchMemberDto;
 import project.study.domain.Member;
+import project.study.service.AdminService;
 
 import java.util.List;
 import java.util.Optional;
 
 @Component
+@RequiredArgsConstructor
 public class MemberInfoAuthorityImpl implements MemberInfoAuthority {
 
+    private final AdminService service;
+
     @Override
-    public List<Member> findAllByMember() {
-        System.out.println("findAllByMember 실행");
-        return null;
+    public List<AdminMembersDto> findAllByMember() {
+        return service.findAllByMember();
     }
 
     @Override

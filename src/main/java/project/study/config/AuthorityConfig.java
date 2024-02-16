@@ -9,6 +9,7 @@ import project.study.authority.member.authority.ManagerAuthority;
 import project.study.authority.member.authority.ManagerAuthorityImpl;
 import project.study.authority.member.authority.MemberAuthority;
 import project.study.authority.member.authority.MemberAuthorityImpl;
+import project.study.service.AdminService;
 import project.study.service.JoinRoomService;
 import project.study.service.RoomService;
 
@@ -18,6 +19,7 @@ public class AuthorityConfig {
 
     private final RoomService roomService;
     private final JoinRoomService joinRoomService;
+    private final AdminService adminService;
 
     @Bean
     @Primary
@@ -28,7 +30,7 @@ public class AuthorityConfig {
     @Bean
     @Primary
     public MemberInfoAuthority memberInfoAuthority() {
-        return new MemberInfoAuthorityImpl();
+        return new MemberInfoAuthorityImpl(adminService);
     }
     @Bean
     @Primary

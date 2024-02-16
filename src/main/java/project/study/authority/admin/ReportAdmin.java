@@ -1,6 +1,7 @@
 package project.study.authority.admin;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Component;
 import project.study.authority.admin.authority.BanAuthority;
 import project.study.authority.admin.authority.NotifyMemberInfoAuthority;
 import project.study.authority.admin.dto.SearchNotifyDto;
@@ -12,6 +13,7 @@ import project.study.enums.NotifyStatus;
 import java.util.List;
 import java.util.Optional;
 
+@Component
 @RequiredArgsConstructor
 public class ReportAdmin implements NotifyMemberInfoAuthority, BanAuthority {
 

@@ -70,55 +70,15 @@
                         <div class="status">상태</div>
                     </div>
                     <div class="table-list">
-                        <div class="entity">
-                            <div class="email">starosc</div>
-                            <div class="name">오승찬하하</div>
-                            <div class="nickname">닉네임</div>
-                            <div class="phone">010-3567-4431</div>
-                            <div class="registerdate">2024-02-07</div>
-                            <div class="expiredate">2회</div>
-                            <div class="social">소셜</div>
-                            <div class="status">상태</div>
-                        </div>
-                        <div class="entity">
-                            <div class="email">starosc</div>
-                            <div class="name">오승찬하하</div>
-                            <div class="nickname">닉네임</div>
-                            <div class="phone">010-3567-4431</div>
-                            <div class="registerdate">2024-02-07</div>
-                            <div class="expiredate">2024-03-01</div>
-                            <div class="social">소셜</div>
-                            <div class="status">상태</div>
-                        </div>
-                        <div class="entity">
-                            <div class="email">starosc</div>
-                            <div class="name">오승찬하하</div>
-                            <div class="nickname">닉네임</div>
-                            <div class="phone">010-3567-4431</div>
-                            <div class="registerdate">2024-02-07</div>
-                            <div class="expiredate">2024-03-02</div>
-                            <div class="social">소셜</div>
-                            <div class="status">상태</div>
-                        </div>
-                        <div class="entity">
-                            <div class="email">starosc37@gmail.com</div>
-                            <div class="name">이름</div>
-                            <div class="nickname">가나다라마바사아</div>
-                            <div class="phone">010-3567-4431</div>
-                            <div class="registerdate">2024-02-07</div>
-                            <div class="expiredate">2024-03-03</div>
-                            <div class="social">KAKAO</div>
-                            <div class="status">정지</div>
-                        </div>
-                        <div class="entity">
-                            <div class="email">이메일</div>
-                            <div class="name">이름</div>
-                            <div class="nickname">닉네임</div>
-                            <div class="phone">010-3567-4431</div>
-                            <div class="registerdate">2024-02-07</div>
-                            <div class="expiredate">2024-03-04</div>
-                            <div class="social">소셜</div>
-                            <div class="status">상태</div>
+                        <div class="entity" th:each="member : ${member}">
+                            <div class="email" th:text="${member.memberAccount}">starosc</div>
+                            <div class="name" th:text="${member.memberName}">오승찬하하</div>
+                            <div class="nickname" th:text="${member.memberNickname}">닉네임</div>
+                            <div class="phone" th:text="${member.memberPhone}">010-3567-4431</div>
+                            <div class="registerdate" th:text="${member.memberCreateDate}">2024-02-07</div>
+                            <div class="expiredate" th:text="${member.memberExpireDate}">2회</div>
+                            <div class="social" th:text="${member.socialType}">소셜</div>
+                            <div class="status" th:text="${member.memberStatusEnum}">상태</div>
                         </div>
                     </div>
                 </div>
