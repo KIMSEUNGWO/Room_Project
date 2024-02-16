@@ -1,5 +1,6 @@
 package project.study.authority.member;
 
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 import project.study.authority.member.authority.ManagerAuthority;
@@ -54,7 +55,7 @@ public class ManagerMember implements MemberAuthority, ManagerAuthority {
     }
 
     @Override
-    public JoinRoom joinRoom(Member member, Room room) {
-        return memberAuthority.joinRoom(member, room);
+    public void joinRoom(RequestJoinRoomDto data) {
+        memberAuthority.joinRoom(data);
     }
 }

@@ -46,4 +46,8 @@ public class Room implements ImageFileEntity {
     @OneToMany(mappedBy = "room", fetch = FetchType.LAZY)
     private List<JoinRoom> joinRoomList;
 
+    public boolean isPublic() {
+        return roomPublic.isPublic();
+    }
+
 }

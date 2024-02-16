@@ -1,9 +1,11 @@
 package project.study.authority.member;
 
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 import project.study.authority.member.authority.MemberAuthority;
 import project.study.authority.member.dto.RequestCreateRoomDto;
+import project.study.authority.member.dto.RequestJoinRoomDto;
 import project.study.authority.member.dto.RequestNotifyDto;
 import project.study.authority.member.dto.ResponseRoomListDto;
 import project.study.domain.JoinRoom;
@@ -33,7 +35,8 @@ public class CommonMember implements MemberAuthority{
     }
 
     @Override
-    public JoinRoom joinRoom(Member member, Room room) {
-        return memberAuthority.joinRoom(member, room);
+    public void joinRoom(RequestJoinRoomDto data) {
+        memberAuthority.joinRoom(data);
+        return;
     }
 }

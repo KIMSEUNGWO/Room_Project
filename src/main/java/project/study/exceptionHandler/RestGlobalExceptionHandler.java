@@ -40,7 +40,18 @@ public class RestGlobalExceptionHandler {
     public ResponseEntity<String> globalAuthorizationException(AuthorizationException e) {
         e.printStackTrace();
         log.error("[Global AuthorizationException Exception 발생!]");
-        execute(e.getResponse(), e.getAlertMessage());
+        HttpServletResponse response = e.getResponse();
+        String alert = e.getAlertMessage();
+        response.setContentType("text/html; charset=utf-8");
+        response.setCharacterEncoding("utf-8");
+
+        String command = "<script> " + getOption(alert) + " window.location.href='/'; </script>";
+        try (PrintWriter out = response.getWriter()) {
+            out.println(command);
+            out.flush();
+        } catch (IOException ex) {
+            log.error("Alert IOException 발생!");
+        }
         return null;
     }
 
