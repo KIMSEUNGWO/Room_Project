@@ -45,7 +45,7 @@
             <div class="room-template my-room" th:if="${myRoomList != null}">
                 <h2>내가 참여한 방</h2>
                 <div class="room-list x_scroll">
-                    <div class="room" th:each="room : ${myRoomList}">
+                    <div class="room" th:if="${#lists.size(myRoomList) != 0}" th:each="room : ${myRoomList}">
                         <div class="room-wrap">
                             <div class="room-top">
                                 <button type="button" class="more" th:value="${room.roomId}">
@@ -84,6 +84,7 @@
                             </div>
                         </div>
                     </div>
+                    <div class="room-list-empty" th:if="${#lists.size(myRoomList) == 0}">참가한 방이 없어요</div>
                 </div>
             </div>
             <div class="room-template search-result disabled">

@@ -25,11 +25,19 @@ window.addEventListener('load', () => {
             let moreMenu = e.target.children.namedItem('more-menu');
             moreMenu.classList.toggle('disabled');
             clearMoreMenu(moreMenu);
+            return;
         }
 
         if (e.target.classList.contains('enterBtn')) {
             insertModalSize('enter-room-confirm')
             modal_content.innerHTML = createEnterRoomModal(e.target.value);
+            modal.classList.remove(disabled);
+            return;
+        }
+
+        if (e.target.classList.contains('room-exit')) {
+            insertModalSize('exit-room-confirm')
+            modal_content.innerHTML = createExitRoomModal(e.target.parentElement.parentElement.value);
             modal.classList.remove(disabled);
         }
     })
@@ -51,8 +59,24 @@ window.addEventListener('load', () => {
             }
             return;
         }
+
+        if (target.id == 'room-exit') { // 방 나가기 버튼클릭
+            fetchPostExitRoom('/room/exit', target.value, exitRoomResult);
+        }
     })
 })
+
+function exitRoomResult(json) {
+    console.log(json);
+}
+function fetchPostExitRoom(url, data, callback) {
+    fetch(url , { method : 'post'
+					, headers : {'Content-Type' : 'application/json'}
+					, body : data
+				})
+    .then(res => res.json())
+    .then(map => callback(map));
+}
 
 function search(searchWord) {
     let searchTemplate = document.querySelector('.search-result');
@@ -266,5 +290,16 @@ function createEnterRoomModal(value) {
             <div class="buttons">
                 <button type="button" id="room-cancel">이전</button>
                 <button type="button" id="room-enter" value="${value}">입장</button>
+            </div>`
+}
+
+function createExitRoomModal(value) {
+    return  `<div class="confirm-message">
+                <span>방을 나가시겠습니까?</span>
+                <span class="message-details">방장 권한은 위임됩니다.</span>
+            </div>
+            <div class="buttons">
+                <button type="button" id="room-cancel">이전</button>
+                <button type="button" id="room-exit" value="${value}">나가기</button>
             </div>`
 }

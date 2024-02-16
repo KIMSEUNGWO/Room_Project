@@ -49,6 +49,12 @@ public class RoomController {
         String redirectURI = "/room/" + roomId;
         return new ResponseEntity<>(new ResponseCreateRoomDto("ok", "방 생성 완료", redirectURI), HttpStatus.OK);
     }
+    @PostMapping(value = "/room/exit")
+    public ResponseEntity<ResponseDto> exitRoom(@SessionLogin Member member, @RequestBody String roomId, HttpServletResponse response) {
+        System.out.println("roomId = " + roomId);
+
+        return new ResponseEntity<>(new ResponseDto("ok", "방 생성 완료"), HttpStatus.OK);
+    }
 
     @GetMapping("/search")
     public ResponseEntity<ResponseDto> search(@SessionLogin Member member, @RequestParam("word") String word, Pageable pageable) {
@@ -64,7 +70,6 @@ public class RoomController {
         return new ResponseEntity<>(new SearchRoomListDto("ok", "검색성공", word, roomList), HttpStatus.OK);
     }
 
-    @ResponseBody
     @PostMapping("/room/{room}/private")
     public ResponseEntity<ResponseDto> roomPrivate(@SessionLogin(required = true) Member member,
                                                    @PathRoom("room") Room room,
@@ -82,7 +87,6 @@ public class RoomController {
         commonMember.joinRoom(new RequestJoinRoomDto(member, room, response, password));
 
         return new ResponseEntity<>(new ResponseDto("ok", "/room/" + room.getRoomId()), HttpStatus.OK);
-
     }
 
 
