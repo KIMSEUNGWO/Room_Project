@@ -1,5 +1,6 @@
 package project.study.dto.login.validator;
 
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 import project.study.domain.Freeze;
@@ -32,17 +33,10 @@ public class DefaultMemberValidator implements MemberValidator {
     private final MemberJpaRepository memberJpaRepository;
 
     @Override
-    public void validLogin(Member member) {
-        checkFreezeMember(member); // 이용정지 회원인지 확인
-        checkExpireMember(member); // 탈퇴한 회원인지 확인
-    }
-
-    private void checkExpireMember(Member member) {
-        if (member.isExpireMember()) throw new ExpireMemberLoginException();
-    }
-
-    private void checkFreezeMember(Member member) {
+    public void validLogin(Member member, HttpServletResponse response) {
+        // 이용정지 회원인지 확인
         if(!member.isFreezeMember()) return; // 이용정지된 회원이 아님
+        if (member.isExpireMember()) throw new ExpireMemberLoginException(); // 탈퇴한 회원인지 확인
 
         Optional<Freeze> findFreeze = freezeRepository.findByMemberId(member.getMemberId());
         if (findFreeze.isEmpty()) return; // Freeze Entity 없음 ( 혹시 모를 예외 처리 )
@@ -55,11 +49,10 @@ public class DefaultMemberValidator implements MemberValidator {
         }
         LocalDateTime endDate = freeze.getFreezeEndDate();
         String reason = freeze.getFreezeReason();
-
         throw new FreezeMemberLoginException(combineMessage(endDate, reason)); // 모든 조건에 걸리지 않은 회원은 이용정지 회원임.
     }
 
-    public String combineMessage(LocalDateTime endDate, String reason) {
+    private String combineMessage(LocalDateTime endDate, String reason) {
         int year = endDate.getYear();
         int month = endDate.getMonthValue();
         int day = endDate.getDayOfMonth();

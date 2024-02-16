@@ -1,32 +1,60 @@
 package project.study.dto.login.validator;
 
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.web.bind.annotation.RequestBody;
+import project.study.domain.Freeze;
 import project.study.domain.Member;
-import project.study.dto.login.requestdto.RequestLoginDto;
 import project.study.dto.login.requestdto.RequestSignupDto;
 import project.study.dto.login.requestdto.RequestSocialSignupDto;
 import project.study.exceptions.kakaologin.AlreadySignupMemberException;
 import project.study.exceptions.kakaologin.SocialException;
-import project.study.jpaRepository.BasicJpaRepository;
+import project.study.exceptions.login.FreezeMemberLoginException;
 import project.study.jpaRepository.MemberJpaRepository;
 import project.study.jpaRepository.SocialJpaRepository;
+import project.study.repository.FreezeRepository;
 
-import java.rmi.AlreadyBoundException;
+import java.time.LocalDateTime;
+import java.util.Optional;
 import java.util.Random;
 
 @RequiredArgsConstructor
 @Slf4j
 public class SocialMemberValidator implements MemberValidator {
 
+    private final FreezeRepository freezeRepository;
     private final SocialJpaRepository socialJpaRepository;
     private final MemberJpaRepository memberJpaRepository;
     @Override
-    public void validLogin(Member member) {
+    public void validLogin(Member member, HttpServletResponse response) {
+        // 이용정지 회원인지 확인
+        if(!member.isFreezeMember()) return; // 이용정지된 회원이 아님
+        if (member.isExpireMember()) throw new SocialException(response, "탈퇴한 회원입니다."); // 탈퇴한 회원인지 확인
 
+        Optional<Freeze> findFreeze = freezeRepository.findByMemberId(member.getMemberId());
+        if (findFreeze.isEmpty()) return; // Freeze Entity 없음 ( 혹시 모를 예외 처리 )
+
+        Freeze freeze = findFreeze.get();
+        if (freeze.isFinish()) { // Freeze Entity는 존재하지만 이용정지 기간에 풀린 경우
+            freezeRepository.delete(freeze);
+            member.changeStatusToNormal();
+            return;
+        }
+        LocalDateTime endDate = freeze.getFreezeEndDate();
+        String reason = freeze.getFreezeReason();
+        throw new SocialException(response, combineMessage(endDate, reason)); // 모든 조건에 걸리지 않은 회원은 이용정지 회원임.
     }
 
+    private String combineMessage(LocalDateTime endDate, String reason) {
+        int year = endDate.getYear();
+        int month = endDate.getMonthValue();
+        int day = endDate.getDayOfMonth();
+        int hour = endDate.getHour();
+        int minute = endDate.getMinute();
+
+        String time = String.format("%d-%02d-%02d %02d:%02d", year, month, day, hour, minute);
+        return "이용이 정지된 회원입니다. \n ~ " + time + " 까지 \n" + "사유 : " + reason;
+    }
     @Override
     public void validSignup(RequestSignupDto signupDto) {
         RequestSocialSignupDto data = (RequestSocialSignupDto) signupDto;

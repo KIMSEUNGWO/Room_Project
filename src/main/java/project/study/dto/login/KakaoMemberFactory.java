@@ -8,10 +8,12 @@ import project.study.jpaRepository.SocialTokenJpaRepository;
 import project.study.jpaRepository.MemberJpaRepository;
 import project.study.jpaRepository.PhoneJpaRepository;
 import project.study.jpaRepository.SocialJpaRepository;
+import project.study.repository.FreezeRepository;
 
 @RequiredArgsConstructor
 public class KakaoMemberFactory implements MemberFactory{
 
+    private final FreezeRepository freezeRepository;
     private final KakaoLoginRepository kakaoLoginRepository;
     private final MemberJpaRepository memberJpaRepository;
     private final SocialJpaRepository socialJpaRepository;
@@ -24,6 +26,6 @@ public class KakaoMemberFactory implements MemberFactory{
 
     @Override
     public MemberValidator validator() {
-        return new SocialMemberValidator(socialJpaRepository, memberJpaRepository);
+        return new SocialMemberValidator(freezeRepository, socialJpaRepository, memberJpaRepository);
     }
 }

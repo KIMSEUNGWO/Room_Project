@@ -8,12 +8,15 @@ import org.springframework.web.bind.annotation.GetMapping;
 import project.study.authority.member.CommonMember;
 import project.study.authority.member.MemberAuthorizationCheck;
 import project.study.authority.member.dto.ResponseRoomListDto;
+import project.study.constant.WebConst;
 import project.study.customAnnotation.PathRoom;
 import project.study.customAnnotation.SessionLogin;
 import project.study.domain.Member;
 import project.study.domain.Room;
 
 import java.util.List;
+
+import static project.study.constant.WebConst.REQUIRE_LOGIN;
 
 
 @Controller
@@ -35,6 +38,7 @@ public class MainController {
             List<ResponseRoomListDto> myRoomList = commonMember.getMyRoomList(member);
             model.addAttribute("myRoomList", myRoomList);
         }
+        model.addAttribute(REQUIRE_LOGIN, true);
 
         return "main";
     }

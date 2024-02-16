@@ -1,5 +1,6 @@
 package project.study.service;
 
+import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -27,9 +28,9 @@ public class LoginService {
 
 
     @Transactional
-    public void login(RequestDefaultLoginDto data, HttpSession session) {
+    public void login(RequestDefaultLoginDto data, HttpSession session, HttpServletResponse response) {
         MemberFactory factory = new DefaultMemberFactory(basicJpaRepository, memberJpaRepository, freezeRepository, encoder);
-        Member member = factory.login(data, session);
+        Member member = factory.login(data, session, response);
 
     }
 
