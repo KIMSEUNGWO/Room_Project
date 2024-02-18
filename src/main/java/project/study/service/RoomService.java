@@ -1,5 +1,6 @@
 package project.study.service;
 
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Pageable;
@@ -14,11 +15,13 @@ import project.study.dto.abstractentity.ResponseDto;
 import project.study.dto.room.ResponsePrivateRoomInfoDto;
 import project.study.enums.AuthorityMemberEnum;
 import project.study.exceptions.roomcreate.CreateExceedRoomException;
+import project.study.exceptions.roomjoin.IllegalRoomException;
 import project.study.repository.JoinRoomRepository;
 import project.study.repository.RoomRepository;
 import project.study.repository.TagRepository;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -76,5 +79,21 @@ public class RoomService {
                 .title(room.getRoomTitle())
                 .intro(room.getRoomIntro())
                 .build();
+    }
+
+    public Room findByRoom(String roomIdStr, HttpServletResponse response) {
+        Long roomId = roomRepository.getNumberFormat(roomIdStr, response);
+        Optional<Room> findRoom = roomRepository.findById(roomId);
+        if (findRoom.isEmpty()) throw new IllegalRoomException(response, "방 정보를 찾을 수 없습니다.");
+        return findRoom.get();
+    }
+
+    public void deleteRoom(Room room) {
+//        roomRepository.deleteRoomImage(room.getRoomImage());
+//        roomRepository.deleteRoomNotice(room.getRoomNotice());
+//        roomRepository.deleteRoomPassword(room.getRoomPassword());
+//        tagRepository.deleteTag(room.getTags());
+//
+//        roomRepository.deleteRoom(room);
     }
 }

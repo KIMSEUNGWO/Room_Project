@@ -17,6 +17,7 @@ import project.study.enums.PublicEnum;
 import project.study.jpaRepository.JoinRoomJpaRepository;
 
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 @Slf4j
@@ -136,5 +137,13 @@ public class JoinRoomRepository {
 
     public void save(JoinRoom saveJoinRoom) {
         joinRoomJpaRepository.save(saveJoinRoom);
+    }
+
+    public Optional<JoinRoom> findByMemberAndRoom(Member member, Room room) {
+        return joinRoomJpaRepository.findByMemberAndRoom(member, room);
+    }
+
+    public void deleteJoinRoom(JoinRoom joinRoom) {
+        joinRoomJpaRepository.delete(joinRoom);
     }
 }

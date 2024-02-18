@@ -8,7 +8,6 @@ import project.study.authority.member.dto.RequestCreateRoomDto;
 import project.study.authority.member.dto.RequestJoinRoomDto;
 import project.study.authority.member.dto.RequestNotifyDto;
 import project.study.authority.member.dto.ResponseRoomListDto;
-import project.study.domain.JoinRoom;
 import project.study.domain.Member;
 import project.study.domain.Room;
 
@@ -37,6 +36,10 @@ public class CommonMember implements MemberAuthority{
     @Override
     public void joinRoom(RequestJoinRoomDto data) {
         memberAuthority.joinRoom(data);
-        return;
+    }
+
+    @Override
+    public void exitRoom(Member member, Room room, HttpServletResponse response) {
+        memberAuthority.exitRoom(member, room, response);
     }
 }
