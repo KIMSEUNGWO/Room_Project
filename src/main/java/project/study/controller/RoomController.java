@@ -40,7 +40,7 @@ public class RoomController {
     private final RoomService roomService;
 
     @PostMapping(value = "/room/create")
-    public ResponseEntity<ResponseDto> createRoom(@SessionLogin Member member, @ModelAttribute RequestCreateRoomDto data, HttpServletResponse response) {
+    public ResponseEntity<ResponseDto> createRoom(@SessionLogin(required = true) Member member, @ModelAttribute RequestCreateRoomDto data, HttpServletResponse response) {
         System.out.println("data = " + data);
 
         CommonMember commonMember = authorizationCheck.getCommonMember(response, member);
@@ -50,8 +50,11 @@ public class RoomController {
         return new ResponseEntity<>(new ResponseCreateRoomDto("ok", "방 생성 완료", redirectURI), HttpStatus.OK);
     }
     @PostMapping(value = "/room/exit")
-    public ResponseEntity<ResponseDto> exitRoom(@SessionLogin Member member, @RequestBody String roomId, HttpServletResponse response) {
-        System.out.println("roomId = " + roomId);
+    public ResponseEntity<ResponseDto> exitRoom(@SessionLogin(required = true) Member member, @RequestBody String roomId, HttpServletResponse response) {
+        Room room = roomService.findByRoom(roomId, response);
+
+        CommonMember commonMember = authorizationCheck.getCommonMember(response, member);
+        commonMember.exitRoom(member, room, response);
 
         return new ResponseEntity<>(new ResponseDto("ok", "방 생성 완료"), HttpStatus.OK);
     }

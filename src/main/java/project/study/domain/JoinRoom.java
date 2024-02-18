@@ -40,4 +40,8 @@ public class JoinRoom {
     public Long getJoinRoomId() {
         return joinRoomId;
     }
+
+    public void setAuthority(AuthorityMemberEnum authorityEnum) {
+        this.authorityEnum = authorityEnum;
+    }
 }

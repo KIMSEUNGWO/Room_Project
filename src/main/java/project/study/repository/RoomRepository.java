@@ -1,5 +1,6 @@
 package project.study.repository;
 
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Repository;
@@ -13,11 +14,13 @@ import project.study.domain.Tag;
 import project.study.authority.member.dto.RequestCreateRoomDto;
 import project.study.enums.PublicEnum;
 import project.study.exceptions.authority.joinroom.FullRoomException;
+import project.study.exceptions.roomjoin.IllegalRoomException;
 import project.study.jpaRepository.RoomJpaRepository;
 import project.study.jpaRepository.RoomPasswordJpaRepository;
 import project.study.jpaRepository.TagJpaRepository;
 
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 @Slf4j
@@ -88,5 +91,17 @@ public class RoomRepository {
         int maxPerson = room.getRoomLimit();
         int nowPerson = room.getJoinRoomList().size();
         if (nowPerson >= maxPerson) throw new FullRoomException(data.getResponse(), "방이 가득찼습니다.");
+    }
+
+    public Long getNumberFormat(String roomIdstr, HttpServletResponse response) {
+        try {
+            return Long.parseLong(roomIdstr);
+        } catch (NumberFormatException e) {
+            throw new IllegalRoomException(response, "존재하지 않는 방입니다.");
+        }
+    }
+
+    public Optional<Room> findById(Long roomId) {
+        return roomJpaRepository.findById(roomId);
     }
 }

@@ -15,6 +15,8 @@ import project.study.exceptions.authority.joinroom.FullRoomException;
 import project.study.repository.JoinRoomRepository;
 import project.study.repository.RoomRepository;
 
+import java.util.Optional;
+
 @Service
 @RequiredArgsConstructor
 @Slf4j
@@ -43,5 +45,13 @@ public class JoinRoomService {
                 .authorityEnum(AuthorityMemberEnum.일반)
                 .build();
         joinRoomRepository.save(saveJoinRoom);
+    }
+
+    public Optional<JoinRoom> findByMemberAndRoom(Member member, Room room) {
+        return joinRoomRepository.findByMemberAndRoom(member, room);
+    }
+
+    public void deleteJoinRoom(JoinRoom joinRoom) {
+        joinRoomRepository.deleteJoinRoom(joinRoom);
     }
 }

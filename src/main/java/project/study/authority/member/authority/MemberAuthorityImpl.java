@@ -11,11 +11,14 @@ import project.study.authority.member.dto.ResponseRoomListDto;
 import project.study.domain.JoinRoom;
 import project.study.domain.Member;
 import project.study.domain.Room;
+import project.study.enums.AuthorityMemberEnum;
+import project.study.exceptions.authority.NotJoinRoomException;
 import project.study.exceptions.authority.joinroom.InvalidPublicPasswordException;
 import project.study.exceptions.roomjoin.IllegalRoomException;
 import project.study.service.JoinRoomService;
 import project.study.service.RoomService;
 
+import javax.swing.text.html.Option;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.List;
@@ -82,5 +85,27 @@ public class MemberAuthorityImpl implements MemberAuthority{
         } catch (IOException e) {
         }
         return null;
+    }
+
+    @Override
+    public void exitRoom(Member member, Room room, HttpServletResponse response) {
+        // 참가자인지 확인
+        Optional<JoinRoom> findJoinRoom = joinRoomService.findByMemberAndRoom(member, room);
+        if (findJoinRoom.isEmpty()) throw new NotJoinRoomException(response);
+
+        JoinRoom joinRoom = findJoinRoom.get();
+        AuthorityMemberEnum authority = joinRoom.getAuthority();
+
+        if (authority.isManager()) {
+            Optional<JoinRoom> anotherJoinMember = room.getJoinRoomList().stream().filter(x -> !x.getJoinRoomId().equals(joinRoom.getJoinRoomId())).findAny();
+            if (anotherJoinMember.isPresent()) { // 다른회원에게 방장 위임
+                JoinRoom anotherMember = anotherJoinMember.get();
+                anotherMember.setAuthority(AuthorityMemberEnum.방장);
+            } else { // 다른 회원이 없는경우 (참여자가 1명인 경우)
+                joinRoomService.deleteJoinRoom(joinRoom);
+                roomService.deleteRoom(room);
+            }
+        }
+
     }
 }

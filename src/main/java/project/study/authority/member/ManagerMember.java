@@ -58,4 +58,9 @@ public class ManagerMember implements MemberAuthority, ManagerAuthority {
     public void joinRoom(RequestJoinRoomDto data) {
         memberAuthority.joinRoom(data);
     }
+
+    @Override
+    public void exitRoom(Member member, Room room, HttpServletResponse response) {
+        memberAuthority.exitRoom(member, room, response);
+    }
 }
