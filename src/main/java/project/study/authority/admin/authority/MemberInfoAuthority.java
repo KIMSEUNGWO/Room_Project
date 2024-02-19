@@ -9,7 +9,7 @@ import java.util.Optional;
 
 public interface MemberInfoAuthority {
 
-    List<AdminMembersDto> findAllByMember();
+//    List<AdminMembersDto> findAllByMember();
     List<Member> searchMember(SearchMemberDto data);
     Optional<Member> findByMemberId(Long memberId);
 }

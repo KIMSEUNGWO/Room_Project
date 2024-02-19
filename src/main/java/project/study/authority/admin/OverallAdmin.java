@@ -40,10 +40,10 @@ public class OverallAdmin implements MemberInfoAuthority, NotifyMemberInfoAuthor
     public void deleteByRoomId(Long roomId) {
         roomInfoAuthority.deleteByRoomId(roomId);
     }
-    @Override
-    public List<AdminMembersDto> findAllByMember() {
-        return memberInfoAuthority.findAllByMember();
-    }
+//    @Override
+//    public List<AdminMembersDto> findAllByMember() {
+//        return memberInfoAuthority.findAllByMember();
+//    }
     @Override
     public List<Member> searchMember(SearchMemberDto data) {
         return memberInfoAuthority.searchMember(data);

@@ -16,10 +16,10 @@ public class MemberInfoAuthorityImpl implements MemberInfoAuthority {
 
     private final AdminService service;
 
-    @Override
-    public List<AdminMembersDto> findAllByMember() {
-        return service.findAllByMember();
-    }
+//    @Override
+//    public List<AdminMembersDto> findAllByMember() {
+//        return service.findAllByMember();
+//    }
 
     @Override
     public List<Member> searchMember(SearchMemberDto data) {

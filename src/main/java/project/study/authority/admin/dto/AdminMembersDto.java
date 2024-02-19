@@ -29,7 +29,6 @@ public class AdminMembersDto {
     private MemberStatusEnum memberStatusEnum;
 
     @QueryProjection
-
     public AdminMembersDto(String memberAccount, String memberName, String memberNickname, String phone, String memberCreateDate, int memberNotifyCount, SocialEnum socialType, MemberStatusEnum memberStatusEnum) {
         this.memberAccount = memberAccount;
         this.memberName = memberName;

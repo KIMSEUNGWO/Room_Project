@@ -49,12 +49,14 @@
                     <h3>탈퇴한 회원 리스트</h3>
                     <ul class="table-option-list">
                         <li>
-                            <div class="search-wrap">
-                                <input type="text" name="word" id="word" placeholder="검색어를 입력하세요">
-                                <button type="button" id="searchBtn">
-                                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><path d="M416 208c0 45.9-14.9 88.3-40 122.7L502.6 457.4c12.5 12.5 12.5 32.8 0 45.3s-32.8 12.5-45.3 0L330.7 376c-34.4 25.2-76.8 40-122.7 40C93.1 416 0 322.9 0 208S93.1 0 208 0S416 93.1 416 208zM208 352a144 144 0 1 0 0-288 144 144 0 1 0 0 288z"/></svg>
-                                </button>
-                            </div>
+                            <form class="" method="get" th:action="@{/admin/expire/get}">
+                                <div class="search-wrap">
+                                    <input type="text" name="word" th:value="${word}" id="word" placeholder="검색어를 입력하세요">
+                                    <button type="submit" id="searchBtn">
+                                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><path d="M416 208c0 45.9-14.9 88.3-40 122.7L502.6 457.4c12.5 12.5 12.5 32.8 0 45.3s-32.8 12.5-45.3 0L330.7 376c-34.4 25.2-76.8 40-122.7 40C93.1 416 0 322.9 0 208S93.1 0 208 0S416 93.1 416 208zM208 352a144 144 0 1 0 0-288 144 144 0 1 0 0 288z"/></svg>
+                                    </button>
+                                </div>
+                            </form>
                         </li>
                     </ul>
                 </div>
@@ -70,7 +72,7 @@
                         <div class="status">상태</div>
                     </div>
                     <div class="table-list">
-                        <div class="entity" th:each="member : ${member}">
+                        <div class="entity" th:each="member : ${page.content}">
                             <div class="email" th:text="${member.memberAccount}">starosc</div>
                             <div class="name" th:text="${member.memberName}">오승찬하하</div>
                             <div class="nickname" th:text="${member.memberNickname}">닉네임</div>
@@ -84,31 +86,32 @@
                 </div>
                 <div class="pagination">
                     <div class="buttons">
-                        <button type="button" id="last-left">
-                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><path d="M41.4 233.4c-12.5 12.5-12.5 32.8 0 45.3l160 160c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L109.3 256 246.6 118.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0l-160 160zm352-160l-160 160c-12.5 12.5-12.5 32.8 0 45.3l160 160c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L301.3 256 438.6 118.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0z"/></svg>
+                        <button type="button" id="last-left" th:if="${page.number > 0}">
+                            <a th:href="@{'get?page=' + 1 + '&amp;word=' + ${word}}">
+                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><path d="M41.4 233.4c-12.5 12.5-12.5 32.8 0 45.3l160 160c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L109.3 256 246.6 118.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0l-160 160zm352-160l-160 160c-12.5 12.5-12.5 32.8 0 45.3l160 160c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L301.3 256 438.6 118.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0z"/></svg>
+                            </a>
                         </button>
-                        <button type="button" id="left">
-                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><path d="M41.4 233.4c-12.5 12.5-12.5 32.8 0 45.3l160 160c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L109.3 256 246.6 118.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0l-160 160z"/></svg>
+                        <button type="button" id="left" th:if="${page.number > 0}">
+                            <a th:href="@{'get?page=' + ${page.number} + '&amp;word=' +${word}}">
+                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><path d="M41.4 233.4c-12.5 12.5-12.5 32.8 0 45.3l160 160c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L109.3 256 246.6 118.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0l-160 160z"/></svg>
+                            </a>
                         </button>
                     </div>
                     <div id="page">
-                        <button type="button" class="page-num" value="1" aria-pressed="true">1</button>
-                        <button type="button" class="page-num" value="2" aria-pressed="false">2</button>
-                        <button type="button" class="page-num" value="3" aria-pressed="false">3</button>
-                        <button type="button" class="page-num" value="4" aria-pressed="false">4</button>
-                        <button type="button" class="page-num" value="5" aria-pressed="false">5</button>
-                        <button type="button" class="page-num" value="6" aria-pressed="false">6</button>
-                        <button type="button" class="page-num" value="7" aria-pressed="false">7</button>
-                        <button type="button" class="page-num" value="8" aria-pressed="false">8</button>
-                        <button type="button" class="page-num" value="9" aria-pressed="false">9</button>
-                        <button type="button" class="page-num" value="10" aria-pressed="false">10</button>
+                        <button type="button" class="page-num" th:each="i : ${#numbers.sequence(1, page.totalPages)}">
+                            <a th:href="@{'get?page=' + ${i} + '&amp;word=' + ${word}}">[[${i}]]</a>
+                        </button>
                     </div>
                     <div class="buttons">
-                        <button type="button" id="right">
-                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><path d="M278.6 233.4c12.5 12.5 12.5 32.8 0 45.3l-160 160c-12.5 12.5-32.8 12.5-45.3 0s-12.5-32.8 0-45.3L210.7 256 73.4 118.6c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0l160 160z"/></svg>
+                        <button type="button" id="right" th:if="${!page.last}">
+                            <a th:href="@{'get?page=' + ${page.number+2} + '&amp;word=' + ${word}}">
+                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><path d="M278.6 233.4c12.5 12.5 12.5 32.8 0 45.3l-160 160c-12.5 12.5-32.8 12.5-45.3 0s-12.5-32.8 0-45.3L210.7 256 73.4 118.6c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0l160 160z"/></svg>
+                            </a>
                         </button>
-                        <button type="button" class="last-right">
-                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><path d="M470.6 278.6c12.5-12.5 12.5-32.8 0-45.3l-160-160c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3L402.7 256 265.4 393.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0l160-160zm-352 160l160-160c12.5-12.5 12.5-32.8 0-45.3l-160-160c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3L210.7 256 73.4 393.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0z"/></svg>
+                        <button type="button" class="last-right" th:if="${!page.last}">
+                            <a th:href="@{'get?page=' + ${page.totalPages} + '&amp;word=' +${word}}">
+                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><path d="M470.6 278.6c12.5-12.5 12.5-32.8 0-45.3l-160-160c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3L402.7 256 265.4 393.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0l160-160zm-352 160l160-160c12.5-12.5 12.5-32.8 0-45.3l-160-160c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3L210.7 256 73.4 393.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0z"/></svg>
+                            </a>
                         </button>
                     </div>
                 </div>
