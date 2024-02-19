@@ -1,6 +1,5 @@
 package project.study.authority.admin.dto;
 
-import com.querydsl.core.annotations.QueryProjection;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
@@ -10,25 +9,24 @@ import project.study.enums.SocialEnum;
 @Getter
 @ToString
 @NoArgsConstructor
-public class AdminExpireMembersDto {
+public class AdminFreezeMembersDto {
 
     private String memberAccount;
     private String memberName;
     private String memberNickname;
-    private String memberPhone;
+    private String phone;
     private String memberCreateDate;
-    private String memberExpireDate;
+    private int memberNotifyCount;
     private SocialEnum socialType;
     private MemberStatusEnum memberStatusEnum;
 
-    @QueryProjection
-    public AdminExpireMembersDto(String memberAccount, String memberName, String memberNickname, String memberPhone, String memberCreateDate, String memberExpireDate, SocialEnum socialType, MemberStatusEnum memberStatusEnum) {
+    public AdminFreezeMembersDto(String memberAccount, String memberName, String memberNickname, String phone, String memberCreateDate, int memberNotifyCount, SocialEnum socialType, MemberStatusEnum memberStatusEnum) {
         this.memberAccount = memberAccount;
         this.memberName = memberName;
         this.memberNickname = memberNickname;
-        this.memberPhone = memberPhone;
+        this.phone = phone;
         this.memberCreateDate = memberCreateDate;
-        this.memberExpireDate = memberExpireDate;
+        this.memberNotifyCount = memberNotifyCount;
         this.socialType = socialType;
         this.memberStatusEnum = memberStatusEnum;
     }

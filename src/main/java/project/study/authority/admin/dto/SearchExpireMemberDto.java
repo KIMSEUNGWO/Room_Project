@@ -10,25 +10,25 @@ import project.study.enums.SocialEnum;
 @Getter
 @ToString
 @NoArgsConstructor
-public class SearchMemberDto {
+public class SearchExpireMemberDto {
 
     private String memberAccount;
     private String memberName;
     private String memberNickname;
-    private String phone;
+    private String memberPhone;
     private String memberCreateDate;
-    private int memberNotifyCount;
+    private String memberExpireDate;
     private SocialEnum socialType;
     private MemberStatusEnum memberStatusEnum;
 
     @QueryProjection
-    public SearchMemberDto(String memberAccount, String memberName, String memberNickname, String phone, String memberCreateDate, int memberNotifyCount, SocialEnum socialType, MemberStatusEnum memberStatusEnum) {
+    public SearchExpireMemberDto(String memberAccount, String memberName, String memberNickname, String memberPhone, String memberCreateDate, String memberExpireDate, SocialEnum socialType, MemberStatusEnum memberStatusEnum) {
         this.memberAccount = memberAccount;
         this.memberName = memberName;
         this.memberNickname = memberNickname;
-        this.phone = phone;
+        this.memberPhone = memberPhone;
         this.memberCreateDate = memberCreateDate;
-        this.memberNotifyCount = memberNotifyCount;
+        this.memberExpireDate = memberExpireDate;
         this.socialType = socialType;
         this.memberStatusEnum = memberStatusEnum;
     }
