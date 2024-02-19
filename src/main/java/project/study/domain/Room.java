@@ -5,8 +5,10 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import project.study.chat.domain.Chat;
 import project.study.enums.PublicEnum;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -28,6 +30,8 @@ public class Room implements ImageFileEntity {
 
     private int roomLimit;
 
+    private LocalDateTime roomCreateDate;
+
     @Enumerated(EnumType.STRING)
     private PublicEnum roomPublic;
 
@@ -45,6 +49,9 @@ public class Room implements ImageFileEntity {
 
     @OneToMany(mappedBy = "room", fetch = FetchType.LAZY)
     private List<JoinRoom> joinRoomList;
+
+    @OneToOne(mappedBy = "room", fetch = FetchType.LAZY)
+    private Chat chat;
 
     public boolean isPublic() {
         return roomPublic.isPublic();

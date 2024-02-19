@@ -75,4 +75,8 @@ public class Member implements ImageFileEntity {
     public List<JoinRoom> getJoinRoomList() {
         return joinRoomList;
     }
+
+    public String getMemberNickname() {
+        return memberNickname;
+    }
 }

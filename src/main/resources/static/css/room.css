@@ -14,7 +14,7 @@ body {
 .main-container {
     display: grid;
     grid-template-rows: 8% 92%;
-
+    overflow-y: hidden;
 }
 .room-title {
     display: flex;
@@ -48,7 +48,7 @@ body {
     display: flex;
     flex-direction: column;
     justify-content: space-between;
-    height: calc(100vh - 4rem);
+    height: calc(100vh - 9%);
 
 }
 .room-notice {
@@ -106,6 +106,7 @@ body {
     vertical-align: middle;
     height: auto;
     resize: none;
+    overflow: hidden;
 }
 #send {
     width: 3rem;
@@ -121,11 +122,12 @@ body {
 
 .chat-history {
     display: flex;
-    flex-direction: column-reverse;
+    flex-direction: column;
     justify-content: flex-start;
     width: 100%;
     overflow-y: scroll;
     padding: 8rem 1rem 0 1rem;
+    height: 100%;
 }
 .you {
     text-align: left;
@@ -462,7 +464,8 @@ aside {
     display: flex;
     flex-direction: column;
     justify-content: space-between;
-    background-color: var(--side-color)
+    background-color: var(--side-color);
+    height: 100vh;
 }
 aside hr {
     margin: 0.5rem 0 1rem 0;
@@ -497,6 +500,15 @@ aside hr {
         opacity: 1;
     }
 }
+.manager {
+    border: 0.1rem solid rgb(201, 201, 201);
+    border-radius: 1rem;
+    padding: 0.1rem 0.5rem;
+    margin-left: 0.5rem;
+    color: rgb(201, 201, 201);
+    font-size: 0.85rem;
+    white-space: nowrap;
+}
 .member-data {
     display: flex;
     align-items: center;
@@ -506,6 +518,7 @@ aside hr {
     width: 3rem;
     height: 3rem;
     border-radius: 100%;
+    background-color: rgb(255, 255, 255);
 }
 
 .member-more {
@@ -681,5 +694,14 @@ aside .buttons button:hover {
     }
 }
 
+.chat-history::-webkit-scrollbar-track {
+    background-color: var(--bg-color); /* 스크롤바 트랙 배경색 */
+}
 
-
+.chat-history::-webkit-scrollbar-thumb {
+    background-color: var(--room-bg-hover-color);
+    border-radius: 1rem;
+}
+.chat-history::-webkit-scrollbar {
+    background-color: var(--room-bg-color);
+}
