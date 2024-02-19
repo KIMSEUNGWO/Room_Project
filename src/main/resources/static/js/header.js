@@ -5,7 +5,7 @@ window.addEventListener('load', () => {
     const modal_content = document.querySelector('.modal-content');
 
     // 타임리프로 Model에서 로그인여부 확인 후 로그인 페이지 이동
-    if (requireLogin) {
+    if (requireLogin || getRedirectURI() != null) {
         insertModalSize('modal-login');
         modal_content.innerHTML = createLoginModal();
         modal.classList.remove(disabled);

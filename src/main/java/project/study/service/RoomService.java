@@ -7,12 +7,14 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import project.study.authority.member.dto.ResponseRoomListDto;
+import project.study.chat.dto.ResponseChatHistory;
 import project.study.constant.WebConst;
 import project.study.domain.Member;
 import project.study.domain.Room;
 import project.study.authority.member.dto.RequestCreateRoomDto;
 import project.study.dto.abstractentity.ResponseDto;
 import project.study.dto.room.ResponsePrivateRoomInfoDto;
+import project.study.dto.room.ResponseRoomMemberList;
 import project.study.enums.AuthorityMemberEnum;
 import project.study.exceptions.roomcreate.CreateExceedRoomException;
 import project.study.exceptions.roomjoin.IllegalRoomException;
@@ -20,8 +22,7 @@ import project.study.repository.JoinRoomRepository;
 import project.study.repository.RoomRepository;
 import project.study.repository.TagRepository;
 
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 @Service
 @RequiredArgsConstructor
@@ -39,6 +40,7 @@ public class RoomService {
         roomRepository.createTags(data, room);
         roomRepository.createPassword(data, room);
         joinRoomRepository.createJoinRoom(room, member);
+        roomRepository.createChat(room);
         return room.getRoomId();
     }
 
@@ -95,5 +97,15 @@ public class RoomService {
 //        tagRepository.deleteTag(room.getTags());
 //
 //        roomRepository.deleteRoom(room);
+    }
+
+    public List<ResponseRoomMemberList> getResponseRoomMemberList(Room room) {
+        return roomRepository.getResponseRoomMemberList(room);
+    }
+
+    public List<ResponseChatHistory> findByChatHistory(Room room) {
+        List<ResponseChatHistory> byChatHistory = roomRepository.findByChatHistory(room);
+        byChatHistory.sort(Comparator.comparing(ResponseChatHistory::getDate).reversed());
+        return byChatHistory;
     }
 }

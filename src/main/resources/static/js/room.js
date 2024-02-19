@@ -1,8 +1,24 @@
+
 window.addEventListener('load', () => {
+
+    fetchGet('/room/' + getRoomId() + '/history', historyResult)
 
     const message = document.querySelector('#message');
     
-    message.addEventListener('keyup', () => textareaResize(message));
+    message.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter' && !e.shiftKey) {
+            sendMessage();
+            message.value = '';
+        }
+        textareaResize(message);
+    })
+    message.addEventListener('keyup', (e) => {
+        if (e.key === 'Enter' && !e.shiftKey) {
+            message.value = '';
+        }
+        textareaResize(message);
+        
+    });
     message.addEventListener('paste', () => textareaResize(message));
 
     const modalExitList = document.querySelector('.modal-exit');
@@ -21,6 +37,12 @@ window.addEventListener('load', () => {
     editRoomModalOpen();
 
 });
+
+
+function historyResult(list) {
+    console.log(list);
+    
+}
 
 function textareaResize(message) {
     message.style.height = 'auto';
@@ -244,3 +266,9 @@ function editRoomModal() {
                 '<button type="button" id="room-edit">저장</button>' +
             '</div>';
 };
+
+function fetchGet(url, callback) {
+    fetch(url)
+    .then(res => res.json())
+    .then(map => callback(map));
+}

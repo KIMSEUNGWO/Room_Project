@@ -1,20 +1,19 @@
 package project.study.controller;
 
 import jakarta.servlet.http.HttpServletResponse;
-import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import project.study.authority.member.CommonMember;
 import project.study.authority.member.MemberAuthorizationCheck;
 import project.study.authority.member.dto.RequestJoinRoomDto;
 import project.study.authority.member.dto.ResponseRoomListDto;
+import project.study.chat.ChatAccessToken;
+import project.study.chat.dto.ResponseChatHistory;
+import project.study.constant.WebConst;
 import project.study.customAnnotation.PathRoom;
 import project.study.customAnnotation.SessionLogin;
 import project.study.domain.Member;
@@ -23,12 +22,9 @@ import project.study.domain.RoomPassword;
 import project.study.dto.abstractentity.ResponseDto;
 import project.study.authority.member.dto.RequestCreateRoomDto;
 import project.study.dto.room.ResponseCreateRoomDto;
-import project.study.dto.room.ResponsePrivateRoomInfoDto;
 import project.study.dto.room.SearchRoomListDto;
 import project.study.service.RoomService;
 
-import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
 
 @RestController
@@ -38,6 +34,7 @@ public class RoomController {
 
     private final MemberAuthorizationCheck authorizationCheck;
     private final RoomService roomService;
+    private final ChatAccessToken chatAccessToken;
 
     @PostMapping(value = "/room/create")
     public ResponseEntity<ResponseDto> createRoom(@SessionLogin(required = true) Member member, @ModelAttribute RequestCreateRoomDto data, HttpServletResponse response) {
@@ -49,6 +46,7 @@ public class RoomController {
         String redirectURI = "/room/" + roomId;
         return new ResponseEntity<>(new ResponseCreateRoomDto("ok", "방 생성 완료", redirectURI), HttpStatus.OK);
     }
+
     @PostMapping(value = "/room/exit")
     public ResponseEntity<ResponseDto> exitRoom(@SessionLogin(required = true) Member member, @RequestBody String roomId, HttpServletResponse response) {
         Room room = roomService.findByRoom(roomId, response);
@@ -90,6 +88,20 @@ public class RoomController {
         commonMember.joinRoom(new RequestJoinRoomDto(member, room, response, password));
 
         return new ResponseEntity<>(new ResponseDto("ok", "/room/" + room.getRoomId()), HttpStatus.OK);
+    }
+
+    @GetMapping("/room/{room}/history")
+    public ResponseEntity<List<ResponseChatHistory>> chatHistory(@PathRoom("room") Room room) {
+        // JoinRoom 검증 안되어있음 아직.
+
+        List<ResponseChatHistory> chatHistory = roomService.findByChatHistory(room);
+        return new ResponseEntity<>(chatHistory, HttpStatus.OK);
+    }
+
+    @GetMapping("/room/access")
+    public ResponseEntity<ResponseDto> accessToken(@SessionAttribute(name = WebConst.LOGIN_MEMBER) Long memberId) {
+        String accessToken = chatAccessToken.createAccessToken(memberId);
+        return new ResponseEntity<>(new ResponseDto("ok", accessToken), HttpStatus.OK);
     }
 
 
