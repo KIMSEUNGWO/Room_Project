@@ -11,18 +11,21 @@ import java.util.concurrent.ConcurrentHashMap;
 public class ChatAccessToken {
 
     private final Map<String, Long> accessToken;
+    private final Map<Long, String> reverseAccessToken;
 
     @Autowired
     public ChatAccessToken() {
         this.accessToken = new ConcurrentHashMap<>();
+        this.reverseAccessToken = new ConcurrentHashMap<>();
     }
 
     public String createAccessToken(Long memberId) {
         if (accessToken.containsValue(memberId)) {
-            return null;
+            return reverseAccessToken.get(memberId);
         }
         String token = createUUID();
         accessToken.put(token, memberId);
+        reverseAccessToken.put(memberId, token);
         return token;
     }
 
@@ -39,6 +42,8 @@ public class ChatAccessToken {
     }
 
     public void remove(String token) {
+        Long memberId = accessToken.get(token);
         accessToken.remove(token);
+        reverseAccessToken.remove(memberId);
     }
 }

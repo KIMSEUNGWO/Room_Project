@@ -79,4 +79,8 @@ public class Member implements ImageFileEntity {
     public String getMemberNickname() {
         return memberNickname;
     }
+
+    public Profile getProfile() {
+        return profile;
+    }
 }

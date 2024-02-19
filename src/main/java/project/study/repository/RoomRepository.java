@@ -138,7 +138,7 @@ public class RoomRepository {
         return query.select(Projections.fields(ResponseRoomMemberList.class,
                     m.memberId.as("memberId"),
                     p.profileStoreName.as("image"),
-                    m.memberName.as("name"),
+                    m.memberNickname.as("name"),
                     isManager(j.authorityEnum).as("isManager")
                 ))
                 .from(j)
