@@ -60,107 +60,6 @@
                 </div>
                 <div class="chat-history">
 
-                    <div class="you">
-                        <div class="profile-box">
-                            <img src="/images/IMG_8012.jpeg" alt="">
-                        </div>
-                        <div class="meesage-wrap">
-                            <div class="name-box">
-                                <span class="name">김승우</span>
-                            </div>
-
-                            <div class="message-box">
-                                <pre class="message-content">
-                                    메세지 내용입니다.메세지 내용입니다.
-                                    메세지 내용입니다.
-                                </pre>
-                                <span class="time">21:06</span>
-                            </div>
-                            <div class="message-box">
-                                <pre class="message-content">
-                                    메세지 내용입니다.메세지 내용입니다.
-                                    메세지 내용입니다.
-                                </pre>
-                                <span class="time">21:06</span>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="you">
-                        <div class="profile-box">
-                            <img src="/images/IMG_8012.jpeg" alt="">
-                        </div>
-                        <div class="meesage-wrap">
-                            <div class="name-box">
-                                <span class="name">김승우</span>
-                            </div>
-
-                            <div class="message-box">
-                                <pre class="message-content">
-                                    메세지 내용입니다.메세지 내용입니다.
-                                    메세지 내용입니다.
-                                </pre>
-                                <span class="time">21:06</span>
-                            </div>
-                            <div class="message-box">
-                                <pre class="message-content">
-                                    메세지 내용입니다.메세지 내용입니다.
-                                    메세지 내용입니다.
-                                </pre>
-                                <span class="time">21:06</span>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="me">
-                        <div class="message-box">
-                            <span class="time">21:03</span>
-                            <pre class="message-content">
-                                내가 보낸 메세지 내용입니다.
-                            </pre>
-                        </div>
-                        <div class="message-box">
-                            <span class="time">21:01</span>
-                            <pre class="message-content">
-                                테스트 중입니다.
-                                줄바꿈 테스트 입니다.
-                                길이테스트입니다.길이테스트입니다.길이테스트입니다.길이테스트입니다.
-                            </pre>
-                        </div>
-                    </div>
-                    <div class="date">
-                        <span>2024년 2월 4일 일요일</span>
-                    </div>
-                    <div class="me">
-                        <div class="message-box">
-                            <span class="time">21:03</span>
-                            <pre class="message-content">
-                                내가 보낸 메세지 내용입니다.
-                            </pre>
-                        </div>
-                        <div class="message-box">
-                            <span class="time">21:01</span>
-                            <pre class="message-content">
-                                테스트 중입니다.
-                                줄바꿈 테스트 입니다.
-                                길이테스트입니다.길이테스트입니다.길이테스트입니다.길이테스트입니다.
-                            </pre>
-                        </div>
-                    </div>
-                    <div class="me">
-                        <div class="message-box">
-                            <span class="time">21:03</span>
-                            <pre class="message-content">
-                                내가 보낸 메세지 내용입니다.
-                            </pre>
-                        </div>
-                        <div class="message-box">
-                            <span class="time">21:01</span>
-                            <pre class="message-content">
-                                테스트 중입니다.
-                                줄바꿈 테스트 입니다.
-                                길이테스트입니다.길이테스트입니다.길이테스트입니다.길이테스트입니다.
-                            </pre>
-                        </div>
-                    </div>
 
                 </div>
                 <div class="send-message">
@@ -180,7 +79,7 @@
                         <div class="member" th:each="member : ${memberList}">
                             <div class="member-data">
                                 <img th:src="|/images/member_profile/${member.image}" alt="">
-                                <span th:text="${member.name}">이름이름</span>
+                                <span th:text="${member.name}" th:name="${member.name}">이름이름</span>
                                 <div class="manager" th:if="${member.isManager}">방장</div>
                             </div>
                             <button type="button" class="member-more">
@@ -199,15 +98,7 @@
                     <h4>접속중인 회원</h4>
                     <hr>
                     <div class="member-list" data-is-online="true">
-                        <div class="member">
-                            <div class="member-data">
-                                <img src="/images/member_profile/" alt="">
-                                <span>또다른애</span>
-                            </div>
-                            <button type="button" class="member-more">
-                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><path d="M8 256a56 56 0 1 1 112 0A56 56 0 1 1 8 256zm160 0a56 56 0 1 1 112 0 56 56 0 1 1 -112 0zm216-56a56 56 0 1 1 0 112 56 56 0 1 1 0-112z"/></svg>
-                            </button>
-                        </div>
+
                     </div>
                 </div>
             </div>

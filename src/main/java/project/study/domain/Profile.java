@@ -22,4 +22,8 @@ public class Profile {
 
     private String profileOriginalName;
     private String profileStoreName;
+
+    public String getProfileStoreName() {
+        return profileStoreName;
+    }
 }

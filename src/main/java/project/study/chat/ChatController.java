@@ -1,33 +1,20 @@
 package project.study.chat;
 
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.event.EventListener;
-import org.springframework.messaging.handler.annotation.DestinationVariable;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.Payload;
-import org.springframework.messaging.handler.annotation.SendTo;
 import org.springframework.messaging.simp.SimpMessageHeaderAccessor;
 import org.springframework.messaging.simp.SimpMessageSendingOperations;
 import org.springframework.messaging.simp.stomp.StompHeaderAccessor;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.SessionAttribute;
 import org.springframework.web.socket.messaging.SessionDisconnectEvent;
-import project.study.constant.WebConst;
-import project.study.customAnnotation.PathRoom;
-import project.study.customAnnotation.SessionLogin;
 import project.study.domain.Member;
-import project.study.domain.Room;
 import project.study.jpaRepository.MemberJpaRepository;
 
-import java.util.Map;
+import java.time.LocalDateTime;
 import java.util.Optional;
-
-import static project.study.constant.WebConst.LOGIN_MEMBER;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -40,31 +27,39 @@ public class ChatController {
     private final ChatAccessToken chatAccessToken;
 
     @MessageMapping("/chat/enterUser")
-    @SendTo("/sub/chat/room")
-    public ChatDto enterUser(@Payload ChatDto chat, SimpMessageHeaderAccessor headerAccessor) {
-
-        Long memberId = chatAccessToken.getMemberId(chat.getSender());
-
+    public void enterUser(@Payload ChatDto chat, SimpMessageHeaderAccessor headerAccessor) {
+        System.out.println("enterUser = " + chat);
+        Long memberId = chatAccessToken.getMemberId(chat.getToken());
         Optional<Member> findMember = memberJpaRepository.findById(memberId);
         Member member = findMember.get();
-        chat.setSender(member.getMemberNickname());
 
 
-        System.out.println("enterUser = " + chat);
-
-        headerAccessor.getSessionAttributes().put("userNickname", member.getMemberNickname());
+        headerAccessor.getSessionAttributes().put("memberId", memberId);
+        headerAccessor.getSessionAttributes().put("nickname", member.getMemberNickname());
         headerAccessor.getSessionAttributes().put("roomId", chat.getRoomId());
 
-        chat.setMessage(member.getMemberNickname() + "님이 입장하셨습니다.");
-//        template.convertAndSend("/sub/chat/room/" + chat.getRoomId(), chat);
-        return chat;
+        if (member.getProfile() != null) {
+            headerAccessor.getSessionAttributes().put("senderImage", member.getProfile().getProfileStoreName());
+            chat.setSenderImage(member.getProfile().getProfileStoreName());
+        }
 
+        chat.setSender(member.getMemberNickname());
+        chat.setMessage(member.getMemberNickname() + "님이 입장하셨습니다.");
+        template.convertAndSend("/sub/chat/room/" + chat.getRoomId(), chat);
     }
 
     @MessageMapping("/chat/sendMessage")
-    public void sendMessage(@Payload ChatDto chat) {
-        System.out.println("chat = " + chat);
+    public void sendMessage(@Payload ChatDto chat, SimpMessageHeaderAccessor headerAccessor) {
+
+        Long memberId = (Long) headerAccessor.getSessionAttributes().get("memberId");
+        String nickname = (String) headerAccessor.getSessionAttributes().get("nickname");
+        String senderImage = (String) headerAccessor.getSessionAttributes().get("senderImage");
+
+        chat.setSenderImage(senderImage);
+        chat.setSender(nickname);
         chat.setMessage(chat.getMessage());
+        chat.setTime(LocalDateTime.now());
+        System.out.println("chat = " + chat);
         template.convertAndSend("/sub/chat/room/" + chat.getRoomId(), chat);
     }
 
@@ -79,10 +74,7 @@ public class ChatController {
         String roomId = (String) headerAccessor.getSessionAttributes().get("roomId");
 
         log.info("headAccessor {}", headerAccessor);
-        // 채팅방 유저 -1
-        chatRepository.minusUserCnt(roomId);
 
-        chatRepository.delUser(Long.parseLong(roomId), userNickname);
 
         ChatDto chat = ChatDto.builder()
                 .type(MessageType.LEAVE)

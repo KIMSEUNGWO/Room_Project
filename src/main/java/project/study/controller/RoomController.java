@@ -101,6 +101,7 @@ public class RoomController {
     @GetMapping("/room/access")
     public ResponseEntity<ResponseDto> accessToken(@SessionAttribute(name = WebConst.LOGIN_MEMBER) Long memberId) {
         String accessToken = chatAccessToken.createAccessToken(memberId);
+        System.out.println("accessToken = " + accessToken);
         return new ResponseEntity<>(new ResponseDto("ok", accessToken), HttpStatus.OK);
     }
 
