@@ -11,7 +11,7 @@ import project.study.authority.member.CommonMember;
 import project.study.authority.member.MemberAuthorizationCheck;
 import project.study.authority.member.dto.RequestJoinRoomDto;
 import project.study.authority.member.dto.ResponseRoomListDto;
-import project.study.chat.ChatAccessToken;
+import project.study.chat.component.ChatAccessToken;
 import project.study.chat.dto.ResponseChatHistory;
 import project.study.constant.WebConst;
 import project.study.customAnnotation.PathRoom;
@@ -23,6 +23,8 @@ import project.study.dto.abstractentity.ResponseDto;
 import project.study.authority.member.dto.RequestCreateRoomDto;
 import project.study.dto.room.ResponseCreateRoomDto;
 import project.study.dto.room.SearchRoomListDto;
+import project.study.exceptions.RestFulException;
+import project.study.service.JoinRoomService;
 import project.study.service.RoomService;
 
 import java.util.List;
@@ -34,6 +36,7 @@ public class RoomController {
 
     private final MemberAuthorizationCheck authorizationCheck;
     private final RoomService roomService;
+    private final JoinRoomService joinRoomService;
     private final ChatAccessToken chatAccessToken;
 
     @PostMapping(value = "/room/create")
@@ -98,11 +101,13 @@ public class RoomController {
         return new ResponseEntity<>(chatHistory, HttpStatus.OK);
     }
 
-    @GetMapping("/room/access")
-    public ResponseEntity<ResponseDto> accessToken(@SessionAttribute(name = WebConst.LOGIN_MEMBER) Long memberId) {
-        String accessToken = chatAccessToken.createAccessToken(memberId);
-        System.out.println("accessToken = " + accessToken);
-        return new ResponseEntity<>(new ResponseDto("ok", accessToken), HttpStatus.OK);
+    @GetMapping("/room/{room}/access")
+    public ResponseEntity<ResponseDto> accessToken(@SessionLogin(required = true) Member member, @PathRoom("room") Room room) {
+        boolean exitsByMemberAndRoom = joinRoomService.exitsByMemberAndRoom(member, room);
+        if (!exitsByMemberAndRoom) throw new RestFulException(new ResponseDto("error", "권한 없음"));
+
+        chatAccessToken.createAccessToken(member.getMemberId(), room.getRoomId());
+        return new ResponseEntity<>(new ResponseDto("ok", String.valueOf(member.getMemberId())), HttpStatus.OK);
     }
 
 

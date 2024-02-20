@@ -40,7 +40,6 @@ public class RoomService {
         roomRepository.createTags(data, room);
         roomRepository.createPassword(data, room);
         joinRoomRepository.createJoinRoom(room, member);
-        roomRepository.createChat(room);
         return room.getRoomId();
     }
 
@@ -105,7 +104,7 @@ public class RoomService {
 
     public List<ResponseChatHistory> findByChatHistory(Room room) {
         List<ResponseChatHistory> byChatHistory = roomRepository.findByChatHistory(room);
-        byChatHistory.sort(Comparator.comparing(ResponseChatHistory::getDate).reversed());
+        byChatHistory.sort(Comparator.comparing(ResponseChatHistory::getTime));
         return byChatHistory;
     }
 }

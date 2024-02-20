@@ -9,7 +9,6 @@ import project.study.chat.domain.Chat;
 import project.study.enums.PublicEnum;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -50,8 +49,8 @@ public class Room implements ImageFileEntity {
     @OneToMany(mappedBy = "room", fetch = FetchType.LAZY)
     private List<JoinRoom> joinRoomList;
 
-    @OneToOne(mappedBy = "room", fetch = FetchType.LAZY)
-    private Chat chat;
+    @OneToMany(mappedBy = "room", fetch = FetchType.LAZY)
+    private List<Chat> chatHistory;
 
     public boolean isPublic() {
         return roomPublic.isPublic();

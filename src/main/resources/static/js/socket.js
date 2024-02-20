@@ -5,11 +5,11 @@ window.addEventListener('load', () => {
 
 })
 function getToken() {
-    fetch('/room/access')
+    fetch('/room/' + getRoomId() + '/access')
     .then(res => res.json())
     .then(map => {
         console.log(map);
-        token = map.message;
+        token = Number(map.message);
     });
 }
 
@@ -73,13 +73,14 @@ function onMessageReceived(payload) {
 
     if (chat.type === 'ENTER') {
         history.innerHTML += centerMessage(chat.message);
-        moveToOnline(chat.sender);
+        initialMemberCheck(chat);
+        moveToOnline(chat.currentMemberList);
         return;
     }
 
     if (chat.type === 'LEAVE') {
         history.innerHTML += centerMessage(chat.message);
-        moveToOffline(chat.sender);
+        moveToOffline(chat.currentMemberList);
         return;
     }
 
@@ -88,15 +89,37 @@ function onMessageReceived(payload) {
     }
     
 }
-function moveToOnline(sender) {
-    let member = document.querySelector('.member-list[data-is-online="false"] span[name="' + sender+ '"]').parentElement.parentElement;
-    let online = document.querySelector('.member-list[data-is-online="true"]');
-    online.appendChild(member);
+function initialMemberCheck(chat) { // 처음들어온 회원인지 확인
+    let offline =  document.querySelector('.member-list[data-is-online="false"]');
+    let member = offline.querySelector('span[name="' + chat.sender + '"]');
+    if (member == null) {
+        offline.innerHTML += createMember(chat);
+    }
 }
-function moveToOffline(sender) {
-    let member = document.querySelector('.member-list[data-is-online="true"] #' + sender).parentElement.parentElement;
+function moveToOnline(currentMemberList) {
+    let online = document.querySelector('.member-list[data-is-online="true"]');
+    for (let i=0;i<currentMemberList.length; i++) {
+        let memberTag = document.querySelector('.member-list[data-is-online="false"] span[name="' + currentMemberList[i] + '"]');
+        if (memberTag != null) {
+            let member = memberTag.parentElement.parentElement;
+            online.appendChild(member);
+        }
+    }
+}
+function moveToOffline(currentMemberList) {
     let offline = document.querySelector('.member-list[data-is-online="false"]');
-    offline.appendChild(member);
+
+    let onlineList = document.querySelectorAll('.member-list[data-is-online="true"] .member-data span');
+
+    a:for (let i=0;i<onlineList.length;i++) {
+        for (let j=0;j<currentMemberList.length;j++) {
+            if (onlineList[i].textContent == currentMemberList[j]) {
+                continue a;
+            }
+        }
+        let member = onlineList[i].parentElement.parentElement;
+        offline.appendChild(member);
+    }
 }
 function centerMessage(message) {
     return `<div class="date">
@@ -115,12 +138,20 @@ function printMessage(chat) {
     nextDate(chat, lastElement);
 
     if (chat.token == token) { // 내 메세지
+        if (lastElement == null) {
+            chatHistory.innerHTML += createMe(chat);
+            return;
+        }
         if (lastElement.classList.contains('me')) { // 마지막 채팅내역이 나일 경우
             lastElement.innerHTML += createMeMessageBox(chat); 
         } else { // 마지막 채팅내역이 내가 아닌경우
             chatHistory.innerHTML += createMe(chat);
         }
     } else { // 상대방 메세지
+        if (lastElement == null) {
+            chatHistory.innerHTML += createYou(chat);
+            return;
+        }
         let name = lastElement.querySelector('.name');
         if (name != null && name.textContent == chat.sender) { // 마지막 채팅내역이 보낸사람과 일치
             lastElement.querySelector('.message-wrap').innerHTML += createYouMessageBox(chat);
@@ -193,4 +224,22 @@ function createYou(chat) {
                 </div>
             </div>`
     
+}
+
+function createMember(chat) {
+    return `<div class="member">
+                <div class="member-data">
+                    <img src="/images/member_profile/${chat.senderImage}" alt="">
+                    <span name="${chat.sender}">${chat.sender}</span>
+                </div>
+                <button type="button" class="member-more">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><path d="M8 256a56 56 0 1 1 112 0A56 56 0 1 1 8 256zm160 0a56 56 0 1 1 112 0 56 56 0 1 1 -112 0zm216-56a56 56 0 1 1 0 112 56 56 0 1 1 0-112z"/></svg>
+                    <div class="member-option-menu disabled">
+                        <div class="member-notify-box">
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512"><path fill="#ff0000" d="M272 384c9.6-31.9 29.5-59.1 49.2-86.2l0 0c5.2-7.1 10.4-14.2 15.4-21.4c19.8-28.5 31.4-63 31.4-100.3C368 78.8 289.2 0 192 0S16 78.8 16 176c0 37.3 11.6 71.9 31.4 100.3c5 7.2 10.2 14.3 15.4 21.4l0 0c19.8 27.1 39.7 54.4 49.2 86.2H272zM192 512c44.2 0 80-35.8 80-80V416H112v16c0 44.2 35.8 80 80 80zM112 176c0 8.8-7.2 16-16 16s-16-7.2-16-16c0-61.9 50.1-112 112-112c8.8 0 16 7.2 16 16s-7.2 16-16 16c-44.2 0-80 35.8-80 80z"/></svg>
+                            <span>신고하기</span>
+                        </div>
+                    </div>
+                </button>
+            </div>`
 }

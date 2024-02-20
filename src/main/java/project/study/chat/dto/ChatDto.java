@@ -1,6 +1,7 @@
-package project.study.chat;
+package project.study.chat.dto;
 
 import lombok.*;
+import project.study.chat.MessageType;
 
 import java.time.LocalDateTime;
 
@@ -14,7 +15,7 @@ public class ChatDto {
 
     private MessageType type;
     private Long roomId;
-    private String token;
+    private Long token;
     private String sender;
     private String senderImage;
     private String message;
