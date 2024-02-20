@@ -1,21 +1,17 @@
 package project.study.repository;
 
-import com.querydsl.core.types.Expression;
 import com.querydsl.core.types.Projections;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.core.types.dsl.EnumPath;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import jakarta.persistence.EntityManager;
 import jakarta.servlet.http.HttpServletResponse;
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 import project.study.authority.member.dto.RequestJoinRoomDto;
-import project.study.chat.domain.Chat;
 import project.study.chat.domain.QChat;
-import project.study.chat.domain.QChatHistory;
 import project.study.chat.dto.ResponseChatHistory;
 import project.study.chat.jparepository.ChatJpaRepository;
 import project.study.controller.image.FileUpload;
@@ -152,33 +148,25 @@ public class RoomRepository {
         return authorityEnum.eq(AuthorityMemberEnum.방장);
     }
 
-    public void createChat(Room room) {
-        Chat saveChat = Chat.builder()
-                .room(room)
-                .build();
-        chatJpaRepository.save(saveChat);
-    }
-
     public List<ResponseChatHistory> findByChatHistory(Room room) {
         QRoom r = QRoom.room;
         QChat c = QChat.chat;
-        QChatHistory ch = QChatHistory.chatHistory;
         QMember m = QMember.member;
         QProfile p = QProfile.profile;
 
         return query.select(Projections.fields(ResponseChatHistory.class,
-                            m.memberId.as("memberId"),
-                            p.profileStoreName.as("image"),
-                            ch.message.as("message"),
-                            ch.sendDate.as("date")
+                            m.memberId.as("token"),
+                            m.memberNickname.as("sender"),
+                            p.profileStoreName.as("senderImage"),
+                            c.message.as("message"),
+                            c.sendDate.as("time")
                             ))
-                    .from(ch)
-                    .leftJoin(c).on(ch.chat.eq(c))
+                    .from(c)
                     .join(r).on(c.room.eq(r))
-                    .join(m).on(ch.sendMember.eq(m))
+                    .join(m).on(c.sendMember.eq(m))
                     .leftJoin(p).on(p.member.eq(m))
                     .where(r.eq(room))
-                    .orderBy(ch.chatHistoryId.asc())
+                    .orderBy(c.chatId.asc())
                     .limit(50)
                     .fetch();
     }

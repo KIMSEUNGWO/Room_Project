@@ -11,10 +11,11 @@ import java.time.LocalDateTime;
 @ToString
 public class ResponseChatHistory {
 
-    private Long memberId;
-    private String image;
+    private Long token;
+    private String sender;
+    private String senderImage;
     private String message;
-    private LocalDateTime date;
+    private LocalDateTime time;
 
 
 }
