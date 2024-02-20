@@ -63,12 +63,28 @@ body {
 .notice {
     display: flex;
     gap: 1rem;
-    padding: 0.5rem 1rem 2rem 1rem;
+    padding: 0.5rem 1rem 1rem 1rem;
     vertical-align: top;
 }
-.room-notice pre {
+.notice-text {
+    color: black;
+}
+.notice-time {
+    margin-top: 1rem;
+    font-size: 0.9rem;
+    color: gray;
+}
+.room-notice-content {
     width: 100%;
     color: black;
+    max-height: 3rem;
+    overflow: hidden;
+    transition: max-height 0.5s ease;
+}
+.room-notice-content.display {
+    max-height: 50vh;
+    transition: max-height 0.5s ease-in-out;
+    overflow-y: scroll;
 }
 .room-notice svg {
     fill: black
@@ -126,7 +142,10 @@ body {
     justify-content: flex-start;
     width: 100%;
     overflow-y: scroll;
-    padding: 8rem 1rem 0 1rem;
+    padding-top: 1rem;
+    padding-left: 1rem;
+    padding-right: 1rem;
+    padding-bottom: 0rem;
     height: 100%;
 }
 .you {

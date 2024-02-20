@@ -26,6 +26,20 @@ window.addEventListener('load', () => {
         })
     }
 
+    const room_notice = document.querySelector('.room-notice'); // 공지사항 접기 펼치기
+    room_notice.addEventListener('click', (e) => {
+        if (e.target.classList.contains('folder')) {
+            const folder = e.target;
+            let notice = document.querySelector('.room-notice-content');
+            if (!notice.classList.contains('display')) {
+                folder.querySelector('svg').style.rotate = '180deg';
+            } else {
+                folder.querySelector('svg').style.rotate = '0deg';
+            }
+            notice.classList.toggle('display');
+        }
+    })
+
     memberOptionMenuOpen();
     memberOptionMenuClose();
     notifyModalOpen();

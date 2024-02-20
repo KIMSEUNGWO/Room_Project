@@ -21,7 +21,9 @@ import project.study.domain.Room;
 import project.study.domain.RoomPassword;
 import project.study.dto.abstractentity.ResponseDto;
 import project.study.authority.member.dto.RequestCreateRoomDto;
+import project.study.dto.abstractentity.ResponseObject;
 import project.study.dto.room.ResponseCreateRoomDto;
+import project.study.dto.room.ResponseRoomNotice;
 import project.study.dto.room.SearchRoomListDto;
 import project.study.exceptions.RestFulException;
 import project.study.service.JoinRoomService;
@@ -108,6 +110,15 @@ public class RoomController {
 
         chatAccessToken.createAccessToken(member.getMemberId(), room.getRoomId());
         return new ResponseEntity<>(new ResponseDto("ok", String.valueOf(member.getMemberId())), HttpStatus.OK);
+    }
+
+    @GetMapping("/room/{room}/notice")
+    public ResponseEntity<ResponseObject> roomNotice(@SessionLogin(required = true) Member member, @PathRoom("room") Room room) {
+        boolean exitsByMemberAndRoom = joinRoomService.exitsByMemberAndRoom(member, room);
+        if (!exitsByMemberAndRoom) throw new RestFulException(new ResponseDto("error", "권한 없음"));
+
+        ResponseRoomNotice responseRoomNotice = roomService.getNotice(room);
+        return new ResponseEntity<>(new ResponseObject("ok", responseRoomNotice), HttpStatus.OK);
     }
 
 
