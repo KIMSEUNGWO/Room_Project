@@ -1,8 +1,6 @@
 
 window.addEventListener('load', () => {
 
-    fetchGet('/room/' + getRoomId() + '/history', historyResult)
-
     const message = document.querySelector('#message');
     
     message.addEventListener('keydown', (e) => {
@@ -37,14 +35,9 @@ window.addEventListener('load', () => {
     editRoomModalOpen();
 
 });
-
-
-function historyResult(list) {
-    console.log(list);
-    for (let i=0;i<list.length;i++) {
-        printMessage(list[i]);
-    }
-    
+function scrollToBottom() {
+    const chatHistory = document.querySelector('.chat-history');
+    chatHistory.scrollTop = chatHistory.scrollHeight;
 }
 
 function textareaResize(message) {

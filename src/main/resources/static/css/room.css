@@ -175,17 +175,18 @@ body {
     padding: 0.3rem 0.5rem;
     background-color: rgb(56, 54, 54);
     width: auto;
+    max-width: 50%;
 }
 
 .time {
     display: inline-block;
     font-size: 0.8rem;
 }
-.date {
+.date, .alram {
     text-align: center;
     margin: 1.5rem 0;
 }
-.date span {
+.date span, .alram span {
     background-color: rgb(77, 74, 74);
     font-size: 0.85rem;
     border-radius: 2rem;
@@ -705,3 +706,29 @@ aside .buttons button:hover {
 .chat-history::-webkit-scrollbar {
     background-color: var(--room-bg-color);
 }
+
+.send-message {
+    position: relative;
+    z-index: 2;
+}
+.newMessageWrap {
+    width: 0;
+    height: 0;
+    left: 50%;
+    top: -3rem;
+    position: absolute;
+    
+}
+#newMessage {
+    position: absolute;
+    left: -5rem;
+    width: 10rem;
+    height: 2rem;
+    border-radius: 1rem;
+    background-color: gray;
+    font-size: 1rem;
+}
+.newMessageWrap.disabled {
+    display: none;
+}
+
