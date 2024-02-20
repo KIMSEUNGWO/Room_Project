@@ -26,6 +26,8 @@ public class Chat {
     @ManyToOne
     @JoinColumn(name = "memberId")
     private Member sendMember;
+
+    @Lob
     private String message;
     private LocalDateTime sendDate;
 }

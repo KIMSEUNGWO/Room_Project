@@ -1,9 +1,69 @@
 let stompClient = null;
 let token = getToken();
+let isNewMessage = false;
 window.addEventListener('load', () => {
-    connect();
+
+    fetchGet('/room/' + getRoomId() + '/history', historyResult) // 이전 기록 불러옴
+    connect(); // 웹소켓 연결
+
+    const chatHistory = document.querySelector('.chat-history');
+    chatHistory.addEventListener('scroll', () => {
+
+        const triggerScroll = isBottom();
+
+        if (triggerScroll) { // 스크롤이 맨 밑에 있을 때
+            isNewMessage = false;
+            let newMessage = document.querySelector('.newMessageWrap');
+            newMessage.classList.add('disabled');
+        }
+    })
+
+    const newMessage = document.querySelector('#newMessage');
+    newMessage.addEventListener('click', () => {
+        scrollToBottom();
+        deleteNewMessageAlert();
+    })
 
 })
+function isBottom() {
+    const chatHistory = document.querySelector('.chat-history');
+
+    const scrollPosition = chatHistory.scrollTop;
+    const scrollHeight = chatHistory.scrollHeight;
+    const clientHeight = chatHistory.clientHeight;
+
+    // 맨 위에서부터 100px까지의 스크롤 영역을 감지합니다.
+    const threshold = 100;
+    const triggerScroll = scrollPosition >= (scrollHeight - clientHeight - threshold);
+    return triggerScroll;
+}
+
+function deleteNewMessageAlert() {
+    isNewMessage = false;
+    let newMessage = document.querySelector('.newMessageWrap');
+    newMessage.classList.add('disabled');
+}
+function newMessageAlert() {
+    const triggerScroll = isBottom();
+
+    if (!triggerScroll) { // 스크롤이 위에있을 때
+        let newMessage = document.querySelector('.newMessageWrap');
+        newMessage.classList.remove('disabled');
+        isNewMessage = true;
+    }
+    if (triggerScroll) { // 스크롤이 맨 밑에있을 때
+        scrollToBottom();
+    }
+}
+
+function historyResult(list) {
+    console.log(list);
+    for (let i=0;i<list.length;i++) {
+        printMessage(list[i]);
+    }
+    scrollToBottom(); 
+}
+
 function getToken() {
     fetch('/room/' + getRoomId() + '/access')
     .then(res => res.json())
@@ -75,19 +135,18 @@ function onMessageReceived(payload) {
         history.innerHTML += centerMessage(chat.message);
         initialMemberCheck(chat);
         moveToOnline(chat.currentMemberList);
-        return;
     }
 
     if (chat.type === 'LEAVE') {
         history.innerHTML += centerMessage(chat.message);
         moveToOffline(chat.currentMemberList);
-        return;
     }
 
     if (chat.type === 'TALK') {
         printMessage(chat);
     }
-    
+
+    newMessageAlert();
 }
 function initialMemberCheck(chat) { // 처음들어온 회원인지 확인
     let offline =  document.querySelector('.member-list[data-is-online="false"]');
@@ -121,8 +180,14 @@ function moveToOffline(currentMemberList) {
         offline.appendChild(member);
     }
 }
-function centerMessage(message) {
+
+function timeMessage(message) {
     return `<div class="date">
+                <span>${message}</span>
+            </div>`
+}
+function centerMessage(message) {
+    return `<div class="alram">
                 <span>${message}</span>
             </div>`
 }
@@ -134,6 +199,8 @@ function onError() {
 function printMessage(chat) {
     const chatHistory = document.querySelector('.chat-history');
     let lastElement = chatHistory.lastElementChild;
+
+    let scrollLocation = isBottom();
 
     nextDate(chat, lastElement);
 
@@ -147,6 +214,7 @@ function printMessage(chat) {
         } else { // 마지막 채팅내역이 내가 아닌경우
             chatHistory.innerHTML += createMe(chat);
         }
+        scrollToBottom();
     } else { // 상대방 메세지
         if (lastElement == null) {
             chatHistory.innerHTML += createYou(chat);
@@ -159,22 +227,36 @@ function printMessage(chat) {
             chatHistory.innerHTML += createYou(chat);
         }
     }
+    if (scrollLocation) {
+        scrollToBottom();
+    }
 }
 
 function nextDate(chat, lastElement) {
     const chatHistory = document.querySelector('.chat-history');
     let day = formatDay(chat.time);
     
-    if (lastElement == null || lastElement.classList.contains('date')) return;
-    console.log('이전 날짜 값 : ' , lastElement.querySelector('.message-box:last-child .day').textContent);
+    if (lastElement == null) { // 태그가 하나도 없으면 날짜 표시
+        chatHistory.innerHTML += timeMessage(day); // 2021년 1월 1일 월요일 출력
+        return;
+    }
+    if (lastElement.classList.contains('date')) return; // 마지막 태그가 날짜면 표시하지 않음
+
+    let dayTag = chatHistory.querySelector('.message-box:last-child .day');
+    if (dayTag == null) { // 날짜태그가 존재하지않으면 날짜 표시
+        chatHistory.innerHTML += timeMessage(day); // 2021년 1월 1일 월요일 출력
+        return;
+    }
+    console.log('이전 날짜 값 : ' , dayTag.textContent);
     console.log('이후 날짜 값 : ' , day);
 
-    if (lastElement.querySelector('.message-box:last-child .day').textContent != day) {
-        chatHistory.innerHTML += printMessage(formatDay(chat.time)); // 2021년 1월 1일 월요일 출력
+    if (dayTag.textContent != day) { // 날짜태그가 변경되었으면 날짜 표시
+        chatHistory.innerHTML += timeMessage(day); // 2021년 1월 1일 월요일 출력
     }
 }
 
 function formatDay(time) {
+    console.log(time);
     let dateObject = new Date(time);
     return new Intl.DateTimeFormat('ko-KR', {
                 year: 'numeric',
