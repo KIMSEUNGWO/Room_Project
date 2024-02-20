@@ -1,4 +1,4 @@
-package project.study.authority.admin.authority;
+package project.study.authority.admin;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;

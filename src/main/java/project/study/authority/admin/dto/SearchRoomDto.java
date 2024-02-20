@@ -15,13 +15,13 @@ public class SearchRoomDto {
 
     private Long roomId;
     private String roomTitle;
-    private String roomMemberCount;
+    private Long roomMemberCount;
     private String managerName;
     private String roomCreateDate;
     private PublicEnum publicEnum;
 
     @QueryProjection
-    public SearchRoomDto(Long roomId, String roomTitle, String roomMemberCount, String managerName, String roomCreateDate, PublicEnum publicEnum) {
+    public SearchRoomDto(Long roomId, String roomTitle, Long roomMemberCount, String managerName, String roomCreateDate, PublicEnum publicEnum) {
         this.roomId = roomId;
         this.roomTitle = roomTitle;
         this.roomMemberCount = roomMemberCount;

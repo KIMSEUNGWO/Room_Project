@@ -8,6 +8,7 @@ import org.springframework.transaction.annotation.Transactional;
 import project.study.authority.admin.dto.SearchExpireMemberDto;
 import project.study.authority.admin.dto.AdminMembersDto;
 import project.study.authority.admin.dto.SearchMemberDto;
+import project.study.authority.admin.dto.SearchRoomDto;
 import project.study.jpaRepository.AdminJpaRepository;
 import project.study.repository.AdminRepository;
 
@@ -21,20 +22,21 @@ public class AdminService {
     private final AdminJpaRepository adminJpaRepository;
     private final AdminRepository adminRepository;
 
-    public Page<SearchMemberDto> searchMembers(String word, int pageNumber){
+    public Page<SearchMemberDto> searchMember(String word, int pageNumber){
         PageRequest pageable = PageRequest.of(pageNumber - 1, 10);
-        return adminRepository.searchMembers(word, pageable);
+        return adminRepository.searchMember(word, pageable);
     }
 
-    public Page<SearchExpireMemberDto> searchExpireMembers(String word, int pageNumber){
+    public Page<SearchExpireMemberDto> searchExpireMember(String word, int pageNumber){
         PageRequest pageable = PageRequest.of(pageNumber - 1, 10);
-        return adminRepository.searchExpireMembers(word, pageable);
+        return adminRepository.searchExpireMember(word, pageable);
     }
 
-//    public List<AdminMembersDto> findAllByMember(){
-//        return adminRepository.findAllByMember();
+    public Page<SearchRoomDto> searchRoom(String word, int pageNumber){
+        PageRequest pageable = PageRequest.of(pageNumber - 1, 10);
+        return adminRepository.searchRoom(word, pageable);
+    }
 
-//    }
 
     public List<AdminMembersDto> findAllByFreezeMember(){
         return adminRepository.findAllByFreezeMember();

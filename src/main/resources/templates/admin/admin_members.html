@@ -90,37 +90,42 @@
                         </div>
                     </div>
                 </div>
-                <div class="pagination">
-                    <div class="buttons">
-                        <button type="button" id="last-left" th:if="${page.number > 0}">
-                            <a th:href="@{'get?page=' + 1 + '&amp;word=' + ${word}}">
-                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><path d="M41.4 233.4c-12.5 12.5-12.5 32.8 0 45.3l160 160c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L109.3 256 246.6 118.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0l-160 160zm352-160l-160 160c-12.5 12.5-12.5 32.8 0 45.3l160 160c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L301.3 256 438.6 118.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0z"/></svg>
-                            </a>
-                        </button>
-                        <button type="button" id="left" th:if="${page.number > 0}">
-                            <a th:href="@{'get?page=' + ${page.number} + '&amp;word=' +${word}}">
-                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><path d="M41.4 233.4c-12.5 12.5-12.5 32.8 0 45.3l160 160c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L109.3 256 246.6 118.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0l-160 160z"/></svg>
-                            </a>
-                        </button>
+                <th:block th:if="${!page.content.isEmpty()}">
+                    <div class="pagination">
+                        <div class="buttons">
+                            <button type="button" id="last-left" th:if="${page.number > 0}">
+                                <a th:href="@{'get?page=' + 1 + '&amp;word=' + ${word}}">
+                                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><path d="M41.4 233.4c-12.5 12.5-12.5 32.8 0 45.3l160 160c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L109.3 256 246.6 118.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0l-160 160zm352-160l-160 160c-12.5 12.5-12.5 32.8 0 45.3l160 160c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L301.3 256 438.6 118.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0z"/></svg>
+                                </a>
+                            </button>
+                            <button type="button" id="left" th:if="${page.number > 0}">
+                                <a th:href="@{'get?page=' + ${page.number} + '&amp;word=' +${word}}">
+                                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><path d="M41.4 233.4c-12.5 12.5-12.5 32.8 0 45.3l160 160c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L109.3 256 246.6 118.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0l-160 160z"/></svg>
+                                </a>
+                            </button>
+                        </div>
+                        <div id="page">
+                            <button type="button" class="page-num" th:each="i : ${#numbers.sequence(1, page.totalPages)}">
+                                <a th:href="@{'get?page=' + ${i} + '&amp;word=' + ${word}}">[[${i}]]</a>
+                            </button>
+                        </div>
+                        <div class="buttons">
+                            <button type="button" id="right" th:if="${!page.last}">
+                                <a th:href="@{'get?page=' + ${page.number+2} + '&amp;word=' + ${word}}">
+                                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><path d="M278.6 233.4c12.5 12.5 12.5 32.8 0 45.3l-160 160c-12.5 12.5-32.8 12.5-45.3 0s-12.5-32.8 0-45.3L210.7 256 73.4 118.6c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0l160 160z"/></svg>
+                                </a>
+                            </button>
+                            <button type="button" class="last-right" th:if="${!page.last}">
+                                <a th:href="@{'get?page=' + ${page.totalPages} + '&amp;word=' +${word}}">
+                                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><path d="M470.6 278.6c12.5-12.5 12.5-32.8 0-45.3l-160-160c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3L402.7 256 265.4 393.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0l160-160zm-352 160l160-160c12.5-12.5 12.5-32.8 0-45.3l-160-160c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3L210.7 256 73.4 393.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0z"/></svg>
+                                </a>
+                            </button>
+                        </div>
                     </div>
-                    <div id="page">
-                        <button type="button" class="page-num" th:each="i : ${#numbers.sequence(1, page.totalPages)}">
-                            <a th:href="@{'get?page=' + ${i} + '&amp;word=' + ${word}}">[[${i}]]</a>
-                        </button>
-                    </div>
-                    <div class="buttons">
-                        <button type="button" id="right" th:if="${!page.last}">
-                            <a th:href="@{'get?page=' + ${page.number+2} + '&amp;word=' + ${word}}">
-                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><path d="M278.6 233.4c12.5 12.5 12.5 32.8 0 45.3l-160 160c-12.5 12.5-32.8 12.5-45.3 0s-12.5-32.8 0-45.3L210.7 256 73.4 118.6c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0l160 160z"/></svg>
-                            </a>
-                        </button>
-                        <button type="button" class="last-right" th:if="${!page.last}">
-                            <a th:href="@{'get?page=' + ${page.totalPages} + '&amp;word=' +${word}}">
-                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><path d="M470.6 278.6c12.5-12.5 12.5-32.8 0-45.3l-160-160c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3L402.7 256 265.4 393.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0l160-160zm-352 160l160-160c12.5-12.5 12.5-32.8 0-45.3l-160-160c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3L210.7 256 73.4 393.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0z"/></svg>
-                            </a>
-                        </button>
-                    </div>
-                </div>
+                </th:block>
+                <th:block th:if="${page.content.isEmpty()}">
+                    <div class="errorMsg" th:text="${errorMsg}"></div>
+                </th:block>
             </div>
         </div>
     </div>

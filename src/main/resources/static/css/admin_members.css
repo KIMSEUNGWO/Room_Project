@@ -257,3 +257,11 @@ input[type="checkbox"] {
     text-decoration: underline;
     
 }
+
+.errorMsg {
+    display: flex;
+    justify-content: center;
+    position: relative;
+    top: 1rem;
+    color: rgb(255, 58, 58);
+}
