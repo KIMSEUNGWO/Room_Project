@@ -5,6 +5,8 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDateTime;
+
 @Entity
 @AllArgsConstructor
 @NoArgsConstructor
@@ -17,10 +19,18 @@ public class RoomNotice {
     private Long roomNoticeId;
 
     private String roomNoticeContent;
+    private LocalDateTime roomNoticeDate;
 
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "room")
     private Room room;
 
 
+    public String getRoomNoticeContent() {
+        return roomNoticeContent;
+    }
+
+    public LocalDateTime getRoomNoticeDate() {
+        return roomNoticeDate;
+    }
 }

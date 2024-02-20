@@ -4,6 +4,7 @@ let isNewMessage = false;
 window.addEventListener('load', () => {
 
     fetchGet('/room/' + getRoomId() + '/history', historyResult) // 이전 기록 불러옴
+    fetchGet('/room/' + getRoomId() + '/notice', noticeResult) // 공지사항 불러옴
     connect(); // 웹소켓 연결
 
     const chatHistory = document.querySelector('.chat-history');
@@ -25,6 +26,34 @@ window.addEventListener('load', () => {
     })
 
 })
+function noticeResult(json) {
+    updateNotice(json.object);
+}
+function updateNotice(notice) {
+    let history = document.querySelector('.chat-history');
+    if (notice == null) {
+        history.style.paddingTop = '1rem';
+    } else {
+        history.style.paddingTop = '8rem';
+        let noticeWrap = document.querySelector('.room-notice');
+        noticeWrap.innerHTML = createNotice(notice);
+    }
+}
+
+function createNotice(notice) {
+    return `<div class="notice">
+                <svg class="speaker" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512"><path d="M544 32c17.7 0 32 14.3 32 32V448c0 17.7-14.3 32-32 32s-32-14.3-32-32V64c0-17.7 14.3-32 32-32zM64 190.3L480 64V448L348.9 408.2C338.2 449.5 300.7 480 256 480c-53 0-96-43-96-96c0-11 1.9-21.7 5.3-31.5L64 321.7C63.1 338.6 49.1 352 32 352c-17.7 0-32-14.3-32-32V192c0-17.7 14.3-32 32-32c17.1 0 31.1 13.4 32 30.3zm239 203.9l-91.6-27.8c-2.1 5.4-3.3 11.4-3.3 17.6c0 26.5 21.5 48 48 48c23 0 42.2-16.2 46.9-37.8z"/></svg>
+                <div class="room-notice-content">
+                    <pre class="notice-text">
+                        ${notice.content}
+                    </pre>
+                    <div class="notice-time">${formatDay(notice.time) + ' ' + foramtTime(notice.time)}</div>
+                </div>
+                <button type="button" class="folder">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><path d="M201.4 342.6c12.5 12.5 32.8 12.5 45.3 0l160-160c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L224 274.7 86.6 137.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3l160 160z"/></svg>
+                </button>
+            </div>`
+}
 function isBottom() {
     const chatHistory = document.querySelector('.chat-history');
 

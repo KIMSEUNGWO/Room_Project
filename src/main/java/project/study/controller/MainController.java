@@ -14,6 +14,7 @@ import project.study.customAnnotation.SessionLogin;
 import project.study.domain.Member;
 import project.study.domain.Room;
 import project.study.dto.room.ResponsePrivateRoomInfoDto;
+import project.study.dto.room.ResponseRoomInfo;
 import project.study.dto.room.ResponseRoomMemberList;
 import project.study.service.RoomService;
 
@@ -33,9 +34,11 @@ public class MainController {
         commonMember.joinRoom(new RequestJoinRoomDto(member, room, response, null));
 
         List<ResponseRoomMemberList> memberList = roomService.getResponseRoomMemberList(room);
+        ResponseRoomInfo roomInfo = roomService.getRoomNotice(room, member);
 
         model.addAttribute("max", room.getRoomLimit());
         model.addAttribute("memberList", memberList);
+        model.addAttribute("roomInfo", roomInfo);
 
         return "room";
     }

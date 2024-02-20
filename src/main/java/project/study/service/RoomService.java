@@ -9,15 +9,23 @@ import org.springframework.transaction.annotation.Transactional;
 import project.study.authority.member.dto.ResponseRoomListDto;
 import project.study.chat.dto.ResponseChatHistory;
 import project.study.constant.WebConst;
+import project.study.domain.JoinRoom;
 import project.study.domain.Member;
 import project.study.domain.Room;
 import project.study.authority.member.dto.RequestCreateRoomDto;
+import project.study.domain.RoomNotice;
 import project.study.dto.abstractentity.ResponseDto;
 import project.study.dto.room.ResponsePrivateRoomInfoDto;
+import project.study.dto.room.ResponseRoomInfo;
 import project.study.dto.room.ResponseRoomMemberList;
+import project.study.dto.room.ResponseRoomNotice;
 import project.study.enums.AuthorityMemberEnum;
+import project.study.exceptions.authority.NotAuthorizedException;
+import project.study.exceptions.authority.NotFoundRoomException;
+import project.study.exceptions.authority.NotJoinRoomException;
 import project.study.exceptions.roomcreate.CreateExceedRoomException;
 import project.study.exceptions.roomjoin.IllegalRoomException;
+import project.study.jpaRepository.JoinRoomJpaRepository;
 import project.study.repository.JoinRoomRepository;
 import project.study.repository.RoomRepository;
 import project.study.repository.TagRepository;
@@ -31,6 +39,7 @@ public class RoomService {
 
     private final RoomRepository roomRepository;
     private final JoinRoomRepository joinRoomRepository;
+    private final JoinRoomJpaRepository joinRoomJpaRepository;
     private final TagRepository tagRepository;
 
     @Transactional
@@ -106,5 +115,26 @@ public class RoomService {
         List<ResponseChatHistory> byChatHistory = roomRepository.findByChatHistory(room);
         byChatHistory.sort(Comparator.comparing(ResponseChatHistory::getTime));
         return byChatHistory;
+    }
+
+    public ResponseRoomInfo getRoomNotice(Room room, Member member) {
+        JoinRoom joinRoom = joinRoomJpaRepository.findByMemberAndRoom(member, room).get();
+        AuthorityMemberEnum authority = joinRoom.getAuthority();
+
+        return ResponseRoomInfo.builder()
+                .roomTitle(room.getRoomTitle())
+                .isPublic(room.isPublic())
+                .isManager(authority.isManager())
+                .build();
+    }
+
+    public ResponseRoomNotice getNotice(Room room) {
+        RoomNotice roomNotice = room.getRoomNotice();
+        if (roomNotice == null) return null;
+
+        return ResponseRoomNotice.builder()
+                .content(roomNotice.getRoomNoticeContent())
+                .time(roomNotice.getRoomNoticeDate())
+                .build();
     }
 }
