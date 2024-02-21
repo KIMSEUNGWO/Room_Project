@@ -7,38 +7,54 @@ window.addEventListener('load', function(){
 });
 
 function roomOptionOpen(){
-    let optionMore = document.querySelector('.option-more');
-    let optionMenu = document.querySelector('.option-menu');
+    let optionMores = document.querySelectorAll('.option-more');
+    let optionMenus = document.querySelectorAll('.option-menu');
 
-    optionMore.addEventListener('click', function(e){
-        if (e.target.classList.contains('option-more')) {
-            optionMenu.classList.remove('disabled');
-        }
+    optionMores.forEach(function(optionMore){
+        optionMore.addEventListener('click', function(e){
+            if (e.target.classList.contains('option-more')) {
+                initMoreList();
+                let menu = optionMore.children.namedItem('option-menu');
+                menu.classList.remove('disabled');
+
+            }
+        });
     });
-
-    
 
 };
 
+function initMoreList() {
+    let list = document.querySelectorAll('.option-menu');
+    list.forEach(li => li.classList.add('disabled'));
+}
+
 function roomOptionClose(){
-    let optionMenu = document.querySelector('.option-menu');
+    let optionMenus = document.querySelectorAll('.option-menu');
     let container = document.querySelector(':not(.option-more):not(.option-more *):first-of-type');
 
-    container.addEventListener('click', function(event){
-        let s = event.target;
-
-        if(!s.classList.contains('option-more') && !s.classList.contains('option-exit')
-            && !optionMenu.classList.contains('disabled')){
-            optionMenu.classList.add('disabled');
-        }
-    });
+    optionMenus.forEach(function(optionMenu){
+        container.addEventListener('click', function(event){
+            let s = event.target;
+    
+            if(!s.classList.contains('option-more') && !s.classList.contains('option-exit')
+                && !optionMenu.classList.contains('disabled')){
+                optionMenu.classList.add('disabled');
+            }
+        });
+    })
+    
 };
 
 function deleteRoom(){
-    let optionMenu = document.querySelector('.option-menu');
-    let optionExit = document.querySelector('.option-exit');
+    let optionMenus = document.querySelectorAll('.option-menu');
+    let optionExits = document.querySelectorAll('.option-exit');
 
-    optionExit.addEventListener('click', function(){
-        optionMenu.classList.add('disabled');
-    });
+    optionMenus.forEach(function(optionMenu){
+            let exit = optionMenu.children.namedItem('option-exit');
+            exit.addEventListener('click', function(){
+                optionMenu.classList.add('disabled');
+            });
+        });
+        
+    
 }

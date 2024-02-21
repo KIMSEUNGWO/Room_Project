@@ -135,6 +135,14 @@ public class AdminRepository {
         return PageableExecutionUtils.getPage(content, pageable, () -> count.fetchCount());
     }
 
+    private Expression<String> getRoomMember(QRoom r) {
+        return Expressions
+            .asString(r.joinRoomList.size().stringValue())
+            .concat("/")
+            .concat(r.roomLimit.stringValue())
+            .as("roomMember");
+    }
+
     public Page<SearchRoomDto> searchRoom(String word, Pageable pageable){
 
         BooleanBuilder builder = new BooleanBuilder();
@@ -155,7 +163,8 @@ public class AdminRepository {
 //                select(joinRoom.member.count())
 //                    .from(joinRoom)
 //                    .where(joinRoom.room.eq(joinRoom.room)),
-                Expressions.numberTemplate(Long.class, "{0}", room.roomLimit),
+//                Expressions.numberTemplate(Long.class, "{0}", room.roomLimit),
+                getRoomMember(room),
                 member.memberName,
                 Expressions.stringTemplate("TO_CHAR({0}, {1})", room.roomCreateDate, "YYYY-MM-DD"),
                 room.roomPublic))
@@ -178,9 +187,21 @@ public class AdminRepository {
 
 
 
-    public List<AdminMembersDto> findAllByFreezeMember(){
-        return queryFactory
-            .select(new QAdminMembersDto(
+    public Page<SearchMemberDto> findAllByFreezeMember(String word, Pageable pageable){
+        BooleanBuilder builder = new BooleanBuilder();
+
+        StringPath socialType = Expressions.stringPath(String.valueOf(social.socialType));
+
+        builder.or(accountExpression.likeIgnoreCase("%" + word + "%"));
+        builder.or(member.memberName.likeIgnoreCase("%" + word + "%"));
+        builder.or(member.memberNickname.likeIgnoreCase("%" + word + "%"));
+        builder.or(phone1.phone.likeIgnoreCase("%" + word + "%"));
+        builder.or(socialType.likeIgnoreCase("%" + word + "%"));
+
+        Predicate predicate = builder.getValue();
+
+        List<SearchMemberDto> content = queryFactory
+            .select(new QSearchMemberDto(
                 Expressions.stringTemplate("{0}", accountExpression).as("memberAccount"),
                 member.memberName,
                 member.memberNickname,
@@ -194,8 +215,22 @@ public class AdminRepository {
             .leftJoin(member.phone, phone1)
             .leftJoin(member.social, social)
             .where(member.memberStatus.eq(MemberStatusEnum.이용정지))
+            .where(predicate)
+            .offset(pageable.getOffset())
+            .limit(pageable.getPageSize())
             .orderBy(member.memberCreateDate.desc())
             .fetch();
+
+        JPAQuery<Member> count = queryFactory
+            .select(member)
+            .from(member)
+            .leftJoin(member.basic, basic)
+            .leftJoin(member.phone, phone1)
+            .leftJoin(member.social, social)
+            .where(member.memberStatus.eq(MemberStatusEnum.이용정지))
+            .where(predicate);
+
+        return PageableExecutionUtils.getPage(content, pageable, () -> count.fetchCount());
     }
 
     private StringExpression accountExpression = new CaseBuilder()

@@ -139,6 +139,7 @@ input[type="checkbox"] {
     width: 10rem;
     padding: 0.5rem 0.3rem;
     background-color: var(--room-bg-hover-color);
+    z-index: 3;
 }
 .option-menu.disabled {
     display: none;
