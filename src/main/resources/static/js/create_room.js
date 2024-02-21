@@ -170,6 +170,10 @@ function roomCreateResult(json) {
         al (json.result, '방 생성 제한', json.message);
         changeToCreateRoom();
     }
+    if (json.result == 'notLogin') {
+        al('error', '로그인 필요', json.message);
+        changeToLogin();
+    }
 }
 function convertTags(tags) {
     let jsonTags = [];

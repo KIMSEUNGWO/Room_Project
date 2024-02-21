@@ -128,8 +128,15 @@ function editResult(json) {
         insertModalSize('modal-edit-room');
         modal_content.innerHTML = editRoomModal(json.editRoom);
         modal.classList.remove('disabled');
-    } else if(json.result == 'error') {
+    }
+    if(json.result == 'error') {
 
+    }
+    if (json.result == 'notLogin') {
+        al('error', '로그인 필요', json.message);
+        setTimeout(() => {
+            window.location.href = '/';
+        }, 1000);
     }
 }
 
