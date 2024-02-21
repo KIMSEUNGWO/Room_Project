@@ -33,4 +33,12 @@ public class RoomNotice {
     public LocalDateTime getRoomNoticeDate() {
         return roomNoticeDate;
     }
+
+    public void setRoomNoticeContent(String roomNoticeContent) {
+        this.roomNoticeContent = roomNoticeContent;
+    }
+
+    public void setRoomNoticeDate(LocalDateTime roomNoticeDate) {
+        this.roomNoticeDate = roomNoticeDate;
+    }
 }

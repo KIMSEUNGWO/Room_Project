@@ -25,4 +25,8 @@ public class RoomPassword {
     public String getRoomPassword() {
         return roomPassword;
     }
+
+    public void setRoomPassword(String roomPassword) {
+        this.roomPassword = roomPassword;
+    }
 }

@@ -10,6 +10,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
+import project.study.authority.member.dto.RequestEditRoomDto;
 import project.study.authority.member.dto.RequestJoinRoomDto;
 import project.study.chat.domain.QChat;
 import project.study.chat.dto.ResponseChatHistory;
@@ -18,6 +19,9 @@ import project.study.controller.image.FileUpload;
 import project.study.controller.image.FileUploadType;
 import project.study.domain.*;
 import project.study.authority.member.dto.RequestCreateRoomDto;
+import project.study.dto.login.responsedto.Error;
+import project.study.dto.login.responsedto.ErrorList;
+import project.study.dto.room.ResponseEditRoomForm;
 import project.study.dto.room.ResponseRoomMemberList;
 import project.study.enums.AuthorityMemberEnum;
 import project.study.enums.PublicEnum;
@@ -52,20 +56,68 @@ public class RoomRepository {
         this.query = new JPAQueryFactory(em);
     }
 
-    public void validRoomTitle(String title) {
-
+    public void validRoomTitle(ErrorList errorList, String title) {
+        if (title == null || title.length() > 10) {
+            errorList.addError(new Error("title", "방 제목은 10자 이하만 가능합니다."));
+        }
     }
 
-    public void validRoomIntro(String intro) {
-
+    public void validRoomIntro(ErrorList errorList, String intro) {
+        if (intro != null && intro.length() > 50) {
+            errorList.addError(new Error("intro", "소개글은 50자 까지 가능합니다."));
+        }
     }
 
-    public void validRoomMaxPerson(String max) {
-
+    public void validRoomMaxPerson(ErrorList errorList, String max) {
+        if (max == null || !isNumber(max) || Integer.parseInt(max) < 2 || Integer.parseInt(max) > 6) {
+            errorList.addError(new Error("max", "인원 수를 알맞게 설정해주세요."));
+        }
     }
 
-    public void validTagList(List<String> tags) {
+    public void validPublic(ErrorList errorList, PublicEnum roomPublic, String password) {
+        if (roomPublic == null) {
+            errorList.addError(new Error("public", "공개 여부를 설정해주세요."));
+            return;
+        }
+        if (roomPublic.isPublic() && password != null) {
+            errorList.addError(new Error("public", "공개방은 비밀번호를 설정할 수 없습니다."));
+            return;
+        }
+        if (!roomPublic.isPublic() && password == null) {
+            errorList.addError(new Error("public", "비공개방은 비밀번호를 설정해야합니다."));
+            return;
+        }
+        if (password == null && (password.length() < 4 || password.length() > 6)) {
+            errorList.addError(new Error("private-password", "비밀번호는 4~6자만 가능합니다,."));
+        }
+    }
 
+    private boolean isNumber(String max) {
+        try {
+            Integer.parseInt(max);
+            return true;
+        } catch (NumberFormatException e) {
+            return false;
+        }
+    }
+
+    public void validRoomEditMaxPerson(ErrorList errorList, Room room, String max) {
+        int nowPerson = room.getJoinRoomList().size();
+        if (!isNumber(max)) {
+            errorList.addError(new Error("max", "숫자를 입력해주세요."));
+            return;
+        }
+        if (nowPerson > Integer.parseInt(max)) {
+            errorList.addError(new Error("max", "참여된 회원 수보다 작게 설정할 수 없습니다."));
+        }
+    }
+
+    public void validTagList(ErrorList errorList, List<String> tags) {
+        if (tags == null || tags.isEmpty()) return;
+
+        if (tags.size() > 5) {
+            errorList.addError(new Error("tag", "태그는 5개까지 가능합니다."));
+        }
     }
 
     @Transactional
@@ -169,5 +221,64 @@ public class RoomRepository {
                     .orderBy(c.chatId.asc())
                     .limit(50)
                     .fetch();
+    }
+
+    public ResponseEditRoomForm getResponseEditRoomForm(Room room) {
+        QRoom r = QRoom.room;
+        QRoomImage ri = QRoomImage.roomImage;
+        QRoomPassword p = QRoomPassword.roomPassword1;
+
+        return query
+            .select(Projections.fields(ResponseEditRoomForm.class,
+                ri.roomImageStoreName.as("image"),
+                r.roomTitle.as("title"),
+                r.roomIntro.as("intro"),
+                r.roomLimit.as("max"),
+                r.roomPublic.as("roomPublic"),
+                p.roomPassword.as("password")
+            ))
+            .from(r)
+            .join(ri).on(r.roomImage.eq(ri))
+            .leftJoin(p).on(r.roomPassword.eq(p))
+            .where(r.eq(room))
+            .fetchFirst();
+    }
+
+    public void editRoomImage(Room room, RequestEditRoomDto data) {
+        if (data.isDefaultImage()) data.setImage(null);
+        fileUpload.editFile(data.getImage(), FileUploadType.ROOM_PROFILE, room);
+    }
+
+    public void editRoomPassword(Room room, RequestEditRoomDto data) {
+        RoomPassword roomPassword = room.getRoomPassword();
+
+        if (data.getRoomPublic().isPublic()) {                          // 수정내역이 PUBLIC 인 경우
+            if (roomPassword != null) {                                     // 패스워드 삭제
+                roomPasswordJpaRepository.delete(roomPassword);
+            }
+        } else {                                                        // 수정내역이 PRIVATE 인 경우
+            if (roomPassword == null) {                                     // 패스워드가 설정되어있지 않을 경우
+                RoomPassword saveRoomPassword = RoomPassword.builder()
+                    .room(room)
+                    .roomPassword(data.getPassword())
+                    .build();
+                roomPasswordJpaRepository.save(saveRoomPassword);
+            } else {                                                        // 이미 패스워드가 설정되어있는 경우
+                roomPassword.setRoomPassword(data.getPassword());
+            }
+        }
+    }
+
+    public void editTag(Room room, RequestEditRoomDto data) {
+        tagJpaRepository.deleteAllByRoom(room);
+
+        List<String> tags = data.getTags();
+        for (String tag : tags) {
+            Tag saveTag = Tag.builder()
+                .room(room)
+                .tagName(tag)
+                .build();
+            tagJpaRepository.save(saveTag);
+        }
     }
 }

@@ -45,7 +45,7 @@ public class AuthorityConfig {
     @Bean
     @Primary
     public ManagerAuthority managerAuthority() {
-        return new ManagerAuthorityImpl();
+        return new ManagerAuthorityImpl(roomService);
     }
     @Bean
     @Primary

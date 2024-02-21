@@ -4,8 +4,10 @@ import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import project.study.authority.member.dto.RequestEditRoomDto;
 import project.study.authority.member.dto.ResponseRoomListDto;
 import project.study.chat.dto.ResponseChatHistory;
 import project.study.constant.WebConst;
@@ -15,16 +17,14 @@ import project.study.domain.Room;
 import project.study.authority.member.dto.RequestCreateRoomDto;
 import project.study.domain.RoomNotice;
 import project.study.dto.abstractentity.ResponseDto;
-import project.study.dto.room.ResponsePrivateRoomInfoDto;
-import project.study.dto.room.ResponseRoomInfo;
-import project.study.dto.room.ResponseRoomMemberList;
-import project.study.dto.room.ResponseRoomNotice;
+import project.study.dto.login.responsedto.ErrorList;
+import project.study.dto.login.responsedto.ResponseSignupdto;
+import project.study.dto.room.*;
 import project.study.enums.AuthorityMemberEnum;
-import project.study.exceptions.authority.NotAuthorizedException;
-import project.study.exceptions.authority.NotFoundRoomException;
-import project.study.exceptions.authority.NotJoinRoomException;
 import project.study.exceptions.roomcreate.CreateExceedRoomException;
+import project.study.exceptions.roomcreate.CreateRoomException;
 import project.study.exceptions.roomjoin.IllegalRoomException;
+import project.study.exceptions.signup.SignupException;
 import project.study.jpaRepository.JoinRoomJpaRepository;
 import project.study.repository.JoinRoomRepository;
 import project.study.repository.RoomRepository;
@@ -53,10 +53,28 @@ public class RoomService {
     }
 
     public void validRoomData(RequestCreateRoomDto data) {
-        roomRepository.validRoomTitle(data.getTitle());
-        roomRepository.validRoomIntro(data.getIntro());
-        roomRepository.validRoomMaxPerson(data.getMax());
-        roomRepository.validTagList(data.getTags());
+        ErrorList errorList = new ErrorList();
+        roomRepository.validRoomTitle(errorList, data.getTitle());
+        roomRepository.validRoomIntro(errorList, data.getIntro());
+        roomRepository.validPublic(errorList, data.getRoomPublic(), data.getPassword());
+        roomRepository.validRoomMaxPerson(errorList, data.getMax());
+        roomRepository.validTagList(errorList, data.getTags());
+
+        if (errorList.hasError()) {
+            throw new CreateRoomException(new ResponseSignupdto("error", "방 생성 오류", errorList.getErrorList()));
+        }
+    }
+    public void validEditRoomData(Room room, RequestEditRoomDto data) {
+        ErrorList errorList = new ErrorList();
+        roomRepository.validRoomTitle(errorList, data.getTitle());
+        roomRepository.validRoomIntro(errorList, data.getIntro());
+        roomRepository.validPublic(errorList, data.getRoomPublic(), data.getPassword());
+        roomRepository.validRoomEditMaxPerson(errorList, room, data.getMax());
+        roomRepository.validTagList(errorList, data.getTags());
+
+        if (errorList.hasError()) {
+            throw new CreateRoomException(new ResponseSignupdto("error", "방 정보 변경 오류", errorList.getErrorList()));
+        }
     }
 
     public List<ResponseRoomListDto> getMyRoomList(Member member) {
@@ -136,5 +154,26 @@ public class RoomService {
                 .content(roomNotice.getRoomNoticeContent())
                 .time(roomNotice.getRoomNoticeDate())
                 .build();
+    }
+
+    public ResponseEditRoomForm getEditRoomForm(Room room) {
+
+        ResponseEditRoomForm form = roomRepository.getResponseEditRoomForm(room);
+        List<String> tagList = tagRepository.findAllByRoomId(room.getRoomId());
+        form.setTagList(tagList);
+        return form;
+    }
+
+    public void editRoom(Room room, RequestEditRoomDto data) {
+        room.setRoomTitle(data.getTitle());
+        room.setRoomIntro(data.getIntro());
+        room.setRoomPublic(data.getRoomPublic());
+        room.setRoomLimit(Integer.parseInt(data.getMax()));
+
+        roomRepository.editRoomImage(room, data);
+        roomRepository.editRoomPassword(room, data);
+        roomRepository.editTag(room, data);
+
+
     }
 }

@@ -1,4 +1,3 @@
-
 window.addEventListener('load', () => {
 
     const message = document.querySelector('#message');
@@ -17,6 +16,10 @@ window.addEventListener('load', () => {
         textareaResize(message);
         
     });
+
+    const sendBtn = document.querySelector('#send');
+    sendBtn.addEventListener('click', () => sendMessage());
+
     message.addEventListener('paste', () => textareaResize(message));
 
     const modalExitList = document.querySelector('.modal-exit');
@@ -45,7 +48,6 @@ window.addEventListener('load', () => {
     notifyModalOpen();
 
     roomSettingMenuOpen();
-    roomSettingMenuClose();
     editRoomModalOpen();
 
 });
@@ -60,28 +62,15 @@ function textareaResize(message) {
 };
 
 function roomSettingMenuOpen() {
-    let roomSettingBtn = document.querySelector('.room-setting');
-    let settingMenu = document.querySelector('.setting-menu');
+    let roomSettingBtn = document.querySelector('#setting');
+    let settingMenu = document.querySelector('.setting-menu-list');
 
-    roomSettingBtn.addEventListener('click', function(e){
-        if(e.target.classList.contains('room-setting')){
-            settingMenu.classList.remove('disabled');
+    roomSettingBtn.addEventListener('click', (e) =>{
+        if(e.target.id == 'setting'){
+            settingMenu.classList.toggle('disabled');
         };
-    });
-};
-
-function roomSettingMenuClose() {
-    let settingMenu = document.querySelector('.setting-menu');
-    let element = document.querySelector(':not(.room-setting):not(.room-setting *):first-of-type');
-
-    element.addEventListener('click', function(e){
-        let s = e.target;
-
-        if(!s.classList.contains('room-setting') 
-            && !s.classList.contains('setting-menu')
-            && !s.classList.contains('default-setting')
-            && !settingMenu.classList.contains('disabled')){
-                settingMenu.classList.add('disabled');
+        if (e.target.classList.contains('setting-menu')) {
+            settingMenu.classList.add('disabled');
         }
     });
 };
@@ -125,16 +114,24 @@ function notifyModalOpen(){
 };
 
 function editRoomModalOpen() {
-    let roomEditModal = document.querySelector('.setting-menu');
+    let roomEditModal = document.querySelector('#default-setting');
+
+    roomEditModal.addEventListener('click', function(){
+        fetchGet('/room/' + getRoomId() + '/edit', editResult);
+    });
+};
+function editResult(json) {
     const modal = document.querySelector('.modal');
     const modal_content = document.querySelector('.modal-content');
 
-    roomEditModal.addEventListener('click', function(){
+    if (json.result == 'ok') {
         insertModalSize('modal-edit-room');
-        modal_content.innerHTML = editRoomModal();
+        modal_content.innerHTML = editRoomModal(json.editRoom);
         modal.classList.remove('disabled');
-    });
-};
+    } else if(json.result == 'error') {
+
+    }
+}
 
 function modalExit() {
     const modal = document.querySelector('.modal');
@@ -210,72 +207,102 @@ function createNotify() {
             '</div>';
 };
 
-function editRoomModal() {
-    return  '<div class="modal-wrapper">' +
-                '<div class="create-room-image-box">' +
-                    '<button type="button" id="img">' +
-                        '<img src="/images/room_profile/basic-room-profile.jpg" width="100%" height="100%" id="roomProfile" name="roomProfile">' +
-                        '<input type="file" name="roomImage" id="roomImage" accept="image/*">' +
-                        '<svg width="36" height="36" viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg" class="g68VV5Ghc0ymGpbFWhEx"><circle cx="18" cy="18" r="18" fill="#000"></circle><path d="M11.375 22.658v2.969h2.969l8.756-8.756-2.97-2.969-8.755 8.756zm14.02-8.083a.788.788 0 000-1.116l-1.852-1.852a.788.788 0 00-1.116 0l-1.45 1.448 2.97 2.97 1.448-1.45z" fill="#fff"></path></svg>' +
-                    '</button>' +
-                '</div>' +
-                '<div class="input-box">' +
-                    '<h4>방 제목</h4>' +
-                    '<input type="text" name="title" id="title" maxlength="10">' +
-                    '<span class="msg disabled m-title"></span>' +
-                '</div>' +
-                '<div class="input-box">' +
-                    '<h4>소개글</h4>' +
-                    '<input type="text" name="intro" id="intro" maxlength="50">' +
-                    '<span class="msg disabled m-intro"></span>' +
-                '</div>' +
-                '<div class="input-wrap">' +
-                    '<h4>인원 수' +
-                        '<input type="radio" name="max" id="m2" value="2">' +
-                        '<input type="radio" name="max" id="m3" value="3">' +
-                        '<input type="radio" name="max" id="m4" value="4" checked>' +
-                        '<input type="radio" name="max" id="m5" value="5">' +
-                        '<input type="radio" name="max" id="m6" value="6">' +
-                    '</h4>' +
-                    '<div class="radio-wrap max-wrap">' +
-                        '<label for="m2" aria-selected="false">2명</label>' +
-                        '<label for="m3" aria-selected="false">3명</label>' +
-                        '<label for="m4" aria-selected="true">4명</label>' +
-                        '<label for="m5" aria-selected="false">5명</label>' +
-                        '<label for="m6" aria-selected="false">6명</label>' +
-                    '</div>' +
-                '</div>' +
-                '<div class="input-wrap">' +
-                    '<h4>공개여부' +
-                        '<input type="radio" name="public" id="public" value="PUBLIC" checked>' +
-                        '<input type="radio" name="public" id="private" value="PRIVATE">' +
-                    '</h4>' +
-                    '<div class="radio-wrap">' +
-                        '<label for="public" aria-selected="true">공개방</label>' +
-                        '<label for="private" aria-selected="false">비공개방</label>' +
-                    '</div>' +
-                '</div>' +
-                '<div class="input-box password-box disabled">' +
-                    '<h4>비밀번호 설정</h4>' +
-                    '<input type="password" name="room-password" id="room-password" placeholder="비밀번호 4~6자리를 설정해주세요." minlength="4" maxlength="6">' +
-                    '<span class="msg disabled m-private-password"></span>' +
-                '</div>' +
-                '<span class="msg disabled m-max"></span>' +
-                '<div class="input-wrap tag-wrap">' +
-                    '<h4>태그</h4>' +
-                    '<div class="tag-list">' +
-                        '<div class="tag-add-box">' +
-                            '<span>#</span>' +
-                            '<input type="text" name="tag-add" id="tag-add" placeholder="태그입력" maxlength="10">' +
-                        '</div>' +
-                    '</div>' +
-                '</div>' +
-            '</div>' +
-            '<div class="buttons">' +
-                '<button type="button" id="room-cancel">취소</button>' +
-                '<button type="button" id="room-edit">저장</button>' +
-            '</div>';
+function editRoomModal(editRoom) {
+    return  `<div class="modal-wrapper">
+                <div class="create-room-image-box">
+                    <button type="button" id="img">
+                        <img src="/images/room_profile/${editRoom.image}" width="100%" height="100%" id="roomProfile" name="roomProfile">
+                        <input type="file" name="roomImage" id="roomImage" accept="image/*">
+                        <svg width="36" height="36" viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg" class="g68VV5Ghc0ymGpbFWhEx"><circle cx="18" cy="18" r="18" fill="#000"></circle><path d="M11.375 22.658v2.969h2.969l8.756-8.756-2.97-2.969-8.755 8.756zm14.02-8.083a.788.788 0 000-1.116l-1.852-1.852a.788.788 0 00-1.116 0l-1.45 1.448 2.97 2.97 1.448-1.45z" fill="#fff"></path></svg>
+                    </button>
+                    <div class="checkLabel">
+                        <input type="radio" name="defaultImage" id="defaultImage">
+                        <label for="defaultImage">기본이미지로 설정</label>
+                    </div>
+                </div>
+                <div class="input-box">
+                    <h4>방 제목</h4>
+                    <input type="text" name="title" id="title" maxlength="10" value="${editRoom.title}">
+                    <span class="msg disabled m-title"></span>
+                </div>
+                <div class="input-box">
+                    <h4>소개글</h4>
+                    <input type="text" name="intro" id="intro" maxlength="50" value="${editRoom.intro}">
+                    <span class="msg disabled m-intro"></span>
+                </div>
+                <div class="input-wrap">
+                    <h4>인원 수
+                        <input type="radio" name="max" id="m2" value="2" ${editRoom.max == 2 ? 'checked' : ''}>
+                        <input type="radio" name="max" id="m3" value="3" ${editRoom.max == 3 ? 'checked' : ''}>
+                        <input type="radio" name="max" id="m4" value="4" ${editRoom.max == 4 ? 'checked' : ''}>
+                        <input type="radio" name="max" id="m5" value="5" ${editRoom.max == 5 ? 'checked' : ''}>
+                        <input type="radio" name="max" id="m6" value="6" ${editRoom.max == 6 ? 'checked' : ''}>
+                    </h4>
+                    <div class="radio-wrap max-wrap">
+                        <label for="m2" aria-selected="${editRoom.max == 2 ? 'true' : 'false '}">2명</label>
+                        <label for="m3" aria-selected="${editRoom.max == 3 ? 'true' : 'false '}">3명</label>
+                        <label for="m4" aria-selected="${editRoom.max == 4 ? 'true' : 'false '}">4명</label>
+                        <label for="m5" aria-selected="${editRoom.max == 5 ? 'true' : 'false '}">5명</label>
+                        <label for="m6" aria-selected="${editRoom.max == 6 ? 'true' : 'false '}">6명</label>
+                    </div>
+                </div>
+                <span class="msg disabled m-max"></span>
+                <div class="input-wrap">
+                    <h4>공개여부
+                        <input type="radio" name="public" id="public" value="PUBLIC" ${editRoom.roomPublic == 'PUBLIC' ? 'checked' : ''}>
+                        <input type="radio" name="public" id="private" value="PRIVATE" ${editRoom.roomPublic == 'PRIVATE' ? 'checked' : ''}>
+                    </h4>
+                    <div class="radio-wrap">
+                        <label for="public" aria-selected="${editRoom.roomPublic == 'PUBLIC'}">공개방</label>
+                        <label for="private" aria-selected="${editRoom.roomPublic == 'PRIVATE'}">비공개방</label>
+                    </div>
+                </div>
+                <span class="msg disabled m-public"></span>
+                <div class="input-box password-box ${editRoom.roomPublic == 'PUBLIC' ? 'disabled' : ''}">
+                    <h4>비밀번호 설정</h4>
+                    <input type="password" name="room-password" id="room-password" placeholder="비밀번호 4~6자리를 설정해주세요." minlength="4" maxlength="6" value="${editRoom.password != null ? editRoom.password : ''}">
+                    <span class="msg disabled m-private-password"></span>
+                </div>
+                <span class="msg disabled m-max"></span>
+                <div class="input-wrap tag-wrap">
+                    <h4>태그</h4>
+                    <div class="tag-list">
+                        ${createEditTagList(editRoom.tagList)}
+                    </div>
+                </div>
+                <span class="msg disabled m-tag"></span>
+            </div>
+            <div class="buttons">
+                <button type="button" id="room-cancel">취소</button>
+                <button type="button" id="room-edit">수정</button>
+            </div>`;
 };
+function createEditTagList(tagList) {
+    if (tagList == null) return '';
+
+    let temp = '';
+    for (let i=0;i<tagList.length;i++) {
+        temp += createEditTag(tagList[i]);
+    }
+    if (tagList.length < 5) {
+        temp += createTagAdd();
+    }
+    return temp;
+}
+
+function createEditTag(tag) {
+    return `<div class="tag-box">
+                <svg class="tagSvg" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><path d="M0 80V229.5c0 17 6.7 33.3 18.7 45.3l176 176c25 25 65.5 25 90.5 0L418.7 317.3c25-25 25-65.5 0-90.5l-176-176c-12-12-28.3-18.7-45.3-18.7H48C21.5 32 0 53.5 0 80zm112 32a32 32 0 1 1 0 64 32 32 0 1 1 0-64z"></path></svg>
+                <span type="text" name="tag" value="${tag}">${tag}</span>
+                <svg class="xSvg" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512"><path d="M376.6 84.5c11.3-13.6 9.5-33.8-4.1-45.1s-33.8-9.5-45.1 4.1L192 206 56.6 43.5C45.3 29.9 25.1 28.1 11.5 39.4S-3.9 70.9 7.4 84.5L150.3 256 7.4 427.5c-11.3 13.6-9.5 33.8 4.1 45.1s33.8 9.5 45.1-4.1L192 306 327.4 468.5c11.3 13.6 31.5 15.4 45.1 4.1s15.4-31.5 4.1-45.1L233.7 256 376.6 84.5z"></path></svg>
+            </div>`
+}
+function createTagAdd() {
+    return  '<div class="tag-add-box">' +
+                '<span>#</span>' +
+                '<input type="text" name="tag-add" id="tag-add" placeholder="태그입력" maxlength="10">' +
+            '</div>';
+}
 
 function fetchGet(url, callback) {
     fetch(url)

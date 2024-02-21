@@ -26,4 +26,12 @@ public class Profile {
     public String getProfileStoreName() {
         return profileStoreName;
     }
+
+    public void setProfileOriginalName(String profileOriginalName) {
+        this.profileOriginalName = profileOriginalName;
+    }
+
+    public void setProfileStoreName(String profileStoreName) {
+        this.profileStoreName = profileStoreName;
+    }
 }

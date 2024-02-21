@@ -20,20 +20,20 @@ public class ManagerMember implements MemberAuthority, ManagerAuthority {
     private final ManagerAuthority managerAuthority;
 
     @Override
-    public void editRoom(Member member, RequestEditRoomDto data) {
-        managerAuthority.editRoom(member, data);
+    public void editRoom(Room room, RequestEditRoomDto data) {
+        managerAuthority.editRoom(room, data);
     }
     @Override
-    public void managerEntrust(Member member, RequestEntrustDto data) {
-        managerAuthority.managerEntrust(member, data);
+    public void managerEntrust(Room room, RequestEntrustDto data) {
+        managerAuthority.managerEntrust(room, data);
     }
     @Override
-    public void editNotice(Member member, RequestNoticeDto data) {
-        managerAuthority.editNotice(member, data);
+    public void editNotice(Room room, RequestNoticeDto data) {
+        managerAuthority.editNotice(room, data);
     }
     @Override
-    public void kickMember(Member member, RequestKickDto data) {
-        managerAuthority.kickMember(member, data);
+    public void kickMember(Room room, RequestKickDto data) {
+        managerAuthority.kickMember(room, data);
     }
     @Override
     public Long createRoom(Member member, RequestCreateRoomDto data) {
@@ -50,8 +50,8 @@ public class ManagerMember implements MemberAuthority, ManagerAuthority {
     }
 
     @Override
-    public void deleteRoom(Member member, RequestDeleteRoomDto data) {
-        managerAuthority.deleteRoom(member, data);
+    public void deleteRoom(Room room, RequestDeleteRoomDto data) {
+        managerAuthority.deleteRoom(room, data);
     }
 
     @Override

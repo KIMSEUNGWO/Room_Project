@@ -56,4 +56,19 @@ public class Room implements ImageFileEntity {
         return roomPublic.isPublic();
     }
 
+    public void setRoomTitle(String roomTitle) {
+        this.roomTitle = roomTitle;
+    }
+
+    public void setRoomIntro(String roomIntro) {
+        this.roomIntro = roomIntro;
+    }
+
+    public void setRoomLimit(int roomLimit) {
+        this.roomLimit = roomLimit;
+    }
+
+    public void setRoomPublic(PublicEnum roomPublic) {
+        this.roomPublic = roomPublic;
+    }
 }

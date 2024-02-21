@@ -2,12 +2,13 @@ package project.study.authority.member.authority;
 
 import project.study.authority.member.dto.*;
 import project.study.domain.Member;
+import project.study.domain.Room;
 
 public interface ManagerAuthority {
 
-    void editRoom(Member member, RequestEditRoomDto data);
-    void managerEntrust(Member member, RequestEntrustDto data);
-    void editNotice(Member member, RequestNoticeDto data);
-    void kickMember(Member member, RequestKickDto data);
-    void deleteRoom(Member member, RequestDeleteRoomDto data);
+    void editRoom(Room room, RequestEditRoomDto data);
+    void managerEntrust(Room room, RequestEntrustDto data);
+    void editNotice(Room room, RequestNoticeDto data);
+    void kickMember(Room room, RequestKickDto data);
+    void deleteRoom(Room room, RequestDeleteRoomDto data);
 }
