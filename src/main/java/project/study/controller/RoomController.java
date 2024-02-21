@@ -8,7 +8,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import project.study.authority.member.CommonMember;
+import project.study.authority.member.ManagerMember;
 import project.study.authority.member.MemberAuthorizationCheck;
+import project.study.authority.member.dto.RequestEditRoomDto;
 import project.study.authority.member.dto.RequestJoinRoomDto;
 import project.study.authority.member.dto.ResponseRoomListDto;
 import project.study.chat.component.ChatAccessToken;
@@ -22,9 +24,7 @@ import project.study.domain.RoomPassword;
 import project.study.dto.abstractentity.ResponseDto;
 import project.study.authority.member.dto.RequestCreateRoomDto;
 import project.study.dto.abstractentity.ResponseObject;
-import project.study.dto.room.ResponseCreateRoomDto;
-import project.study.dto.room.ResponseRoomNotice;
-import project.study.dto.room.SearchRoomListDto;
+import project.study.dto.room.*;
 import project.study.exceptions.RestFulException;
 import project.study.service.JoinRoomService;
 import project.study.service.RoomService;
@@ -50,6 +50,26 @@ public class RoomController {
 
         String redirectURI = "/room/" + roomId;
         return new ResponseEntity<>(new ResponseCreateRoomDto("ok", "방 생성 완료", redirectURI), HttpStatus.OK);
+    }
+
+    @GetMapping("/room/{room}/edit")
+    public ResponseEntity<ResponseDto> getEditRoomForm(@SessionLogin(required = true) Member member, @PathRoom("room") Room room, HttpServletResponse response) {
+        ManagerMember managerMember = authorizationCheck.getManagerMember(response, member, room);
+
+        ResponseEditRoomForm editRoomForm = roomService.getEditRoomForm(room);
+
+        return new ResponseEntity<>(new ResponseEditRoomFormDto("ok", "조회성공", editRoomForm), HttpStatus.OK);
+    }
+
+    @PostMapping("/room/{room}/edit")
+    public ResponseEntity<ResponseDto> editRoom(@SessionLogin(required = true) Member member,
+                                                @PathRoom("room") Room room,
+                                                HttpServletResponse response,
+                                                @ModelAttribute RequestEditRoomDto data) {
+        ManagerMember managerMember = authorizationCheck.getManagerMember(response, member, room);
+        System.out.println("RequestEditRoomDto = " + data);
+        managerMember.editRoom(room, data);
+        return new ResponseEntity<>(new ResponseDto("ok", "성공"), HttpStatus.OK);
     }
 
     @PostMapping(value = "/room/exit")

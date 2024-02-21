@@ -27,4 +27,12 @@ public class RoomImage {
     public String getRoomImageStoreName() {
         return roomImageStoreName;
     }
+
+    public void setRoomImageOriginalName(String roomImageOriginalName) {
+        this.roomImageOriginalName = roomImageOriginalName;
+    }
+
+    public void setRoomImageStoreName(String roomImageStoreName) {
+        this.roomImageStoreName = roomImageStoreName;
+    }
 }

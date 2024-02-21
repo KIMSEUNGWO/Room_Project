@@ -60,6 +60,44 @@ public class FileUpload {
         fileTypeConverter.saveFile(fileUploadDto);
     }
 
+
+    public void editFile(MultipartFile imageFile, FileUploadType fileType, ImageFileEntity parentEntity) {
+        if (imageFile == null) {
+            FileUploadDto fileUploadDto = FileUploadDto.builder()
+                .parent(parentEntity)
+                .type(fileType)
+                .build();
+            fileTypeConverter.editFile(fileUploadDto);
+            return;
+        }
+        byte[] fileBytes = getBytes(imageFile);
+        String contentType = imageFile.getContentType();
+
+        if (fileBytes == null || contentType == null || !contentType.startsWith("image/") || imageFile.isEmpty()) {
+            return;
+        }
+
+        String originalFileName = imageFile.getOriginalFilename();
+        String storeFileName = createFileName(originalFileName);
+
+        String fullPath = getFullPath(storeFileName, fileType);
+        try {
+            imageFile.transferTo(new File(fullPath));
+        } catch (IOException e) {
+            log.error("saveFile transferTo error = {}", imageFile.getName());
+            return;
+        }
+
+        FileUploadDto fileUploadDto = FileUploadDto.builder()
+            .parent(parentEntity)
+            .imageUploadName(originalFileName)
+            .imageStoreName(storeFileName)
+            .type(fileType)
+            .build();
+
+        fileTypeConverter.editFile(fileUploadDto);
+    }
+
     private String getFullPath(String fileName, FileUploadType fileType) {
         StringBuffer sb = new StringBuffer(fileDir);
 

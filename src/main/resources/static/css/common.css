@@ -133,3 +133,13 @@ pre {
 .modal-content {
     width: 100%;
 }
+
+.msg {
+    margin-top: 0.3rem;
+    display: block;
+    font-size: 0.9rem;
+
+}
+.msg.disabled {
+    display: none;
+}

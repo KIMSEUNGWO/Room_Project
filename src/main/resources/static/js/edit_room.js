@@ -14,9 +14,13 @@ window.addEventListener('load', () => {
             modalExit();
             return;
         }
-        if (target.id =='room-create') {
-            roomCreateSubmit();
-            return;
+
+        if (target.id == 'room-edit') {
+            roomEditSubmit();
+        }
+
+        if (target.id == 'defaultImage') {
+            defaultImageChange();
         }
 
         if (target.id == 'img') {
@@ -79,6 +83,18 @@ window.addEventListener('load', () => {
     })
 
 })
+
+function defaultImageChange() {
+    let defaultImageInputRadio = document.querySelector('input[name="defaultImage"]');
+    if (defaultImageInputRadio == null) return;
+
+    let roomImage = document.querySelector('#roomProfile');
+    if (defaultImageInputRadio.checked) {
+        let imageInput = document.querySelector('input[name="roomImage"]');
+        imageInput.value = null;
+        roomImage.setAttribute('src', '/images/room_profile/basic-room-profile.jpg');
+    }
+}
 function createRoomMessageInit() {
     let title = document.querySelector('input[name="title"]');
     let intro = document.querySelector('input[name="intro"]');
@@ -91,7 +107,17 @@ function createRoomMessageInit() {
     intro.addEventListener('focus', () => messageInit(document.querySelector('.m-intro')));
     password.addEventListener('focus', () => messageInit(document.querySelector('.m-private-password')));
 }
-function roomCreateSubmit() {
+
+function fetchCreateRoom(url, formData, callback) {
+    fetch(url , { 
+                    method : 'post',
+                    body: formData,
+				})
+    .then(res => res.json())
+    .then(map => callback(map));
+}
+
+function roomEditSubmit() {
     let image = document.querySelector('input[name="roomImage"]');
     let title = document.querySelector('input[name="title"]');
     let intro = document.querySelector('input[name="intro"]');
@@ -99,8 +125,9 @@ function roomCreateSubmit() {
     let tags = document.querySelectorAll('span[name="tag"]');
     let public = document.querySelector('input[name="public"]:checked');
     let roomPassword = document.querySelector('input[name="room-password"]');
+    let defaultImageInputRadio = document.querySelector('input[name="defaultImage"]');
 
-    if (image == null || title == null || intro == null || public == null || roomPassword == null) {
+    if (image == null || title == null || intro == null || public == null || roomPassword == null || defaultImageInputRadio == null) {
         alert('잘못된 접근입니다. 다시 시도해주세요');
         location.reload();
         return;
@@ -126,48 +153,33 @@ function roomCreateSubmit() {
     // 자바스크립트 코드
     let formData = new FormData();
     if (image.files.length > 0) {
-        formData.append('profile', image.files.item(0));
+        formData.append('image', image.files.item(0));
     }
     formData.append('title', title.value);
     formData.append('intro', intro.value);
     formData.append('max', max.value);
     formData.append('tags', convertTags(tags));
     formData.append('roomPublic', public.value);
+    formData.append('defaultImage', defaultImageInputRadio.checked);
     if (public.id != 'public') {
         formData.append('password', roomPassword.value);
     }
 
-    fetchCreateRoom('/room/edit/{roomId}', formData, roomCreateResult);
+    fetchCreateRoom('/room/' + getRoomId() + '/edit', formData, roomEditResult);
 
 }
-function fetchCreateRoom(url, formData, callback) {
-    fetch(url , { 
-                    method : 'post',
-                    body: formData,
-				})
-    .then(res => res.json())
-    .then(map => callback(map));
-}
-/**
- * 예상 결과
- * {
- *      result : 'ok',
- *      message : '방 생성 완료',
- *      redirectURI : '/room/1' (생성 완료 시 바로 입장)
- * }
- * {
- *      result : 'error',
- *      message : '계정 당 5개까지 생성할 수 있습니다.',
- * }
- */
-function roomCreateResult(json) {
+
+function roomEditResult(json) {
     if (json.result == 'ok') {
         al(json.result, json.message, '');
-        setTimeout(() => window.location.href = json.redirectURI, 1000);
+        modalExit();
     }
     if (json.result == 'error') {
-        al (json.result, '방 생성 제한', json.message);
-        changeToCreateRoom();
+        json.errorList.forEach(error => {
+            let msgBox = document.querySelector('.m-' + error.location);
+            let result = {result : 'error', message : error.message};
+            printMessage(result, msgBox);
+        })
     }
 }
 function convertTags(tags) {
@@ -331,6 +343,12 @@ function imageInputAddEventListener(input) {
             input.value = '';
             return;
         } 
+        /* 설정변경 시 기본이미지 라디오 처리 */
+        let defaultImageInputRadio = document.querySelector('input[name="defaultImage"]');
+        if (defaultImageInputRadio != null) {
+            defaultImageInputRadio.checked = false;
+        }
+        
         printPreview(files.item(0));
         input.removeEventListener('change', handleChange); // 이벤트 제거
     }
@@ -352,4 +370,23 @@ function isImage(files) {
         }
     }
     return true;
+}
+
+function printMessage(json, msgBox) {
+    messageInit(msgBox);
+    if (json.result == 'ok') {
+        msgBox.classList.add('non-error');
+    } else {
+        msgBox.classList.add('error');
+    }
+
+    msgBox.innerHTML = json.message;
+    msgBox.classList.remove('disabled');
+}
+
+function messageInit(messageTag) {
+    messageTag.classList.add('disabled');
+    messageTag.classList.remove('non-error');
+    messageTag.classList.remove('error');
+    messageTag.innerHTML = '';
 }

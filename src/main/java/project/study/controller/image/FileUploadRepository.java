@@ -61,4 +61,30 @@ public class FileUploadRepository {
     private boolean isDefaultImage(FileUploadDto data) {
         return data.getImageUploadName() == null || data.getImageStoreName() == null;
     }
+
+    public void editProfile(FileUploadDto data) {
+        Member member = (Member) data.getParent();
+        Profile profile = member.getProfile();
+
+        if (isDefaultImage(data)) {
+            profile.setProfileOriginalName(defaultProfile);
+            profile.setProfileStoreName(defaultProfile);
+        } else {
+            profile.setProfileOriginalName(data.getImageUploadName());
+            profile.setProfileStoreName(data.getImageStoreName());
+        }
+    }
+
+    public void editRoomImage(FileUploadDto data) {
+        Room room = (Room) data.getParent();
+        RoomImage roomImage = room.getRoomImage();
+
+        if (isDefaultImage(data)) {
+            roomImage.setRoomImageOriginalName(defaultRoomImage);
+            roomImage.setRoomImageStoreName(defaultRoomImage);
+        } else {
+            roomImage.setRoomImageOriginalName(data.getImageUploadName());
+            roomImage.setRoomImageStoreName(data.getImageStoreName());
+        }
+    }
 }

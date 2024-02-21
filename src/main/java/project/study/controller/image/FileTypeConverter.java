@@ -25,4 +25,18 @@ public class FileTypeConverter {
         }
         log.error("TypeConvert TypeMissMatch error = {}", type.name());
     }
+
+    public void editFile(FileUploadDto fileUploadDto) {
+        FileUploadType type = fileUploadDto.getType();
+
+        if (type == FileUploadType.MEMBER_PROFILE) {
+            fileUploadRepository.editProfile(fileUploadDto);
+            return;
+        }
+        if (type == FileUploadType.ROOM_PROFILE) {
+            fileUploadRepository.editRoomImage(fileUploadDto);
+            return;
+        }
+        log.error("TypeConvert TypeMissMatch error = {}", type.name());
+    }
 }
