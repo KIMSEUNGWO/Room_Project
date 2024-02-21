@@ -1,8 +1,10 @@
 package project.study.authority.member.authority;
 
+import jakarta.persistence.EntityManager;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Transactional;
 import project.study.authority.member.dto.RequestCreateRoomDto;
 import project.study.authority.member.dto.RequestJoinRoomDto;
@@ -96,13 +98,13 @@ public class MemberAuthorityImpl implements MemberAuthority{
         JoinRoom joinRoom = findJoinRoom.get();
         AuthorityMemberEnum authority = joinRoom.getAuthority();
 
+        joinRoomService.deleteJoinRoom(joinRoom);
         if (authority.isManager()) {
             Optional<JoinRoom> anotherJoinMember = room.getJoinRoomList().stream().filter(x -> !x.getJoinRoomId().equals(joinRoom.getJoinRoomId())).findAny();
             if (anotherJoinMember.isPresent()) { // 다른회원에게 방장 위임
                 JoinRoom anotherMember = anotherJoinMember.get();
                 anotherMember.setAuthority(AuthorityMemberEnum.방장);
             } else { // 다른 회원이 없는경우 (참여자가 1명인 경우)
-                joinRoomService.deleteJoinRoom(joinRoom);
                 roomService.deleteRoom(room);
             }
         }

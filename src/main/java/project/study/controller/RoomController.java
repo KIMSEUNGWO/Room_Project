@@ -72,16 +72,6 @@ public class RoomController {
         return new ResponseEntity<>(new ResponseDto("ok", "성공"), HttpStatus.OK);
     }
 
-    @PostMapping(value = "/room/exit")
-    public ResponseEntity<ResponseDto> exitRoom(@SessionLogin(required = true) Member member, @RequestBody String roomId, HttpServletResponse response) {
-        Room room = roomService.findByRoom(roomId, response);
-
-        CommonMember commonMember = authorizationCheck.getCommonMember(response, member);
-        commonMember.exitRoom(member, room, response);
-
-        return new ResponseEntity<>(new ResponseDto("ok", "방 생성 완료"), HttpStatus.OK);
-    }
-
     @GetMapping("/search")
     public ResponseEntity<ResponseDto> search(@SessionLogin Member member, @RequestParam("word") String word, Pageable pageable) {
         System.out.println("word = " + word);
