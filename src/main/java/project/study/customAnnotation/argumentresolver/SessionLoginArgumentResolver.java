@@ -11,11 +11,14 @@ import org.springframework.web.context.request.NativeWebRequest;
 import org.springframework.web.method.support.HandlerMethodArgumentResolver;
 import org.springframework.web.method.support.ModelAndViewContainer;
 import project.study.constant.WebConst;
+import project.study.customAnnotation.CallType;
 import project.study.customAnnotation.SessionLogin;
 import project.study.domain.Member;
+import project.study.exceptions.NotLoginMemberRestException;
 import project.study.exceptions.authority.NotLoginMemberException;
 import project.study.jpaRepository.MemberJpaRepository;
 
+import java.lang.reflect.Parameter;
 import java.util.Optional;
 
 import static project.study.constant.WebConst.LOGIN_MEMBER;
@@ -36,16 +39,24 @@ public class SessionLoginArgumentResolver implements HandlerMethodArgumentResolv
 
     @Override
     public Object resolveArgument(MethodParameter parameter, ModelAndViewContainer mavContainer, NativeWebRequest webRequest, WebDataBinderFactory binderFactory) throws Exception {
-        log.info("SessionLogin resolveArgument 실행");
         SessionLogin annotation = parameter.getParameterAnnotation(SessionLogin.class);
         boolean required = (annotation != null) ? annotation.required() : false;
+        CallType callType = (annotation != null) ? annotation.type() : CallType.CONTROLLER;
+        log.info("SessionLogin resolveArgument 실행 required = {}", annotation.required());
 
         HttpServletRequest request = (HttpServletRequest) webRequest.getNativeRequest();
         HttpServletResponse response = (HttpServletResponse) webRequest.getNativeResponse();
         HttpSession session = request.getSession(false);
 
         if (session == null || session.getAttribute(LOGIN_MEMBER) == null) {
-            if (required) throw new NotLoginMemberException(response);
+            if (required) {
+                if (callType == CallType.CONTROLLER) {
+                    throw new NotLoginMemberException(response);
+                }
+                if (callType == CallType.REST_CONTROLLER) {
+                    throw new NotLoginMemberRestException();
+                }
+            }
             return null;
         }
 
@@ -53,10 +64,14 @@ public class SessionLoginArgumentResolver implements HandlerMethodArgumentResolv
         Optional<Member> findMember = memberJpaRepository.findById(memberId);
         if (findMember.isEmpty()) {
             if (required) {
-                throw new NotLoginMemberException(response);
-            } else {
-                return null;
+                if (callType == CallType.CONTROLLER) {
+                    throw new NotLoginMemberException(response);
+                }
+                if (callType == CallType.REST_CONTROLLER) {
+                    throw new NotLoginMemberRestException();
+                }
             }
+            return null;
         }
 
         return findMember.get();

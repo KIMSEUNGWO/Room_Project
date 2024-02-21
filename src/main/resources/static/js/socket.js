@@ -108,6 +108,16 @@ function connect() {
     stompClient.connect({}, onConnected, onError);
 
 }
+function sendRoomInfoUpdate() {
+    stompClient.send("/pub/chat/update",
+        {},
+        JSON.stringify({
+            roomId : Number(getRoomId()),
+            token : token,
+            type: 'UPDATE'
+        })
+    )
+}
 
 function onConnected() {
     console.log('token = ', token);
@@ -175,12 +185,53 @@ function onMessageReceived(payload) {
         printMessage(chat);
     }
 
+    if (chat.type == 'UPDATE') {
+        updateApply(chat.roomInfo);
+        history.innerHTML += centerMessage(chat.message);
+    }
+
     newMessageAlert();
+}
+function updateApply(roomInfo) {
+    if (!roomInfo.isPublic) changeLockSvg();
+
+    let title = document.querySelector('#roomTitle');
+    title.innerHTML = roomInfo.title;
+
+    let maximum = document.querySelector('#maximum');
+    maximum.innerHTML = roomInfo.max;
+}
+function changeLockSvg() {
+    let roomTitleWrap = document.querySelector('.room-title');
+    let roomTitle = document.querySelector('#roomTitle');
+
+    if (roomTitleWrap.children.private == null) {
+        roomTitleWrap.insertBefore(getPrivateSvg(), roomTitle);
+    }
+}
+function getPrivateSvg() {
+    let svgElement = document.createElementNS("http://www.w3.org/2000/svg", "svg");
+    svgElement.setAttribute("xmlns", "http://www.w3.org/2000/svg");
+    svgElement.setAttribute("name", "private");
+    svgElement.setAttribute("viewBox", "0 0 448 512");
+
+    // Create the path element
+    let pathElement = document.createElementNS("http://www.w3.org/2000/svg", "path");
+    pathElement.setAttribute("d", "M144 144v48H304V144c0-44.2-35.8-80-80-80s-80 35.8-80 80zM80 192V144C80 64.5 144.5 0 224 0s144 64.5 144 144v48h16c35.3 0 64 28.7 64 64V448c0 35.3-28.7 64-64 64H64c-35.3 0-64-28.7-64-64V256c0-35.3 28.7-64 64-64H80z");
+
+    // Append the path element to the SVG element
+    svgElement.appendChild(pathElement);
+    return svgElement;
 }
 function initialMemberCheck(chat) { // 처음들어온 회원인지 확인
     let offline =  document.querySelector('.member-list[data-is-online="false"]');
     let member = offline.querySelector('span[name="' + chat.sender + '"]');
     if (member == null) {
+        let current = document.querySelector('#current');
+        let currentCount = current.textContent;
+        if (!isNaN(currentCount)) {
+            current.innerHTML = Number(currentCount) + 1;
+        }
         offline.innerHTML += createMember(chat);
     }
 }

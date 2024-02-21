@@ -173,13 +173,20 @@ function roomEditResult(json) {
     if (json.result == 'ok') {
         al(json.result, json.message, '');
         modalExit();
+        sendRoomInfoUpdate();
     }
     if (json.result == 'error') {
         json.errorList.forEach(error => {
             let msgBox = document.querySelector('.m-' + error.location);
             let result = {result : 'error', message : error.message};
-            printMessage(result, msgBox);
+            printMessageFromJson(result, msgBox);
         })
+    }
+    if (json.result == 'notLogin') {
+        al('error', '로그인 필요', json.message);
+        setTimeout(() => {
+            window.location.href = '/';
+        }, 1000);
     }
 }
 function convertTags(tags) {
@@ -195,7 +202,7 @@ function validMax(max) {
     let message = document.querySelector('.m-max');
     if (max == null) {
         let json = {result : 'error', message : '인원 수를 설정해주세요.'};
-        printMessage(json, message);
+        printMessageFromJson(json, message);
     }
 }
 
@@ -203,13 +210,13 @@ function validTitle(errorList, title) {
     let message = document.querySelector('.m-title');
     if (title.value.length == 0) {
         let json = {result : 'error', message : '제목을 적어주세요'};
-        printMessage(json, message);
+        printMessageFromJson(json, message);
         errorList.push(title);
         return;
     }
     if (title.value.length > 10) {
         let json = {result : 'error', message : '방 제목은 10자 이하만 가능합니다.'};
-        printMessage(json, message);
+        printMessageFromJson(json, message);
         errorList.push(title);
         return;
     }
@@ -218,7 +225,7 @@ function validIntro(errorList, intro) {
     let message = document.querySelector('.m-intro');
     if (intro.value.length == 0) {
         let json = {result : 'error', message : '소개글을 작성해주세요.'};
-        printMessage(json, message);
+        printMessageFromJson(json, message);
         errorList.push(intro);
         return;
     }
@@ -244,13 +251,13 @@ function validPublic(errorList, public) {
     let roomPassword = document.querySelector('input[name="room-password"]').value;
     if (roomPassword.length == 0) {
         let json = {result : 'error', message : '비밀번호를 설정해주세요.'};
-        printMessage(json, message);
+        printMessageFromJson(json, message);
         errorList.push(intro);
         return;
     }
     if (roomPassword.length < 4 || roomPassword.length > 6) {
         let json = {result : 'error', message : '비밀번호 4~6자리를 입력해주세요.'};
-        printMessage(json, message);
+        printMessageFromJson(json, message);
         errorList.push(intro);
         return;
     }
@@ -372,7 +379,7 @@ function isImage(files) {
     return true;
 }
 
-function printMessage(json, msgBox) {
+function printMessageFromJson(json, msgBox) {
     messageInit(msgBox);
     if (json.result == 'ok') {
         msgBox.classList.add('non-error');

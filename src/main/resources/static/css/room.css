@@ -532,6 +532,10 @@ aside hr {
     margin-bottom: 2rem;
 }
 
+.member-wrap > h4 {
+    display: inline;
+}
+
 .member-list {
     display: flex;
     flex-direction: column;

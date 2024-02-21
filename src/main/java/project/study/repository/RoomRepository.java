@@ -87,7 +87,7 @@ public class RoomRepository {
             errorList.addError(new Error("public", "비공개방은 비밀번호를 설정해야합니다."));
             return;
         }
-        if (password == null && (password.length() < 4 || password.length() > 6)) {
+        if (password != null && (password.length() < 4 || password.length() > 6)) {
             errorList.addError(new Error("private-password", "비밀번호는 4~6자만 가능합니다,."));
         }
     }
@@ -239,7 +239,7 @@ public class RoomRepository {
             ))
             .from(r)
             .join(ri).on(r.roomImage.eq(ri))
-            .leftJoin(p).on(r.roomPassword.eq(p))
+            .leftJoin(r.roomPassword, p)
             .where(r.eq(room))
             .fetchFirst();
     }

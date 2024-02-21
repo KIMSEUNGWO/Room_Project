@@ -3,17 +3,15 @@ package project.study.chat.dto;
 import lombok.Getter;
 import lombok.Setter;
 
-import java.util.List;
-
 @Getter
 @Setter
-public class ChatMemberListDto extends ChatDto {
+public class ChatRoomUpdateDto extends ChatDto {
 
-    private List<String> currentMemberList;
+    private ResponseRoomUpdateInfo roomInfo;
 
-    public ChatMemberListDto(ChatDto chat, List<String> currentMemberList) {
+    public ChatRoomUpdateDto(ChatDto chat, ResponseRoomUpdateInfo roomInfo) {
         super(chat.getType(), chat.getRoomId(), chat.getToken(), chat.getSender(), chat.getSenderImage(), chat.getMessage(), chat.getTime());
-        this.currentMemberList = currentMemberList;
+        this.roomInfo = roomInfo;
     }
 
 }
