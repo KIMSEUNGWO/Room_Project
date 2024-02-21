@@ -38,8 +38,9 @@ public class AdminService {
     }
 
 
-    public List<AdminMembersDto> findAllByFreezeMember(){
-        return adminRepository.findAllByFreezeMember();
+    public Page<SearchMemberDto> findAllByFreezeMember(String word, int pageNumber){
+        PageRequest pageable = PageRequest.of(pageNumber - 1, 10);
+        return adminRepository.findAllByFreezeMember(word, pageable);
     }
 
 

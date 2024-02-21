@@ -1,7 +1,9 @@
 package project.study.controller;
 
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
+import org.springframework.security.core.parameters.P;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -22,18 +24,45 @@ public class AdminController {
 
     @GetMapping("/admin/members/get")
     public String searchMember(@RequestParam(value = "word", required = false, defaultValue = "") String word,
-                                @RequestParam(defaultValue = "1", value = "page") int pageNumber,  Model model){
-        Page<SearchMemberDto> searchMemberDtoList = adminService.searchMember(word, pageNumber);
+                               @RequestParam(defaultValue = "1", value = "page") int pageNumber, Model model,
+                               @RequestParam(value = "onlyFreezeMembers", required = false) String freezeOnly){
 
-        if(searchMemberDtoList.isEmpty()){
+        if (freezeOnly == null || !freezeOnly.equals("on")) {
+
+            Page<SearchMemberDto> searchMemberDtoList = adminService.searchMember(word, pageNumber);
+
+            if(searchMemberDtoList.isEmpty()){
+                model.addAttribute("page", searchMemberDtoList);
+                model.addAttribute("word", word);
+                model.addAttribute("errorMsg", "결과가 존재하지 않습니다.");
+                model.addAttribute("freezeOnly", freezeOnly != null);
+
+                return "/admin/admin_members";
+            }
             model.addAttribute("page", searchMemberDtoList);
             model.addAttribute("word", word);
+            model.addAttribute("freezeOnly", freezeOnly != null);
+            System.out.println("freezeOnly = " + freezeOnly);
+
+            return "/admin/admin_members";
+
+        }
+
+        Page<SearchMemberDto> freezeMemberList = adminService.findAllByFreezeMember(word, pageNumber);
+
+        if (freezeMemberList.isEmpty()) {
+            model.addAttribute("page", freezeMemberList);
+            model.addAttribute("word", word);
             model.addAttribute("errorMsg", "결과가 존재하지 않습니다.");
+            model.addAttribute("freezeOnly", freezeOnly != null);
             return "/admin/admin_members";
         }
-        model.addAttribute("page", searchMemberDtoList);
+
+        model.addAttribute("page", freezeMemberList);
         model.addAttribute("word", word);
+        model.addAttribute("freezeOnly", freezeOnly != null);
         return "/admin/admin_members";
+
     }
 
     @GetMapping("/admin/expire/get")
@@ -78,9 +107,10 @@ public class AdminController {
     }
 
     @GetMapping("/admin/FreezeMembers/get")
-    public String findAllByFreezeMember(Model model){
-        List<AdminMembersDto> adminFreezeMemberDtoList = adminService.findAllByFreezeMember();
-        model.addAttribute("member", adminFreezeMemberDtoList);
+    public String findAllByFreezeMember(@RequestParam(value = "word", required = false, defaultValue = "") String word,
+                                   @RequestParam(defaultValue = "1", value = "page") int pageNumber, Model model){
+        Page<SearchMemberDto> adminFreezeMemberDtoList = adminService.findAllByFreezeMember(word, pageNumber);
+        model.addAttribute("page", adminFreezeMemberDtoList);
         return "/admin/admin_members";
     }
 }
