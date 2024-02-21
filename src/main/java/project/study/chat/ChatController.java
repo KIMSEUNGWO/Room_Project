@@ -1,21 +1,33 @@
 package project.study.chat;
 
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.event.EventListener;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.Payload;
 import org.springframework.messaging.simp.SimpMessageHeaderAccessor;
 import org.springframework.messaging.simp.SimpMessageSendingOperations;
 import org.springframework.messaging.simp.stomp.StompHeaderAccessor;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.socket.messaging.SessionDisconnectEvent;
+import project.study.authority.member.CommonMember;
+import project.study.authority.member.MemberAuthorizationCheck;
 import project.study.chat.dto.ChatDto;
 import project.study.chat.dto.ChatMemberListDto;
 import project.study.chat.dto.ChatRoomUpdateDto;
 import project.study.chat.dto.ResponseRoomUpdateInfo;
+import project.study.constant.WebConst;
+import project.study.customAnnotation.SessionLogin;
 import project.study.domain.Member;
 import project.study.domain.Room;
+import project.study.dto.abstractentity.ResponseDto;
+import project.study.service.RoomService;
 
 import java.time.LocalDateTime;
 
@@ -26,6 +38,9 @@ public class ChatController {
 
     private final SimpMessageSendingOperations template;
     private final ChatService chatService;
+
+    private final MemberAuthorizationCheck authorizationCheck;
+    private final RoomService roomService;
 
     @MessageMapping("/chat/enterUser")
     public void enterUser(@Payload ChatDto chat, SimpMessageHeaderAccessor headerAccessor) {
@@ -81,6 +96,20 @@ public class ChatController {
 
     }
 
+    @ResponseBody
+    @PostMapping(value = "/room/exit")
+    public ResponseEntity<ResponseDto> exitRoom(@SessionLogin(required = true) Member member, @RequestBody String roomId, HttpServletResponse response) {
+        Room room = roomService.findByRoom(roomId, response);
+
+        CommonMember commonMember = authorizationCheck.getCommonMember(response, member);
+        commonMember.exitRoom(member, room, response);
+
+        ChatDto chat = chatService.exitRoom(member, room);
+        template.convertAndSend("/sub/chat/room/" + roomId, chat);
+
+        return new ResponseEntity<>(new ResponseDto(WebConst.OK, "방 탈퇴 완료"), HttpStatus.OK);
+    }
+
     @EventListener
     public void webSocketDisconnectListener(SessionDisconnectEvent event) {
         System.out.println("Disconnect " + event);
@@ -100,7 +129,7 @@ public class ChatController {
                 .type(MessageType.LEAVE)
                 .roomId(room.getRoomId())
                 .sender(member.getMemberNickname())
-                .message(member.getMemberNickname() + "님이 나가셨습니다.")
+                .message(member.getMemberNickname() + "님이 채팅방에서 나가셨습니다.")
                 .build();
         ChatMemberListDto chatMemberListDto = chatService.changeToMemberListDto(chat);
 

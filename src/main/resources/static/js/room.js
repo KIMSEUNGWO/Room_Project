@@ -62,10 +62,10 @@ function textareaResize(message) {
 };
 
 function roomSettingMenuOpen() {
-    let roomSettingBtn = document.querySelector('#setting');
+    let roomTitleWrap = document.querySelector('.room-title-wrap');
     let settingMenu = document.querySelector('.setting-menu-list');
 
-    roomSettingBtn.addEventListener('click', (e) =>{
+    roomTitleWrap.addEventListener('click', (e) =>{
         if(e.target.id == 'setting'){
             settingMenu.classList.toggle('disabled');
         };

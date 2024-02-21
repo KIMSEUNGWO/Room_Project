@@ -7,13 +7,14 @@ import project.study.chat.component.ChatAccessToken;
 import project.study.chat.component.ChatCurrentMemberManager;
 import project.study.chat.dto.ChatDto;
 import project.study.chat.dto.ChatMemberListDto;
-import project.study.chat.dto.ChatRoomUpdateDto;
+import project.study.chat.dto.ChatNextManagerDto;
 import project.study.chat.dto.ResponseRoomUpdateInfo;
 import project.study.domain.Member;
 import project.study.domain.Room;
 import project.study.jpaRepository.MemberJpaRepository;
 import project.study.jpaRepository.RoomJpaRepository;
 
+import java.time.LocalDateTime;
 import java.util.Optional;
 
 @Service
@@ -62,4 +63,21 @@ public class ChatService {
                 .build();
     }
 
+    public ChatNextManagerDto exitRoom(Member member, Room room) {
+        ChatDto chat = ChatDto.builder()
+                .roomId(room.getRoomId())
+                .time(LocalDateTime.now())
+                .type(MessageType.EXIT)
+                .sender(member.getMemberNickname())
+                .message(member.getMemberNickname() + "님이 방에서 나가셨습니다.")
+                .build();
+        Member nextManagerMember = room.getJoinRoomList()
+                .stream()
+                .filter(x -> !x.getMember().equals(member) && x.getAuthority().isManager())
+                .map(x -> x.getMember())
+                .findFirst()
+                .get();
+
+        return new ChatNextManagerDto(chat, nextManagerMember.getMemberNickname(), nextManagerMember.getMemberId());
+    }
 }

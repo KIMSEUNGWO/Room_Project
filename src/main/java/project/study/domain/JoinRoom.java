@@ -41,6 +41,10 @@ public class JoinRoom {
         return joinRoomId;
     }
 
+    public Member getMember() {
+        return member;
+    }
+
     public void setAuthority(AuthorityMemberEnum authorityEnum) {
         this.authorityEnum = authorityEnum;
     }
