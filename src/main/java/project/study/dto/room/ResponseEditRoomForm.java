@@ -1,9 +1,6 @@
 package project.study.dto.room;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import project.study.dto.abstractentity.ResponseDto;
 import project.study.enums.PublicEnum;
 
@@ -13,6 +10,7 @@ import java.util.List;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
+@ToString
 public class ResponseEditRoomForm {
 
     private String image;

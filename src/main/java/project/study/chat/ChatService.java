@@ -7,6 +7,8 @@ import project.study.chat.component.ChatAccessToken;
 import project.study.chat.component.ChatCurrentMemberManager;
 import project.study.chat.dto.ChatDto;
 import project.study.chat.dto.ChatMemberListDto;
+import project.study.chat.dto.ChatRoomUpdateDto;
+import project.study.chat.dto.ResponseRoomUpdateInfo;
 import project.study.domain.Member;
 import project.study.domain.Room;
 import project.study.jpaRepository.MemberJpaRepository;
@@ -35,19 +37,8 @@ public class ChatService {
         currentMemberManager.plus(chat.getRoomId(), member.getMemberNickname());
     }
 
-    public ChatMemberListDto changeDto(ChatDto chat) {
-        ChatMemberListDto data = new ChatMemberListDto();
-
-        data.setRoomId(chat.getRoomId());
-        data.setMessage(chat.getMessage());
-        data.setTime(chat.getTime());
-        data.setType(chat.getType());
-        data.setToken(chat.getToken());
-        data.setSenderImage(chat.getSenderImage());
-        data.setSender(chat.getSender());
-        data.setCurrentMemberList(currentMemberManager.getMemberList(chat.getRoomId()));
-
-        return data;
+    public ChatMemberListDto changeToMemberListDto(ChatDto chat) {
+        return new ChatMemberListDto(chat, currentMemberManager.getMemberList(chat.getRoomId()));
     }
 
     public void accessRemove(Long memberId, Long roomId, String nickname) {
@@ -62,4 +53,13 @@ public class ChatService {
     public void saveChat(ChatDto chat, Member member, Room room) {
         chatRepository.saveChat(chat, member, room);
     }
+
+    public ResponseRoomUpdateInfo getResponseRoomUpdateInfo(Room room) {
+        return ResponseRoomUpdateInfo.builder()
+                .isPublic(room.isPublic())
+                .title(room.getRoomTitle())
+                .max(room.getRoomLimit())
+                .build();
+    }
+
 }
