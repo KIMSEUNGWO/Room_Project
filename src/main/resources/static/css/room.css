@@ -195,6 +195,8 @@ body {
     background-color: rgb(56, 54, 54);
     width: auto;
     max-width: 50%;
+    white-space: pre-wrap;
+    word-wrap: break-word;
 }
 
 .time {
