@@ -1,11 +1,10 @@
 let stompClient = null;
-let token = getToken();
+let token = null;
 let isNewMessage = false;
 window.addEventListener('load', () => {
-
     fetchGet('/room/' + getRoomId() + '/history', historyResult) // 이전 기록 불러옴
     fetchGet('/room/' + getRoomId() + '/notice', noticeResult) // 공지사항 불러옴
-    connect(); // 웹소켓 연결
+    token = getToken();
 
     const chatHistory = document.querySelector('.chat-history');
     chatHistory.addEventListener('scroll', () => {
@@ -99,6 +98,7 @@ function getToken() {
     .then(map => {
         console.log(map);
         token = Number(map.message);
+        connect(); // 웹소켓 연결
     });
 }
 
