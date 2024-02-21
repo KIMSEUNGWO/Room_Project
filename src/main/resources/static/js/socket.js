@@ -188,6 +188,9 @@ function moveToOnline(currentMemberList) {
     let online = document.querySelector('.member-list[data-is-online="true"]');
     for (let i=0;i<currentMemberList.length; i++) {
         let memberTag = document.querySelector('.member-list[data-is-online="false"] span[name="' + currentMemberList[i] + '"]');
+
+        let alreadyExitsInOnline = online.querySelector('span[name="' + currentMemberList[i] + '"]');
+        if (alreadyExitsInOnline) continue;
         if (memberTag != null) {
             let member = memberTag.parentElement.parentElement;
             online.appendChild(member);
