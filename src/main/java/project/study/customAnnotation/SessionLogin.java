@@ -9,4 +9,5 @@ import java.lang.annotation.*;
 public @interface SessionLogin {
 
     boolean required() default false;
+    CallType type() default CallType.REST_CONTROLLER;
 }

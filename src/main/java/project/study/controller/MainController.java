@@ -9,6 +9,7 @@ import project.study.authority.member.CommonMember;
 import project.study.authority.member.MemberAuthorizationCheck;
 import project.study.authority.member.dto.RequestJoinRoomDto;
 import project.study.authority.member.dto.ResponseRoomListDto;
+import project.study.customAnnotation.CallType;
 import project.study.customAnnotation.PathRoom;
 import project.study.customAnnotation.SessionLogin;
 import project.study.domain.Member;
@@ -29,7 +30,7 @@ public class MainController {
     private final RoomService roomService;
 
     @GetMapping("/room/{room}")
-    public String joinRoom(@SessionLogin(required = true) Member member, @PathRoom("room") Room room, HttpServletResponse response, Model model){
+    public String joinRoom(@SessionLogin(required = true, type = CallType.CONTROLLER) Member member, @PathRoom("room") Room room, HttpServletResponse response, Model model){
         CommonMember commonMember = memberAuthorizationCheck.getCommonMember(response, member);
         commonMember.joinRoom(new RequestJoinRoomDto(member, room, response, null));
 
@@ -44,7 +45,7 @@ public class MainController {
     }
 
     @GetMapping("/room/{room}/private")
-    public String roomPrivate(@SessionLogin(required = true) Member member, @PathRoom("room") Room room, Model model) {
+    public String roomPrivate(@SessionLogin(required = true, type = CallType.CONTROLLER) Member member, @PathRoom("room") Room room, Model model) {
         if (room.isPublic()) {
             return "redirect:/";
         }

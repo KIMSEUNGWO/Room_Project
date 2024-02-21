@@ -12,6 +12,8 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.socket.messaging.SessionDisconnectEvent;
 import project.study.chat.dto.ChatDto;
 import project.study.chat.dto.ChatMemberListDto;
+import project.study.chat.dto.ChatRoomUpdateDto;
+import project.study.chat.dto.ResponseRoomUpdateInfo;
 import project.study.domain.Member;
 import project.study.domain.Room;
 
@@ -43,8 +45,21 @@ public class ChatController {
         chat.setSender(member.getMemberNickname());
         chat.setMessage(member.getMemberNickname() + "님이 입장하셨습니다.");
 
-        ChatMemberListDto chatDto = chatService.changeDto(chat);
+        ChatMemberListDto chatDto = chatService.changeToMemberListDto(chat);
         template.convertAndSend("/sub/chat/room/" + chat.getRoomId(), chatDto);
+    }
+
+    @MessageMapping("/chat/update")
+    public void roomUpdate(@Payload ChatDto chat, SimpMessageHeaderAccessor headerAccessor) {
+        Room room = (Room) headerAccessor.getSessionAttributes().get("room");
+
+        ResponseRoomUpdateInfo roomInfo = chatService.getResponseRoomUpdateInfo(room);
+
+        chat.setMessage("방 설정이 변경되었습니다.");
+        chat.setTime(LocalDateTime.now());
+
+        template.convertAndSend("/sub/chat/room/" + room.getRoomId(), new ChatRoomUpdateDto(chat, roomInfo));
+
     }
 
     @MessageMapping("/chat/sendMessage")
@@ -87,7 +102,7 @@ public class ChatController {
                 .sender(member.getMemberNickname())
                 .message(member.getMemberNickname() + "님이 나가셨습니다.")
                 .build();
-        ChatMemberListDto chatMemberListDto = chatService.changeDto(chat);
+        ChatMemberListDto chatMemberListDto = chatService.changeToMemberListDto(chat);
 
         template.convertAndSend("/sub/chat/room/" + room.getRoomId(), chatMemberListDto);
 
