@@ -17,7 +17,7 @@ public class NotifyImage {
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "SEQ_NOTIFY_IMAGE")
     private Long notifyImageId;
 
-    @OneToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "notifyId")
     private Notify notify;
 

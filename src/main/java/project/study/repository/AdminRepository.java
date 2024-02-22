@@ -3,6 +3,7 @@ package project.study.repository;
 import com.querydsl.core.BooleanBuilder;
 import com.querydsl.core.types.Expression;
 import com.querydsl.core.types.Predicate;
+import com.querydsl.core.types.Projections;
 import com.querydsl.core.types.dsl.*;
 import com.querydsl.jpa.JPAExpressions;
 import com.querydsl.jpa.JPQLQuery;
@@ -15,12 +16,10 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.support.PageableExecutionUtils;
 import org.springframework.stereotype.Repository;
 import project.study.authority.admin.dto.*;
-import project.study.domain.Member;
-import project.study.domain.QJoinRoom;
-import project.study.domain.QRoom;
-import project.study.domain.Room;
+import project.study.domain.*;
 import project.study.enums.AuthorityMemberEnum;
 import project.study.enums.MemberStatusEnum;
+import project.study.enums.NotifyStatus;
 
 import java.util.List;
 
@@ -28,6 +27,8 @@ import static com.querydsl.jpa.JPAExpressions.select;
 import static project.study.domain.QBasic.*;
 import static project.study.domain.QJoinRoom.*;
 import static project.study.domain.QMember.*;
+import static project.study.domain.QNotify.*;
+import static project.study.domain.QNotifyImage.*;
 import static project.study.domain.QPhone.*;
 import static project.study.domain.QRoom.*;
 import static project.study.domain.QSocial.*;
@@ -232,6 +233,77 @@ public class AdminRepository {
 
         return PageableExecutionUtils.getPage(content, pageable, () -> count.fetchCount());
     }
+
+
+    public Page<SearchNotifyDto> searchNotify(String word, Pageable pageable){
+
+        QMember reporter = new QMember("reporter");
+        QMember criminal = new QMember("criminal");
+
+        QBasic reportBasic = new QBasic("reportBasic");
+        QSocial reportSocial = new QSocial("reportSocial");
+
+        QBasic criminalBasic = new QBasic("criminalBasic");
+        QSocial criminalSocial = new QSocial("criminalSocial");
+
+        QBasic basic2 = new QBasic("basic2");
+        QSocial social2 = new QSocial("social2");
+
+
+        BooleanBuilder builder = new BooleanBuilder();
+
+//        builder.or(accountExpression.likeIgnoreCase("%" + word + "%"));
+//        builder.or(member.memberName.likeIgnoreCase("%" + word + "%"));
+//        builder.or(member.memberNickname.likeIgnoreCase("%" + word + "%"));
+//        builder.or(phone1.phone.likeIgnoreCase("%" + word + "%"));
+
+        Predicate predicate = builder.getValue();
+
+        List<SearchNotifyDto> content = queryFactory
+            .select(new QSearchNotifyDto(
+                accountExpression.coalesce(criminalBasic.account, criminalSocial.socialEmail).as("criminalMemberAccount"),
+                accountExpression.coalesce(reportBasic.account, reportSocial.socialEmail).as("reporterMemberAccount"),
+//                Expressions.stringTemplate("{0}", accountExpression).as("criminalMemberAccount"),
+//                Expressions.stringTemplate("{0}", accountExpression).as("reporterMemberAccount"),
+                notify.notifyReason,
+                notify.room.roomId,
+                Expressions.stringTemplate("TO_CHAR({0}, {1})", notify.notifyDate, "YYYY-MM-DD"),
+                notify.notifyId,
+                notify.notifyContent,
+                notify.notifyStatus
+            ))
+            .from(notify)
+            .leftJoin(notify.room, room)
+            .leftJoin(notify.criminal, criminal)
+            .leftJoin(criminal.basic, criminalBasic)
+            .leftJoin(criminal.social, criminalSocial)
+            .leftJoin(notify.reporter, reporter)
+            .leftJoin(reporter.basic, reportBasic)
+            .leftJoin(reporter.social, reportSocial)
+            .where(notify.notifyStatus.eq(NotifyStatus.처리중))
+            .offset(pageable.getOffset())
+            .limit(pageable.getPageSize())
+            .fetch();
+
+        JPAQuery<Notify> count = queryFactory
+            .select(notify)
+            .from(notify)
+            .where(notify.notifyStatus.eq(NotifyStatus.처리중))
+            .where(predicate);
+
+        return PageableExecutionUtils.getPage(content, pageable, () -> count.fetchCount());
+    }
+
+    private List<String> getImageStoreName(QNotifyImage image){
+        List<String> result = select(image.notifyImageStoreName)
+            .from(notifyImage)
+            .join(notifyImage.notify, notify)
+            .where(notifyImage.notify.eq(notify))
+            .fetch();
+        return result;
+    }
+
+
 
     private StringExpression accountExpression = new CaseBuilder()
         .when(Expressions.stringPath(String.valueOf(basic.account)).isNull())
