@@ -5,16 +5,14 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import project.study.chat.component.ChatAccessToken;
 import project.study.chat.component.ChatCurrentMemberManager;
-import project.study.chat.dto.ChatDto;
-import project.study.chat.dto.ChatMemberListDto;
-import project.study.chat.dto.ChatNextManagerDto;
-import project.study.chat.dto.ResponseRoomUpdateInfo;
+import project.study.chat.dto.*;
 import project.study.domain.Member;
 import project.study.domain.Room;
 import project.study.jpaRepository.MemberJpaRepository;
 import project.study.jpaRepository.RoomJpaRepository;
 
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -38,8 +36,10 @@ public class ChatService {
         currentMemberManager.plus(chat.getRoomId(), member.getMemberNickname());
     }
 
-    public ChatMemberListDto changeToMemberListDto(ChatDto chat) {
-        return new ChatMemberListDto(chat, currentMemberManager.getMemberList(chat.getRoomId()));
+    public ChatObject<ResponseChatMemberList> changeToMemberListDto(ChatDto chat) {
+        List<String> memberList = currentMemberManager.getMemberList(chat.getRoomId());
+        ResponseChatMemberList responseChatMemberList = new ResponseChatMemberList(memberList);
+        return new ChatObject<>(chat, responseChatMemberList);
     }
 
     public void accessRemove(Long memberId, Long roomId, String nickname) {
@@ -63,7 +63,7 @@ public class ChatService {
                 .build();
     }
 
-    public ChatNextManagerDto exitRoom(Member member, Room room) {
+    public ChatObject<ResponseNextManager> exitRoom(Member member, Room room) {
         ChatDto chat = ChatDto.builder()
                 .roomId(room.getRoomId())
                 .time(LocalDateTime.now())
@@ -78,6 +78,7 @@ public class ChatService {
                 .findFirst()
                 .get();
 
-        return new ChatNextManagerDto(chat, nextManagerMember.getMemberNickname(), nextManagerMember.getMemberId());
+        ResponseNextManager responseNextManager = new ResponseNextManager(nextManagerMember.getMemberNickname(), nextManagerMember.getMemberId());
+        return new ChatObject<>(chat, responseNextManager);
     }
 }

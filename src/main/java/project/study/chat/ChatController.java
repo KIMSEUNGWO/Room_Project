@@ -12,17 +12,18 @@ import org.springframework.messaging.simp.SimpMessageHeaderAccessor;
 import org.springframework.messaging.simp.SimpMessageSendingOperations;
 import org.springframework.messaging.simp.stomp.StompHeaderAccessor;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.socket.messaging.SessionDisconnectEvent;
 import project.study.authority.member.CommonMember;
+import project.study.authority.member.ManagerMember;
 import project.study.authority.member.MemberAuthorizationCheck;
-import project.study.chat.dto.ChatDto;
-import project.study.chat.dto.ChatMemberListDto;
-import project.study.chat.dto.ChatRoomUpdateDto;
-import project.study.chat.dto.ResponseRoomUpdateInfo;
+import project.study.authority.member.dto.RequestKickDto;
+import project.study.chat.dto.*;
 import project.study.constant.WebConst;
+import project.study.customAnnotation.PathRoom;
 import project.study.customAnnotation.SessionLogin;
 import project.study.domain.Member;
 import project.study.domain.Room;
@@ -60,8 +61,8 @@ public class ChatController {
         chat.setSender(member.getMemberNickname());
         chat.setMessage(member.getMemberNickname() + "님이 입장하셨습니다.");
 
-        ChatMemberListDto chatDto = chatService.changeToMemberListDto(chat);
-        template.convertAndSend("/sub/chat/room/" + chat.getRoomId(), chatDto);
+        ChatObject<ResponseChatMemberList> responseChatMemberListChatObject = chatService.changeToMemberListDto(chat);
+        template.convertAndSend("/sub/chat/room/" + chat.getRoomId(), responseChatMemberListChatObject);
     }
 
     @MessageMapping("/chat/update")
@@ -73,7 +74,9 @@ public class ChatController {
         chat.setMessage("방 설정이 변경되었습니다.");
         chat.setTime(LocalDateTime.now());
 
-        template.convertAndSend("/sub/chat/room/" + room.getRoomId(), new ChatRoomUpdateDto(chat, roomInfo));
+        ChatObject<ResponseRoomUpdateInfo> chatObject = new ChatObject<>(chat, roomInfo);
+
+        template.convertAndSend("/sub/chat/room/" + room.getRoomId(), chatObject);
 
     }
 
@@ -104,11 +107,23 @@ public class ChatController {
         CommonMember commonMember = authorizationCheck.getCommonMember(response, member);
         commonMember.exitRoom(member, room, response);
 
-        ChatDto chat = chatService.exitRoom(member, room);
+        ChatObject<ResponseNextManager> chat = chatService.exitRoom(member, room);
         template.convertAndSend("/sub/chat/room/" + roomId, chat);
 
         return new ResponseEntity<>(new ResponseDto(WebConst.OK, "방 탈퇴 완료"), HttpStatus.OK);
     }
+
+
+//    @ResponseBody
+//    @PostMapping("/room/{room}")
+//    public ResponseEntity<ResponseDto> room(@SessionLogin(required = true) Member member, @PathRoom("room") Room room,
+//                                            HttpServletResponse response,
+//                                            @ModelAttribute RequestKickDto data) {
+//        ManagerMember managerMember = authorizationCheck.getManagerMember(response, member, room);
+//        managerMember.kickMember(room, data);
+//
+//        return null;
+//    }
 
     @EventListener
     public void webSocketDisconnectListener(SessionDisconnectEvent event) {
@@ -131,9 +146,9 @@ public class ChatController {
                 .sender(member.getMemberNickname())
                 .message(member.getMemberNickname() + "님이 채팅방에서 나가셨습니다.")
                 .build();
-        ChatMemberListDto chatMemberListDto = chatService.changeToMemberListDto(chat);
+        ChatObject<ResponseChatMemberList> responseChatMemberListChatObject = chatService.changeToMemberListDto(chat);
 
-        template.convertAndSend("/sub/chat/room/" + room.getRoomId(), chatMemberListDto);
+        template.convertAndSend("/sub/chat/room/" + room.getRoomId(), responseChatMemberListChatObject);
 
     }
 }
