@@ -5,10 +5,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import project.study.authority.admin.dto.SearchExpireMemberDto;
-import project.study.authority.admin.dto.AdminMembersDto;
-import project.study.authority.admin.dto.SearchMemberDto;
-import project.study.authority.admin.dto.SearchRoomDto;
+import project.study.authority.admin.dto.*;
 import project.study.jpaRepository.AdminJpaRepository;
 import project.study.repository.AdminRepository;
 
@@ -38,10 +35,17 @@ public class AdminService {
     }
 
 
+    public Page<SearchNotifyDto> searchNotify(String word, int pageNumber){
+        PageRequest pageable = PageRequest.of(pageNumber - 1, 10);
+        return adminRepository.searchNotify(word, pageable);
+    }
+
+
     public Page<SearchMemberDto> findAllByFreezeMember(String word, int pageNumber){
         PageRequest pageable = PageRequest.of(pageNumber - 1, 10);
         return adminRepository.findAllByFreezeMember(word, pageable);
     }
+
 
 
 }

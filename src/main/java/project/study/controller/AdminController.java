@@ -8,10 +8,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-import project.study.authority.admin.dto.SearchExpireMemberDto;
-import project.study.authority.admin.dto.AdminMembersDto;
-import project.study.authority.admin.dto.SearchMemberDto;
-import project.study.authority.admin.dto.SearchRoomDto;
+import project.study.authority.admin.dto.*;
 import project.study.service.AdminService;
 
 import java.util.List;
@@ -99,18 +96,27 @@ public class AdminController {
         return "/admin/admin_rooms";
     }
 
-
-
     @GetMapping("/admin/notify/get")
-    public String notifyMemberList(){
+    public String notifyMemberList(@RequestParam(value = "word", required = false, defaultValue = "") String word,
+                                   @RequestParam(defaultValue = "1", value = "page") int pageNumber,  Model model){
+
+        Page<SearchNotifyDto> searchNotifyList = adminService.searchNotify(word, pageNumber);
+        System.out.println("searchNotifyList = " + searchNotifyList.getContent());
+        model.addAttribute("page", searchNotifyList);
+        model.addAttribute("word", word);
         return "/admin/admin_notify";
     }
 
-    @GetMapping("/admin/FreezeMembers/get")
-    public String findAllByFreezeMember(@RequestParam(value = "word", required = false, defaultValue = "") String word,
-                                   @RequestParam(defaultValue = "1", value = "page") int pageNumber, Model model){
-        Page<SearchMemberDto> adminFreezeMemberDtoList = adminService.findAllByFreezeMember(word, pageNumber);
-        model.addAttribute("page", adminFreezeMemberDtoList);
-        return "/admin/admin_members";
+    @GetMapping("/admin/notify/reed_more")
+    public String notifyReadMore(){
+        return "/admin/notify_reed_more";
     }
+
+//    @GetMapping("/admin/FreezeMembers/get")
+//    public String findAllByFreezeMember(@RequestParam(value = "word", required = false, defaultValue = "") String word,
+//                                   @RequestParam(defaultValue = "1", value = "page") int pageNumber, Model model){
+//        Page<SearchMemberDto> adminFreezeMemberDtoList = adminService.findAllByFreezeMember(word, pageNumber);
+//        model.addAttribute("page", adminFreezeMemberDtoList);
+//        return "/admin/admin_members";
+//    }
 }

@@ -7,6 +7,7 @@ import lombok.NoArgsConstructor;
 import project.study.enums.NotifyStatus;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @AllArgsConstructor
 @NoArgsConstructor
@@ -40,7 +41,7 @@ public class Notify implements ImageFileEntity {
     private NotifyStatus notifyStatus;
 
     // Not Columns
-    @OneToOne(mappedBy = "notify", fetch = FetchType.LAZY)
-    private NotifyImage notifyImage;
+    @OneToMany(mappedBy = "notify")
+    private List<NotifyImage> notifyImage;
 
 }
