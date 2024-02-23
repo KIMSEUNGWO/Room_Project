@@ -3,6 +3,7 @@ package project.study.domain;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 import project.study.enums.NotifyStatus;
 
@@ -13,6 +14,7 @@ import java.util.List;
 @NoArgsConstructor
 @Builder
 @Entity
+@Getter
 @Table(name = "NOTIFY")
 @SequenceGenerator(name = "SEQ_NOTIFY", sequenceName = "SEQ_NOTIFY_ID", allocationSize = 1)
 public class Notify implements ImageFileEntity {
