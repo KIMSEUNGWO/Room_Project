@@ -1,9 +1,8 @@
 package project.study.authority.admin.dto;
 
 import com.querydsl.core.annotations.QueryProjection;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.ToString;
+import jakarta.annotation.security.DenyAll;
+import lombok.*;
 import project.study.enums.NotifyStatus;
 
 import java.util.List;
@@ -11,13 +10,15 @@ import java.util.List;
 @Getter
 @ToString
 @NoArgsConstructor
+@Builder
+@AllArgsConstructor
 public class SearchNotifyDto {
 
     private String criminalMemberAccount;
     private String reporterMemberAccount;
-    private String notifyReason;
     private Long roomId;
     private String notifyDate;
+    private String notifyReason;
     private Long notifyId;
     private String notifyContent;
     private NotifyStatus notifyStatus;
