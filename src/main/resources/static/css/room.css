@@ -222,7 +222,7 @@ body {
     position: absolute;
     width: 10rem;
     left: -10rem;
-    background-color: rgb(48, 48, 66);
+    background-color: var(--room-bg-hover-color);
     border-radius: 0.5rem;
     padding: 0.5rem 0.5rem;
     display: flex;
@@ -510,6 +510,75 @@ body {
         background-color: rgb(17, 17, 20);
     }
 
+}
+
+.upload-notice {
+    width: 25rem;
+    padding: 1rem;
+
+    .modal-title {
+        height: 2rem;
+    }
+
+    h3 {
+        margin-bottom: 1rem;
+    }
+
+    #notice {
+        border: 0.1rem solid var(--inside-textarea-border-color);
+        border-radius: 1rem;
+        background-color: var(--inside-textarea-color);
+        padding: 1rem;
+        width: 100%;
+        min-height: 14rem;
+        font-size: 1rem;
+        outline: none;
+    }
+    .text-lengths {
+        text-align: right;
+        color: rgb(189, 189, 189);
+    }
+    .text-lengths span {
+        color: rgb(189, 189, 189);
+    }
+
+    .buttons {
+        width: 100%;
+        display: flex;
+        gap: 1rem;
+        margin-top: 1rem;
+        justify-content: right;
+    }
+    .buttons button {
+        width: 6rem;
+        height: 2.5rem;
+        border-radius: 0.5rem;
+    }
+    #room-notice {
+        background-color: rgb(20, 20, 29);
+        font-size: 1rem;
+    }
+    #room-notice:hover {
+        background-color: rgb(9, 9, 12);
+    }
+
+    #room-notice-delete {
+        background-color: var(--error-color);
+        font-size: 1rem;
+    }
+    #room-notice-delete:hover {
+        background-color: var(--error-hover-color);
+    }
+
+    #room-cancel {
+        background-color: rgb(30, 30, 37);
+        font-size: 1rem;
+    }
+    #room-cancel:hover {
+        background-color: rgb(17, 17, 20);
+    }
+
+    
 }
 
 /* 오른쪽 멤버 리스트 */

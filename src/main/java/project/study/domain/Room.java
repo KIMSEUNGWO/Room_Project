@@ -71,4 +71,8 @@ public class Room implements ImageFileEntity {
     public void setRoomPublic(PublicEnum roomPublic) {
         this.roomPublic = roomPublic;
     }
+
+    public boolean hasNotice() {
+        return roomNotice != null;
+    }
 }

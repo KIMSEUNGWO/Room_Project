@@ -42,10 +42,11 @@ public class SessionLoginArgumentResolver implements HandlerMethodArgumentResolv
         SessionLogin annotation = parameter.getParameterAnnotation(SessionLogin.class);
         boolean required = (annotation != null) ? annotation.required() : false;
         CallType callType = (annotation != null) ? annotation.type() : CallType.CONTROLLER;
-        log.info("SessionLogin resolveArgument 실행 required = {}", annotation.required());
 
         HttpServletRequest request = (HttpServletRequest) webRequest.getNativeRequest();
         HttpServletResponse response = (HttpServletResponse) webRequest.getNativeResponse();
+        log.info("SessionLogin resolveArgument 실행 uri = {}, required = {}", request.getRequestURI(), annotation.required());
+
         HttpSession session = request.getSession(false);
 
         if (session == null || session.getAttribute(LOGIN_MEMBER) == null) {

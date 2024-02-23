@@ -12,15 +12,14 @@ import org.springframework.messaging.simp.SimpMessageHeaderAccessor;
 import org.springframework.messaging.simp.SimpMessageSendingOperations;
 import org.springframework.messaging.simp.stomp.StompHeaderAccessor;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.socket.messaging.SessionDisconnectEvent;
 import project.study.authority.member.CommonMember;
 import project.study.authority.member.ManagerMember;
 import project.study.authority.member.MemberAuthorizationCheck;
+import project.study.authority.member.dto.RequestEntrustDto;
 import project.study.authority.member.dto.RequestKickDto;
+import project.study.authority.member.dto.RequestNoticeDto;
 import project.study.chat.dto.*;
 import project.study.constant.WebConst;
 import project.study.customAnnotation.PathRoom;
@@ -28,6 +27,7 @@ import project.study.customAnnotation.SessionLogin;
 import project.study.domain.Member;
 import project.study.domain.Room;
 import project.study.dto.abstractentity.ResponseDto;
+import project.study.dto.room.ResponseRoomNotice;
 import project.study.service.RoomService;
 
 import java.time.LocalDateTime;
@@ -114,16 +114,83 @@ public class ChatController {
     }
 
 
-//    @ResponseBody
-//    @PostMapping("/room/{room}")
-//    public ResponseEntity<ResponseDto> room(@SessionLogin(required = true) Member member, @PathRoom("room") Room room,
-//                                            HttpServletResponse response,
-//                                            @ModelAttribute RequestKickDto data) {
-//        ManagerMember managerMember = authorizationCheck.getManagerMember(response, member, room);
-//        managerMember.kickMember(room, data);
-//
-//        return null;
-//    }
+    // 회원 강퇴
+    @ResponseBody
+    @PostMapping("/room/{room}/kick")
+    public ResponseEntity<ResponseDto> roomKick(@SessionLogin(required = true) Member member,
+                                                @PathRoom("room") Room room,
+                                                HttpServletResponse response,
+                                                @ModelAttribute RequestKickDto data) {
+        ManagerMember managerMember = authorizationCheck.getManagerMember(response, member, room);
+        managerMember.kickMember(room, data);
+
+        return new ResponseEntity<>(new ResponseDto(WebConst.OK, "성공"), HttpStatus.OK);
+    }
+    // 매니저 위임
+    @ResponseBody
+    @PostMapping("/room/{room}/entrust")
+    public ResponseEntity<ResponseDto> roomManagerEntrust(@SessionLogin(required = true) Member member, @PathRoom("room") Room room,
+                                            HttpServletResponse response,
+                                            @ModelAttribute RequestEntrustDto data) {
+        ManagerMember managerMember = authorizationCheck.getManagerMember(response, member, room);
+        managerMember.managerEntrust(room, data);
+
+        return new ResponseEntity<>(new ResponseDto(WebConst.OK, "성공"), HttpStatus.OK);
+    }
+    // 공지사항 등록 및 수정
+    @ResponseBody
+    @PostMapping("/room/{room}/notice")
+    public ResponseEntity<ResponseDto> roomUploadNotice(@SessionLogin(required = true) Member member, @PathRoom("room") Room room,
+                                            HttpServletResponse response,
+                                            @RequestBody RequestNoticeDto data) {
+        System.out.println("data = " + data);
+        ManagerMember managerMember = authorizationCheck.getManagerMember(response, member, room);
+
+        ResponseRoomNotice roomNotice = managerMember.uploadNotice(room, data);
+
+        ChatDto chat = ChatDto.builder()
+            .roomId(room.getRoomId())
+            .type(MessageType.NOTICE)
+            .sender(member.getMemberNickname())
+            .time(LocalDateTime.now())
+            .token(member.getMemberId())
+            .message("공지사항이 등록되었습니다.")
+            .build();
+
+        ChatObject<ResponseRoomNotice> chatObject = new ChatObject<>(chat, roomNotice);
+        template.convertAndSend("/sub/chat/room/" + room.getRoomId(), chatObject);
+
+        return new ResponseEntity<>(new ResponseDto(WebConst.OK, "성공"), HttpStatus.OK);
+    }
+
+    // 공지사항 삭제
+    @ResponseBody
+    @DeleteMapping("/room/{room}/notice/delete")
+    public ResponseEntity<ResponseDto> roomDeleteNotice(@SessionLogin(required = true) Member member, @PathRoom("room") Room room,
+                                                        HttpServletResponse response) {
+
+        ManagerMember managerMember = authorizationCheck.getManagerMember(response, member, room);
+
+        if (!room.hasNotice()) {
+            return new ResponseEntity<>(new ResponseDto(WebConst.ERROR, "공지사항이 존재하지 않습니다."), HttpStatus.OK);
+        }
+
+        managerMember.deleteNotice(room);
+
+        ChatDto chat = ChatDto.builder()
+            .roomId(room.getRoomId())
+            .type(MessageType.NOTICE)
+            .sender(member.getMemberNickname())
+            .time(LocalDateTime.now())
+            .token(member.getMemberId())
+            .message("공지사항이 삭제되었습니다.")
+            .build();
+
+        template.convertAndSend("/sub/chat/room/" + room.getRoomId(), chat);
+
+        return new ResponseEntity<>(new ResponseDto(WebConst.OK, "성공"), HttpStatus.OK);
+    }
+
 
     @EventListener
     public void webSocketDisconnectListener(SessionDisconnectEvent event) {

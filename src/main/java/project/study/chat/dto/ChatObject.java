@@ -6,7 +6,6 @@ import lombok.Getter;
 @Getter
 public class ChatObject<T> extends ChatDto {
 
-    @JsonUnwrapped
     private final T data;
 
     public ChatObject(ChatDto chat, T data) {

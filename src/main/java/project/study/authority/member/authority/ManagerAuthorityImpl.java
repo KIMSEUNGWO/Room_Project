@@ -4,8 +4,9 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 import project.study.authority.member.dto.*;
-import project.study.domain.Member;
 import project.study.domain.Room;
+import project.study.domain.RoomNotice;
+import project.study.dto.room.ResponseRoomNotice;
 import project.study.service.RoomService;
 
 @Component
@@ -30,17 +31,31 @@ public class ManagerAuthorityImpl implements ManagerAuthority{
     }
 
     @Override
-    public void editNotice(Room room, RequestNoticeDto data) {
-        System.out.println("editNotice 실행");
+    public ResponseRoomNotice uploadNotice(Room room, RequestNoticeDto data) {
+        RoomNotice roomNotice = room.getRoomNotice();
+        if (room.hasNotice()) {
+            roomNotice.updateNotice(data.getNotice());
+        } else {
+            roomNotice = roomService.saveRoomNotice(room, data);
+        }
+
+        return ResponseRoomNotice
+            .builder()
+            .content(roomNotice.getRoomNoticeContent())
+            .time(roomNotice.getRoomNoticeDate())
+            .build();
+    }
+
+    @Override
+    public void deleteNotice(Room room) {
+        if (room.hasNotice()) {
+            roomService.deleteRoomNotice(room);
+        }
     }
 
     @Override
     public void kickMember(Room room, RequestKickDto data) {
         System.out.println("kickMember 실행");
     }
-
-    @Override
-    public void deleteRoom(Room room, RequestDeleteRoomDto data) {
-        System.out.println("deleteRoom 실행");
-    }
+    
 }
