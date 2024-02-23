@@ -8,6 +8,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import project.study.authority.member.dto.RequestEditRoomDto;
+import project.study.authority.member.dto.RequestNoticeDto;
 import project.study.authority.member.dto.ResponseRoomListDto;
 import project.study.chat.dto.ResponseChatHistory;
 import project.study.constant.WebConst;
@@ -26,10 +27,12 @@ import project.study.exceptions.roomcreate.CreateRoomException;
 import project.study.exceptions.roomjoin.IllegalRoomException;
 import project.study.exceptions.signup.SignupException;
 import project.study.jpaRepository.JoinRoomJpaRepository;
+import project.study.jpaRepository.RoomNoticeJpaRepository;
 import project.study.repository.JoinRoomRepository;
 import project.study.repository.RoomRepository;
 import project.study.repository.TagRepository;
 
+import java.time.LocalDateTime;
 import java.util.*;
 
 @Service
@@ -40,6 +43,7 @@ public class RoomService {
     private final RoomRepository roomRepository;
     private final JoinRoomRepository joinRoomRepository;
     private final JoinRoomJpaRepository joinRoomJpaRepository;
+    private final RoomNoticeJpaRepository roomNoticeJpaRepository;
     private final TagRepository tagRepository;
 
     @Transactional
@@ -175,5 +179,20 @@ public class RoomService {
         roomRepository.editTag(room, data);
 
 
+    }
+
+    public RoomNotice saveRoomNotice(Room room, RequestNoticeDto data) {
+        RoomNotice saveRoomNotice = RoomNotice.builder()
+            .room(room)
+            .roomNoticeContent(data.getNotice())
+            .roomNoticeDate(LocalDateTime.now())
+            .build();
+
+        return roomNoticeJpaRepository.save(saveRoomNotice);
+    }
+
+    public void deleteRoomNotice(Room room) {
+        RoomNotice roomNotice = room.getRoomNotice();
+        roomNoticeJpaRepository.delete(roomNotice);
     }
 }

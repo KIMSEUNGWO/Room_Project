@@ -47,10 +47,81 @@ window.addEventListener('load', () => {
     memberOptionMenuClose();
     notifyModalOpen();
 
-    roomSettingMenuOpen();
-    editRoomModalOpen();
+    const modal = document.querySelector('.modal');
+    const modal_content = document.querySelector('.modal-content');
+
+
+
+    modal_content.addEventListener('click', (e) => {
+        let target = e.target;
+        if (target.id == 'room-notice') {
+            // 공지사항 업데이트 로직
+            let notice = document.querySelector('#notice');
+            if (notice == null) {
+                al('error', '공지사항 변경 실패', '다시 시도해주세요.');
+                modalExit();
+                return;
+            }
+            let json = {notice : notice.value};
+            fetchPost('/room/' + getRoomId() + '/notice', json, updateNoticeResult);
+            modalExit();
+            return;
+        }
+        if (target.id == 'room-notice-delete') {
+            // 공지사항 삭제 로직
+            let notice = document.querySelector('#notice');
+            if (notice == null) {
+                al('error', '공지사항 변경 실패', '다시 시도해주세요.');
+                modalExit();
+                return;
+            }
+            let json = null;
+            fetchDelete('/room/' + getRoomId() + '/notice/delete', json, deleteNoticeResult);
+            modalExit();
+            return;
+        }
+    })
+
+    modal_content.addEventListener('keydown', (e) => {
+
+        // 엔터를 눌렀을 때
+        if (e.keyCode === 13 && e.target.id == 'tag-add') {
+
+        }
+    })
+
+    const roomTitleWrap = document.querySelector('.room-title-wrap');
+    const settingMenu = document.querySelector('.setting-menu-list');
+
+    roomTitleWrap.addEventListener('click', (e) =>{
+        if(e.target.id == 'setting'){
+            settingMenu.classList.toggle('disabled');
+        };
+        if (e.target.classList.contains('setting-menu')) {
+            settingMenu.classList.add('disabled');
+        }
+        if (e.target.id == 'default-setting') { // 설정버튼
+            fetchGet('/room/' + getRoomId() + '/edit', editResult);
+            return;
+        }
+        if (e.target.id == 'notice-setting') {
+            insertModalSize('upload-notice');
+            modal_content.innerHTML = createUploadNotice();
+            modal.classList.remove('disabled');
+        }
+    });
+
+    
 
 });
+function deleteNoticeResult(json) {
+    if (json.result == 'error') {
+        al(json.result, '공지사항 삭제 실패', json.message);
+    }
+}
+function updateNoticeResult(json) {
+
+}
 function scrollToBottom() {
     const chatHistory = document.querySelector('.chat-history');
     chatHistory.scrollTop = chatHistory.scrollHeight;
@@ -61,19 +132,6 @@ function textareaResize(message) {
     message.style.height = (message.scrollHeight) + 'px';
 };
 
-function roomSettingMenuOpen() {
-    let roomTitleWrap = document.querySelector('.room-title-wrap');
-    let settingMenu = document.querySelector('.setting-menu-list');
-
-    roomTitleWrap.addEventListener('click', (e) =>{
-        if(e.target.id == 'setting'){
-            settingMenu.classList.toggle('disabled');
-        };
-        if (e.target.classList.contains('setting-menu')) {
-            settingMenu.classList.add('disabled');
-        }
-    });
-};
 
 function memberOptionMenuOpen(){
     let memberMoreBtn = document.querySelector('.member-more');
@@ -113,13 +171,6 @@ function notifyModalOpen(){
     });
 };
 
-function editRoomModalOpen() {
-    let roomEditModal = document.querySelector('#default-setting');
-
-    roomEditModal.addEventListener('click', function(){
-        fetchGet('/room/' + getRoomId() + '/edit', editResult);
-    });
-};
 function editResult(json) {
     const modal = document.querySelector('.modal');
     const modal_content = document.querySelector('.modal-content');
@@ -311,8 +362,15 @@ function createTagAdd() {
             '</div>';
 }
 
-function fetchGet(url, callback) {
-    fetch(url)
-    .then(res => res.json())
-    .then(map => callback(map));
+function createUploadNotice() {
+    return `<h3>공지사항</h3>
+            <textarea id="notice"></textarea>
+            <div class="text-lengths">
+                (<span id="currentLength">0</span>/100)
+            </div>
+            <div class="buttons">
+                <button type="button" id="room-notice-delete">삭제</button>
+                <button type="button" id="room-cancel">이전</button>
+                <button type="button" id="room-notice">등록</button>
+            </div>`;
 }

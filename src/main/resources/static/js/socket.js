@@ -30,11 +30,12 @@ function noticeResult(json) {
 }
 function updateNotice(notice) {
     let history = document.querySelector('.chat-history');
+    let noticeWrap = document.querySelector('.room-notice');
     if (notice == null) {
         history.style.paddingTop = '1rem';
+        noticeWrap.innerHTML = '';
     } else {
         history.style.paddingTop = '8rem';
-        let noticeWrap = document.querySelector('.room-notice');
         noticeWrap.innerHTML = createNotice(notice);
     }
 }
@@ -43,9 +44,7 @@ function createNotice(notice) {
     return `<div class="notice">
                 <svg class="speaker" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512"><path d="M544 32c17.7 0 32 14.3 32 32V448c0 17.7-14.3 32-32 32s-32-14.3-32-32V64c0-17.7 14.3-32 32-32zM64 190.3L480 64V448L348.9 408.2C338.2 449.5 300.7 480 256 480c-53 0-96-43-96-96c0-11 1.9-21.7 5.3-31.5L64 321.7C63.1 338.6 49.1 352 32 352c-17.7 0-32-14.3-32-32V192c0-17.7 14.3-32 32-32c17.1 0 31.1 13.4 32 30.3zm239 203.9l-91.6-27.8c-2.1 5.4-3.3 11.4-3.3 17.6c0 26.5 21.5 48 48 48c23 0 42.2-16.2 46.9-37.8z"/></svg>
                 <div class="room-notice-content">
-                    <pre class="notice-text">
-                        ${notice.content}
-                    </pre>
+                    <pre class="notice-text">${notice.content}</pre>
                     <div class="notice-time">${formatDay(notice.time) + ' ' + foramtTime(notice.time)}</div>
                 </div>
                 <button type="button" class="folder">
@@ -170,15 +169,16 @@ function onMessageReceived(payload) {
 
     let chat = JSON.parse(payload.body);
 
+    console.log(chat);
     if (chat.type === 'ENTER') {
         history.innerHTML += centerMessage(chat.message);
         initialMemberCheck(chat);
-        moveToOnline(chat.currentMemberList);
+        moveToOnline(chat.data.currentMemberList);
     }
 
     if (chat.type === 'LEAVE') {
         history.innerHTML += centerMessage(chat.message);
-        moveToOffline(chat.currentMemberList);
+        moveToOffline(chat.data.currentMemberList);
     }
 
     if (chat.type === 'TALK') {
@@ -186,7 +186,7 @@ function onMessageReceived(payload) {
     }
 
     if (chat.type == 'UPDATE') {
-        updateApply(chat.roomInfo);
+        updateApply(chat.data);
         history.innerHTML += centerMessage(chat.message);
     }
 
@@ -194,6 +194,11 @@ function onMessageReceived(payload) {
         removeMember(chat.sender);
         changeManager(chat.nextManager);
         setting(chat.token);
+        history.innerHTML += centerMessage(chat.message);
+    }
+
+    if (chat.type == 'NOTICE') {
+        updateNotice(chat.data);
         history.innerHTML += centerMessage(chat.message);
     }
 
@@ -289,8 +294,11 @@ function getPrivateSvg() {
 }
 function initialMemberCheck(chat) { // 처음들어온 회원인지 확인
     let offline =  document.querySelector('.member-list[data-is-online="false"]');
-    let member = offline.querySelector('span[name="' + chat.sender + '"]');
-    if (member == null) {
+    let online =  document.querySelector('.member-list[data-is-online="true"]');
+    let memberInOffline = offline.querySelector('span[name="' + chat.sender + '"]');
+    let memberInOnline = online.querySelector('span[name="' + chat.sender + '"]');
+
+    if (memberInOffline == null && memberInOnline == null) {
         let current = document.querySelector('#current');
         let currentCount = current.textContent;
         if (!isNaN(currentCount)) {

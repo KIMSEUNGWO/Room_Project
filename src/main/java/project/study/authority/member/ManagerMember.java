@@ -5,8 +5,7 @@ import org.springframework.stereotype.Component;
 import project.study.authority.member.authority.ManagerAuthority;
 import project.study.authority.member.dto.*;
 import project.study.domain.Room;
-
-import java.util.List;
+import project.study.dto.room.ResponseRoomNotice;
 
 @Component
 @RequiredArgsConstructor
@@ -23,15 +22,18 @@ public class ManagerMember implements ManagerAuthority {
         managerAuthority.managerEntrust(room, data);
     }
     @Override
-    public void editNotice(Room room, RequestNoticeDto data) {
-        managerAuthority.editNotice(room, data);
+    public ResponseRoomNotice uploadNotice(Room room, RequestNoticeDto data) {
+        return managerAuthority.uploadNotice(room, data);
     }
+
+    @Override
+    public void deleteNotice(Room room) {
+        managerAuthority.deleteNotice(room);
+    }
+
     @Override
     public void kickMember(Room room, RequestKickDto data) {
         managerAuthority.kickMember(room, data);
     }
-    @Override
-    public void deleteRoom(Room room, RequestDeleteRoomDto data) {
-        managerAuthority.deleteRoom(room, data);
-    }
+
 }
