@@ -1,6 +1,8 @@
 package project.study.authority.member.authority;
 
+import jakarta.servlet.http.HttpServletResponse;
 import project.study.authority.member.dto.*;
+import project.study.domain.Member;
 import project.study.domain.Room;
 import project.study.dto.room.ResponseRoomNotice;
 
@@ -10,5 +12,5 @@ public interface ManagerAuthority {
     void managerEntrust(Room room, RequestEntrustDto data);
     ResponseRoomNotice uploadNotice(Room room, RequestNoticeDto data);
     void deleteNotice(Room room);
-    void kickMember(Room room, RequestKickDto data);
+    Member kickMember(HttpServletResponse response, Room room, RequestKickDto data);
 }

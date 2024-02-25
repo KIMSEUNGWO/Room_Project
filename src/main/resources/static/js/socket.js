@@ -26,7 +26,8 @@ window.addEventListener('load', () => {
 
 })
 function noticeResult(json) {
-    updateNotice(json.object);
+    console.log(json);
+    updateNotice(json.data);
 }
 function updateNotice(notice) {
     let history = document.querySelector('.chat-history');
@@ -83,8 +84,9 @@ function newMessageAlert() {
     }
 }
 
-function historyResult(list) {
-    console.log(list);
+function historyResult(json) {
+    console.log(json);
+    let list = json.data;
     for (let i=0;i<list.length;i++) {
         printMessage(list[i]);
     }
@@ -185,20 +187,25 @@ function onMessageReceived(payload) {
         printMessage(chat);
     }
 
-    if (chat.type == 'UPDATE') {
+    if (chat.type === 'UPDATE') {
         updateApply(chat.data);
         history.innerHTML += centerMessage(chat.message);
     }
 
-    if (chat.type == 'EXIT') {
+    if (chat.type === 'EXIT') {
         removeMember(chat.sender);
         changeManager(chat.nextManager);
         setting(chat.token);
         history.innerHTML += centerMessage(chat.message);
     }
 
-    if (chat.type == 'NOTICE') {
+    if (chat.type === 'NOTICE') {
         updateNotice(chat.data);
+        history.innerHTML += centerMessage(chat.message);
+    }
+
+    if (chat.type === 'KICK') {
+        removeMember(chat.sender);
         history.innerHTML += centerMessage(chat.message);
     }
 

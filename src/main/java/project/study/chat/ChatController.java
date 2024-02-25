@@ -20,6 +20,7 @@ import project.study.authority.member.MemberAuthorizationCheck;
 import project.study.authority.member.dto.RequestEntrustDto;
 import project.study.authority.member.dto.RequestKickDto;
 import project.study.authority.member.dto.RequestNoticeDto;
+import project.study.chat.domain.Chat;
 import project.study.chat.dto.*;
 import project.study.constant.WebConst;
 import project.study.customAnnotation.PathRoom;
@@ -107,6 +108,8 @@ public class ChatController {
         CommonMember commonMember = authorizationCheck.getCommonMember(response, member);
         commonMember.exitRoom(member, room, response);
 
+        chatService.accessRemove(member, room.getRoomId());
+
         ChatObject<ResponseNextManager> chat = chatService.exitRoom(member, room);
         template.convertAndSend("/sub/chat/room/" + roomId, chat);
 
@@ -122,7 +125,12 @@ public class ChatController {
                                                 HttpServletResponse response,
                                                 @ModelAttribute RequestKickDto data) {
         ManagerMember managerMember = authorizationCheck.getManagerMember(response, member, room);
-        managerMember.kickMember(room, data);
+        Member kickMember = managerMember.kickMember(response, room, data);
+
+        chatService.accessRemove(kickMember, room.getRoomId());
+
+        ChatDto kick = chatService.kickRoom(kickMember, room);
+        template.convertAndSend("/sub/chat/room/" + room.getRoomId(), kick);
 
         return new ResponseEntity<>(new ResponseDto(WebConst.OK, "성공"), HttpStatus.OK);
     }
@@ -202,7 +210,7 @@ public class ChatController {
         Member member = (Member) headerAccessor.getSessionAttributes().get("member");
         Room room = (Room) headerAccessor.getSessionAttributes().get("room");
 
-        chatService.accessRemove(member.getMemberId(), room.getRoomId(), member.getMemberNickname());
+        chatService.accessRemove(member, room.getRoomId());
 
         log.info("headAccessor {}", headerAccessor);
 

@@ -106,11 +106,13 @@ public class RoomController {
     }
 
     @GetMapping("/room/{room}/history")
-    public ResponseEntity<List<ResponseChatHistory>> chatHistory(@PathRoom("room") Room room) {
+    public ResponseEntity<ResponseDto> chatHistory(@PathRoom("room") Room room) {
         // JoinRoom 검증 안되어있음 아직.
+        // ResponseDto 형식으로 변경해야함
 
-        List<ResponseChatHistory> chatHistory = roomService.findByChatHistory(room);
-        return new ResponseEntity<>(chatHistory, HttpStatus.OK);
+        List<ResponseChatHistory> history = roomService.findByChatHistory(room);
+        ResponseObject<List<ResponseChatHistory>> result = new ResponseObject<>("ok", "성공", history);
+        return new ResponseEntity<>(result, HttpStatus.OK);
     }
 
     @GetMapping("/room/{room}/access")
@@ -123,12 +125,16 @@ public class RoomController {
     }
 
     @GetMapping("/room/{room}/notice")
-    public ResponseEntity<ResponseObject> roomNotice(@SessionLogin(required = true) Member member, @PathRoom("room") Room room) {
+    public ResponseEntity<ResponseDto> roomNotice(@SessionLogin(required = true) Member member, @PathRoom("room") Room room) {
+        // ResponseDto 형식으로 변경해야함
+
         boolean exitsByMemberAndRoom = joinRoomService.exitsByMemberAndRoom(member, room);
         if (!exitsByMemberAndRoom) throw new RestFulException(new ResponseDto("error", "권한 없음"));
 
         ResponseRoomNotice responseRoomNotice = roomService.getNotice(room);
-        return new ResponseEntity<>(new ResponseObject("ok", responseRoomNotice), HttpStatus.OK);
+
+        ResponseObject<ResponseRoomNotice> result = new ResponseObject<>("ok", "성공", responseRoomNotice);
+        return new ResponseEntity<>(result, HttpStatus.OK);
     }
 
 
