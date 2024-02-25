@@ -195,4 +195,8 @@ public class RoomService {
         RoomNotice roomNotice = room.getRoomNotice();
         roomNoticeJpaRepository.delete(roomNotice);
     }
+
+    public void deleteJoinRoom(JoinRoom joinRoom) {
+        joinRoomJpaRepository.delete(joinRoom);
+    }
 }

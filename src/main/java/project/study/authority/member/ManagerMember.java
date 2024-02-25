@@ -1,9 +1,11 @@
 package project.study.authority.member;
 
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 import project.study.authority.member.authority.ManagerAuthority;
 import project.study.authority.member.dto.*;
+import project.study.domain.Member;
 import project.study.domain.Room;
 import project.study.dto.room.ResponseRoomNotice;
 
@@ -32,8 +34,8 @@ public class ManagerMember implements ManagerAuthority {
     }
 
     @Override
-    public void kickMember(Room room, RequestKickDto data) {
-        managerAuthority.kickMember(room, data);
+    public Member kickMember(HttpServletResponse response, Room room, RequestKickDto data) {
+        return managerAuthority.kickMember(response, room, data);
     }
 
 }

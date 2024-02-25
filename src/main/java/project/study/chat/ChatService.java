@@ -42,9 +42,9 @@ public class ChatService {
         return new ChatObject<>(chat, responseChatMemberList);
     }
 
-    public void accessRemove(Long memberId, Long roomId, String nickname) {
-        chatAccessToken.remove(memberId);
-        currentMemberManager.minus(roomId, nickname);
+    public void accessRemove(Member member, Long roomId) {
+        chatAccessToken.remove(member.getMemberId());
+        currentMemberManager.minus(roomId, member.getMemberNickname());
     }
 
     public Room findByRoom(Long roomId) {
@@ -80,5 +80,15 @@ public class ChatService {
 
         ResponseNextManager responseNextManager = new ResponseNextManager(nextManagerMember.getMemberNickname(), nextManagerMember.getMemberId());
         return new ChatObject<>(chat, responseNextManager);
+    }
+
+    public ChatDto kickRoom(Member kickMember, Room room) {
+        return ChatDto.builder()
+                .roomId(room.getRoomId())
+                .time(LocalDateTime.now())
+                .type(MessageType.KICK)
+                .sender(kickMember.getMemberNickname())
+                .message(kickMember.getMemberNickname() + "님이 강퇴당했습니다.")
+                .build();
     }
 }

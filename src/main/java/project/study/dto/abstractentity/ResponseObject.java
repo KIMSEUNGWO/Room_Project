@@ -1,12 +1,14 @@
 package project.study.dto.abstractentity;
 
-import lombok.AllArgsConstructor;
 import lombok.Getter;
 
 @Getter
-@AllArgsConstructor
-public class ResponseObject {
+public class ResponseObject<T> extends ResponseDto {
 
-    private String result;
-    private Object object;
+    private final T data;
+
+    public ResponseObject(String result, String message, T data) {
+        super(result, message);
+        this.data = data;
+    }
 }
