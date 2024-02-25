@@ -45,7 +45,7 @@ public class AdminController {
 
         }
 
-        Page<SearchMemberDto> freezeMemberList = adminService.findAllByFreezeMember(word, pageNumber);
+        Page<SearchMemberDto> freezeMemberList = adminService.SearchMemberOnlyFreeze(word, pageNumber);
 
         if (freezeMemberList.isEmpty()) {
             model.addAttribute("page", freezeMemberList);
@@ -97,13 +97,38 @@ public class AdminController {
     }
 
     @GetMapping("/admin/notify/get")
-    public String notifyMemberList(@RequestParam(value = "word", required = false, defaultValue = "") String word,
-                                   @RequestParam(defaultValue = "1", value = "page") int pageNumber,  Model model){
+    public String searchNotify(@RequestParam(value = "word", required = false, defaultValue = "") String word,
+                                   @RequestParam(defaultValue = "1", value = "page") int pageNumber,  Model model,
+                                   @RequestParam(value = "withComplete", required = false) String containComplete){
 
-        Page<SearchNotifyDto> searchNotifyList = adminService.searchNotify(word, pageNumber);
-        System.out.println("searchNotifyList = " + searchNotifyList.getContent());
+        if(containComplete==null || !containComplete.equals("on")){
+
+            Page<SearchNotifyDto> searchNotifyList = adminService.searchNotify(word, pageNumber);
+            if(searchNotifyList.isEmpty()){
+                model.addAttribute("page", searchNotifyList);
+                model.addAttribute("word", word);
+                model.addAttribute("errorMsg", "결과가 존재하지 않습니다.");
+                model.addAttribute("containComplete", containComplete != null);
+                return "/admin/admin_notify";
+            }
+            model.addAttribute("page", searchNotifyList);
+            model.addAttribute("word", word);
+            model.addAttribute("containComplete", containComplete != null);
+            return "/admin/admin_notify";
+        }
+
+        Page<SearchNotifyDto> searchNotifyList = adminService.searchNotifyIncludeComplete(word, pageNumber);
+
+        if(searchNotifyList.isEmpty()){
+            model.addAttribute("page", searchNotifyList);
+            model.addAttribute("word", word);
+            model.addAttribute("errorMsg", "결과가 존재하지 않습니다.");
+            model.addAttribute("containComplete", containComplete != null);
+            return "/admin/admin_notify";
+        }
         model.addAttribute("page", searchNotifyList);
         model.addAttribute("word", word);
+        model.addAttribute("containComplete", containComplete != null);
         return "/admin/admin_notify";
     }
 
@@ -112,11 +137,4 @@ public class AdminController {
         return "/admin/notify_reed_more";
     }
 
-//    @GetMapping("/admin/FreezeMembers/get")
-//    public String findAllByFreezeMember(@RequestParam(value = "word", required = false, defaultValue = "") String word,
-//                                   @RequestParam(defaultValue = "1", value = "page") int pageNumber, Model model){
-//        Page<SearchMemberDto> adminFreezeMemberDtoList = adminService.findAllByFreezeMember(word, pageNumber);
-//        model.addAttribute("page", adminFreezeMemberDtoList);
-//        return "/admin/admin_members";
-//    }
 }
