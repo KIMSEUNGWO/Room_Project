@@ -3,6 +3,7 @@ package project.study.authority.admin.dto;
 import com.querydsl.core.annotations.QueryProjection;
 import jakarta.annotation.security.DenyAll;
 import lombok.*;
+import project.study.domain.NotifyImage;
 import project.study.enums.NotifyStatus;
 
 import java.util.List;
@@ -11,11 +12,11 @@ import java.util.List;
 @ToString
 @NoArgsConstructor
 @Builder
-@AllArgsConstructor
+//@AllArgsConstructor
 public class SearchNotifyDto {
 
-    private String criminalMemberAccount;
     private String reporterMemberAccount;
+    private String criminalMemberAccount;
     private Long roomId;
     private String notifyDate;
     private String notifyReason;
@@ -24,12 +25,12 @@ public class SearchNotifyDto {
     private NotifyStatus notifyStatus;
 
     @QueryProjection
-    public SearchNotifyDto(String criminalMemberAccount, String reporterMemberAccount, String notifyReason, Long roomId, String notifyDate, Long notifyId, String notifyContent, NotifyStatus notifyStatus) {
-        this.criminalMemberAccount = criminalMemberAccount;
+    public SearchNotifyDto(String reporterMemberAccount, String criminalMemberAccount, Long roomId, String notifyDate, String notifyReason, Long notifyId, String notifyContent, NotifyStatus notifyStatus) {
         this.reporterMemberAccount = reporterMemberAccount;
-        this.notifyReason = notifyReason;
+        this.criminalMemberAccount = criminalMemberAccount;
         this.roomId = roomId;
         this.notifyDate = notifyDate;
+        this.notifyReason = notifyReason;
         this.notifyId = notifyId;
         this.notifyContent = notifyContent;
         this.notifyStatus = notifyStatus;
