@@ -22,8 +22,14 @@ public class AdminService {
     private final AdminJpaRepository adminJpaRepository;
     private final AdminRepository adminRepository;
 
-    public Optional<Admin> adminLogin(String account){
-        return adminJpaRepository.findByAccount(account);
+    public Optional<Admin> adminLogin(String account, String password){
+
+        Optional<Admin> byAccount = adminJpaRepository.findByAccount(account);
+        if (byAccount.get().getPassword().equals(password)){
+            return adminJpaRepository.findByAccount(account);
+        }
+
+        return null;
     }
 
     public Page<SearchMemberDto> searchMember(String word, int pageNumber){

@@ -223,8 +223,8 @@ public class AdminRepository {
                 Expressions.stringTemplate("{0}", reporterAccountExpression).as("reporterMemberAccount"),
                 Expressions.stringTemplate("{0}", criminalAccountExpression).as("criminalMemberAccount"),
                 room.roomId,
-                notify.notifyReason,
                 Expressions.stringTemplate("TO_CHAR({0}, {1})", notify.notifyDate, "YYYY-MM-DD"),
+                notify.notifyReason,
                 notify.notifyId,
                 notify.notifyContent,
                 notify.notifyStatus
@@ -338,8 +338,8 @@ public class AdminRepository {
                 Expressions.stringTemplate("{0}", reporterAccountExpression).as("reporterMemberAccount"),
                 Expressions.stringTemplate("{0}", criminalAccountExpression).as("criminalMemberAccount"),
                 room.roomId,
-                notify.notifyReason,
                 Expressions.stringTemplate("TO_CHAR({0}, {1})", notify.notifyDate, "YYYY-MM-DD"),
+                notify.notifyReason,
                 notify.notifyId,
                 notify.notifyContent,
                 notify.notifyStatus
