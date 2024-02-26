@@ -153,12 +153,9 @@ public class AdminController {
     }
 
     @GetMapping("/admin/notify/reed_more")
-    public String notifyReadMore(@RequestParam(value = "word", required = false, defaultValue = "") String word,
-                                 @RequestParam(defaultValue = "1", value = "page") int pageNumber){
-        Page<SearchNotifyDto> searchNotifyList = adminService.searchNotify(word, pageNumber);
-        for (SearchNotifyDto searchNotifyDto : searchNotifyList.getContent()) {
-            System.out.println("searchNotifyDto.getNotifyId() = " + searchNotifyDto.getNotifyId());
-        }
+    public String notifyReadMore(@RequestParam(value = "notifyId") Long notifyId, Model model){
+        SearchNotifyDto searchNotifyDto = adminService.searchNotifyReedMore(notifyId);
+        model.addAttribute("notifyInfo", searchNotifyDto);
         return "/admin/notify_reed_more";
     }
 

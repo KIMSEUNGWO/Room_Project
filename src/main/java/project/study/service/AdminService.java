@@ -52,6 +52,10 @@ public class AdminService {
         return adminRepository.searchNotify(word, pageable);
     }
 
+    public SearchNotifyDto searchNotifyReedMore(Long notifyId){
+        return adminRepository.searchNotifyReedMore(notifyId);
+    }
+
     public Page<SearchMemberDto> SearchMemberOnlyFreeze(String word, int pageNumber){
         PageRequest pageable = PageRequest.of(pageNumber - 1, 10);
         return adminRepository.SearchMemberOnlyFreeze(word, pageable);
