@@ -11,10 +11,10 @@ window.addEventListener('load', function(){
 
     reedMoreBtn.forEach(function(reedMore){
         reedMore.addEventListener('click', function(){
-            // var buttonId = reedMore.getAttribute('id');
+            var notifyId = reedMore.getAttribute('id');
             // console.log(buttonId);
             // sendData(buttonId);
-            notifyReedMoreOpenPopUp();
+            notifyReedMoreOpenPopUp(notifyId);
         });
     });
     
@@ -24,8 +24,8 @@ window.addEventListener('load', function(){
 
 });
 
-function notifyReedMoreOpenPopUp(){
-    window.open('/admin/notify/reed_more', '신고 자세히 보기', 'width=500, height=700');
+function notifyReedMoreOpenPopUp(notifyId){
+    window.open('/admin/notify/reed_more?notifyId=' + notifyId, '신고 자세히 보기', 'width=500, height=700');
 };
 
 // function sendData(buttonId) {

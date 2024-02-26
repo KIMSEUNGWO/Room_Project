@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -13,27 +13,27 @@
         <div class="notify-info">
             <div class="notify-box">
                     <div class="title-notify-number">신고번호</div>
-                    <input type="text" name="notify-number" id="notify-number" class="notify-number" value="1" readonly>
+                    <input type="text" name="notify-number" id="notify-number" class="notify-number" th:value="${notifyInfo.notifyId}" readonly>
             </div>
             <div class="notify-box">
                 <div class="title-notify-date">신고일시</div>
-                <input type="text" name="notify-date" id="notify-date" class="notify-dater" value="2024-02-08" readonly>
+                <input type="text" name="notify-date" id="notify-date" class="notify-dater" th:value="${notifyInfo.notifyDate}" readonly>
             </div>
             <div class="notify-box">
                 <div class="title-donotify-member">신고한 회원</div>
-                <input type="text" name="donotify-member" id="donotify-member" class="donotify-member" value="가나다라마바사" readonly>
+                <input type="text" name="donotify-member" id="donotify-member" class="donotify-member" th:value="${notifyInfo.reporterMemberAccount}" readonly>
             </div>
             <div class="notify-box">
                 <div class="title-benotified-member">신고된 회원</div>
-                <input type="text" name="benotified-member" id="benotified-member" class="benotified-member" value="아자차카타파하" readonly>
+                <input type="text" name="benotified-member" id="benotified-member" class="benotified-member" th:value="${notifyInfo.criminalMemberAccount}" readonly>
             </div>
             <div class="notify-box">
                 <div class="title-notify-reason">신고 사유</div>
-                <input type="text" name="notify-reason" id="notify-reason" class="notify-reason" value="abcde" readonly>
+                <input type="text" name="notify-reason" id="notify-reason" class="notify-reason" th:value="${notifyInfo.notifyReason}" readonly>
             </div>
             <div class="notify-box">
                 <div class="title-notify-content">신고 내용</div>
-                <textarea class="notify-content" name="notify-content" id="notify-content" cols="30" rows="10" readonly>agwaegwaet</textarea>
+                <textarea class="notify-content" name="notify-content" id="notify-content" cols="30" rows="10" th:text="${notifyInfo.notifyContent}" readonly></textarea>
             </div>
             <div class="notify-box">
                 <div class="title-notify-image">첨부파일</div>
@@ -52,7 +52,7 @@
             </div> -->
             <div class="process-box">
                 <div class="title-process-status">처리 상태</div>
-                <input type="text" name="process-status" id="process-status" class="process-status" value="처리 완료">
+                <input type="text" name="process-status" id="process-status" class="process-status" value="처리 완료" th:value="${notifyInfo.notifyStatus}">
             </div>
         </div>
         <div class="button-box">

@@ -253,6 +253,51 @@ public class AdminRepository {
         return PageableExecutionUtils.getPage(content, pageable, () -> count.fetchCount());
     }
 
+    public SearchNotifyDto searchNotifyReedMore(Long notifyId){
+
+        QMember reporterMember = new QMember("reporterMember");
+        QMember criminalMember = new QMember("criminalMember");
+
+        QBasic reporterBasic = new QBasic("reporterBasic");
+        QBasic criminalBasic = new QBasic("criminalBasic");
+
+        QSocial reporterSocial = new QSocial("reporterSocial");
+        QSocial criminalSocial = new QSocial("criminalSocial");
+
+
+        StringExpression reporterAccountExpression = new CaseBuilder()
+            .when(Expressions.stringPath(String.valueOf(reporterBasic.account)).isNull())
+            .then(reporterSocial.socialEmail)
+            .otherwise(reporterBasic.account);
+
+        StringExpression criminalAccountExpression = new CaseBuilder()
+            .when(Expressions.stringPath(String.valueOf(criminalBasic.account)).isNull())
+            .then(criminalSocial.socialEmail)
+            .otherwise(criminalBasic.account);
+
+        return queryFactory
+            .select(new QSearchNotifyDto(
+                Expressions.stringTemplate("{0}", reporterAccountExpression).as("reporterMemberAccount"),
+                Expressions.stringTemplate("{0}", criminalAccountExpression).as("criminalMemberAccount"),
+                room.roomId,
+                Expressions.stringTemplate("TO_CHAR({0}, {1})", notify.notifyDate, "YYYY-MM-DD"),
+                notify.notifyReason,
+                notify.notifyId,
+                notify.notifyContent,
+                notify.notifyStatus
+            ))
+            .from(notify)
+            .leftJoin(notify.room, room)
+            .leftJoin(notify.reporter, reporterMember).on(reporterMember.eq(reporterMember))
+            .leftJoin(notify.criminal, criminalMember).on(criminalMember.eq(criminalMember))
+            .leftJoin(reporterMember.basic, reporterBasic)
+            .leftJoin(reporterMember.social, reporterSocial)
+            .leftJoin(criminalMember.basic, criminalBasic)
+            .leftJoin(criminalMember.social, criminalSocial)
+             .where(notify.notifyId.eq(notifyId))
+            .fetchOne();
+    }
+
     public Page<SearchMemberDto> SearchMemberOnlyFreeze(String word, Pageable pageable){
         BooleanBuilder builder = new BooleanBuilder();
 
