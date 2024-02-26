@@ -12,7 +12,6 @@ import java.util.List;
 @ToString
 @NoArgsConstructor
 @Builder
-//@AllArgsConstructor
 public class SearchNotifyDto {
 
     private String reporterMemberAccount;

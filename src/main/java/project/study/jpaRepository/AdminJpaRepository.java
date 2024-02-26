@@ -9,7 +9,7 @@ import project.study.domain.Member;
 import java.util.List;
 import java.util.Optional;
 
-public interface AdminJpaRepository extends JpaRepository<Member, Long> {
+public interface AdminJpaRepository extends JpaRepository<Admin, Long> {
 
     Optional<Admin> findByAccount(String account);
 }

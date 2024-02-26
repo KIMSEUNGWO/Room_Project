@@ -1,23 +1,44 @@
 package project.study.controller;
 
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.security.core.parameters.P;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import project.study.authority.admin.dto.*;
+import project.study.domain.Admin;
 import project.study.service.AdminService;
 
 import java.util.List;
+import java.util.Optional;
 
 @Controller
 @RequiredArgsConstructor
 public class AdminController {
 
     private final AdminService adminService;
+
+    @GetMapping("/admin/login")
+    public String adminLogin(){
+        return "/admin/admin_login";
+    }
+
+    @PostMapping("/admin/login")
+    public String adminLogin(@RequestParam(value = "account") String account,
+                             @RequestParam(value = "password") String password){
+        Optional<Admin> admin1 = adminService.adminLogin(account, password);
+        if (admin1.isEmpty()){
+            return "redirect:/admin/login";
+        }
+
+        return "redirect:/admin/members/get";
+    }
 
     @GetMapping("/admin/members/get")
     public String searchMember(@RequestParam(value = "word", required = false, defaultValue = "") String word,
@@ -39,7 +60,6 @@ public class AdminController {
             model.addAttribute("page", searchMemberDtoList);
             model.addAttribute("word", word);
             model.addAttribute("freezeOnly", freezeOnly != null);
-            System.out.println("freezeOnly = " + freezeOnly);
 
             return "/admin/admin_members";
 
@@ -133,8 +153,18 @@ public class AdminController {
     }
 
     @GetMapping("/admin/notify/reed_more")
-    public String notifyReadMore(){
+    public String notifyReadMore(@RequestParam(value = "word", required = false, defaultValue = "") String word,
+                                 @RequestParam(defaultValue = "1", value = "page") int pageNumber){
+        Page<SearchNotifyDto> searchNotifyList = adminService.searchNotify(word, pageNumber);
+        for (SearchNotifyDto searchNotifyDto : searchNotifyList.getContent()) {
+            System.out.println("searchNotifyDto.getNotifyId() = " + searchNotifyDto.getNotifyId());
+        }
         return "/admin/notify_reed_more";
+    }
+
+    @GetMapping("/reciveData")
+    public void some(@RequestParam("buttonId") Long buttonId){
+        System.out.println("buttonId = " + buttonId);
     }
 
 }
