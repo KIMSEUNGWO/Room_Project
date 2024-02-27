@@ -8,11 +8,14 @@ import project.study.authority.member.dto.RequestCreateRoomDto;
 import project.study.authority.member.dto.RequestJoinRoomDto;
 import project.study.authority.member.dto.RequestNotifyDto;
 import project.study.authority.member.dto.ResponseRoomListDto;
+import project.study.constant.WebConst;
 import project.study.domain.JoinRoom;
 import project.study.domain.Member;
 import project.study.domain.Notify;
 import project.study.domain.Room;
+import project.study.dto.abstractentity.ResponseDto;
 import project.study.enums.AuthorityMemberEnum;
+import project.study.exceptions.RestFulException;
 import project.study.exceptions.authority.NotJoinRoomException;
 import project.study.exceptions.authority.joinroom.InvalidPublicPasswordException;
 import project.study.service.JoinRoomService;
@@ -42,10 +45,22 @@ public class MemberAuthorityImpl implements MemberAuthority{
 
     @Override
     public void notify(Member member, Room room, RequestNotifyDto data) {
+        validNotify(data);
         Notify saveNotify = notifyService.saveNotify(member, room, data);
 
         notifyService.saveNotifyImage(saveNotify, data);
 
+    }
+
+    private void validNotify(RequestNotifyDto data) {
+        String nickname = data.getNickname();
+        if (nickname == null) {
+            throw new RestFulException(new ResponseDto(WebConst.ERROR, "신고하는 유저를 선택해주세요."));
+        }
+        String content = data.getNotifyContent();
+        if (content == null || content.length() > 1000) {
+            throw new RestFulException(new ResponseDto(WebConst.ERROR, "신고내용을 1000자 이내로 작성해주세요."));
+        }
     }
 
     @Override

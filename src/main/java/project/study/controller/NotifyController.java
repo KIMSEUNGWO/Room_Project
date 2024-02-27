@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.RestController;
 import project.study.authority.member.MemberAuthorizationCheck;
 import project.study.authority.member.authority.MemberAuthority;
 import project.study.authority.member.dto.RequestNotifyDto;
+import project.study.customAnnotation.CallType;
 import project.study.customAnnotation.PathRoom;
 import project.study.customAnnotation.SessionLogin;
 import project.study.domain.Member;
@@ -25,7 +26,7 @@ public class NotifyController {
     private final MemberAuthorizationCheck authorizationCheck;
 
     @PostMapping("/room/{room}/notify")
-    public ResponseEntity<ResponseDto> notify(@SessionLogin(required = true) Member member,
+    public ResponseEntity<ResponseDto> notify(@SessionLogin(required = true, type = CallType.CONTROLLER) Member member,
                                               HttpServletResponse response,
                                               @PathRoom("room") Room room,
                                               @ModelAttribute RequestNotifyDto data) {

@@ -25,6 +25,7 @@ public class FileTypeConverter {
         }
         if (type == FileUploadType.NOTIFY_IMAGE) {
             fileUploadRepository.saveNotifyImage(fileUploadDto);
+            return;
         }
         log.error("TypeConvert TypeMissMatch error = {}", type.name());
     }
