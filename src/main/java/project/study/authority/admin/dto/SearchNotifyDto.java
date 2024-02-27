@@ -5,6 +5,7 @@ import jakarta.annotation.security.DenyAll;
 import lombok.*;
 import project.study.domain.NotifyImage;
 import project.study.enums.NotifyStatus;
+import project.study.enums.NotifyType;
 
 import java.util.List;
 
@@ -12,6 +13,7 @@ import java.util.List;
 @ToString
 @NoArgsConstructor
 @Builder
+@AllArgsConstructor
 public class SearchNotifyDto {
 
     private String reporterMemberAccount;
@@ -23,12 +25,12 @@ public class SearchNotifyDto {
     private NotifyStatus notifyStatus;
 
     @QueryProjection
-    public SearchNotifyDto(String reporterMemberAccount, String criminalMemberAccount, Long roomId, String notifyDate, String notifyReason, Long notifyId, NotifyStatus notifyStatus) {
+    public SearchNotifyDto(String reporterMemberAccount, String criminalMemberAccount, Long roomId, String notifyDate, NotifyType notifyReason, Long notifyId, NotifyStatus notifyStatus) {
         this.reporterMemberAccount = reporterMemberAccount;
         this.criminalMemberAccount = criminalMemberAccount;
         this.roomId = roomId;
         this.notifyDate = notifyDate;
-        this.notifyReason = notifyReason;
+        this.notifyReason = notifyReason.getNotifyType();
         this.notifyId = notifyId;
         this.notifyStatus = notifyStatus;
     }

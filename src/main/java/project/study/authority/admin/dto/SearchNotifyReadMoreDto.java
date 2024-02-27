@@ -3,6 +3,7 @@ package project.study.authority.admin.dto;
 import com.querydsl.core.annotations.QueryProjection;
 import lombok.*;
 import project.study.enums.NotifyStatus;
+import project.study.enums.NotifyType;
 
 import java.util.List;
 
@@ -25,14 +26,15 @@ public class SearchNotifyReadMoreDto {
     private List<String> notifyImageStoreName;
 
     @QueryProjection
-    public SearchNotifyReadMoreDto(String reporterMemberAccount, String criminalMemberAccount, Long roomId, String notifyDate, String notifyReason, String notifyContent, Long notifyId, NotifyStatus notifyStatus) {
+    public SearchNotifyReadMoreDto(String reporterMemberAccount, String criminalMemberAccount, Long roomId, String notifyDate, NotifyType notifyReason, String notifyContent, Long notifyId, NotifyStatus notifyStatus) {
         this.reporterMemberAccount = reporterMemberAccount;
         this.criminalMemberAccount = criminalMemberAccount;
         this.roomId = roomId;
         this.notifyDate = notifyDate;
-        this.notifyReason = notifyReason;
+        this.notifyReason = notifyReason.getNotifyType();
         this.notifyContent = notifyContent;
         this.notifyId = notifyId;
         this.notifyStatus = notifyStatus;
     }
 }
+

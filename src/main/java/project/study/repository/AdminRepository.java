@@ -16,6 +16,7 @@ import project.study.domain.*;
 import project.study.enums.AuthorityMemberEnum;
 import project.study.enums.MemberStatusEnum;
 import project.study.enums.NotifyStatus;
+import project.study.enums.NotifyType;
 
 import java.util.List;
 
@@ -181,11 +182,116 @@ public class AdminRepository {
 
     public Page<SearchNotifyDto> searchNotify(String word, Pageable pageable){
 
-        return null;
+        QMember reporterMember = new QMember("reporterMember");
+        QMember criminalMember = new QMember("criminalMember");
+
+        QBasic reporterBasic = new QBasic("reporterBasic");
+        QBasic criminalBasic = new QBasic("criminalBasic");
+
+        QSocial reporterSocial = new QSocial("reporterSocial");
+        QSocial criminalSocial = new QSocial("criminalSocial");
+
+
+        StringExpression reporterAccountExpression = new CaseBuilder()
+            .when(Expressions.stringPath(String.valueOf(reporterBasic.account)).isNull())
+            .then(reporterSocial.socialEmail)
+            .otherwise(reporterBasic.account);
+
+        StringExpression criminalAccountExpression = new CaseBuilder()
+            .when(Expressions.stringPath(String.valueOf(criminalBasic.account)).isNull())
+            .then(criminalSocial.socialEmail)
+            .otherwise(criminalBasic.account);
+
+        StringPath notifyStatus = Expressions.stringPath(String.valueOf(notify.notifyStatus));
+
+        BooleanBuilder builder = new BooleanBuilder();
+
+        builder.or(reporterAccountExpression.likeIgnoreCase("%" + word + "%"));
+        builder.or(criminalAccountExpression.likeIgnoreCase("%" + word + "%"));
+        builder.or(room.roomId.like("%" + word + "%"));
+        builder.or(notify.notifyReason.stringValue().likeIgnoreCase("%" + word + "%"));
+        builder.or(notifyStatus.likeIgnoreCase("%" + word + "%"));
+
+        Predicate predicate = builder.getValue();
+
+        List<SearchNotifyDto> content = queryFactory
+            .select(new QSearchNotifyDto(
+                Expressions.stringTemplate("{0}", reporterAccountExpression).as("reporterMemberAccount"),
+                Expressions.stringTemplate("{0}", criminalAccountExpression).as("criminalMemberAccount"),
+                room.roomId,
+                Expressions.stringTemplate("TO_CHAR({0}, {1})", notify.notifyDate, "YYYY-MM-DD"),
+                notify.notifyReason,
+                notify.notifyId,
+                notify.notifyStatus
+            ))
+            .from(notify)
+            .leftJoin(notify.room, room)
+            .leftJoin(notify.reporter, reporterMember).on(reporterMember.eq(reporterMember))
+            .leftJoin(notify.criminal, criminalMember).on(criminalMember.eq(criminalMember))
+            .leftJoin(reporterMember.basic, reporterBasic)
+            .leftJoin(reporterMember.social, reporterSocial)
+            .leftJoin(criminalMember.basic, criminalBasic)
+            .leftJoin(criminalMember.social, criminalSocial)
+            .where(notify.notifyStatus.eq(NotifyStatus.처리중))
+            .where(predicate)
+            .orderBy(notify.notifyDate.desc())
+            .offset(pageable.getOffset())
+            .limit(pageable.getPageSize())
+            .fetch();
+
+        JPAQuery<Notify> count = queryFactory
+            .select(notify)
+            .from(notify)
+            .where(notify.notifyStatus.eq(NotifyStatus.처리중))
+            .where(predicate);
+
+        return PageableExecutionUtils.getPage(content, pageable, () -> count.fetchCount());
     }
 
     public SearchNotifyReadMoreDto searchNotifyReadMore(Long notifyId){
-        return null;
+
+        QMember reporterMember = new QMember("reporterMember");
+        QMember criminalMember = new QMember("criminalMember");
+
+        QBasic reporterBasic = new QBasic("reporterBasic");
+        QBasic criminalBasic = new QBasic("criminalBasic");
+
+        QSocial reporterSocial = new QSocial("reporterSocial");
+        QSocial criminalSocial = new QSocial("criminalSocial");
+
+
+        StringExpression reporterAccountExpression = new CaseBuilder()
+            .when(Expressions.stringPath(String.valueOf(reporterBasic.account)).isNull())
+            .then(reporterSocial.socialEmail)
+            .otherwise(reporterBasic.account);
+
+        StringExpression criminalAccountExpression = new CaseBuilder()
+            .when(Expressions.stringPath(String.valueOf(criminalBasic.account)).isNull())
+            .then(criminalSocial.socialEmail)
+            .otherwise(criminalBasic.account);
+
+
+        return queryFactory
+            .select(new QSearchNotifyReadMoreDto(
+                Expressions.stringTemplate("{0}", reporterAccountExpression).as("reporterMemberAccount"),
+                Expressions.stringTemplate("{0}", criminalAccountExpression).as("criminalMemberAccount"),
+                room.roomId,
+                Expressions.stringTemplate("TO_CHAR({0}, {1})", notify.notifyDate, "YYYY-MM-DD"),
+                notify.notifyReason,
+                notify.notifyContent,
+                notify.notifyId,
+                notify.notifyStatus
+            ))
+            .from(notify)
+            .leftJoin(notify.room, room)
+            .leftJoin(notify.reporter, reporterMember).on(reporterMember.eq(reporterMember))
+            .leftJoin(notify.criminal, criminalMember).on(criminalMember.eq(criminalMember))
+            .leftJoin(reporterMember.basic, reporterBasic)
+            .leftJoin(reporterMember.social, reporterSocial)
+            .leftJoin(criminalMember.basic, criminalBasic)
+            .leftJoin(criminalMember.social, criminalSocial)
+            .where(notify.notifyId.eq(notifyId))
+            .fetchOne();
     }
 
     public List<String> findNotifyImage(Long notifyId){
@@ -275,7 +381,71 @@ public class AdminRepository {
     }
 
     public Page<SearchNotifyDto> searchNotifyIncludeComplete(String word, Pageable pageable){
-        return null;
+
+        QMember reporterMember = new QMember("reporterMember");
+        QMember criminalMember = new QMember("criminalMember");
+
+        QBasic reporterBasic = new QBasic("reporterBasic");
+        QBasic criminalBasic = new QBasic("criminalBasic");
+
+        QSocial reporterSocial = new QSocial("reporterSocial");
+        QSocial criminalSocial = new QSocial("criminalSocial");
+
+
+        StringExpression reporterAccountExpression = new CaseBuilder()
+            .when(Expressions.stringPath(String.valueOf(reporterBasic.account)).isNull())
+            .then(reporterSocial.socialEmail)
+            .otherwise(reporterBasic.account);
+
+        StringExpression criminalAccountExpression = new CaseBuilder()
+            .when(Expressions.stringPath(String.valueOf(criminalBasic.account)).isNull())
+            .then(criminalSocial.socialEmail)
+            .otherwise(criminalBasic.account);
+
+        StringPath notifyStatus = Expressions.stringPath(String.valueOf(notify.notifyStatus));
+
+        BooleanBuilder builder = new BooleanBuilder();
+
+        builder.or(reporterAccountExpression.likeIgnoreCase("%" + word + "%"));
+        builder.or(criminalAccountExpression.likeIgnoreCase("%" + word + "%"));
+        builder.or(room.roomId.like("%" + word + "%"));
+        builder.or(notify.notifyReason.stringValue().likeIgnoreCase("%" + word + "%"));
+        builder.or(notifyStatus.likeIgnoreCase("%" + word + "%"));
+
+        Predicate predicate = builder.getValue();
+
+        List<SearchNotifyDto> content = queryFactory
+            .select(new QSearchNotifyDto(
+                Expressions.stringTemplate("{0}", reporterAccountExpression).as("reporterMemberAccount"),
+                Expressions.stringTemplate("{0}", criminalAccountExpression).as("criminalMemberAccount"),
+                room.roomId,
+                Expressions.stringTemplate("TO_CHAR({0}, {1})", notify.notifyDate, "YYYY-MM-DD"),
+                notify.notifyReason,
+                notify.notifyId,
+                notify.notifyStatus
+            ))
+            .from(notify)
+            .leftJoin(notify.room, room)
+            .leftJoin(notify.reporter, reporterMember).on(reporterMember.eq(reporterMember))
+            .leftJoin(notify.criminal, criminalMember).on(criminalMember.eq(criminalMember))
+            .leftJoin(reporterMember.basic, reporterBasic)
+            .leftJoin(reporterMember.social, reporterSocial)
+            .leftJoin(criminalMember.basic, criminalBasic)
+            .leftJoin(criminalMember.social, criminalSocial)
+            .where(notify.notifyStatus.eq(NotifyStatus.처리중).or(notify.notifyStatus.eq(NotifyStatus.처리완료)))
+            .where(predicate)
+            .offset(pageable.getOffset())
+            .limit(pageable.getPageSize())
+            .orderBy(notify.notifyDate.desc())
+            .fetch();
+
+        JPAQuery<Notify> count = queryFactory
+            .select(notify)
+            .from(notify)
+            .where(notify.notifyStatus.eq(NotifyStatus.처리중).or(notify.notifyStatus.eq(NotifyStatus.처리완료)))
+            .where(predicate);
+
+        return PageableExecutionUtils.getPage(content, pageable, () -> count.fetchCount());
     }
 
     private StringExpression accountExpression = new CaseBuilder()

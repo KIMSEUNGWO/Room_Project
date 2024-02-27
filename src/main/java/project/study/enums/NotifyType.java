@@ -19,4 +19,6 @@ public enum NotifyType {
     public String getNotifyType() {
         return notifyType;
     }
+
+
 }
