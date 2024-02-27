@@ -191,7 +191,16 @@ function printErrorMessage(tag, message) {
 }
 
 function notifyResult(json) {
-    console.log(json);
+    if (json.result == 'ok') {
+        al(json.result, '성공', '신고가 접수되었습니다.');
+        modalExit();
+    } else if (json.result == 'error') {
+        let notifyMessage = document.querySelector('.m_notify');
+        printErrorMessage(notifyMessage, json.message);
+    } else if (json.result == 'notLogin') {
+        alert('로그인이 필요합니다.');
+        window.location.href = '/?redirectURI=/room/' + getRoomId();
+    }
 }
 
 function fetchNotify(url, formData, callback) {
