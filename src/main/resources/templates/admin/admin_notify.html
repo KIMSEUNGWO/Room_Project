@@ -76,7 +76,7 @@
                     <div class="table-list">
                         <div class="entity" th:each="member : ${page.content}">
                             <div class="donotifymember" th:text="${member.reporterMemberAccount}">가나다라마바사아자차</div>
-                            <div class="benotifiedmember" th:text="${member.criminalMemberAccount}">차자아사바마라다나가</div>
+                            <div class="benotifiedmember"><a class="memberInfoPop" href="" th:id="${member.criminalMemberAccount}" th:text="${member.criminalMemberAccount}">차자아사바마라다나가</a></div>
                             <div class="notifyreason" th:text="${member.notifyReason}">css할줄모름</div>
                             <div class="notifydate" th:text="${member.notifyDate}">2024-02-07</div>
                             <div class="roomid" th:text="${member.roomId}">1</div>

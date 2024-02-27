@@ -1,6 +1,5 @@
 package project.study.authority.admin.authority;
 
-import project.study.authority.admin.dto.AdminMembersDto;
 import project.study.authority.admin.dto.SearchMemberDto;
 import project.study.domain.Member;
 

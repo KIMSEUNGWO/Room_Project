@@ -3,6 +3,7 @@ package project.study.authority.admin.dto;
 import com.querydsl.core.annotations.QueryProjection;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 import lombok.ToString;
 import project.study.enums.MemberStatusEnum;
 import project.study.enums.SocialEnum;
