@@ -5,6 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import project.study.enums.AuthorityAdminEnum;
 
 @Builder
 @Entity
@@ -22,6 +23,7 @@ public class Admin {
     private String account;
     private String password;
     private String name;
+    private AuthorityAdminEnum adminEnum;
 }
 
 
