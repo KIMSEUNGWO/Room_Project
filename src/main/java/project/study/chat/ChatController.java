@@ -14,13 +14,12 @@ import org.springframework.messaging.simp.stomp.StompHeaderAccessor;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.socket.messaging.SessionDisconnectEvent;
-import project.study.authority.member.CommonMember;
-import project.study.authority.member.ManagerMember;
 import project.study.authority.member.MemberAuthorizationCheck;
+import project.study.authority.member.authority.ManagerAuthority;
+import project.study.authority.member.authority.MemberAuthority;
 import project.study.authority.member.dto.RequestEntrustDto;
 import project.study.authority.member.dto.RequestKickDto;
 import project.study.authority.member.dto.RequestNoticeDto;
-import project.study.chat.domain.Chat;
 import project.study.chat.dto.*;
 import project.study.constant.WebConst;
 import project.study.customAnnotation.PathRoom;
@@ -105,7 +104,7 @@ public class ChatController {
     public ResponseEntity<ResponseDto> exitRoom(@SessionLogin(required = true) Member member, @RequestBody String roomId, HttpServletResponse response) {
         Room room = roomService.findByRoom(roomId, response);
 
-        CommonMember commonMember = authorizationCheck.getCommonMember(response, member);
+        MemberAuthority commonMember = authorizationCheck.getMemberAuthority(response, member);
         commonMember.exitRoom(member, room, response);
 
         chatService.accessRemove(member, room.getRoomId());
@@ -125,7 +124,7 @@ public class ChatController {
                                                 HttpServletResponse response,
                                                 @RequestBody RequestKickDto data) {
         System.out.println("강퇴당하는 회원의 닉네임 = " + data.getNickname());
-        ManagerMember managerMember = authorizationCheck.getManagerMember(response, member, room);
+        ManagerAuthority managerMember = authorizationCheck.getManagerAuthority(response, member, room);
         Member kickMember = managerMember.kickMember(response, room, data);
 
         chatService.accessRemove(kickMember, room.getRoomId());
@@ -142,7 +141,7 @@ public class ChatController {
                                             HttpServletResponse response,
                                             @RequestBody RequestEntrustDto data) {
         System.out.println("방장 위임 회원의 닉네임 : " + data.getNickname());
-        ManagerMember managerMember = authorizationCheck.getManagerMember(response, member, room);
+        ManagerAuthority managerMember = authorizationCheck.getManagerAuthority(response, member, room);
         Member nextManager = managerMember.managerEntrust(member, room, data);
 
         ChatDto chat = chatService.nextManagerRoom(nextManager, room);
@@ -158,7 +157,7 @@ public class ChatController {
                                             HttpServletResponse response,
                                             @RequestBody RequestNoticeDto data) {
         System.out.println("data = " + data);
-        ManagerMember managerMember = authorizationCheck.getManagerMember(response, member, room);
+        ManagerAuthority managerMember = authorizationCheck.getManagerAuthority(response, member, room);
 
         ResponseRoomNotice roomNotice = managerMember.uploadNotice(room, data);
 
@@ -183,7 +182,7 @@ public class ChatController {
     public ResponseEntity<ResponseDto> roomDeleteNotice(@SessionLogin(required = true) Member member, @PathRoom("room") Room room,
                                                         HttpServletResponse response) {
 
-        ManagerMember managerMember = authorizationCheck.getManagerMember(response, member, room);
+        ManagerAuthority managerMember = authorizationCheck.getManagerAuthority(response, member, room);
 
         if (!room.hasNotice()) {
             return new ResponseEntity<>(new ResponseDto(WebConst.ERROR, "공지사항이 존재하지 않습니다."), HttpStatus.OK);

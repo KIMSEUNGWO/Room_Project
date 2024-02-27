@@ -62,6 +62,8 @@ public class ManagerAuthorityImpl implements ManagerAuthority{
 
     @Override
     public ResponseRoomNotice uploadNotice(Room room, RequestNoticeDto data) {
+
+        validNotice(data.getNotice());
         RoomNotice roomNotice = room.getRoomNotice();
         if (room.hasNotice()) {
             roomNotice.updateNotice(data.getNotice());
@@ -74,6 +76,12 @@ public class ManagerAuthorityImpl implements ManagerAuthority{
             .content(roomNotice.getRoomNoticeContent())
             .time(roomNotice.getRoomNoticeDate())
             .build();
+    }
+
+    private void validNotice(String notice) {
+        if (notice.length() > 300) {
+            throw new RestFulException(new ResponseDto(WebConst.ERROR, "300자 이내로 작성해주세요."));
+        }
     }
 
     @Override

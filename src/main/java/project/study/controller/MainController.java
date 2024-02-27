@@ -5,8 +5,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
-import project.study.authority.member.CommonMember;
 import project.study.authority.member.MemberAuthorizationCheck;
+import project.study.authority.member.authority.MemberAuthority;
 import project.study.authority.member.dto.RequestJoinRoomDto;
 import project.study.authority.member.dto.ResponseRoomListDto;
 import project.study.customAnnotation.CallType;
@@ -31,7 +31,7 @@ public class MainController {
 
     @GetMapping("/room/{room}")
     public String joinRoom(@SessionLogin(required = true, type = CallType.CONTROLLER) Member member, @PathRoom("room") Room room, HttpServletResponse response, Model model){
-        CommonMember commonMember = memberAuthorizationCheck.getCommonMember(response, member);
+        MemberAuthority commonMember = memberAuthorizationCheck.getMemberAuthority(response, member);
         commonMember.joinRoom(new RequestJoinRoomDto(member, room, response, null));
 
         List<ResponseRoomMemberList> memberList = roomService.getResponseRoomMemberList(room, member);
@@ -57,7 +57,7 @@ public class MainController {
     @GetMapping("/")
     public String main(@SessionLogin Member member, Model model, HttpServletResponse response){
         if (member != null) {
-            CommonMember commonMember = memberAuthorizationCheck.getCommonMember(response, member);
+            MemberAuthority commonMember = memberAuthorizationCheck.getMemberAuthority(response, member);
             List<ResponseRoomListDto> myRoomList = commonMember.getMyRoomList(member);
             model.addAttribute("myRoomList", myRoomList);
         }

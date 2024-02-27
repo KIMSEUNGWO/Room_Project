@@ -8,7 +8,8 @@ import lombok.Getter;
 public enum FileUploadType {
 
     MEMBER_PROFILE("member_profile"),
-    ROOM_PROFILE("room_profile");
+    ROOM_PROFILE("room_profile"),
+    NOTIFY_IMAGE("notify_image");
 
     private String dir;
 

@@ -3,6 +3,8 @@ package project.study.authority.member;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
+import project.study.authority.member.authority.ManagerAuthority;
+import project.study.authority.member.authority.MemberAuthority;
 import project.study.domain.JoinRoom;
 import project.study.domain.Member;
 import project.study.domain.Room;
@@ -19,8 +21,8 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class MemberAuthorizationCheck {
 
-    private final CommonMember commonMember;
-    private final ManagerMember managerMember;
+    private final ManagerAuthority managerAuthority;
+    private final MemberAuthority memberAuthority;
     private final JoinRoomJpaRepository joinRoomJpaRepository;
 
     private void authorizationCheck(HttpServletResponse response,  Member member, Room room) {
@@ -34,13 +36,13 @@ public class MemberAuthorizationCheck {
         if (!authority.isManager()) throw new NotAuthorizedException(response);
     }
 
-    public ManagerMember getManagerMember(HttpServletResponse response,  Member member, Room room) {
+    public ManagerAuthority getManagerAuthority(HttpServletResponse response, Member member, Room room) {
         authorizationCheck(response, member, room);
-        return managerMember;
+        return managerAuthority;
     }
 
-    public CommonMember getCommonMember(HttpServletResponse response, Member member) {
+    public MemberAuthority getMemberAuthority(HttpServletResponse response, Member member) {
         if (member == null) throw new NotLoginMemberException(response);
-        return commonMember;
+        return memberAuthority;
     }
 }

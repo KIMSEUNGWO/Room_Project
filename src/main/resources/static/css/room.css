@@ -702,6 +702,9 @@ aside .buttons button:hover {
     right: 1rem;
     padding: 0.5rem 0.3rem;
     background-color: var(--room-bg-hover-color);
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
 }
 
 .member-option-box {
@@ -736,7 +739,6 @@ aside .buttons button:hover {
 /*신고하기 모달*/
 .modal-notify {
     width: 30rem;
-    height: 39rem;
     
     .modal-content {
         display: flex;
@@ -769,7 +771,7 @@ aside .buttons button:hover {
         margin-bottom: 1rem;
     }
 
-    .notify-reason {
+    .notify select {
         background-color: var(--room-bg-color);
         border: none;
         text-align: center;

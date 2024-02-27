@@ -23,6 +23,9 @@ public class FileTypeConverter {
             fileUploadRepository.saveRoomImage(fileUploadDto);
             return;
         }
+        if (type == FileUploadType.NOTIFY_IMAGE) {
+            fileUploadRepository.saveNotifyImage(fileUploadDto);
+        }
         log.error("TypeConvert TypeMissMatch error = {}", type.name());
     }
 

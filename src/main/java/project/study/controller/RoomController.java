@@ -7,15 +7,14 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import project.study.authority.member.CommonMember;
-import project.study.authority.member.ManagerMember;
 import project.study.authority.member.MemberAuthorizationCheck;
+import project.study.authority.member.authority.ManagerAuthority;
+import project.study.authority.member.authority.MemberAuthority;
 import project.study.authority.member.dto.RequestEditRoomDto;
 import project.study.authority.member.dto.RequestJoinRoomDto;
 import project.study.authority.member.dto.ResponseRoomListDto;
 import project.study.chat.component.ChatAccessToken;
 import project.study.chat.dto.ResponseChatHistory;
-import project.study.constant.WebConst;
 import project.study.customAnnotation.PathRoom;
 import project.study.customAnnotation.SessionLogin;
 import project.study.domain.Member;
@@ -45,7 +44,7 @@ public class RoomController {
     public ResponseEntity<ResponseDto> createRoom(@SessionLogin(required = true) Member member, @ModelAttribute RequestCreateRoomDto data, HttpServletResponse response) {
         System.out.println("data = " + data);
 
-        CommonMember commonMember = authorizationCheck.getCommonMember(response, member);
+        MemberAuthority commonMember = authorizationCheck.getMemberAuthority(response, member);
         Long roomId = commonMember.createRoom(member, data);
 
         String redirectURI = "/room/" + roomId;
@@ -54,7 +53,7 @@ public class RoomController {
 
     @GetMapping("/room/{room}/edit")
     public ResponseEntity<ResponseDto> getEditRoomForm(@SessionLogin(required = true) Member member, @PathRoom("room") Room room, HttpServletResponse response) {
-        ManagerMember managerMember = authorizationCheck.getManagerMember(response, member, room);
+        ManagerAuthority managerMember = authorizationCheck.getManagerAuthority(response, member, room);
 
         ResponseEditRoomForm editRoomForm = roomService.getEditRoomForm(room);
 
@@ -66,7 +65,7 @@ public class RoomController {
                                                 @PathRoom("room") Room room,
                                                 HttpServletResponse response,
                                                 @ModelAttribute RequestEditRoomDto data) {
-        ManagerMember managerMember = authorizationCheck.getManagerMember(response, member, room);
+        ManagerAuthority managerMember = authorizationCheck.getManagerAuthority(response, member, room);
         System.out.println("RequestEditRoomDto = " + data);
         managerMember.editRoom(room, data);
         return new ResponseEntity<>(new ResponseDto("ok", "성공"), HttpStatus.OK);
@@ -99,7 +98,7 @@ public class RoomController {
         if (!roomPassword.equals(password)) {
             return new ResponseEntity<>(new ResponseDto("invalidPassword", "비밀번호가 일치하지 않습니다."), HttpStatus.OK);
         }
-        CommonMember commonMember = authorizationCheck.getCommonMember(response, member);
+        MemberAuthority commonMember = authorizationCheck.getMemberAuthority(response, member);
         commonMember.joinRoom(new RequestJoinRoomDto(member, room, response, password));
 
         return new ResponseEntity<>(new ResponseDto("ok", "/room/" + room.getRoomId()), HttpStatus.OK);
