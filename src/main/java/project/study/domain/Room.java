@@ -46,6 +46,9 @@ public class Room implements ImageFileEntity {
     @OneToOne(mappedBy = "room", fetch = FetchType.LAZY)
     private RoomNotice roomNotice;
 
+    @OneToOne(mappedBy = "room", fetch = FetchType.LAZY)
+    private RoomDelete roomDelete;
+
     @OneToMany(mappedBy = "room", fetch = FetchType.LAZY)
     private List<JoinRoom> joinRoomList;
 
@@ -74,5 +77,9 @@ public class Room implements ImageFileEntity {
 
     public boolean hasNotice() {
         return roomNotice != null;
+    }
+
+    public boolean isDeleteRoom() {
+        return roomDelete != null;
     }
 }

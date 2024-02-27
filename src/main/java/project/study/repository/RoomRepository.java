@@ -27,6 +27,7 @@ import project.study.enums.AuthorityMemberEnum;
 import project.study.enums.PublicEnum;
 import project.study.exceptions.authority.joinroom.FullRoomException;
 import project.study.exceptions.roomjoin.IllegalRoomException;
+import project.study.jpaRepository.RoomDeleteJpaRepository;
 import project.study.jpaRepository.RoomJpaRepository;
 import project.study.jpaRepository.RoomPasswordJpaRepository;
 import project.study.jpaRepository.TagJpaRepository;
@@ -42,16 +43,18 @@ public class RoomRepository {
     private final RoomJpaRepository roomJpaRepository;
     private final TagJpaRepository tagJpaRepository;
     private final RoomPasswordJpaRepository roomPasswordJpaRepository;
+    private final RoomDeleteJpaRepository roomDeleteJpaRepository;
     private final ChatJpaRepository chatJpaRepository;
     private final FileUpload fileUpload;
     private final JPAQueryFactory query;
 
     @Autowired
-    public RoomRepository(RoomJpaRepository roomJpaRepository, TagJpaRepository tagJpaRepository, RoomPasswordJpaRepository roomPasswordJpaRepository, FileUpload fileUpload, EntityManager em, ChatJpaRepository chatJpaRepository) {
+    public RoomRepository(RoomJpaRepository roomJpaRepository, TagJpaRepository tagJpaRepository, RoomPasswordJpaRepository roomPasswordJpaRepository, FileUpload fileUpload, EntityManager em, ChatJpaRepository chatJpaRepository, RoomDeleteJpaRepository roomDeleteJpaRepository) {
         this.roomJpaRepository = roomJpaRepository;
         this.tagJpaRepository = tagJpaRepository;
         this.chatJpaRepository = chatJpaRepository;
         this.roomPasswordJpaRepository = roomPasswordJpaRepository;
+        this.roomDeleteJpaRepository = roomDeleteJpaRepository;
         this.fileUpload = fileUpload;
         this.query = new JPAQueryFactory(em);
     }
@@ -281,5 +284,14 @@ public class RoomRepository {
                 .build();
             tagJpaRepository.save(saveTag);
         }
+    }
+
+    public void moveToDeleteRoom(Room room) {
+        RoomDelete saveRoomDelete = RoomDelete.builder()
+            .room(room)
+            .roomDeleteDate(LocalDateTime.now().plusMonths(1))
+            .build();
+
+        roomDeleteJpaRepository.save(saveRoomDelete);
     }
 }

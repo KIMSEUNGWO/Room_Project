@@ -6,6 +6,7 @@ import org.springframework.stereotype.Service;
 import project.study.chat.component.ChatAccessToken;
 import project.study.chat.component.ChatCurrentMemberManager;
 import project.study.chat.dto.*;
+import project.study.domain.JoinRoom;
 import project.study.domain.Member;
 import project.study.domain.Room;
 import project.study.jpaRepository.MemberJpaRepository;
@@ -71,14 +72,19 @@ public class ChatService {
                 .sender(member.getMemberNickname())
                 .message(member.getMemberNickname() + "님이 방에서 나가셨습니다.")
                 .build();
-        Member nextManagerMember = room.getJoinRoomList()
+        Optional<Member> nextManagerMember = room.getJoinRoomList()
                 .stream()
                 .filter(x -> !x.getMember().equals(member) && x.getAuthority().isManager())
-                .map(x -> x.getMember())
-                .findFirst()
-                .get();
+                .map(JoinRoom::getMember)
+                .findFirst();
 
-        ResponseNextManager responseNextManager = new ResponseNextManager(nextManagerMember.getMemberNickname(), nextManagerMember.getMemberId());
+        if (nextManagerMember.isEmpty()) {
+            ResponseNextManager responseNextManager = new ResponseNextManager("", 0L);
+            return new ChatObject<>(chat, responseNextManager);
+        }
+
+        Member nextMember = nextManagerMember.get();
+        ResponseNextManager responseNextManager = new ResponseNextManager(nextMember.getMemberNickname(), nextMember.getMemberId());
         return new ChatObject<>(chat, responseNextManager);
     }
 

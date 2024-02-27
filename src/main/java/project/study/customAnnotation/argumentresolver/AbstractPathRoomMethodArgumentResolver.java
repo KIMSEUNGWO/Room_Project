@@ -78,6 +78,9 @@ public abstract class AbstractPathRoomMethodArgumentResolver implements HandlerM
         Optional<Room> findRoom = findByRoomId(roomId);
         if (findRoom.isEmpty()) throw new IllegalRoomException((HttpServletResponse) webRequest.getNativeResponse(), "방 정보를 찾을 수 없습니다.");
 
+        Room room = findRoom.get();
+        if (room.isDeleteRoom()) throw new IllegalRoomException((HttpServletResponse) webRequest.getNativeResponse(), "이미 삭제된 방입니다.");
+
         return findRoom.get();
     }
 

@@ -119,6 +119,7 @@ public class RoomService {
     }
 
     public void deleteRoom(Room room) {
+        roomRepository.moveToDeleteRoom(room);
 //        roomRepository.deleteRoomImage(room.getRoomImage());
 //        roomRepository.deleteRoomNotice(room.getRoomNotice());
 //        roomRepository.deleteRoomPassword(room.getRoomPassword());

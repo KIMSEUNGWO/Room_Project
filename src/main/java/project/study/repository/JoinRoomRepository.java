@@ -68,6 +68,7 @@ public class JoinRoomRepository {
         QJoinRoom j = QJoinRoom.joinRoom;
         QRoom r = QRoom.room;
         QRoomImage ri = QRoomImage.roomImage;
+        QRoomDelete rd = QRoomDelete.roomDelete;
 
         StringExpression keywordExpression = getKeywordExpression(word);
         return query.selectDistinct(Projections.fields(ResponseRoomListDto.class,
@@ -82,9 +83,11 @@ public class JoinRoomRepository {
             ))
             .from(r)
             .join(ri).on(r.roomImage.eq(ri))
-            .where(getLowerAndReplace(r.roomTitle).like(keywordExpression)
+            .leftJoin(r.roomDelete, rd)
+            .where((getLowerAndReplace(r.roomTitle).like(keywordExpression)
                 .or(getLowerAndReplace(r.roomIntro).like(keywordExpression))
                 .or(getLowerAndReplace(r.tags.any().tagName).like(keywordExpression)))
+                .and(r.roomDelete.isNull()))
             .offset(pageable.getOffset())
             .limit(pageable.getPageSize())
             .fetch();
