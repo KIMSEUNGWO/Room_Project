@@ -13,5 +13,6 @@ public class ResponseRoomMemberList {
     private String image;
     private String name;
     private boolean isManager;
+    private boolean isMe;
 
 }

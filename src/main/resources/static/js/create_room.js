@@ -43,15 +43,17 @@ window.addEventListener('load', () => {
         }
 
         if (target.getAttribute('for') == 'private') {
-            let public = document.querySelector('label[for="public"]');
-            public.setAttribute('aria-selected', 'false');
+            let publics = document.querySelector('label[for="public"]');
+            if (publics == null) return;
+            publics.setAttribute('aria-selected', 'false');
             target.setAttribute('aria-selected', 'true');
             let password_box = document.querySelector('.password-box');
             password_box.classList.remove('disabled');
         }
         if (target.getAttribute('for') == 'public') {
-            let private = document.querySelector('label[for="private"]');
-            private.setAttribute('aria-selected', 'false');
+            let privates = document.querySelector('label[for="private"]');
+            if (privates == null) return;
+            privates.setAttribute('aria-selected', 'false');
             target.setAttribute('aria-selected', 'true');
             let password_box = document.querySelector('.password-box');
             password_box.classList.add('disabled');

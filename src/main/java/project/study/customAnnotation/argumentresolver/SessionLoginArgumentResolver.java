@@ -41,7 +41,7 @@ public class SessionLoginArgumentResolver implements HandlerMethodArgumentResolv
     public Object resolveArgument(MethodParameter parameter, ModelAndViewContainer mavContainer, NativeWebRequest webRequest, WebDataBinderFactory binderFactory) throws Exception {
         SessionLogin annotation = parameter.getParameterAnnotation(SessionLogin.class);
         boolean required = (annotation != null) ? annotation.required() : false;
-        CallType callType = (annotation != null) ? annotation.type() : CallType.CONTROLLER;
+        CallType callType = (annotation != null) ? annotation.type() : CallType.REST_CONTROLLER;
 
         HttpServletRequest request = (HttpServletRequest) webRequest.getNativeRequest();
         HttpServletResponse response = (HttpServletResponse) webRequest.getNativeResponse();
@@ -50,31 +50,29 @@ public class SessionLoginArgumentResolver implements HandlerMethodArgumentResolv
         HttpSession session = request.getSession(false);
 
         if (session == null || session.getAttribute(LOGIN_MEMBER) == null) {
-            if (required) {
-                if (callType == CallType.CONTROLLER) {
-                    throw new NotLoginMemberException(response);
-                }
-                if (callType == CallType.REST_CONTROLLER) {
-                    throw new NotLoginMemberRestException();
-                }
-            }
+            hasRequired(required, callType, response);
             return null;
         }
 
         Long memberId = (Long) session.getAttribute(LOGIN_MEMBER);
         Optional<Member> findMember = memberJpaRepository.findById(memberId);
         if (findMember.isEmpty()) {
-            if (required) {
-                if (callType == CallType.CONTROLLER) {
-                    throw new NotLoginMemberException(response);
-                }
-                if (callType == CallType.REST_CONTROLLER) {
-                    throw new NotLoginMemberRestException();
-                }
-            }
+            hasRequired(required, callType, response);
+            session.removeAttribute(LOGIN_MEMBER);
             return null;
         }
 
         return findMember.get();
+    }
+
+    private void hasRequired(boolean required, CallType callType, HttpServletResponse response) {
+        if (required) {
+            if (callType == CallType.CONTROLLER) {
+                throw new NotLoginMemberException(response);
+            }
+            if (callType == CallType.REST_CONTROLLER) {
+                throw new NotLoginMemberRestException();
+            }
+        }
     }
 }

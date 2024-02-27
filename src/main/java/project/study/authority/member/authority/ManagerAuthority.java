@@ -9,7 +9,7 @@ import project.study.dto.room.ResponseRoomNotice;
 public interface ManagerAuthority {
 
     void editRoom(Room room, RequestEditRoomDto data);
-    void managerEntrust(Room room, RequestEntrustDto data);
+    Member managerEntrust(Member member, Room room, RequestEntrustDto data);
     ResponseRoomNotice uploadNotice(Room room, RequestNoticeDto data);
     void deleteNotice(Room room);
     Member kickMember(HttpServletResponse response, Room room, RequestKickDto data);

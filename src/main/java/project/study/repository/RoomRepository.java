@@ -178,7 +178,7 @@ public class RoomRepository {
         return roomJpaRepository.findById(roomId);
     }
 
-    public List<ResponseRoomMemberList> getResponseRoomMemberList(Room room) {
+    public List<ResponseRoomMemberList> getResponseRoomMemberList(Room room, Member member) {
         QJoinRoom j = QJoinRoom.joinRoom;
         QMember m = QMember.member;
         QProfile p = QProfile.profile;
@@ -187,6 +187,7 @@ public class RoomRepository {
                     m.memberId.as("memberId"),
                     p.profileStoreName.as("image"),
                     m.memberNickname.as("name"),
+                    m.eq(member).as("isMe"),
                     isManager(j.authorityEnum).as("isManager")
                 ))
                 .from(j)
