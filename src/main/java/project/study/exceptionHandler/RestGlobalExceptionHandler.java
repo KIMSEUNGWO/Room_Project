@@ -2,18 +2,23 @@ package project.study.exceptionHandler;
 
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import project.study.constant.WebConst;
 import project.study.exceptions.authority.AuthorizationException;
 import project.study.dto.abstractentity.ResponseDto;
 import project.study.exceptions.RestFulException;
+import project.study.exceptions.authority.NotAuthorizedException;
 import project.study.exceptions.authority.NotLoginMemberException;
 import project.study.exceptions.kakaologin.SocialException;
 
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.nio.charset.StandardCharsets;
 
 @Slf4j
 @RestControllerAdvice
@@ -37,7 +42,7 @@ public class RestGlobalExceptionHandler {
     }
 
     @ExceptionHandler(AuthorizationException.class)
-    public ResponseEntity<String> globalAuthorizationException(AuthorizationException e) {
+    public ResponseEntity<ResponseDto> globalAuthorizationException(AuthorizationException e) {
         e.printStackTrace();
         log.error("[Global AuthorizationException Exception 발생!]");
         HttpServletResponse response = e.getResponse();
@@ -52,7 +57,14 @@ public class RestGlobalExceptionHandler {
         } catch (IOException ex) {
             log.error("Alert IOException 발생!");
         }
-        return null;
+        return new ResponseEntity<>(e.getResponseDto(), HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler(NotAuthorizedException.class)
+    public ResponseEntity<ResponseDto> globalAuthorizationException(NotAuthorizedException e) {
+        e.printStackTrace();
+        log.error("[Global NotAuthorizedException Exception 발생!]");
+        return new ResponseEntity<>(new ResponseDto(WebConst.ERROR, e.getAlertMessage()), HttpStatus.BAD_REQUEST);
     }
 
     private String execute(HttpServletResponse response, String alert) {

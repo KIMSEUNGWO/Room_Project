@@ -10,7 +10,8 @@ function fetchPost(url, json, callback) {
 					, body : JSON.stringify(json)
 				})
     .then(res => res.json())
-    .then(map => callback(map));;
+    .then(map => callback(map))
+	.catch(error => console.log(error));
 }
 
 function fetchDelete(url, json, callback) {
