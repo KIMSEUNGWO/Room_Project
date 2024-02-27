@@ -4,7 +4,6 @@ import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Pageable;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import project.study.authority.member.dto.RequestEditRoomDto;
@@ -25,7 +24,6 @@ import project.study.enums.AuthorityMemberEnum;
 import project.study.exceptions.roomcreate.CreateExceedRoomException;
 import project.study.exceptions.roomcreate.CreateRoomException;
 import project.study.exceptions.roomjoin.IllegalRoomException;
-import project.study.exceptions.signup.SignupException;
 import project.study.jpaRepository.JoinRoomJpaRepository;
 import project.study.jpaRepository.RoomNoticeJpaRepository;
 import project.study.repository.JoinRoomRepository;
@@ -129,8 +127,8 @@ public class RoomService {
 //        roomRepository.deleteRoom(room);
     }
 
-    public List<ResponseRoomMemberList> getResponseRoomMemberList(Room room) {
-        return roomRepository.getResponseRoomMemberList(room);
+    public List<ResponseRoomMemberList> getResponseRoomMemberList(Room room, Member member) {
+        return roomRepository.getResponseRoomMemberList(room, member);
     }
 
     public List<ResponseChatHistory> findByChatHistory(Room room) {

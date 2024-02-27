@@ -48,4 +48,12 @@ public class JoinRoom {
     public void setAuthority(AuthorityMemberEnum authorityEnum) {
         this.authorityEnum = authorityEnum;
     }
+
+    public void changeToManager() {
+        this.authorityEnum = AuthorityMemberEnum.방장;
+    }
+
+    public void changeToNotManager() {
+        this.authorityEnum = AuthorityMemberEnum.일반;
+    }
 }

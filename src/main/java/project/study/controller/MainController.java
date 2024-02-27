@@ -34,7 +34,7 @@ public class MainController {
         CommonMember commonMember = memberAuthorizationCheck.getCommonMember(response, member);
         commonMember.joinRoom(new RequestJoinRoomDto(member, room, response, null));
 
-        List<ResponseRoomMemberList> memberList = roomService.getResponseRoomMemberList(room);
+        List<ResponseRoomMemberList> memberList = roomService.getResponseRoomMemberList(room, member);
         ResponseRoomInfo roomInfo = roomService.getRoomNotice(room, member);
 
         model.addAttribute("max", room.getRoomLimit());

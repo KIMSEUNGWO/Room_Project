@@ -119,11 +119,12 @@ public class ChatController {
 
     // 회원 강퇴
     @ResponseBody
-    @PostMapping("/room/{room}/kick")
+    @DeleteMapping("/room/{room}/kick")
     public ResponseEntity<ResponseDto> roomKick(@SessionLogin(required = true) Member member,
                                                 @PathRoom("room") Room room,
                                                 HttpServletResponse response,
-                                                @ModelAttribute RequestKickDto data) {
+                                                @RequestBody RequestKickDto data) {
+        System.out.println("강퇴당하는 회원의 닉네임 = " + data.getNickname());
         ManagerMember managerMember = authorizationCheck.getManagerMember(response, member, room);
         Member kickMember = managerMember.kickMember(response, room, data);
 
@@ -139,9 +140,14 @@ public class ChatController {
     @PostMapping("/room/{room}/entrust")
     public ResponseEntity<ResponseDto> roomManagerEntrust(@SessionLogin(required = true) Member member, @PathRoom("room") Room room,
                                             HttpServletResponse response,
-                                            @ModelAttribute RequestEntrustDto data) {
+                                            @RequestBody RequestEntrustDto data) {
+        System.out.println("방장 위임 회원의 닉네임 : " + data.getNickname());
         ManagerMember managerMember = authorizationCheck.getManagerMember(response, member, room);
-        managerMember.managerEntrust(room, data);
+        Member nextManager = managerMember.managerEntrust(member, room, data);
+
+        ChatDto chat = chatService.nextManagerRoom(nextManager, room);
+
+        template.convertAndSend("/sub/chat/room/" + room.getRoomId(), chat);
 
         return new ResponseEntity<>(new ResponseDto(WebConst.OK, "성공"), HttpStatus.OK);
     }

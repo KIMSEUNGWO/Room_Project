@@ -9,5 +9,5 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class RequestKickDto {
 
-    private String kickMemberNickname;
+    private String nickname;
 }

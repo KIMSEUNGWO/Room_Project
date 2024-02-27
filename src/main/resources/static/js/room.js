@@ -45,7 +45,6 @@ window.addEventListener('load', () => {
 
     memberOptionMenuOpen();
     memberOptionMenuClose();
-    notifyModalOpen();
 
     const modal = document.querySelector('.modal');
     const modal_content = document.querySelector('.modal-content');
@@ -80,24 +79,34 @@ window.addEventListener('load', () => {
             modalExit();
             return;
         }
-    })
 
-    modal_content.addEventListener('keydown', (e) => {
+        if (target.id == 'room-kick') {
+            // 강퇴 로직
+            let json = {nickname : target.value};
+            fetchDelete('/room/' + getRoomId() + '/kick', json, kickResult);
+            modalExit();
+            return;
+        }
 
-        // 엔터를 눌렀을 때
-        if (e.keyCode === 13 && e.target.id == 'tag-add') {
-
+        if (target.id == 'room-entrust') {
+            // 방장 위임 로직
+            let json = {nickname : target.value};
+            fetchPost('/room/' + getRoomId() + '/entrust', json, entrustResult);
+            modalExit();
+            return;
         }
     })
 
+
     const roomTitleWrap = document.querySelector('.room-title-wrap');
-    const settingMenu = document.querySelector('.setting-menu-list');
 
     roomTitleWrap.addEventListener('click', (e) =>{
         if(e.target.id == 'setting'){
+            let settingMenu = document.querySelector('.setting-menu-list');
             settingMenu.classList.toggle('disabled');
         };
         if (e.target.classList.contains('setting-menu')) {
+            let settingMenu = document.querySelector('.setting-menu-list');
             settingMenu.classList.add('disabled');
         }
         if (e.target.id == 'default-setting') { // 설정버튼
@@ -114,6 +123,25 @@ window.addEventListener('load', () => {
     
 
 });
+function entrustResult(json) {
+    console.log(json);
+    if (json.result == 'ok') {
+        al(json.result, '성공', '위임되었습니다.');
+    } else if (json.result == 'error') {
+        al(json.result, '실패', json.message);
+    }
+}
+function kickResult(json) {
+    console.log(json);
+    if (json.result == 'ok') {
+        al(json.result, '성공', '강퇴되었습니다.');
+    } else if (json.result == 'error') {
+        al(json.result, '실패', json.message);
+        setTimeout(() => {
+            window.location.reload();
+        }, 2000);
+    }
+}
 function deleteNoticeResult(json) {
     if (json.result == 'error') {
         al(json.result, '공지사항 삭제 실패', json.message);
@@ -134,42 +162,85 @@ function textareaResize(message) {
 
 
 function memberOptionMenuOpen(){
-    let memberMoreBtn = document.querySelector('.member-more');
-    let memberOptionMenu = document.querySelector('.member-option-menu');
+    let memberMoreBtns = document.querySelectorAll('.member-more');
 
-    memberMoreBtn.addEventListener('click', function(e){
-        if(e.target.classList.contains('member-more')) {
-            memberOptionMenu.classList.remove('disabled');
-        }
-    });
-};
-
-function memberOptionMenuClose() {
-    let memberOptionMenu = document.querySelector('.member-option-menu');
-    let element = document.querySelector(':not(.member-more):not(.member-more *):first-of-type');
-
-    element.addEventListener('click', function(e){
-        let s = e.target;
-
-        if(!s.classList.contains('member-more') 
-            && !s.classList.contains('member-notify-box')
-            && !memberOptionMenu.classList.contains('disabled')){
-            memberOptionMenu.classList.add('disabled');
-        }
-    })
-};
-
-function notifyModalOpen(){
-    let notifyBox = document.querySelector('.member-notify-box');
     const modal = document.querySelector('.modal');
     const modal_content = document.querySelector('.modal-content');
 
-    notifyBox.addEventListener('click', function(){
-        insertModalSize('modal-notify');
-        modal_content.innerHTML = createNotify();
-        modal.classList.remove('disabled');
-    });
+    memberMoreBtns.forEach(memberMoreBtn => {
+        memberMoreBtn.addEventListener('click', function(e){
+            if(e.target.classList.contains('member-more')) {
+                let memberOptionMenu = memberMoreBtn.querySelector('.member-option-menu');
+                memberOptionMenu.classList.remove('disabled');
+            }
+
+            if (e.target.classList.contains('member-notify-box')) {
+                insertModalSize('modal-notify');
+                modal_content.innerHTML = createNotify();
+                modal.classList.remove('disabled');
+            }
+
+            if (e.target.classList.contains('member-kick-box')) {
+
+                let member = memberMoreBtn.parentElement;
+                let nickname = member.querySelector('span');
+                if (nickname == null) {
+                    al('error', '강퇴 실패', '강퇴기능에 문제가 발생했습니다. 관리자에게 문의해주세요.');
+                    return;
+                }
+                insertModalSize('kick-room-confirm');
+                modal_content.innerHTML = createKickRoomModal(nickname.getAttribute('name'));
+                modal.classList.remove('disabled');
+                return;
+            }
+
+            if (e.target.classList.contains('member-entrust-box')) {
+
+                let member = memberMoreBtn.parentElement;
+                let nickname = member.querySelector('span');
+                if (nickname == null) {
+                    al('error', '위임 실패', '권한 위임기능에 문제가 발생했습니다. 관리자에게 문의해주세요.');
+                    return;
+                }
+                insertModalSize('entrust-room-confirm');
+                modal_content.innerHTML = createEntrustRoomModal(nickname.getAttribute('name'));
+                modal.classList.remove('disabled');
+                return;
+            }
+        });
+    })
 };
+function createKickRoomModal(nickname) {
+    return  `<div class="confirm-message">
+                <span>강퇴하시겠습니까?</span>
+            </div>
+            <div class="buttons">
+                <button type="button" id="room-cancel">이전</button>
+                <button type="button" id="room-kick" value="${nickname}">강퇴</button>
+            </div>`;
+}
+function createEntrustRoomModal(nickname) {
+    return  `<div class="confirm-message">
+                <span>방장 권한을 위임하시겠습니까?</span>
+            </div>
+            <div class="buttons">
+                <button type="button" id="room-cancel">이전</button>
+                <button type="button" id="room-entrust" value="${nickname}">위임</button>
+            </div>`;
+}
+
+function memberOptionMenuClose() {
+    document.addEventListener('click', function(e){
+        if (!e.target.classList.contains('member-option-menu') && !e.target.classList.contains('member-more')) {
+            memberOptionMenuInitial();
+        }
+    })
+};
+function memberOptionMenuInitial() {
+    let optionMenuList = document.querySelectorAll('.member-option-menu');
+    optionMenuList.forEach(el => el.classList.add('disabled'));
+}
+
 
 function editResult(json) {
     const modal = document.querySelector('.modal');

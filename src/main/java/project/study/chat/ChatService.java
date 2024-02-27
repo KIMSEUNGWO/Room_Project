@@ -85,10 +85,22 @@ public class ChatService {
     public ChatDto kickRoom(Member kickMember, Room room) {
         return ChatDto.builder()
                 .roomId(room.getRoomId())
+                .token(kickMember.getMemberId())
                 .time(LocalDateTime.now())
                 .type(MessageType.KICK)
                 .sender(kickMember.getMemberNickname())
                 .message(kickMember.getMemberNickname() + "님이 강퇴당했습니다.")
                 .build();
+    }
+
+    public ChatDto nextManagerRoom(Member nextManager, Room room) {
+        return ChatDto.builder()
+            .roomId(room.getRoomId())
+            .token(nextManager.getMemberId())
+            .time(LocalDateTime.now())
+            .type(MessageType.ENTRUST)
+            .sender(nextManager.getMemberNickname())
+            .message(nextManager.getMemberNickname() + "님이 방장이 되셨습니다.")
+            .build();
     }
 }

@@ -20,8 +20,8 @@ public class ManagerMember implements ManagerAuthority {
         managerAuthority.editRoom(room, data);
     }
     @Override
-    public void managerEntrust(Room room, RequestEntrustDto data) {
-        managerAuthority.managerEntrust(room, data);
+    public Member managerEntrust(Member member, Room room, RequestEntrustDto data) {
+        return managerAuthority.managerEntrust(member, room, data);
     }
     @Override
     public ResponseRoomNotice uploadNotice(Room room, RequestNoticeDto data) {
