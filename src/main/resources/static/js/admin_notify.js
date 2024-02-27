@@ -12,27 +12,25 @@ window.addEventListener('load', function(){
     reedMoreBtn.forEach(function(reedMore){
         reedMore.addEventListener('click', function(){
             var notifyId = reedMore.getAttribute('id');
-            // console.log(buttonId);
-            // sendData(buttonId);
             notifyReedMoreOpenPopUp(notifyId);
         });
     });
-    
-    // reedMoreBtn.addEventListener('click', function(){
-    //     notifyReedMoreOpenPopUp();
-    // });
+
+    let memberInfoPop = document.querySelectorAll('.memberInfoPop');
+
+    memberInfoPop.forEach(function(pop){
+        pop.addEventListener('click', function(){
+            var account = pop.getAttribute('id');
+            memberInfoOpenPopUp(account);
+        });
+    });
 
 });
 
 function notifyReedMoreOpenPopUp(notifyId){
-    window.open('/admin/notify/reed_more?notifyId=' + notifyId, '신고 자세히 보기', 'width=500, height=700');
+    window.open('/admin/notify/read_more?notifyId=' + notifyId, '신고 자세히 보기', 'width=500, height=750');
 };
 
-// function sendData(buttonId) {
-    
-//     var xhr =  new XMLHttpRequest();
-
-//     xhr.open("GET", "/reciveData?buttonId=" + buttonId, true);
-
-//     xhr.send();
-// }
+function memberInfoOpenPopUp(account){
+    window.open('/admin/notify/member_info?account=' + account, '멤버 정보', 'width=600, height=750');
+}

@@ -10,7 +10,6 @@ import project.study.domain.*;
 import project.study.jpaRepository.AdminJpaRepository;
 import project.study.repository.AdminRepository;
 
-import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -52,8 +51,18 @@ public class AdminService {
         return adminRepository.searchNotify(word, pageable);
     }
 
-    public SearchNotifyDto searchNotifyReedMore(Long notifyId){
-        return adminRepository.searchNotifyReedMore(notifyId);
+    public SearchNotifyReadMoreDto searchNotifyReadMore(Long notifyId){
+        SearchNotifyReadMoreDto searchNotifyReadMoreDto = adminRepository.searchNotifyReadMore(notifyId);
+        List<String> notifyImage = adminRepository.findNotifyImage(searchNotifyReadMoreDto.getNotifyId());
+        searchNotifyReadMoreDto.setNotifyImageStoreName(notifyImage);
+        return searchNotifyReadMoreDto;
+    }
+
+    public SearchNotifyMemberInfoDto searchNotifyMemberInfo(String account){
+        SearchNotifyMemberInfoDto searchNotifyMemberInfoDto = adminRepository.searchNotifyMemberInfo(account);
+        String memberProfile = adminRepository.findMemberProfile(account);
+        searchNotifyMemberInfoDto.setMemberProfile(memberProfile);
+        return searchNotifyMemberInfoDto;
     }
 
     public Page<SearchMemberDto> SearchMemberOnlyFreeze(String word, int pageNumber){

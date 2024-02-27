@@ -1,21 +1,17 @@
 package project.study.controller;
 
-import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
-import org.springframework.security.core.parameters.P;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import project.study.authority.admin.dto.*;
 import project.study.domain.Admin;
 import project.study.service.AdminService;
 
-import java.util.List;
 import java.util.Optional;
 
 @Controller
@@ -31,12 +27,13 @@ public class AdminController {
 
     @PostMapping("/admin/login")
     public String adminLogin(@RequestParam(value = "account") String account,
-                             @RequestParam(value = "password") String password){
+                             @RequestParam(value = "password") String password,
+                             HttpSession session){
         Optional<Admin> admin1 = adminService.adminLogin(account, password);
         if (admin1.isEmpty()){
             return "redirect:/admin/login";
         }
-
+        session.setAttribute("adminId", admin1.get().getAdminId());
         return "redirect:/admin/members/get";
     }
 
@@ -152,16 +149,19 @@ public class AdminController {
         return "/admin/admin_notify";
     }
 
-    @GetMapping("/admin/notify/reed_more")
+    @GetMapping("/admin/notify/read_more")
     public String notifyReadMore(@RequestParam(value = "notifyId") Long notifyId, Model model){
-        SearchNotifyDto searchNotifyDto = adminService.searchNotifyReedMore(notifyId);
-        model.addAttribute("notifyInfo", searchNotifyDto);
-        return "/admin/notify_reed_more";
+        SearchNotifyReadMoreDto searchNotifyReadMoreDto = adminService.searchNotifyReadMore(notifyId);
+        model.addAttribute("notifyInfo", searchNotifyReadMoreDto);
+        return "/admin/notify_read_more";
     }
 
-    @GetMapping("/reciveData")
-    public void some(@RequestParam("buttonId") Long buttonId){
-        System.out.println("buttonId = " + buttonId);
+    @GetMapping("/admin/notify/member_info")
+    public String notifyMemberInfo(@RequestParam(value = "account") String account, Model model) {
+        SearchNotifyMemberInfoDto searchNotifyMemberInfoDto = adminService.searchNotifyMemberInfo(account);
+        model.addAttribute("memberInfo", searchNotifyMemberInfoDto);
+        return "/admin/notify_member";
     }
+
 
 }

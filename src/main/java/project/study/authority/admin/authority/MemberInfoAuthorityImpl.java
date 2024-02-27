@@ -2,7 +2,6 @@ package project.study.authority.admin.authority;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
-import project.study.authority.admin.dto.AdminMembersDto;
 import project.study.authority.admin.dto.SearchMemberDto;
 import project.study.domain.Member;
 import project.study.service.AdminService;

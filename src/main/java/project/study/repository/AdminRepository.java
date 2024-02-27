@@ -2,16 +2,11 @@ package project.study.repository;
 
 import com.querydsl.core.BooleanBuilder;
 import com.querydsl.core.types.Expression;
-import com.querydsl.core.types.ExpressionUtils;
 import com.querydsl.core.types.Predicate;
-import com.querydsl.core.types.Projections;
 import com.querydsl.core.types.dsl.*;
-import com.querydsl.jpa.JPAExpressions;
-import com.querydsl.jpa.JPQLQuery;
 import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import jakarta.persistence.EntityManager;
-import kotlin.reflect.jvm.internal.impl.resolve.constants.StringValue;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.support.PageableExecutionUtils;
@@ -25,13 +20,13 @@ import project.study.enums.NotifyStatus;
 import java.util.List;
 
 import static com.querydsl.jpa.JPAExpressions.select;
-import static org.hibernate.internal.util.NullnessHelper.coalesce;
 import static project.study.domain.QBasic.*;
 import static project.study.domain.QJoinRoom.*;
 import static project.study.domain.QMember.*;
 import static project.study.domain.QNotify.*;
 import static project.study.domain.QNotifyImage.*;
 import static project.study.domain.QPhone.*;
+import static project.study.domain.QProfile.*;
 import static project.study.domain.QRoom.*;
 import static project.study.domain.QSocial.*;
 
@@ -226,7 +221,6 @@ public class AdminRepository {
                 Expressions.stringTemplate("TO_CHAR({0}, {1})", notify.notifyDate, "YYYY-MM-DD"),
                 notify.notifyReason,
                 notify.notifyId,
-                notify.notifyContent,
                 notify.notifyStatus
             ))
             .from(notify)
@@ -253,7 +247,7 @@ public class AdminRepository {
         return PageableExecutionUtils.getPage(content, pageable, () -> count.fetchCount());
     }
 
-    public SearchNotifyDto searchNotifyReedMore(Long notifyId){
+    public SearchNotifyReadMoreDto searchNotifyReadMore(Long notifyId){
 
         QMember reporterMember = new QMember("reporterMember");
         QMember criminalMember = new QMember("criminalMember");
@@ -276,14 +270,14 @@ public class AdminRepository {
             .otherwise(criminalBasic.account);
 
         return queryFactory
-            .select(new QSearchNotifyDto(
+            .select(new QSearchNotifyReadMoreDto(
                 Expressions.stringTemplate("{0}", reporterAccountExpression).as("reporterMemberAccount"),
                 Expressions.stringTemplate("{0}", criminalAccountExpression).as("criminalMemberAccount"),
                 room.roomId,
                 Expressions.stringTemplate("TO_CHAR({0}, {1})", notify.notifyDate, "YYYY-MM-DD"),
                 notify.notifyReason,
-                notify.notifyId,
                 notify.notifyContent,
+                notify.notifyId,
                 notify.notifyStatus
             ))
             .from(notify)
@@ -295,6 +289,46 @@ public class AdminRepository {
             .leftJoin(criminalMember.basic, criminalBasic)
             .leftJoin(criminalMember.social, criminalSocial)
              .where(notify.notifyId.eq(notifyId))
+            .fetchOne();
+    }
+
+    public List<String> findNotifyImage(Long notifyId){
+        return queryFactory
+            .select(notifyImage.notifyImageStoreName)
+            .from(notifyImage)
+            .leftJoin(notifyImage.notify, notify)
+            .where(notify.notifyId.eq(notifyId))
+            .fetch();
+    }
+
+    public SearchNotifyMemberInfoDto searchNotifyMemberInfo(String account) {
+        return queryFactory
+            .select(new QSearchNotifyMemberInfoDto(
+                member.memberId,
+                Expressions.stringTemplate("{0}", accountExpression).as("memberAccount"),
+                member.memberName,
+                member.memberNickname,
+                phone1.phone,
+                Expressions.stringTemplate("TO_CHAR({0}, {1})", member.memberCreateDate, "YYYY-MM-DD"),
+                member.memberNotifyCount,
+                social.socialType,
+                member.memberStatus))
+            .from(member)
+            .leftJoin(member.basic, basic)
+            .leftJoin(member.phone, phone1)
+            .leftJoin(member.social, social)
+            .where(accountExpression.eq(account))
+            .fetchOne();
+    }
+
+    public String findMemberProfile(String account){
+        return queryFactory
+            .select(profile.profileStoreName)
+            .from(profile)
+            .leftJoin(profile.member, member)
+            .leftJoin(member.basic, basic)
+            .leftJoin(member.social, social)
+            .where(accountExpression.eq(account))
             .fetchOne();
     }
 
@@ -386,7 +420,6 @@ public class AdminRepository {
                 Expressions.stringTemplate("TO_CHAR({0}, {1})", notify.notifyDate, "YYYY-MM-DD"),
                 notify.notifyReason,
                 notify.notifyId,
-                notify.notifyContent,
                 notify.notifyStatus
             ))
             .from(notify)

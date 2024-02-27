@@ -6,7 +6,6 @@ import project.study.authority.admin.authority.BanAuthority;
 import project.study.authority.admin.authority.MemberInfoAuthority;
 import project.study.authority.admin.authority.NotifyMemberInfoAuthority;
 import project.study.authority.admin.authority.RoomInfoAuthority;
-import project.study.authority.admin.dto.AdminMembersDto;
 import project.study.authority.admin.dto.SearchMemberDto;
 import project.study.authority.admin.dto.SearchNotifyDto;
 import project.study.authority.admin.dto.SearchRoomDto;

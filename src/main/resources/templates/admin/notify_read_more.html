@@ -4,8 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="/css/common.css">
-    <link rel="stylesheet" href="/css/main.css">
     <link rel="stylesheet" href="/css/notify_read_more.css">
+    <script src="/js/admin_read_more.js"></script>
     <title>신고 자세히 보기</title>
 </head>
 <body>
@@ -37,23 +37,30 @@
             </div>
             <div class="notify-box">
                 <div class="title-notify-image">첨부파일</div>
-                <div class="notify-image">
-                    <a href="#">1.png</a>
-                </div>
+                <th:block th:if="${!notifyInfo.notifyImageStoreName.isEmpty()}">
+                    <div class="notify-image" th:each="notifyImage : ${notifyInfo.notifyImageStoreName}">
+                        <a href="#" th:text="${notifyImage.notifyImageStoreName}">1.png</a>
+                    </div>
+                </th:block>
+                <th:block th:if="${notifyInfo.notifyImageStoreName.isEmpty()}">
+                    <div class="notify-image">
+                        <a href="#" th:text="없음">1.png</a>
+                    </div>
+                </th:block>
             </div>
         <hr>
-            <!-- <div class="process-box">
-                <div class="title-process-result">처리 결과</div>
-                <input type="text" name="process-result" id="process-result" class="process-result" value="정지 0일">
-            </div>
-            <div class="process-box">
-                <div class="title-process-reason">처리 사유</div>
-                <input type="text" name="process-reason" id="process-reason" class="process-reason" value="욕설 인정">
-            </div> -->
-            <div class="process-box">
-                <div class="title-process-status">처리 상태</div>
-                <input type="text" name="process-status" id="process-status" class="process-status" value="처리 완료" th:value="${notifyInfo.notifyStatus}">
-            </div>
+            <th:block th:if="${#strings.equals(notifyInfo.notifyStatus, '처리완료')}">
+                <div class="process-box">
+                    <div class="title-process-status">처리 상태</div>
+                    <input type="text" name="process-status" id="process-status" class="process-status" value="처리 완료" th:value="${notifyInfo.notifyStatus}">
+                </div>
+            </th:block>
+            <th:block th:if="${!#strings.equals(notifyInfo.notifyStatus, '처리완료')}">
+                <div class="process-box">
+                    <div class="title-process-status">처리 상태</div>
+                    <input type="text" name="process-status" th:id="process-status" class="process-status" value="">
+                </div>
+            </th:block>
         </div>
         <div class="button-box">
             <div class="button">
