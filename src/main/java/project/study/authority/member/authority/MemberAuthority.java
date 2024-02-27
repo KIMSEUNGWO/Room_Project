@@ -13,7 +13,7 @@ import java.util.List;
 public interface MemberAuthority {
 
     Long createRoom(Member member, RequestCreateRoomDto data);
-    void notify(Member member, RequestNotifyDto data);
+    void notify(Member member, Room room, RequestNotifyDto data);
     void joinRoom(RequestJoinRoomDto data);
     List<ResponseRoomListDto> getMyRoomList(Member member);
     void exitRoom(Member member, Room room, HttpServletResponse response);

@@ -6,6 +6,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import project.study.enums.NotifyStatus;
+import project.study.enums.NotifyType;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -35,7 +36,8 @@ public class Notify implements ImageFileEntity {
     @JoinColumn(name = "roomId")
     private Room room;
 
-    private String notifyReason;
+    @Enumerated(EnumType.STRING)
+    private NotifyType notifyReason;
     private String notifyContent;
     private LocalDateTime notifyDate;
 

@@ -1,10 +1,8 @@
 package project.study.authority.member.authority;
 
-import jakarta.persistence.EntityManager;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
-import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Transactional;
 import project.study.authority.member.dto.RequestCreateRoomDto;
 import project.study.authority.member.dto.RequestJoinRoomDto;
@@ -12,15 +10,15 @@ import project.study.authority.member.dto.RequestNotifyDto;
 import project.study.authority.member.dto.ResponseRoomListDto;
 import project.study.domain.JoinRoom;
 import project.study.domain.Member;
+import project.study.domain.Notify;
 import project.study.domain.Room;
 import project.study.enums.AuthorityMemberEnum;
 import project.study.exceptions.authority.NotJoinRoomException;
 import project.study.exceptions.authority.joinroom.InvalidPublicPasswordException;
-import project.study.exceptions.roomjoin.IllegalRoomException;
 import project.study.service.JoinRoomService;
+import project.study.service.NotifyService;
 import project.study.service.RoomService;
 
-import javax.swing.text.html.Option;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.List;
@@ -33,6 +31,8 @@ public class MemberAuthorityImpl implements MemberAuthority{
 
     private final RoomService roomService;
     private final JoinRoomService joinRoomService;
+    private final NotifyService notifyService;
+
     @Override
     public Long createRoom(Member member, RequestCreateRoomDto data) {
         roomService.validMaxCreateRoom(member);
@@ -41,8 +41,11 @@ public class MemberAuthorityImpl implements MemberAuthority{
     }
 
     @Override
-    public void notify(Member member, RequestNotifyDto data) {
-        System.out.println("notify 실행");
+    public void notify(Member member, Room room, RequestNotifyDto data) {
+        Notify saveNotify = notifyService.saveNotify(member, room, data);
+
+        notifyService.saveNotifyImage(saveNotify, data);
+
     }
 
     @Override

@@ -4,10 +4,8 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
-import project.study.domain.Member;
-import project.study.domain.Profile;
-import project.study.domain.Room;
-import project.study.domain.RoomImage;
+import project.study.domain.*;
+import project.study.jpaRepository.NotifyImageJpaRepository;
 import project.study.jpaRepository.ProfileJpaRepository;
 import project.study.jpaRepository.RoomImageJpaRepository;
 
@@ -22,6 +20,8 @@ public class FileUploadRepository {
 
     private final RoomImageJpaRepository roomImageJpaRepository;
     private final ProfileJpaRepository profileJpaRepository;
+    private final NotifyImageJpaRepository notifyImageJpaRepository;
+
     public void saveRoomImage(FileUploadDto data) {
         RoomImage saveRoomImage;
         if (isDefaultImage(data)) {
@@ -56,6 +56,17 @@ public class FileUploadRepository {
                 .build();
         }
         profileJpaRepository.save(saveProfile);
+    }
+
+    public void saveNotifyImage(FileUploadDto data) {
+
+        NotifyImage saveNotifyImage = NotifyImage.builder()
+            .notify((Notify) data.getParent())
+            .notifyImageOriginalName(data.getImageUploadName())
+            .notifyImageStoreName(data.getImageStoreName())
+            .build();
+
+        notifyImageJpaRepository.save(saveNotifyImage);
     }
 
     private boolean isDefaultImage(FileUploadDto data) {

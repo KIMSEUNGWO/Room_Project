@@ -12,6 +12,7 @@ import project.study.authority.member.authority.MemberAuthorityImpl;
 import project.study.jpaRepository.MemberJpaRepository;
 import project.study.service.AdminService;
 import project.study.service.JoinRoomService;
+import project.study.service.NotifyService;
 import project.study.service.RoomService;
 
 @Configuration
@@ -22,6 +23,7 @@ public class AuthorityConfig {
     private final JoinRoomService joinRoomService;
     private final AdminService adminService;
     private final MemberJpaRepository memberJpaRepository;
+    private final NotifyService notifyService;
 
     @Bean
     @Primary
@@ -52,6 +54,6 @@ public class AuthorityConfig {
     @Bean
     @Primary
     public MemberAuthority memberAuthority() {
-        return new MemberAuthorityImpl(roomService, joinRoomService);
+        return new MemberAuthorityImpl(roomService, joinRoomService, notifyService);
     }
 }

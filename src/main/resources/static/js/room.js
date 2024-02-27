@@ -95,6 +95,39 @@ window.addEventListener('load', () => {
             modalExit();
             return;
         }
+
+        if (target.id == 'do-notify') {
+            // 신고로직
+            if (validNotify()) {
+                let nickname = document.querySelector('.notify-name').value;
+                let notifyType = document.querySelector('.notify-reason').value;
+                let notifyContent = document.querySelector('.notify-content').value;
+
+                let image = document.querySelector('input[name="notifyImage"]');
+
+                let formData = new FormData();
+                let images = image.files;
+                for (let i = 0; i < images.length; i++) {
+                    formData.append('images', images[i]);
+                }
+                formData.append('nickname', nickname);
+                formData.append('notifyType', notifyType);
+                formData.append('notifyContent', notifyContent);
+                fetchNotify('/room/' + getRoomId() + '/notify', formData, notifyResult);
+            }
+        }
+    })
+
+    modal_content.addEventListener('keyup', (e) => {
+        let target = e.target;
+        if (target.id == 'notice') {
+            let currentLength = document.querySelector('#currentLength');
+            currentLength.innerHTML = target.value.length;
+            if (target.value.length > 300) {
+                target.value = target.value.substring(0, 300);
+            }
+        }
+
     })
 
 
@@ -114,15 +147,69 @@ window.addEventListener('load', () => {
             return;
         }
         if (e.target.id == 'notice-setting') {
-            insertModalSize('upload-notice');
-            modal_content.innerHTML = createUploadNotice();
-            modal.classList.remove('disabled');
+            fetchGet('/room/' + getRoomId() + '/notice', getNoticeResult) // 공지사항 불러옴
+
         }
     });
 
     
 
 });
+
+function validNotify() {
+    let nickname = document.querySelector('.notify-name');
+    let notifyType = document.querySelector('.notify-reason');
+    let notifyContent = document.querySelector('.notify-content');
+    let image = document.querySelector('input[name="notifyImage"]');
+
+    if (nickname == null || notifyType == null || notifyContent == null || image == null) {
+        al('error', '에러', '새로고침 후 다시 시도해주세요.');
+        return false;
+    }
+    let notifyMessage = document.querySelector('.m_notify');
+    if (nickname.value == null || nickname.value.length < 1) {
+        printErrorMessage(notifyMessage, '닉네임을 선택해주세요.');
+        return false;
+    }
+    if (notifyType.value == null) {
+        printErrorMessage(notifyMessage, '신고 종류를 선택해주세요.');
+        return false;
+    }
+    if (notifyContent.value == null || notifyContent.length > 1000) {
+        printErrorMessage(notifyMessage, '신고내용을 1000자 이내로 작성해주세요.');
+        return false;
+    }
+
+    return true;
+}
+
+function printErrorMessage(tag, message) {
+    messageInit(tag);
+    tag.classList.add('error');
+    tag.innerHTML = message;
+    tag.classList.remove('disabled');
+}
+
+function notifyResult(json) {
+    console.log(json);
+}
+
+function fetchNotify(url, formData, callback) {
+    fetch(url , { 
+                    method : 'post',
+                    body: formData,
+				})
+    .then(res => res.json())
+    .then(map => callback(map));
+}
+function getNoticeResult(json) {
+    const modal = document.querySelector('.modal');
+    const modal_content = document.querySelector('.modal-content');
+
+    insertModalSize('upload-notice');
+    modal_content.innerHTML = createUploadNotice(json.data);
+    modal.classList.remove('disabled');
+}
 function entrustResult(json) {
     console.log(json);
     if (json.result == 'ok') {
@@ -148,7 +235,19 @@ function deleteNoticeResult(json) {
     }
 }
 function updateNoticeResult(json) {
-
+    if (json.result == 'error') {
+        let noticeMessage = document.querySelector('.m_notice');
+        messageInit(noticeMessage);
+        noticeMessage.classList.add('error');
+        noticeMessage.innerHTML = json.message;
+        noticeMessage.classList.remove('disabled');
+    }
+}
+function messageInit(messageTag) {
+    messageTag.classList.add('disabled');
+    messageTag.classList.remove('non-error');
+    messageTag.classList.remove('error');
+    messageTag.innerHTML = '';
 }
 function scrollToBottom() {
     const chatHistory = document.querySelector('.chat-history');
@@ -175,6 +274,8 @@ function memberOptionMenuOpen(){
             }
 
             if (e.target.classList.contains('member-notify-box')) {
+                let memberNickname = e.target.parentElement.parentElement.parentElement.querySelector('.member-data span').textContent;
+                console.log(memberNickname);
                 insertModalSize('modal-notify');
                 modal_content.innerHTML = createNotify();
                 modal.classList.remove('disabled');
@@ -300,41 +401,64 @@ function counter() {
 }
 
 function createNotify() {
-    return '<div class="notify">' +
-                '<div class="benotifiedmember-box">' +
-                    '<h4>신고 대상</h4>' +
-                    '<input type="text" class="benotifiedmember-name" value="오승찬"></input>' +
-                '</div>' +
-                '<div class="notify-reason-box">' +
-                    '<h4>신고 사유</h4>' +
-                    '<select class="notify-reason">' +
-                        '<option value="" selected="selected">사유를 선택해주세요</option>' +
-                        '<option value="홍보/상업적 광고 등 (스팸 메세지 등)">홍보/상업적 광고 등 (스팸 메세지 등)</option>' +
-                        '<option value="고의적인 대화방해 (텍스트 도배 등)">고의적인 대화방해 (텍스트 도배 등)</option>' +
-                        '<option value="미풍양속을 해치는 행위 (음란/욕설 등)">미풍양속을 해치는 행위 (음란/욕설 등)</option>' +
-                        '<option value="운영자 사칭">운영자 사칭</option>' +
-                        '<option value="개인정보 침해, 아이디 도용">개인정보 침해, 아이디 도용</option>' +
-                        '<option value="기타">기타</option>' +
-                    '</select>' +
-                '</div>' +
-                '<div class="notify-content-box">' +
-                    '<h4>신고 내용</h4>' +
-                    '<span class="count-box">(<span class="count">0</span>/1000)</span>' +
-                    '<textarea class="notify-content" onkeydown="counter();" name="notify-content" id="notify-content" cols="30" rows="10">sdfasdf</textarea>' +
-                '</div>' +
-                '<div class="notify-image-box">' +
-                    '<div class="notify-image-text">' +
-                        '<h4>파일 첨부</h4>' +
-                        '<h5>(2MB)</h5>' +
-                    '</div>' +
-                    '<input type="file" name="notifyImage" id="notifyImage" accept="image/*" multiple>' +
-                '</div>' +
-                '<div class="button-box">' +
-                    '<button type="button" id="do-notify">신고하기</button>' +
-                    '<button type="button" id="cancel-notify">취소</button>' +
-                '</div>' +
-            '</div>';
+    return `<div class="notify">
+                <div class="benotifiedmember-box">
+                    <h4>신고 대상</h4>
+                    <select class="notify-name">
+                        ${getNickNameList()}
+                    </select>
+                </div>
+                <div class="notify-reason-box">
+                    <h4>신고 사유</h4>
+                    <select class="notify-reason">
+                        <option value="TYPE1" selected>홍보/상업적 광고 등 (스팸 메세지 등)</option>
+                        <option value="TYPE2">고의적인 대화방해 (텍스트 도배 등)</option>
+                        <option value="TYPE3">미풍양속을 해치는 행위 (음란/욕설 등)</option>
+                        <option value="TYPE4">운영자 사칭</option>
+                        <option value="TYPE5">개인정보 침해, 아이디 도용</option>
+                        <option value="TYPE6">기타</option>
+                    </select>
+                </div>
+                <div class="notify-content-box">
+                    <h4>신고 내용</h4>
+                    <span class="count-box">(<span class="count">0</span>/1000)</span>
+                    <textarea class="notify-content" onkeydown="counter();" name="notify-content" id="notify-content" cols="30" rows="10" maxlength="1000"></textarea>
+                </div>
+                <div class="notify-image-box">
+                    <div class="notify-image-text">
+                        <h4>파일 첨부</h4>
+                        <h5>(2MB)</h5>
+                    </div>
+                    <input type="file" name="notifyImage" id="notifyImage" accept="image/*" multiple>
+                </div>
+                <span class="msg disabled m-notify"></span>
+                <div class="button-box">
+                    <button type="button" id="do-notify">신고하기</button>
+                    <button type="button" id="cancel-notify">취소</button>
+                </div>
+            </div>`;
 };
+
+function getNickNameList() {
+    let memberList = document.querySelectorAll('.member');
+
+    if (memberList == null || memberList.length < 1) return;
+
+    let temp = '';
+
+    for (let i=0;i<memberList.length;i++) {
+        if (memberList[i].querySelector('.isMe') != null) continue;
+        
+        let nickname = memberList[i].querySelector('.member-data span').getAttribute('name');
+        if (i == 0) {
+            temp += `<option value="${nickname}" selected>${nickname}</option>`;
+        } else {
+            temp += `<option value="${nickname}">${nickname}</option>`;
+        }
+    }
+
+    return temp;
+}
 
 function editRoomModal(editRoom) {
     return  `<div class="modal-wrapper">
@@ -433,12 +557,13 @@ function createTagAdd() {
             '</div>';
 }
 
-function createUploadNotice() {
+function createUploadNotice(notice) {
     return `<h3>공지사항</h3>
-            <textarea id="notice"></textarea>
+            <textarea id="notice" maxlength="300">${notice.content}</textarea>
             <div class="text-lengths">
-                (<span id="currentLength">0</span>/100)
+                (<span id="currentLength">${notice.content.length}</span>/300)
             </div>
+            <span class="msg disabled m-notice"></span>
             <div class="buttons">
                 <button type="button" id="room-notice-delete">삭제</button>
                 <button type="button" id="room-cancel">이전</button>
