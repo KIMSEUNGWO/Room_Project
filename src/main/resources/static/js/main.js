@@ -55,6 +55,7 @@ window.addEventListener('load', () => {
                     modalExit();
                     window.location.href='/room/' + target.value;
                 } else {
+                    addQueryStringRedirect('redirectURI=/room/' + target.value);
                     al('error', '경고', '로그인이 필요합니다.')
                     changeToLogin();
                 }
@@ -68,7 +69,11 @@ window.addEventListener('load', () => {
         }
     })
 })
-
+function addQueryStringRedirect(redirectURI) {
+    let currentUrl = window.location.href;
+    let newUrl = currentUrl + (currentUrl.indexOf('?') === -1 ? '?' : '&') + redirectURI;
+    history.pushState(null, null, newUrl);
+}
 function exitRoomResult(json) {
     console.log(json);
     if (json.result == 'ok') {

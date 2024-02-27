@@ -1,11 +1,23 @@
 const disabled = 'disabled';
 window.addEventListener('load', () => {
 
+    const mypage = document.querySelector('#btn-mypage');
+    const mypageMenu = document.querySelector('.mypage-menu-list');
+    if (mypage != null) {
+        mypage.addEventListener('click', () => {
+            mypageMenu.classList.toggle('disabled');
+        })
+    }
+    const logout = document.querySelector('#logout');
+    if (logout != null) {
+        logout.addEventListener('click', () => fetchGet('/logout', logoutResult));
+    }
+
     const modal = document.querySelector('.modal');
     const modal_content = document.querySelector('.modal-content');
 
     // 타임리프로 Model에서 로그인여부 확인 후 로그인 페이지 이동
-    if (requireLogin || getRedirectURI() != null) {
+    if (getRedirectURI() != null) {
         insertModalSize('modal-login');
         modal_content.innerHTML = createLoginModal();
         modal.classList.remove(disabled);
@@ -115,6 +127,12 @@ window.addEventListener('load', () => {
 
 
 })
+
+function logoutResult(json) {
+    if (json.result == 'ok') {
+        window.location.reload();
+    }
+}
 
 function modalExit() {
     const modal = document.querySelector('.modal');

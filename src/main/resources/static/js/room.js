@@ -1,5 +1,8 @@
 window.addEventListener('load', () => {
 
+    const exitBtn = document.querySelector('#exit');
+    exitBtn.addEventListener('click', () => window.location.href='/');
+
     const message = document.querySelector('#message');
     
     message.addEventListener('keydown', (e) => {
@@ -198,7 +201,7 @@ function notifyResult(json) {
         let notifyMessage = document.querySelector('.m_notify');
         printErrorMessage(notifyMessage, json.message);
     } else if (json.result == 'notLogin') {
-        alert('로그인이 필요합니다.');
+        alert(json.message);
         window.location.href = '/?redirectURI=/room/' + getRoomId();
     }
 }
@@ -225,6 +228,12 @@ function entrustResult(json) {
         al(json.result, '성공', '위임되었습니다.');
     } else if (json.result == 'error') {
         al(json.result, '실패', json.message);
+        setTimeout(() => {
+            window.location.reload();
+        }, 2000);
+    } else if (json.result == 'notLogin') {
+        alert(json.message);
+        window.location.href = '/?redirectURI=/room/' + getRoomId();
     }
 }
 function kickResult(json) {
@@ -236,11 +245,20 @@ function kickResult(json) {
         setTimeout(() => {
             window.location.reload();
         }, 2000);
+    } else if (json.result == 'notLogin') {
+        alert(json.message);
+        window.location.href = '/?redirectURI=/room/' + getRoomId();
     }
 }
 function deleteNoticeResult(json) {
     if (json.result == 'error') {
         al(json.result, '공지사항 삭제 실패', json.message);
+        setTimeout(() => {
+            window.location.reload();
+        }, 2000);
+    } else if (json.result == 'notLogin') {
+        alert(json.message);
+        window.location.href = '/?redirectURI=/room/' + getRoomId();
     }
 }
 function updateNoticeResult(json) {
@@ -250,6 +268,9 @@ function updateNoticeResult(json) {
         noticeMessage.classList.add('error');
         noticeMessage.innerHTML = json.message;
         noticeMessage.classList.remove('disabled');
+    } else if (json.result == 'notLogin') {
+        alert(json.message);
+        window.location.href = '/?redirectURI=/room/' + getRoomId();
     }
 }
 function messageInit(messageTag) {
@@ -275,49 +296,48 @@ function memberOptionMenuOpen(){
     const modal = document.querySelector('.modal');
     const modal_content = document.querySelector('.modal-content');
 
-    memberMoreBtns.forEach(memberMoreBtn => {
-        memberMoreBtn.addEventListener('click', function(e){
-            if(e.target.classList.contains('member-more')) {
-                let memberOptionMenu = memberMoreBtn.querySelector('.member-option-menu');
-                memberOptionMenu.classList.remove('disabled');
-            }
+    let aside = document.querySelector('aside');
+    aside.addEventListener('click', (e) => {
+        if (e.target.classList.contains('member-more')) {
+            let memberOptionMenu = e.target.querySelector('.member-option-menu');
+            memberOptionMenu.classList.remove('disabled');
+        }
 
-            if (e.target.classList.contains('member-notify-box')) {
-                let memberNickname = e.target.parentElement.parentElement.parentElement.querySelector('.member-data span').textContent;
-                console.log(memberNickname);
-                insertModalSize('modal-notify');
-                modal_content.innerHTML = createNotify();
-                modal.classList.remove('disabled');
-            }
+        if (e.target.classList.contains('member-notify-box')) {
+            let memberNickname = e.target.parentElement.parentElement.parentElement.querySelector('.member-data span').textContent;
+            console.log(memberNickname);
+            insertModalSize('modal-notify');
+            modal_content.innerHTML = createNotify();
+            modal.classList.remove('disabled');
+        }
 
-            if (e.target.classList.contains('member-kick-box')) {
+        if (e.target.classList.contains('member-kick-box')) {
 
-                let member = memberMoreBtn.parentElement;
-                let nickname = member.querySelector('span');
-                if (nickname == null) {
-                    al('error', '강퇴 실패', '강퇴기능에 문제가 발생했습니다. 관리자에게 문의해주세요.');
-                    return;
-                }
-                insertModalSize('kick-room-confirm');
-                modal_content.innerHTML = createKickRoomModal(nickname.getAttribute('name'));
-                modal.classList.remove('disabled');
+            let member = e.target.parentElement.parentElement.parentElement;
+            let nickname = member.querySelector('span');
+            if (nickname == null) {
+                al('error', '강퇴 실패', '강퇴기능에 문제가 발생했습니다. 관리자에게 문의해주세요.');
                 return;
             }
+            insertModalSize('kick-room-confirm');
+            modal_content.innerHTML = createKickRoomModal(nickname.getAttribute('name'));
+            modal.classList.remove('disabled');
+            return;
+        }
 
-            if (e.target.classList.contains('member-entrust-box')) {
+        if (e.target.classList.contains('member-entrust-box')) {
 
-                let member = memberMoreBtn.parentElement;
-                let nickname = member.querySelector('span');
-                if (nickname == null) {
-                    al('error', '위임 실패', '권한 위임기능에 문제가 발생했습니다. 관리자에게 문의해주세요.');
-                    return;
-                }
-                insertModalSize('entrust-room-confirm');
-                modal_content.innerHTML = createEntrustRoomModal(nickname.getAttribute('name'));
-                modal.classList.remove('disabled');
+            let member = e.target.parentElement.parentElement.parentElement;
+            let nickname = member.querySelector('span');
+            if (nickname == null) {
+                al('error', '위임 실패', '권한 위임기능에 문제가 발생했습니다. 관리자에게 문의해주세요.');
                 return;
             }
-        });
+            insertModalSize('entrust-room-confirm');
+            modal_content.innerHTML = createEntrustRoomModal(nickname.getAttribute('name'));
+            modal.classList.remove('disabled');
+            return;
+        }
     })
 };
 function createKickRoomModal(nickname) {
@@ -360,11 +380,12 @@ function editResult(json) {
         insertModalSize('modal-edit-room');
         modal_content.innerHTML = editRoomModal(json.editRoom);
         modal.classList.remove('disabled');
-    }
-    if(json.result == 'error') {
-
-    }
-    if (json.result == 'notLogin') {
+    } else if (json.result == 'error') {
+        al(json.result, '실패', json.message);
+        setTimeout(() => {
+            window.location.reload();
+        }, 2000);
+    } else if (json.result == 'notLogin') {
         al('error', '로그인 필요', json.message);
         setTimeout(() => {
             window.location.href = '/';
@@ -567,6 +588,9 @@ function createTagAdd() {
 }
 
 function createUploadNotice(notice) {
+    if (notice == null) {
+        notice = {content : ''};
+    }
     return `<h3>공지사항</h3>
             <textarea id="notice" maxlength="300">${notice.content}</textarea>
             <div class="text-lengths">
