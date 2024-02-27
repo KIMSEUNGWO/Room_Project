@@ -1,11 +1,3 @@
-window.addEventListener('load', () => {
-    const trigger = document.querySelector('#btn-mypage');
-    trigger.addEventListener('click', () => {
-        al('ok', '테스트', '테스트 중입니다.');
-    })
-    
-})
-
 function al(result, title, message) {
     const alert = document.querySelector('.alert');
     const alertTitleWrap = document.querySelector('.alert-title-wrap');

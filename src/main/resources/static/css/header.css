@@ -49,6 +49,52 @@ header {
     cursor: pointer;
 }
 
+.mypage-box {
+    position: relative;
+}
+.mypage-menu-list {
+    position: absolute;
+    top: 4rem;
+    right: 0rem;
+    width: 11rem;
+    background-color: var(--modal-wrap-color);
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    z-index: 3;
+    padding: 0.5rem 0.5rem;
+    border-radius: 0.5rem;
+}
+.mypage-menu-list.disabled {
+    display: none;
+}
+.mypage-menu {
+    width: 100%;
+    display: grid;
+    grid-template-columns: 30% 70%;
+    align-items: center;
+    color: rgb(168, 168, 168);
+    border-radius: 0.5rem;
+    padding: 0.5rem 1rem;
+    cursor: pointer;
+
+}
+a.mypage-menu {
+    text-decoration: none;
+
+}
+.mypage-menu * {
+    pointer-events: none;
+}
+
+.mypage-menu:hover {
+    background-color: rgb(26, 28, 35);
+}
+#logout span, #logout svg {
+    fill: var(--error-color);
+    color: var(--error-color);
+}
+
 
 /* 로그인 모달 CSS */
 .modal-login {
