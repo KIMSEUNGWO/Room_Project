@@ -1,6 +1,8 @@
 package project.study.controller;
 
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -9,17 +11,23 @@ import project.study.authority.member.MemberAuthorizationCheck;
 import project.study.authority.member.authority.MemberAuthority;
 import project.study.authority.member.dto.RequestJoinRoomDto;
 import project.study.authority.member.dto.ResponseRoomListDto;
+import project.study.constant.WebConst;
 import project.study.customAnnotation.CallType;
 import project.study.customAnnotation.PathRoom;
 import project.study.customAnnotation.SessionLogin;
 import project.study.domain.Member;
 import project.study.domain.Room;
+import project.study.domain.Social;
 import project.study.dto.room.ResponsePrivateRoomInfoDto;
 import project.study.dto.room.ResponseRoomInfo;
 import project.study.dto.room.ResponseRoomMemberList;
+import project.study.service.MainService;
 import project.study.service.RoomService;
 
 import java.util.List;
+import java.util.Optional;
+
+import static project.study.constant.WebConst.LOGIN_MEMBER;
 
 
 @Controller
@@ -28,6 +36,7 @@ public class MainController {
 
     private final MemberAuthorizationCheck memberAuthorizationCheck;
     private final RoomService roomService;
+    private final MainService mainService;
 
     @GetMapping("/room/{room}")
     public String joinRoom(@SessionLogin(required = true, type = CallType.CONTROLLER) Member member, @PathRoom("room") Room room, HttpServletResponse response, Model model){
@@ -63,5 +72,24 @@ public class MainController {
         }
 
         return "main";
+    }
+
+    @GetMapping("/mypage")
+    public String mypage(@SessionLogin(required = false, type = CallType.CONTROLLER) Member member, Model model) {
+
+
+        return "mypage";
+    }
+
+    @GetMapping("/logout")
+    public String logout(@SessionLogin(type = CallType.CONTROLLER) Member member, HttpServletRequest request) {
+        if (member == null) return "redirect:/";
+
+        HttpSession session = request.getSession();
+        session.removeAttribute(LOGIN_MEMBER);
+
+        if (!member.isSocialMember()) return "redirect:/";
+
+        return "redirect:" + mainService.logout(member);
     }
 }

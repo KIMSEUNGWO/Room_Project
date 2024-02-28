@@ -41,4 +41,9 @@ public interface MemberFactory {
         return member;
     }
 
+    default String logout(Member member) {
+        MemberInterface memberInterface = createMember();
+        return memberInterface.logout(member);
+    }
+
 }

@@ -68,4 +68,9 @@ public class KakaoLoginService {
         }
         return String.format("alert('%s');", option);
     }
+
+    public String logout(Member member) {
+        MemberFactory factory = new KakaoMemberFactory(freezeRepository, kakaoLoginRepository, memberJpaRepository, socialJpaRepository, socialTokenJpaRepository, phoneJpaRepository);
+        return factory.logout(member);
+    }
 }

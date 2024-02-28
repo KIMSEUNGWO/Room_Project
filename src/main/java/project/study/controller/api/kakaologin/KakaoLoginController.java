@@ -8,12 +8,14 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import project.study.dto.abstractentity.ResponseDto;
 
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.util.Optional;
 
 @Controller
 @RequiredArgsConstructor
@@ -30,5 +32,6 @@ public class KakaoLoginController {
 
         return null;
     }
+
 
 }

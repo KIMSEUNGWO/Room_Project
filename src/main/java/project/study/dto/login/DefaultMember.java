@@ -65,6 +65,12 @@ public class DefaultMember implements MemberInterface {
         return basic.getMember();
     }
 
+    @Override
+    public String logout(Member member) {
+
+        return "/";
+    }
+
     private Basic checkAccount(RequestDefaultLoginDto data) {
         Optional<Basic> findAccount = basicJpaRepository.findByAccount(data.getAccount());
         if (findAccount.isEmpty()) throw new InvalidLoginException(); // 아이디가 존재하지않음
