@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -10,14 +10,13 @@
     <script src="/js/header.js"></script>
     <script src="/js/alert.js"></script>
     <script src="/js/mypage.js"></script>
-    <title>Document</title>
+    <title>마이페이지</title>
 </head>
 <body>
     <header th:replace="~{/common/header :: header}"></header>
     <div class="container">
         <div class="mypageMain">
             <div class="content">
-                <h2>계정 관리</h2>
                 <h3>기본 정보</h3>
                 <div class="editprofile box">
                     <div>
@@ -52,7 +51,7 @@
                     <h3>비밀번호</h3>
                     <div class="password box">
                         <div class="pwdSpan">
-                            <div th:text="'최근 변경일 : ' + ${main.changePasswordDate}"></div>
+                            <!-- <div th:text="'최근 변경일 : ' + ${main.changePasswordDate}"></div> -->
                             <span>비밀번호</span>
                         </div>
                         <button type="button" id="pwdBtn">비밀번호 변경</button>

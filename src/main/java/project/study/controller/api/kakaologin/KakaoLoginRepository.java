@@ -24,6 +24,7 @@ import java.util.Set;
 @Repository
 @RequiredArgsConstructor
 @Slf4j
+@Transactional
 public class KakaoLoginRepository {
 
     private final SocialJpaRepository socialJpaRepository;
@@ -137,10 +138,18 @@ public class KakaoLoginRepository {
     @Transactional
     public void updateKakaoToken(Member loginMember, SocialToken newToken) {
         SocialToken socialToken = loginMember.getSocial().getToken();
-        if (socialToken.getAccess_token() == null) socialToken.setAccess_token(newToken.getAccess_token());
-        if (socialToken.getRefresh_token() == null) socialToken.setRefresh_token(newToken.getRefresh_token());
+
+        System.out.println("업데이트 토큰 시작");
+        System.out.println("access token = " + socialToken.getAccess_token());
+        System.out.println("refresh token = " + socialToken.getRefresh_token());
+
+        socialToken.setAccess_token(newToken.getAccess_token());
+        socialToken.setRefresh_token(newToken.getRefresh_token());
         String postURL = "https://kauth.kakao.com/oauth/token";
 
+        System.out.println("==================================");
+        System.out.println("access token = " + socialToken.getAccess_token());
+        System.out.println("refresh token = " + socialToken.getRefresh_token());
         try {
             URL url = new URL(postURL);
             HttpURLConnection conn = (HttpURLConnection) url.openConnection();
@@ -195,4 +204,57 @@ public class KakaoLoginRepository {
 
     }
 
+    public void logout(SocialToken token) {
+        log.info("카카오 로그아웃 시작");
+        String logoutUrl = "https://kapi.kakao.com/v1/user/logout";
+
+        System.out.println("access token = " + token.getAccess_token());
+        System.out.println("refresh token = " + token.getRefresh_token());
+        try {
+            URL url = new URL(logoutUrl);
+
+            HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+            conn.setRequestMethod("POST");
+            conn.setDoOutput(true);
+
+            conn.setRequestProperty("Authorization", "Bearer " + token.getAccess_token());
+
+            // POST 요청에서 필요한 파라미터를 OutputStream을 통해 전송
+            BufferedWriter bufferedWriter = new BufferedWriter(new OutputStreamWriter(conn.getOutputStream()));
+            bufferedWriter.flush();
+
+            int responseCode = conn.getResponseCode();
+            System.out.println("responseCode : " + responseCode);
+
+            // 요청을 통해 얻은 데이터를 InputStreamReader을 통해 읽어 오기
+            BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(conn.getInputStream()));
+            String line = "";
+            StringBuilder result = new StringBuilder();
+
+            while ((line = bufferedReader.readLine()) != null) {
+                result.append(line);
+            }
+            System.out.println("response body : " + result);
+
+            JsonElement element = JsonParser.parseString(result.toString());
+
+            String id = element.getAsJsonObject().get("id").getAsString();
+
+            System.out.println("id = " + id);
+
+            token.setAccess_token(null);
+            token.setRefresh_token(null);
+
+            bufferedReader.close();
+            bufferedWriter.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public String redirectLogout() {
+        return "https://kauth.kakao.com/oauth/logout" +
+            "?client_id=" + restApiKey +
+            "&logout_redirect_uri=http://localhost:8080";
+    }
 }

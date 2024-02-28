@@ -79,4 +79,13 @@ public class KakaoMember implements MemberInterface{
 
         return social.getMember();
     }
+
+    @Override
+    public String logout(Member member) {
+        Social social = member.getSocial();
+        SocialToken token = social.getToken();
+        kakaoLoginRepository.logout(token);
+
+        return kakaoLoginRepository.redirectLogout();
+    }
 }
