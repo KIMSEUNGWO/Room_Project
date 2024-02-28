@@ -14,6 +14,7 @@ import project.study.customAnnotation.SessionLogin;
 import project.study.domain.Member;
 import project.study.dto.abstractentity.ResponseDto;
 import project.study.dto.mypage.RequestChangePasswordDto;
+import project.study.dto.mypage.RequestDeleteMemberDto;
 import project.study.dto.mypage.RequestEditInfoDto;
 import project.study.service.MypageService;
 
@@ -34,17 +35,20 @@ public class MypageController {
     }
 
     @PostMapping("/member/delete")
-    public ResponseEntity<ResponseDto> deleteMember(@SessionLogin(required = true, type = CallType.REST_CONTROLLER) Member member) {
+    public ResponseEntity<ResponseDto> deleteMember(@SessionLogin(required = true, type = CallType.REST_CONTROLLER) Member member,
+                                                    @RequestBody RequestDeleteMemberDto data) {
         System.out.println("회원 탈퇴 로직");
+        System.out.println("password = " + data.getPassword());
 
-        mypageService.deleteMember(member);
+        mypageService.deleteMember(member, data);
 
-        return new ResponseEntity<>(new ResponseDto(WebConst.OK, "탈퇴 완료"), HttpStatus.OK);
+        return new ResponseEntity<>(new ResponseDto(WebConst.OK, "탈퇴가 완료되었습니다."), HttpStatus.OK);
     }
 
     @PostMapping("/change/password")
     public ResponseEntity<ResponseDto> changePassword(@SessionLogin(required = true, type = CallType.REST_CONTROLLER) Member member,
                                                       @RequestBody RequestChangePasswordDto data) {
+        System.out.println("member.getMemberNickname() = " + member.getMemberNickname());
         System.out.println("data = " + data);
         mypageService.changePassword(member, data);
 

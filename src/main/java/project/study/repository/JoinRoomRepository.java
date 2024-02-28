@@ -64,7 +64,7 @@ public class JoinRoomRepository {
 
 
 
-    public List<ResponseRoomListDto> search(Member member, String word, Pageable pageable) {
+    public List<ResponseRoomListDto> search(Long memberId, String word, Pageable pageable) {
         QJoinRoom j = QJoinRoom.joinRoom;
         QRoom r = QRoom.room;
         QRoomImage ri = QRoomImage.roomImage;
@@ -77,7 +77,7 @@ public class JoinRoomRepository {
                 r.roomTitle.as("roomTitle"),
                 r.roomIntro.as("roomIntro"),
                 r.roomPublic.eq(PublicEnum.PUBLIC).as("roomPublic"),
-                ExpressionUtils.as(getRoomJoin(member, j, r), "roomJoin"),
+                ExpressionUtils.as(getRoomJoin(memberId, j, r), "roomJoin"),
                 ExpressionUtils.as(getRoomMaxPerson(j, r), "nowPerson"),
                 r.roomLimit.as("maxPerson")
             ))
@@ -103,13 +103,13 @@ public class JoinRoomRepository {
     }
 
 
-    private BooleanExpression getRoomJoin(Member member, QJoinRoom j, QRoom r) {
-        if (member == null) return Expressions.FALSE;
+    private BooleanExpression getRoomJoin(Long memberId, QJoinRoom j, QRoom r) {
+        if (memberId == null) return Expressions.FALSE;
         return JPAExpressions
             .select(j.joinRoomId)
             .from(j)
             .join(r).on(r.eq(j.room))
-            .where(r.eq(j.room).and(j.member.eq(member))).exists();
+            .where(r.eq(j.room).and(j.member.memberId.eq(memberId))).exists();
 
     }
 

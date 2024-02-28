@@ -15,6 +15,7 @@ import project.study.authority.member.dto.RequestJoinRoomDto;
 import project.study.authority.member.dto.ResponseRoomListDto;
 import project.study.chat.component.ChatAccessToken;
 import project.study.chat.dto.ResponseChatHistory;
+import project.study.constant.WebConst;
 import project.study.customAnnotation.PathRoom;
 import project.study.customAnnotation.SessionLogin;
 import project.study.domain.Member;
@@ -29,6 +30,8 @@ import project.study.service.JoinRoomService;
 import project.study.service.RoomService;
 
 import java.util.List;
+
+import static project.study.constant.WebConst.LOGIN_MEMBER;
 
 @RestController
 @RequiredArgsConstructor
@@ -72,11 +75,10 @@ public class RoomController {
     }
 
     @GetMapping("/search")
-    public ResponseEntity<ResponseDto> search(@SessionLogin Member member, @RequestParam("word") String word, Pageable pageable) {
-        System.out.println("word = " + word);
-        System.out.println("pageable = " + pageable.getPageNumber());
+    public ResponseEntity<ResponseDto> search(@SessionAttribute(name = LOGIN_MEMBER, required = false) Long memberId, @RequestParam("word") String word, Pageable pageable) {
+        System.out.println("word = " + word + " pageable = " + pageable.getPageNumber());
 
-        List<ResponseRoomListDto> roomList = roomService.searchRoomList(member, word, pageable);
+        List<ResponseRoomListDto> roomList = roomService.searchRoomList(memberId, word, pageable);
 
         for (ResponseRoomListDto data : roomList) {
             System.out.println("data = " + data);

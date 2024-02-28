@@ -89,8 +89,8 @@ public class RoomService {
     }
 
 
-    public List<ResponseRoomListDto> searchRoomList(Member member, String word, Pageable pageable) {
-        List<ResponseRoomListDto> roomInfo = joinRoomRepository.search(member, word, pageable);
+    public List<ResponseRoomListDto> searchRoomList(Long memberId, String word, Pageable pageable) {
+        List<ResponseRoomListDto> roomInfo = joinRoomRepository.search(memberId, word, pageable);
         for (ResponseRoomListDto data : roomInfo) {
             List<String> tagList = tagRepository.findAllByRoomId(data.getRoomId());
             data.setTagList(tagList);
