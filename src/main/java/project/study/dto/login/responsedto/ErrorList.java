@@ -24,7 +24,4 @@ public class ErrorList {
         return !errorList.isEmpty();
     }
 
-    public List<Error> getErrors() {
-        return errorList;
-    }
 }

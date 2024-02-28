@@ -8,6 +8,9 @@ window.addEventListener('load', () => {
     popList.forEach(pop => {
         pop.addEventListener('click', (e) => {
             if (e.target.classList.contains('popCancel')) {
+                initialPassword();
+                initialPhone();
+                initialDeleteMember();
                 exitPop();
             }
         })
@@ -43,7 +46,10 @@ window.addEventListener('load', () => {
 
         // 비밀번호 찾기 이동
         const findPassword = document.querySelector('#findPassword');
-        findPassword.addEventListener('click', () => modalFindPassword());
+        findPassword.addEventListener('click', () => {
+            modalFindPassword();
+            initialPassword();
+        });
 
         // 비밀번호 변경 로직
         const pwSaveBtn = document.querySelector('.saveBtn');
@@ -55,6 +61,13 @@ window.addEventListener('load', () => {
             let json = {nowPassword : currPw, changePassword : changePw, checkPassword : checkPw};
             fetchPost('/change/password', json, passwordResult);
         })
+
+        const currPw = document.querySelector('input[name="currPassword"]');
+        currPw.addEventListener('keyup', () => messageInit(document.querySelector('#bfpw')));
+        const changePw = document.querySelector('input[name="changePassword"]');
+        changePw.addEventListener('keyup', () => validPassword(changePw));
+        const checkPw = document.querySelector('input[name="checkPassword"]');
+        checkPw.addEventListener('keyup', () => validPasswordCheck(changePw, checkPw));
 
     }
 
@@ -78,7 +91,8 @@ window.addEventListener('load', () => {
                 al('error', '확인', '주의사항을 읽고 체크해주세요.');
                 return;
             }
-            fetchPost('/member/delete', null, deleteResult);
+            let password = document.querySelector('input[name="deletePassword"]');
+            fetchPost('/member/delete', {password : password.value}, deleteResult);
         })
 
     }
@@ -143,20 +157,21 @@ window.addEventListener('load', () => {
 })
 
 function editInfoResult(json) {
-    if (json.result == 'ok') {
+    if (json.result === 'ok') {
         al(json.result, '성공', json.message);
-    } else if (json.result == 'error') {
+    } else if (json.result === 'error') {
         al(json.result, '에러', json.message);
-    } else if (json.result == 'notLogin') {
+    } else if (json.result === 'notLogin') {
         window.location.href = '/?redirectURI=/mypage';
     }
 }
 function deleteResult(json) {
-    if (json.result == 'ok') {
-        al(json.result, '성공', json.message);
-    } else if (json.result == 'error') {
+    if (json.result === 'ok') {
+        alert(json.message);
+        window.location.href='/logout';
+    } else if (json.result === 'error') {
         al(json.result, '에러', json.message);
-    } else if (json.result == 'notLogin') {
+    } else if (json.result === 'notLogin') {
         window.location.href = '/redirectURI=/mypage';
     }
 }
@@ -175,27 +190,95 @@ function deleteResult(json) {
  */
 function passwordResult(json) {
     console.log(json);
-    if (json.result == 'ok') {
-        al(json.result, '성공', json.message);
-        exitPop();
-    } else if (json.result == 'error') {
-        let errorList = json.data;
 
-        // let currPwError = document.querySelector('#bfpw');
-        // let changePwError = document.querySelector('#cpw');
-        // let checkPwError = document.querySelector('#cpwc');
+    if (json.result === 'ok') {
+        al(json.result, '성공', json.message);
+        initialPassword();
+        exitPop();
+    } else if (json.result === 'error') {
+        let errorList = json.data;
 
         for (let i=0;i<errorList.length;i++) {
             let id = errorList[i].location;
             let message = errorList[i].message;
             let location = document.querySelector('#' + id);
-            printFalse(location, message);
+
+            messageInit(location);
+            location.classList.add('error');
+            location.innerHTML = message;
+            location.classList.remove('disabled');
         }
-    } else if (json.result == 'notLogin') {
+
+    } else if (json.result === 'notLogin') {
         window.location.href = '/?redirectURI=/mypage';
     }
 
 }
+function initialPassword() {
+    let currPwError = document.querySelector('#bfpw');
+    let changePwError = document.querySelector('#cpw');
+    let checkPwError = document.querySelector('#cpwc');
+
+    currPwError.innerHTML = '';
+    changePwError.innerHTML = '';
+    checkPwError.innerHTML = '';
+}
+function initialDeleteMember() {
+    let password = document.querySelector('input[name="deletePassword"]');
+    if (password == null) return;
+    password.value = '';
+
+    let checkBtn = document.querySelector('button#check');
+    checkBtn.classList.remove('confirm');
+
+    let policy = document.querySelector('input[name="policy"]');
+    policy.checked = false;
+
+    let deletePopDeleteBtn = document.querySelector('#deletePopDeleteBtn');
+    deletePopDeleteBtn.setAttribute('data-is-allowed', 'false');
+}
+
+function initialPhone() {
+    let phone = document.querySelector('input[name="phones"]');
+    let phoneCheck = document.querySelector('input[name="phoneCheck"]');
+    if (phone == null || phoneCheck == null) return;
+    phone.value = '';
+    phoneCheck.value = '';
+
+    let limitTime = document.querySelector('.limitTime');
+    limitTime.innerHTML = '05:00';
+
+}
+
+function validPassword(passwordInput) {
+    let m_password = document.querySelector('#cpw');
+    let password = passwordInput.value;
+
+    if (password.length < 8 || !/[a-z]/.test(password) || !/[A-Z]/.test(password) || !/[0-9]/.test(password) || !/[!@#$%]/.test(password)) {
+        let result = {result : 'error', message : '8자 이상 대,소문자, 숫자, 특수문자(!@#$%)를 포함해야 합니다.'};
+        printMessage(result, m_password);
+        return
+    }
+    messageInit(m_password);
+}
+function validPasswordCheck(passwordInput, passwordCheckInput) {
+    let m_passwordCheck = document.querySelector('#cpwc');
+    let password = passwordInput.value;
+    let passwordCheck = passwordCheckInput.value;
+
+    if (passwordCheck.length === 0) {
+        let result = {result : 'error', message : '비밀번호를 다시 한번 입력해주세요.'};
+        printMessage(result, m_passwordCheck);
+        return
+    }
+    if (password !== passwordCheck) {
+        let result = {result : 'error', message : '비밀번호가 일치하지 않습니다.'};
+        printMessage(result, m_passwordCheck);
+        return
+    }
+    messageInit(m_passwordCheck);
+}
+
 
 function distinctNameResult(json) {
     const m_nickname = document.querySelector('.m-nickname');

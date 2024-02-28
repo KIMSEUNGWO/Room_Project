@@ -13,13 +13,16 @@ import project.study.dto.abstractentity.ResponseDto;
 import project.study.dto.login.responsedto.Error;
 import project.study.dto.login.responsedto.ErrorList;
 import project.study.dto.mypage.RequestChangePasswordDto;
+import project.study.dto.mypage.RequestEditInfoDto;
 import project.study.exceptions.RestFulException;
+import project.study.service.SignupService;
 
 @Repository
 @RequiredArgsConstructor
 @Slf4j
 public class MypageRepository {
 
+    private final SignupService signupService;
     private final BCryptPasswordEncoder encoder;
 
     public void valid(Member member, RequestChangePasswordDto data, ErrorList errorList) {
@@ -30,13 +33,13 @@ public class MypageRepository {
         String changePassword = data.getChangePassword();
         String checkPassword = data.getCheckPassword();
 
-        if (nowPassword == null) {
+        if (nowPassword == null || nowPassword.isEmpty()) {
             errorList.addError(new Error("bfpw", "현재 비밀번호를 입력해주세요."));
         }
-        if (changePassword == null) {
+        if (changePassword == null || changePassword.isEmpty()) {
             errorList.addError(new Error("cpw", "변경할 비밀번호를 입력해주세요."));
         }
-        if (checkPassword == null) {
+        if (checkPassword == null || checkPassword.isEmpty()) {
             errorList.addError(new Error("cpwc", "변경할 비밀번호는 한번 더 입력해주세요."));
         }
         if (errorList.hasError()) return;
@@ -64,5 +67,20 @@ public class MypageRepository {
     public void changePassword(Member member, RequestChangePasswordDto data) {
         Basic basic = member.getBasic();
         basic.changePassword(encoder.encode(data.getChangePassword() + basic.getSalt()));
+    }
+
+    public void validNickname(Member member, RequestEditInfoDto data) {
+        String memberNickname = member.getMemberNickname();
+        if (memberNickname.equals(data.getNickname())) return;
+        signupService.distinctNickname(data.getNickname());
+
+    }
+
+    public void validDeleteMember(Member member, String password) {
+        PasswordManager passwordManager = new PasswordManager(member.getBasic(), encoder);
+        boolean isValidPassword = passwordManager.isValidPassword(password);
+        if (!isValidPassword) {
+            throw new RestFulException(new ResponseDto(WebConst.ERROR, "비밀번호가 일치하지 않습니다."));
+        }
     }
 }
