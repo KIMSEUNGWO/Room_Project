@@ -1,8 +1,10 @@
 package project.study.repository;
 
 import com.querydsl.core.BooleanBuilder;
+import com.querydsl.core.Tuple;
 import com.querydsl.core.types.Expression;
 import com.querydsl.core.types.Predicate;
+import com.querydsl.core.types.Projections;
 import com.querydsl.core.types.dsl.*;
 import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
@@ -10,6 +12,7 @@ import jakarta.persistence.EntityManager;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.support.PageableExecutionUtils;
+import org.springframework.expression.spel.ast.Projection;
 import org.springframework.stereotype.Repository;
 import project.study.authority.admin.dto.*;
 import project.study.domain.*;
@@ -19,6 +22,7 @@ import project.study.enums.NotifyStatus;
 import project.study.enums.NotifyType;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 import static com.querydsl.jpa.JPAExpressions.select;
 import static project.study.domain.QBasic.*;
@@ -294,13 +298,18 @@ public class AdminRepository {
             .fetchOne();
     }
 
-    public List<String> findNotifyImage(Long notifyId){
-        return queryFactory
-            .select(notifyImage.notifyImageStoreName)
+    public SearchNotifyImageDto searchNotifyImage(Long notifyId){
+        List<Tuple> result = queryFactory
+            .select(notifyImage.notifyImageStoreName, notifyImage.notifyImageOriginalName)
             .from(notifyImage)
             .leftJoin(notifyImage.notify, notify)
             .where(notify.notifyId.eq(notifyId))
             .fetch();
+
+        List<String> store = result.stream().map(x -> x.get(notifyImage.notifyImageStoreName)).collect(Collectors.toList());
+        List<String> original = result.stream().map(x -> x.get(notifyImage.notifyImageOriginalName)).collect(Collectors.toList());
+
+        return new SearchNotifyImageDto(store, original);
     }
 
     public SearchNotifyMemberInfoDto searchNotifyMemberInfo(String account) {

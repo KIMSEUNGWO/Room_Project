@@ -24,6 +24,8 @@ public class SearchNotifyReadMoreDto {
     private NotifyStatus notifyStatus;
     @Setter
     private List<String> notifyImageStoreName;
+    @Setter
+    private List<String> notifyImageOriginalName;
 
     @QueryProjection
     public SearchNotifyReadMoreDto(String reporterMemberAccount, String criminalMemberAccount, Long roomId, String notifyDate, NotifyType notifyReason, String notifyContent, Long notifyId, NotifyStatus notifyStatus) {

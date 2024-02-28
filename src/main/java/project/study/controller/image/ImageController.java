@@ -17,7 +17,7 @@ public class ImageController {
     @Value("${file.dir}")
     private String fileDir;
 
-    @GetMapping("/images/{fileUploadType}/{filename}")
+    @GetMapping(value = "/images/{fileUploadType}/{filename}", produces = {"image/png", "image/jpg", "image/jpeg"})
     public Resource downloadImage1(@PathVariable(name = "fileUploadType") String fileUploadType, @PathVariable(name = "filename") String filename) throws MalformedURLException {
         System.out.println("image1 filename = " + filename);
         FileUploadType type = FileUploadType.findDir(fileUploadType);
