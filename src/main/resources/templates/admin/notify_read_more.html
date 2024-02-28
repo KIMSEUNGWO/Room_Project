@@ -45,10 +45,6 @@
                             <a th:href="|/images/notify_image/${notifyInfo.notifyImageStoreName[__${notifyIndex.index}__]}|" target="_blank">
                                 <img th:src="|/images/notify_image/${notifyInfo.notifyImageStoreName[__${notifyIndex.index}__]}|" alt="" width="100" height="100">
                             </a>
-<!--                            <a th:href="@{'/images/notify_image/' + ${notifyInfo.notifyImageStoreName[__${notifyIndex.index}__]}}" target="_blank">-->
-<!--                                <img th:src="@{'/images/notify_image/' + ${notifyInfo.notifyImageStoreName[__${notifyIndex.index}__]}}" alt="" width="100" height="100">-->
-<!--                            </a>-->
-
                         </div>
                     </div>
                 </th:block>
@@ -70,7 +66,7 @@
             <th:block th:if="${!#strings.equals(notifyInfo.notifyStatus, '처리완료')}">
                 <div class="process-box">
                     <div class="title-process-status">처리 상태</div>
-                    <input type="text" name="process-status" th:id="process-status" class="process-status">
+                    <input type="text" name="process-status" id="process-status" class="process-status">
                 </div>
             </th:block>
         </div>
