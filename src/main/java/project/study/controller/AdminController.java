@@ -5,11 +5,10 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 import project.study.authority.admin.dto.*;
 import project.study.domain.Admin;
+import project.study.dto.admin.RequestNotifyStatusChangeDto;
 import project.study.service.AdminService;
 
 import java.util.Optional;
@@ -163,5 +162,15 @@ public class AdminController {
         return "/admin/notify_member";
     }
 
+    @PostMapping("/admin/notify/status/change")
+    @ResponseBody
+    public void notifyStatusChange(@RequestBody RequestNotifyStatusChangeDto requestDto){
+
+        long notifyId = requestDto.getNotifyId();
+        String status = requestDto.getStatus();
+
+        System.out.println("status = " + status);
+        System.out.println("notifyId = " + notifyId);
+    }
 
 }

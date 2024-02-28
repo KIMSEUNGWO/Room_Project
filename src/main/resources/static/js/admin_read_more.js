@@ -10,20 +10,23 @@ window.addEventListener('load', function(){
 });
 
 function processComplete(){
-    let notifyId = document.querySelector('.notify-number').value;
-    let status = document.querySelector('.process-status').value;
+    
     let completeBtn = document.querySelector('.completeBtn');
 
     completeBtn.addEventListener('click', function(){
-        // $.ajax({
-        //     url : '/admin/notify/status/change',
-        //     type : 'POST',
-        //     cotentType : 'application/json',
-        //     data : JSON.stringify({notifyId : notifyId, change : status})
-            
-        // });
+        let notifyId = document.querySelector('.notify-number').value;
+        let status = document.getElementById('process-status').value;
 
-        console.log(notifyId);
-        console.log(status);
+        $.ajax({
+            url : '/admin/notify/status/change',
+            type : 'POST',
+            contentType : 'application/json',
+            data : JSON.stringify({notifyId : notifyId, status : status}),
+            success : function(){
+                console.log('요청성공');
+            }
+        });
     });
 };
+
+
