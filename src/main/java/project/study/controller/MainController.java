@@ -18,6 +18,7 @@ import project.study.customAnnotation.SessionLogin;
 import project.study.domain.Member;
 import project.study.domain.Room;
 import project.study.domain.Social;
+import project.study.dto.MyPageInfo;
 import project.study.dto.room.ResponsePrivateRoomInfoDto;
 import project.study.dto.room.ResponseRoomInfo;
 import project.study.dto.room.ResponseRoomMemberList;
@@ -75,9 +76,12 @@ public class MainController {
     }
 
     @GetMapping("/mypage")
-    public String mypage(@SessionLogin(required = false, type = CallType.CONTROLLER) Member member, Model model) {
+    public String mypage(@SessionLogin Member member, Model model) {
+        if (member == null) return "redirect:/?redirectURI=/mypage";
 
+        MyPageInfo info = mainService.getMypageInfo(member);
 
+        model.addAttribute("main", info);
         return "mypage";
     }
 

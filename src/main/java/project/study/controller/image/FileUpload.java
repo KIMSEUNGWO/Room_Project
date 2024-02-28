@@ -88,6 +88,8 @@ public class FileUpload {
             return;
         }
 
+        fileTypeConverter.deleteFile(fileType, parentEntity);
+
         FileUploadDto fileUploadDto = FileUploadDto.builder()
             .parent(parentEntity)
             .imageUploadName(originalFileName)

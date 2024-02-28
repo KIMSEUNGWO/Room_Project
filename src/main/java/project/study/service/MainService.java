@@ -6,8 +6,10 @@ import org.springframework.stereotype.Service;
 import project.study.controller.api.kakaologin.KakaoLoginRepository;
 import project.study.controller.api.kakaologin.KakaoLoginService;
 import project.study.domain.Member;
+import project.study.domain.Profile;
 import project.study.domain.Social;
 import project.study.domain.SocialToken;
+import project.study.dto.MyPageInfo;
 import project.study.dto.login.KakaoMemberFactory;
 import project.study.dto.login.MemberFactory;
 import project.study.enums.SocialEnum;
@@ -33,5 +35,15 @@ public class MainService {
             return kakaoLoginService.logout(member);
         }
         return "/";
+    }
+
+    public MyPageInfo getMypageInfo(Member member) {
+        return MyPageInfo.builder()
+            .profile(member.getProfile().getProfileStoreName())
+            .name(member.getMemberName())
+            .nickname(member.getMemberNickname())
+            .phone(member.getPhoneNumber())
+            .isSocial(member.isSocialMember())
+            .build();
     }
 }

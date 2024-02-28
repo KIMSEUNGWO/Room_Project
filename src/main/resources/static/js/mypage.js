@@ -2,156 +2,261 @@ let timerInterval = null;
 let clickLimit = null;
 
 window.addEventListener('load', () => {
-    let x = document.querySelector('#pwdPopCancel');
-    let cancelBtn = document.querySelector('#pwdPopCancelBtn');
 
-    let pwdPop = document.querySelector('.passwordPop').parentElement;
-    let deletePop = document.querySelector('.deletePop').parentElement;
-
-    x.addEventListener('click', () => {
-        pwdPop.classList.add('disabled');
-    })
-    cancelBtn.addEventListener('click', () => {
-        pwdPop.classList.add('disabled');
-    })
-
-    let pwdBtn = document.querySelector('#pwdBtn');
-    let deleteBtn = document.querySelector('#deleteBtn');
-    if (pwdBtn != null){
-        pwdBtn.addEventListener('click', () => {
-            pwdPop.classList.remove('disabled');
-        })
-    }
-    deleteBtn.addEventListener('click', () => {
-        deletePop.classList.remove('disabled');
-    })
-
-    const findPassword = document.querySelector('#findPassword');
-    findPassword.addEventListener('click', () => {
-        console.log('?');
-        modalFindPassword();
-    })
-
-    
-
-    let profileImgBtn = document.querySelector('#img');
-    let imgInput = document.querySelector('#img input[type="file"]');
-
-    profileImgBtn.addEventListener('click', () => {
-        imgInput.click();
-    })
-
-    let profile = document.querySelector('#myProfile');
-    imgInput.addEventListener('change', () => {
-        let file = imgInput.files[0];
-        profile.src = URL.createObjectURL(file);
-    })
-
-
-    //
-
-    const deletePopBtn = document.querySelector('#deletePopDeleteBtn');
-
-    let checkBtn = document.querySelector('#check');
-    let checkbox = document.querySelector('input[name="policy"]');
-    checkBtn.addEventListener('click', () => {
-        checkbox.click();
-    })
-
-    checkbox.addEventListener('change', () => {
-        let boolean = checkbox.checked;
-        if (boolean) {
-            checkBtn.classList.add('confirm');
-            deletePopBtn.setAttribute('data-is-allowed', 'true');
-        } else {
-            checkBtn.classList.remove('confirm');
-            deletePopBtn.setAttribute('data-is-allowed', 'false');
-        }
-    })
-
-    
-
-    let deleteCancelBtn = document.querySelector('#deletePopCancel');
-    let deleteCancelBtn2 = document.querySelector('#deletePopCancelBtn');
-    deleteCancelBtn.addEventListener('click', () => {
-        deletePop.classList.add('disabled');
-    });
-    deleteCancelBtn2.addEventListener('click', () => {
-        deletePop.classList.add('disabled');
-    });
-
-    // password
-    let pwSaveBtn = document.querySelector('.saveBtn');
-    pwSaveBtn.addEventListener('click', () => {
-        let currPw = document.querySelector('input[name="currPassword"]').value;
-        let changePw = document.querySelector('input[name="changePassword"]').value;
-        let checkPw = document.querySelector('input[name="checkPassword"]').value;
-
-        let json = {nowPassword : currPw, changePassword : changePw, checkPassword : checkPw};
-        fetchPost('/change/password', json, result);
-    })
-
-    // 휴대폰 변경 로직
-
-    const changePassword = document.querySelector('.formEditBtn');
-    let phonePop = document.querySelector('.phonePop').parentElement;
-    let phoneX = document.querySelector('#phonePopCancel');
-    let phonePopCancelBtn = document.querySelector('#phonePopCancelBtn');
-
-    changePassword.addEventListener('click', () => {
-        phonePop.classList.remove('disabled');
-    })
-    phoneX.addEventListener('click', () => phonePop.classList.add('disabled'))
-    phonePopCancelBtn.addEventListener('click', () => phonePop.classList.add('disabled'))
-
-
-    const phoneBtn = document.querySelector('#phoneBtn');
-    phoneBtn.addEventListener('click', () => {
-        if (validPhone() != null) return;
-
-        let phone = document.querySelector('input[name="phones"]').value.replaceAll('-', '');
-        let json = {phone : phone};
-
-        fetchPost('/sms/send/find', json, sendSMS);
-    })
-
-    const changePhone = document.querySelector('#changePhone');
-    changePhone.addEventListener('click', () => {
-
-        let phone = document.querySelector('input[name="phones"]');
-        let certification = document.querySelector('input[name="phoneCheck"]');
-
-        
-        if (phone == null || phone.value.length == '') {
-            let cPhone = document.querySelector('.confirmPhone');
-            printFalse(cPhone, '휴대폰 번호를 입력해주세요');
-            return;
-        }
-        if (certification == null || certification.value.length < 5) {
-            let cPhoneCheck = document.querySelector('.confirmPhoneCheck');
-            printFalse(cPhoneCheck, '인증번호를 입력해주세요');
-            return;
-        }
-
-        let json = {phone : phone.value.replaceAll('-', ''), certificationNumber : certification.value};
-        fetchPost('/changePhone/confirm', json, resultPhone);
-    }) 
-    const phone = document.querySelector('input[name="phones"]');
-    phone.addEventListener('keyup',function(e){
-
-        if (phone.isEqualNode(e.target)) {
-            if (e.key === 'Backspace') {
-                phone.value = removePhone(phone.value);
-            } else {
-                var str = removeNotNumber(phone.value);
-                phone.value = addPhone(str);
+    // pop 종료
+    const popList = document.querySelectorAll('.pop');
+    popList.forEach(pop => {
+        pop.addEventListener('click', (e) => {
+            if (e.target.classList.contains('popCancel')) {
+                exitPop();
             }
-
-        }
+        })
     })
 
+    // 기본 정보 변경
+    const editBtn = document.querySelector('.editBtn');
+    editBtn.addEventListener('click', () => {
+        
+        let name = document.querySelector('input[name="name"]');
+
+        let formData = new FormData();
+
+        let defaultRadio = document.querySelector('input[name="defaultImage"]');
+        if (!defaultRadio.checked && imgInput.files.item(0) != null) {
+            formData.append('profile', imgInput.files.item(0));
+        }
+        formData.append('name', name.value);
+        formData.append('nickname', nickname.value);
+
+        fetchFormData('/member/editInfo', formData, editInfoResult);
+
+    })
+    // 닉네임 중복검사
+    const nickname = document.querySelector('input[name="nickname"]');
+    nickname.addEventListener('focusout', () => fetchDistinct('/distinct/nickname', nickname.value, distinctNameResult));
+
+    // 비밀번호 변경 pop
+    const passwordPop = document.querySelector('.passwordPop');
+    if (passwordPop != null) {
+        const pwdBtn = document.querySelector('#pwdBtn'); // 비밀번호 변경 버튼
+        pwdBtn.addEventListener('click', () => passwordPop.parentElement.classList.remove('disabled'));
+
+        // 비밀번호 찾기 이동
+        const findPassword = document.querySelector('#findPassword');
+        findPassword.addEventListener('click', () => modalFindPassword());
+
+        // 비밀번호 변경 로직
+        const pwSaveBtn = document.querySelector('.saveBtn');
+        pwSaveBtn.addEventListener('click', () => {
+            let currPw = document.querySelector('input[name="currPassword"]').value;
+            let changePw = document.querySelector('input[name="changePassword"]').value;
+            let checkPw = document.querySelector('input[name="checkPassword"]').value;
+    
+            let json = {nowPassword : currPw, changePassword : changePw, checkPassword : checkPw};
+            fetchPost('/change/password', json, passwordResult);
+        })
+
+    }
+
+    // 계정 삭제 pop
+    const deletePop = document.querySelector('.deletePop');
+    if (deletePop != null) {
+        const deleteBtn = document.querySelector('#deleteBtn');
+        deleteBtn.addEventListener('click', () => deletePop.parentElement.classList.remove('disabled'));
+
+        const checkBtn = document.querySelector('#check');
+        const checkbox = document.querySelector('input[name="policy"]');
+        checkBtn.addEventListener('click', () => checkbox.click());
+        checkbox.addEventListener('change', () => {
+            checkBtn.classList.toggle('confirm');
+            deletePopBtn.setAttribute('data-is-allowed', deletePopBtn.getAttribute('data-is-allowed') != 'true');
+        })
+
+        const deletePopBtn = document.querySelector('#deletePopDeleteBtn');
+        deletePopBtn.addEventListener('click', () => {
+            if (!checkbox.checked) {
+                al('error', '확인', '주의사항을 읽고 체크해주세요.');
+                return;
+            }
+            fetchPost('/member/delete', null, deleteResult);
+        })
+
+    }
+
+    // 휴대폰 변경  pop
+    const phonePop = document.querySelector('.phonePop');
+    if (phonePop != null) {
+        const changePassword = document.querySelector('.formEditBtn');
+        changePassword.addEventListener('click', () => phonePop.parentElement.classList.remove('disabled'));
+
+        // 휴대폰 타이핑 로직
+        const phone = document.querySelector('input[name="phones"]');
+        phone.addEventListener('keyup',() => phone.value = removeNotNumber(phone.value));
+
+        // 인증번호 전송 로직
+        const phoneBtn = document.querySelector('#phoneBtn');
+        phoneBtn.addEventListener('click', () => {
+            if (validPhone() != null) return;
+    
+            let phone = document.querySelector('input[name="phones"]').value;
+            let json = {phone : phone};
+    
+            fetchPost('/sms/send/find', json, sendSMS);
+        })
+
+        // 인증번호 확인 로직
+        const changePhone = document.querySelector('#changePhone');
+        changePhone.addEventListener('click', () => {
+    
+            let phone = document.querySelector('input[name="phones"]');
+            let certification = document.querySelector('input[name="phoneCheck"]');
+            
+            if (phone == null || phone.value.length == '') {
+                let cPhone = document.querySelector('.confirmPhone');
+                printFalse(cPhone, '휴대폰 번호를 입력해주세요');
+                return;
+            }
+            if (certification == null || certification.value.length < 5) {
+                let cPhoneCheck = document.querySelector('.confirmPhoneCheck');
+                printFalse(cPhoneCheck, '인증번호를 입력해주세요');
+                return;
+            }
+    
+            let json = {phone : phone.value, certificationNumber : certification.value};
+            fetchPost('/changePhone/confirm', json, resultPhone);
+        }) 
+    }
+
+    const profileImgBtn = document.querySelector('#img');
+    profileImgBtn.addEventListener('click', () => imgInput.click());
+    
+    const imgInput = document.querySelector('#img input[type="file"]');
+    imgInput.addEventListener('change', () => {
+        if (!printPreview()) return;
+        let defaultImageInputRadio = document.querySelector('input[name="defaultImage"]');
+        defaultImageInputRadio.checked = false;
+    });
+
+    const defaultImage = document.querySelector('input[name="defaultImage"]');
+    defaultImage.addEventListener('click', () => defaultImageChange());
 
 })
+
+function editInfoResult(json) {
+    if (json.result == 'ok') {
+        al(json.result, '성공', json.message);
+    } else if (json.result == 'error') {
+        al(json.result, '에러', json.message);
+    } else if (json.result == 'notLogin') {
+        window.location.href = '/?redirectURI=/mypage';
+    }
+}
+function deleteResult(json) {
+    if (json.result == 'ok') {
+        al(json.result, '성공', json.message);
+    } else if (json.result == 'error') {
+        al(json.result, '에러', json.message);
+    } else if (json.result == 'notLogin') {
+        window.location.href = '/redirectURI=/mypage';
+    }
+}
+
+/**
+ * 예상 JSON
+ * {
+ *      result : 'error',
+ *      message : '비밀번호 변경실패',
+ *      errorList : {
+ *                      {location : '위치', message : '메세지'},
+ *                      {location : '위치', message : '메세지'},
+ *                      ...
+ *                  }
+ * }
+ */
+function passwordResult(json) {
+    console.log(json);
+    if (json.result == 'ok') {
+        al(json.result, '성공', json.message);
+        exitPop();
+    } else if (json.result == 'error') {
+        let errorList = json.data;
+
+        // let currPwError = document.querySelector('#bfpw');
+        // let changePwError = document.querySelector('#cpw');
+        // let checkPwError = document.querySelector('#cpwc');
+
+        for (let i=0;i<errorList.length;i++) {
+            let id = errorList[i].location;
+            let message = errorList[i].message;
+            let location = document.querySelector('#' + id);
+            printFalse(location, message);
+        }
+    } else if (json.result == 'notLogin') {
+        window.location.href = '/?redirectURI=/mypage';
+    }
+
+}
+
+function distinctNameResult(json) {
+    const m_nickname = document.querySelector('.m-nickname');
+    printMessage(json, m_nickname);
+}
+function printMessage(json, msgBox) {
+    messageInit(msgBox);
+    if (json.result == 'ok') {
+        msgBox.classList.add('non-error');
+    } else {
+        msgBox.classList.add('error');
+    }
+
+    msgBox.innerHTML = json.message;
+    msgBox.classList.remove('disabled');
+}
+function messageInit(messageTag) {
+    messageTag.classList.add('disabled');
+    messageTag.classList.remove('non-error');
+    messageTag.classList.remove('error');
+    messageTag.innerHTML = '';
+}
+
+
+function defaultImageChange() {
+    let defaultImageInputRadio = document.querySelector('input[name="defaultImage"]');
+    if (defaultImageInputRadio == null) return;
+
+    let profile = document.querySelector('#myProfile');
+    if (defaultImageInputRadio.checked) {
+        let imageInput = document.querySelector('input[name="profileImage"]');
+        imageInput.value = null;
+        profile.setAttribute('src', '/images/member_profile/basic-member-profile.jpg');
+    }
+}
+function printPreview() {
+    let imgInput = document.querySelector('#img input[type="file"]');
+    if (!isImage(imgInput.files)) return false;
+
+    let image = imgInput.files[0];
+    let myProfile = document.querySelector('#myProfile');
+    myProfile.src = URL.createObjectURL(image);
+    myProfile.alt = image.name;
+    return true;
+}
+function isImage(files) {
+    for (let i=0;i<files.length;i++){
+        let file = files[i];
+
+        if (!String(file.type).startsWith('image/')){
+            al('error', '에러', '사진만 추가할 수 있습니다.');
+            return false;
+        }
+    }
+    return true;
+}
+
+function exitPop() {
+    let popList = document.querySelectorAll('.pop');
+    popList.forEach(pop => pop.classList.add('disabled'));
+}
 
 function modalFindPassword() {
     let modalList = document.querySelectorAll('.pop');
@@ -162,7 +267,7 @@ function modalFindPassword() {
     
     insertModalSize('modal-find');
     modal_content.innerHTML = createFindPassword();
-    modal.classList.remove(disabled);
+    modal.classList.remove('disabled');
 }
 function resultPhone(result) {
     if (result.result == 'ok') {
@@ -171,37 +276,8 @@ function resultPhone(result) {
     }
     
 }
-function removePhone(str) {
-    if (str.endsWith('-')) {
-        return str.slice(0, -1);
-    }
-    return str;
-}
-function addPhone(str) {
-    if (str.endsWith('-')) {
-        return str;
-    }
-    if (str.length == 3) {
-        return str.slice(0, 3) + '-' + str.slice(3);
-    }
-    if (str.length == 4) {
-        return str.slice(0,3) + '-' + str.slice(3,4);
-    }
-    if (str.length == 8) {
-        return str.slice(0, 8) + '-' + str.slice(8);
-    }
-    if (str.length == 9) {
-        return str.slice(0, 8) + '-' + str.slice(8,9);
-    }
-    return str;
-}
 function removeNotNumber(text) {
-    var newString = text.replace(/[^0-9\-]/, "");
-    var distinctString = newString.replace(/-+/g, "-");
-    if (distinctString.endsWith('-')) {
-        return distinctString.slice(0, -1).replace(/-+/g, "-");
-    }
-    return distinctString;
+    return text.replace(/[^0-9]/, "");
 }
 
 function sendSMS(result) {
@@ -231,31 +307,10 @@ function validPhone() {
     }
 }
 
-function result(map) {
-    if (map.result == 'fail') {
-        if (map.message == null) {
-            let currPwError = document.querySelector('#bfpw');
-            let changePwError = document.querySelector('#cpw');
-            let checkPwError = document.querySelector('#cpwc');
-            
-            currPwError.innerHTML = (map.nowPwError != null) ? map.nowPwError : '';
-            changePwError.innerHTML = (map.changePwError != null) ? map.changePwError : '';
-            checkPwError.innerHTML = (map.checkPwError != null) ? map.checkPwError : '';
-        } else {
-            alert(map.message);
-            location.href = '/';
-        }
-    }
-    if (map.result == 'ok') {
-        alert(map.message);
-        location.href = '/mypage';
-    }
-}
-
 function printTrue(cTag, message) {
     if (cTag != null ){
         cTag.innerHTML = message;
-        cTag.classList.remove(disabled)
+        cTag.classList.remove('disabled')
         cTag.classList.remove("error")
     }
 }
@@ -265,7 +320,7 @@ function printFalse(cTag, message) {
     if (cTag != null) {
         cTag.innerHTML = message;
         cTag.classList.add("error");
-        cTag.classList.remove(disabled);
+        cTag.classList.remove('disabled');
     }
 }
 

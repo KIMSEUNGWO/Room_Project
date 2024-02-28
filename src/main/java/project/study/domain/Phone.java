@@ -22,4 +22,8 @@ public class Phone {
     private Member member;
 
     private String phone;
+
+    public String getPhone() {
+        return phone;
+    }
 }
