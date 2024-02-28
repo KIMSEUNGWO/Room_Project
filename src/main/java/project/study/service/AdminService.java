@@ -1,5 +1,6 @@
 package project.study.service;
 
+import com.querydsl.core.Tuple;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -10,8 +11,10 @@ import project.study.domain.*;
 import project.study.jpaRepository.AdminJpaRepository;
 import project.study.repository.AdminRepository;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -53,8 +56,11 @@ public class AdminService {
 
     public SearchNotifyReadMoreDto searchNotifyReadMore(Long notifyId){
         SearchNotifyReadMoreDto searchNotifyReadMoreDto = adminRepository.searchNotifyReadMore(notifyId);
-        List<String> notifyImage = adminRepository.findNotifyImage(searchNotifyReadMoreDto.getNotifyId());
-        searchNotifyReadMoreDto.setNotifyImageStoreName(notifyImage);
+        SearchNotifyImageDto searchNotifyImageDto = adminRepository.searchNotifyImage(notifyId);
+        for (String s : searchNotifyImageDto.getNotifyImageOriginalName()){
+            searchNotifyReadMoreDto.setNotifyImageStoreName(searchNotifyImageDto.getNotifyImageStoreName());
+            searchNotifyReadMoreDto.setNotifyImageOriginalName(searchNotifyImageDto.getNotifyImageOriginalName());
+        }
         return searchNotifyReadMoreDto;
     }
 

@@ -6,6 +6,7 @@
     <link rel="stylesheet" href="/css/common.css">
     <link rel="stylesheet" href="/css/notify_read_more.css">
     <script src="/js/admin_read_more.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
     <title>신고 자세히 보기</title>
 </head>
 <body>
@@ -37,14 +38,25 @@
             </div>
             <div class="notify-box">
                 <div class="title-notify-image">첨부파일</div>
-                <th:block th:if="${!notifyInfo.notifyImageStoreName.isEmpty()}">
-                    <div class="notify-image" th:each="notifyImage : ${notifyInfo.notifyImageStoreName}">
-                        <a href="#" th:text="${notifyImage.notifyImageStoreName}">1.png</a>
+                <th:block th:if="${!notifyInfo.notifyImageOriginalName.isEmpty()}">
+                    <div class="notify-image-box">
+                        <div class="notify-image" th:each="notifyImage, notifyIndex : ${notifyInfo.notifyImageOriginalName}">
+                            <div class="notify-image-name" th:text="${notifyImage}"></div>
+                            <a th:href="|/images/notify_image/${notifyInfo.notifyImageStoreName[__${notifyIndex.index}__]}|" target="_blank">
+                                <img th:src="|/images/notify_image/${notifyInfo.notifyImageStoreName[__${notifyIndex.index}__]}|" alt="" width="100" height="100">
+                            </a>
+<!--                            <a th:href="@{'/images/notify_image/' + ${notifyInfo.notifyImageStoreName[__${notifyIndex.index}__]}}" target="_blank">-->
+<!--                                <img th:src="@{'/images/notify_image/' + ${notifyInfo.notifyImageStoreName[__${notifyIndex.index}__]}}" alt="" width="100" height="100">-->
+<!--                            </a>-->
+
+                        </div>
                     </div>
                 </th:block>
-                <th:block th:if="${notifyInfo.notifyImageStoreName.isEmpty()}">
-                    <div class="notify-image">
-                        <a href="#" th:text="없음">1.png</a>
+                <th:block th:if="${notifyInfo.notifyImageOriginalName.isEmpty()}">
+                    <div class="notify-image-box">
+                        <div class="notify-image" th:each="notifyImage, notifyIndex : ${notifyInfo.notifyImageOriginalName}">
+                            <div class="notify-image-name" th:text="이미지 없음"></div>
+                        </div>
                     </div>
                 </th:block>
             </div>
@@ -52,13 +64,13 @@
             <th:block th:if="${#strings.equals(notifyInfo.notifyStatus, '처리완료')}">
                 <div class="process-box">
                     <div class="title-process-status">처리 상태</div>
-                    <input type="text" name="process-status" id="process-status" class="process-status" value="처리 완료" th:value="${notifyInfo.notifyStatus}">
+                    <input type="text" name="process-status" id="process-status" class="process-status" th:value="${notifyInfo.notifyStatus}">
                 </div>
             </th:block>
             <th:block th:if="${!#strings.equals(notifyInfo.notifyStatus, '처리완료')}">
                 <div class="process-box">
                     <div class="title-process-status">처리 상태</div>
-                    <input type="text" name="process-status" th:id="process-status" class="process-status" value="">
+                    <input type="text" name="process-status" th:id="process-status" class="process-status">
                 </div>
             </th:block>
         </div>
