@@ -92,7 +92,7 @@ function defaultImageChange() {
     if (defaultImageInputRadio.checked) {
         let imageInput = document.querySelector('input[name="roomImage"]');
         imageInput.value = null;
-        roomImage.setAttribute('src', '/images/room_profile/basic-room-profile.jpg');
+        roomImage.setAttribute('src', '/images/room_profile/basic-member-profile.jpg');
     }
 }
 function createRoomMessageInit() {

@@ -2,6 +2,7 @@ package project.study.controller.image;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 import project.study.domain.*;
@@ -9,14 +10,18 @@ import project.study.jpaRepository.NotifyImageJpaRepository;
 import project.study.jpaRepository.ProfileJpaRepository;
 import project.study.jpaRepository.RoomImageJpaRepository;
 
+import java.io.File;
+
 @Repository
 @RequiredArgsConstructor
 @Transactional
 @Slf4j
 public class FileUploadRepository {
 
-    private final String defaultProfile = "";
-    private final String defaultRoomImage = "basic-room-profile.jpg";
+    @Value("${file.dir}")
+    private String fileDir;
+    private final String defaultProfile = "basic-member-profile.jpg";
+    private final String defaultRoomImage = "basic-member-profile.jpg";
 
     private final RoomImageJpaRepository roomImageJpaRepository;
     private final ProfileJpaRepository profileJpaRepository;
@@ -97,5 +102,35 @@ public class FileUploadRepository {
             roomImage.setRoomImageOriginalName(data.getImageUploadName());
             roomImage.setRoomImageStoreName(data.getImageStoreName());
         }
+    }
+
+    public void deleteProfile(FileUploadType type, ImageFileEntity parent) {
+        Member member = (Member) parent;
+        Profile profile = member.getProfile();
+        String storeName = profile.getProfileStoreName();
+        if (defaultProfile.equals(storeName)) return;
+
+        File profileFile = new File(getFullPath(type, storeName));
+        if (profileFile.delete()) {
+            log.error("Profile 파일 삭제");
+        }
+
+    }
+
+    public void deleteRoomImage(FileUploadType type, ImageFileEntity parent) {
+        Room room = (Room) parent;
+        RoomImage roomImage = room.getRoomImage();
+        String storeName = roomImage.getRoomImageStoreName();
+        if (defaultRoomImage.equals(storeName)) return;
+
+        File roomImageFile = new File(getFullPath(type, storeName));
+        if (roomImageFile.delete()) {
+            log.error("RoomImage 파일 삭제");
+        }
+
+    }
+
+    private String getFullPath(FileUploadType type, String storeName) {
+        return String.format("%s%s/%s", fileDir, type.getDir(), storeName);
     }
 }

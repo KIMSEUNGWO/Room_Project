@@ -22,3 +22,12 @@ function fetchDelete(url, json, callback) {
     .then(res => res.json())
     .then(map => callback(map));
 }
+
+function fetchFormData(url, formData, callback) {
+    fetch(url , { 
+                    method : 'post',
+                    body: formData,
+				})
+    .then(res => res.json())
+    .then(map => callback(map));
+}

@@ -5,6 +5,7 @@ import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import project.study.controller.image.FileUpload;
 import project.study.domain.Member;
 import project.study.dto.login.KakaoMemberFactory;
 import project.study.dto.login.MemberFactory;
@@ -32,11 +33,12 @@ public class KakaoLoginService {
     private final SocialJpaRepository socialJpaRepository;
     private final SocialTokenJpaRepository socialTokenJpaRepository;
     private final PhoneJpaRepository phoneJpaRepository;
+    private final FileUpload fileUpload;
 
     public void login(String code, HttpSession session, HttpServletResponse response) {
         RequestSocialLoginDto data = new RequestSocialLoginDto(code);
 
-        MemberFactory factory = new KakaoMemberFactory(freezeRepository, kakaoLoginRepository, memberJpaRepository, socialJpaRepository, socialTokenJpaRepository, phoneJpaRepository);
+        MemberFactory factory = new KakaoMemberFactory(freezeRepository, kakaoLoginRepository, memberJpaRepository, socialJpaRepository, socialTokenJpaRepository, phoneJpaRepository, fileUpload);
         Member loginMember = factory.login(data, session, response);
         if (loginMember == null) {
             RequestSocialSignupDto signupDto = new RequestSocialSignupDto(data, response);
@@ -70,7 +72,7 @@ public class KakaoLoginService {
     }
 
     public String logout(Member member) {
-        MemberFactory factory = new KakaoMemberFactory(freezeRepository, kakaoLoginRepository, memberJpaRepository, socialJpaRepository, socialTokenJpaRepository, phoneJpaRepository);
+        MemberFactory factory = new KakaoMemberFactory(freezeRepository, kakaoLoginRepository, memberJpaRepository, socialJpaRepository, socialTokenJpaRepository, phoneJpaRepository, fileUpload);
         return factory.logout(member);
     }
 }

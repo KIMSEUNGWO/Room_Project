@@ -43,4 +43,16 @@ public class FileTypeConverter {
         }
         log.error("TypeConvert TypeMissMatch error = {}", type.name());
     }
+
+    public void deleteFile(FileUploadType type, ImageFileEntity parentEntity) {
+
+        if (type == FileUploadType.MEMBER_PROFILE) {
+            fileUploadRepository.deleteProfile(type, parentEntity);
+            return;
+        }
+        if (type == FileUploadType.ROOM_PROFILE) {
+            fileUploadRepository.deleteRoomImage(type, parentEntity);
+            return;
+        }
+    }
 }

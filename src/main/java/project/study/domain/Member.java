@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.NoArgsConstructor;
+import project.study.dto.mypage.RequestEditInfoDto;
 import project.study.enums.MemberStatusEnum;
 
 import java.time.LocalDateTime;
@@ -60,6 +61,11 @@ public class Member implements ImageFileEntity {
     public boolean isBasicMember() {
         return basic != null;
     }
+
+    public String getMemberName() {
+        return memberName;
+    }
+
     public Long getMemberId() {
         return memberId;
     }
@@ -82,5 +88,23 @@ public class Member implements ImageFileEntity {
 
     public Profile getProfile() {
         return profile;
+    }
+
+    public String getPhoneNumber() {
+        if (phone == null) return null;
+        return phone.getPhone();
+    }
+
+    public void updateInfo(RequestEditInfoDto data) {
+        memberName = data.getName();
+        memberNickname = data.getNickname();
+    }
+
+    public void setMemberStatus(MemberStatusEnum memberStatus) {
+        this.memberStatus = memberStatus;
+    }
+
+    public void setMemberExpireDate(LocalDateTime memberExpireDate) {
+        this.memberExpireDate = memberExpireDate;
     }
 }
