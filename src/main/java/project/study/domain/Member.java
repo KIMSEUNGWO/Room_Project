@@ -41,8 +41,8 @@ public class Member implements ImageFileEntity {
     private Profile profile;
     @OneToOne(mappedBy = "member", fetch = FetchType.LAZY)
     private Phone phone;
-    @OneToOne(mappedBy = "member", fetch = FetchType.LAZY)
-    private Freeze freeze;
+    @OneToMany(mappedBy = "member")
+    private List<Freeze> freeze;
     @OneToMany(mappedBy = "member", fetch = FetchType.LAZY)
     private List<JoinRoom> joinRoomList;
 
