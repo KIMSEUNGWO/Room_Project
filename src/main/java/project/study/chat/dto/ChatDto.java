@@ -2,11 +2,11 @@ package project.study.chat.dto;
 
 import lombok.*;
 import project.study.chat.MessageType;
+import project.study.domain.Member;
 
 import java.time.LocalDateTime;
 
 @Builder
-@Getter
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
@@ -21,5 +21,31 @@ public class ChatDto {
     private String message;
     private LocalDateTime time;
 
+    public MessageType getType() {
+        return type;
+    }
 
+    public Long getRoomId() {
+        return roomId;
+    }
+
+    public Long getToken() {
+        return token;
+    }
+
+    public String getMessage() {
+        return message;
+    }
+
+    public LocalDateTime getTime() {
+        return time;
+    }
+
+    public String getSender() {
+        return sender;
+    }
+
+    public String getSenderImage() {
+        return senderImage;
+    }
 }

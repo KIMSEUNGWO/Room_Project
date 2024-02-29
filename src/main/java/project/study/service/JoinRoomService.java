@@ -30,10 +30,7 @@ public class JoinRoomService {
 
     public boolean exitsByMemberAndRoom(Long memberId, Room room) {
         if (memberId == null) throw new NotLoginMemberRestException();
-        boolean exitsByMemberAndRoom = joinRoomRepository.exitsByMemberAndRoom(memberId, room);
-        if (!exitsByMemberAndRoom) throw new RestFulException(new ResponseDto("error", "권한 없음"));
-
-        return true;
+        return joinRoomRepository.exitsByMemberAndRoom(memberId, room);
     }
 
     public void validMaxJoinRoom(Member member, HttpServletResponse response) {

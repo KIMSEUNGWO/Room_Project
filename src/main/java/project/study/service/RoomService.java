@@ -71,7 +71,7 @@ public class RoomService {
         roomRepository.validRoomTitle(errorList, data.getTitle());
         roomRepository.validRoomIntro(errorList, data.getIntro());
         roomRepository.validPublic(errorList, data.getRoomPublic(), data.getPassword());
-        roomRepository.validRoomEditMaxPerson(errorList, room, data.getMax());
+        roomRepository.validRoomEditMaxPerson(errorList, room.joinRoomSize(), data.getMax());
         roomRepository.validTagList(errorList, data.getTags());
 
         if (errorList.hasError()) {

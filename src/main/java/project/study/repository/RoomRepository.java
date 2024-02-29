@@ -8,6 +8,7 @@ import jakarta.persistence.EntityManager;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.lang.Nullable;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 import project.study.authority.member.dto.RequestEditRoomDto;
@@ -60,12 +61,12 @@ public class RoomRepository {
     }
 
     public void validRoomTitle(ErrorList errorList, String title) {
-        if (title == null || title.length() > 10) {
-            errorList.addError(new Error("title", "방 제목은 10자 이하만 가능합니다."));
+        if (title == null || title.length() < 2 || title.length() > 10) {
+            errorList.addError(new Error("title", "방 제목은 2~10자 이하만 가능합니다."));
         }
     }
 
-    public void validRoomIntro(ErrorList errorList, String intro) {
+    public void validRoomIntro(ErrorList errorList, @Nullable String intro) {
         if (intro != null && intro.length() > 50) {
             errorList.addError(new Error("intro", "소개글은 50자 까지 가능합니다."));
         }
@@ -104,12 +105,10 @@ public class RoomRepository {
         }
     }
 
-    public void validRoomEditMaxPerson(ErrorList errorList, Room room, String max) {
-        int nowPerson = room.getJoinRoomList().size();
-        if (!isNumber(max)) {
-            errorList.addError(new Error("max", "숫자를 입력해주세요."));
-            return;
-        }
+    public void validRoomEditMaxPerson(ErrorList errorList, int nowPerson, String max) {
+        validRoomMaxPerson(errorList, max);
+        if (errorList.hasError()) return;
+
         if (nowPerson > Integer.parseInt(max)) {
             errorList.addError(new Error("max", "참여된 회원 수보다 작게 설정할 수 없습니다."));
         }
@@ -165,7 +164,7 @@ public class RoomRepository {
     public void validFullRoom(RequestJoinRoomDto data) {
         Room room = data.getRoom();
         int maxPerson = room.getRoomLimit();
-        int nowPerson = room.getJoinRoomList().size();
+        int nowPerson = room.joinRoomSize();
         if (nowPerson >= maxPerson) throw new FullRoomException(data.getResponse(), "방이 가득찼습니다.");
     }
 

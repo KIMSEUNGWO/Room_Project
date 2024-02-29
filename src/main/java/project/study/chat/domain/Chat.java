@@ -1,18 +1,21 @@
 package project.study.chat.domain;
 
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import project.study.domain.Member;
 import project.study.domain.Room;
 
 import java.time.LocalDateTime;
 
-@Getter
 @Builder
 @Entity
 @Table(name = "CHAT")
 @SequenceGenerator(name = "SEQ_CHAT", sequenceName = "SEQ_CHAT_ID", allocationSize = 1)
+@NoArgsConstructor
+@AllArgsConstructor
 public class Chat {
 
     @Id
@@ -20,11 +23,11 @@ public class Chat {
     private Long chatId;
 
     @ManyToOne
-    @JoinColumn(name = "roomId")
+    @JoinColumn(name = "ROOM_ID")
     private Room room;
 
     @ManyToOne
-    @JoinColumn(name = "memberId")
+    @JoinColumn(name = "MEMBER_ID")
     private Member sendMember;
 
     @Lob
