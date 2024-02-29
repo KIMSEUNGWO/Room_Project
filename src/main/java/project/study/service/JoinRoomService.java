@@ -9,9 +9,12 @@ import project.study.constant.WebConst;
 import project.study.domain.JoinRoom;
 import project.study.domain.Member;
 import project.study.domain.Room;
+import project.study.dto.abstractentity.ResponseDto;
 import project.study.enums.AuthorityMemberEnum;
+import project.study.exceptions.NotLoginMemberRestException;
+import project.study.exceptions.RestFulException;
+import project.study.exceptions.authority.NotJoinRoomException;
 import project.study.exceptions.authority.joinroom.ExceedJoinRoomException;
-import project.study.exceptions.authority.joinroom.FullRoomException;
 import project.study.repository.JoinRoomRepository;
 import project.study.repository.RoomRepository;
 
@@ -25,8 +28,12 @@ public class JoinRoomService {
     private final JoinRoomRepository joinRoomRepository;
     private final RoomRepository roomRepository;
 
-    public boolean exitsByMemberAndRoom(Member member, Room room) {
-        return joinRoomRepository.exitsByMemberAndRoom(member, room);
+    public boolean exitsByMemberAndRoom(Long memberId, Room room) {
+        if (memberId == null) throw new NotLoginMemberRestException();
+        boolean exitsByMemberAndRoom = joinRoomRepository.exitsByMemberAndRoom(memberId, room);
+        if (!exitsByMemberAndRoom) throw new RestFulException(new ResponseDto("error", "권한 없음"));
+
+        return true;
     }
 
     public void validMaxJoinRoom(Member member, HttpServletResponse response) {
@@ -47,8 +54,10 @@ public class JoinRoomService {
         joinRoomRepository.save(saveJoinRoom);
     }
 
-    public Optional<JoinRoom> findByMemberAndRoom(Member member, Room room) {
-        return joinRoomRepository.findByMemberAndRoom(member, room);
+    public JoinRoom findByMemberAndRoom(Member member, Room room, HttpServletResponse response) {
+        Optional<JoinRoom> findJoinRoom = joinRoomRepository.findByMemberAndRoom(member, room);
+        if (findJoinRoom.isEmpty()) throw new NotJoinRoomException(response);
+        return findJoinRoom.get();
     }
 
     public void deleteJoinRoom(JoinRoom joinRoom) {

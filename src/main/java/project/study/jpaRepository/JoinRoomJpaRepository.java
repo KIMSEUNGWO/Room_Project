@@ -10,6 +10,6 @@ import java.util.Optional;
 public interface JoinRoomJpaRepository extends JpaRepository<JoinRoom, Long> {
     Optional<JoinRoom> findByMemberAndRoom(Member member, Room room);
 
-    boolean existsByMemberAndRoom(Member member, Room room);
+    boolean existsByMember_memberIdAndRoom(Long memberId, Room room);
 
 }

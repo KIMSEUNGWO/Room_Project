@@ -1,12 +1,10 @@
 package project.study.chat.component;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import project.study.dto.abstractentity.ResponseDto;
 import project.study.exceptions.RestFulException;
 
 import java.util.Map;
-import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 
 @Component
@@ -14,7 +12,6 @@ public class ChatAccessToken {
 
     private final Map<Long, Long> accessToken;
 
-    @Autowired
     public ChatAccessToken() {
         this.accessToken = new ConcurrentHashMap<>();
     }

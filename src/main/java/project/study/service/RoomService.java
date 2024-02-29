@@ -120,12 +120,6 @@ public class RoomService {
 
     public void deleteRoom(Room room) {
         roomRepository.moveToDeleteRoom(room);
-//        roomRepository.deleteRoomImage(room.getRoomImage());
-//        roomRepository.deleteRoomNotice(room.getRoomNotice());
-//        roomRepository.deleteRoomPassword(room.getRoomPassword());
-//        tagRepository.deleteTag(room.getTags());
-//
-//        roomRepository.deleteRoom(room);
     }
 
     public List<ResponseRoomMemberList> getResponseRoomMemberList(Room room, Member member) {
@@ -155,7 +149,6 @@ public class RoomService {
     }
 
     public ResponseEditRoomForm getEditRoomForm(Room room) {
-
         ResponseEditRoomForm form = roomRepository.getResponseEditRoomForm(room);
         List<String> tagList = tagRepository.findAllByRoomId(room.getRoomId());
         form.setTagList(tagList);
@@ -171,8 +164,6 @@ public class RoomService {
         roomRepository.editRoomImage(room, data);
         roomRepository.editRoomPassword(room, data);
         roomRepository.editTag(room, data);
-
-
     }
 
     public RoomNotice saveRoomNotice(Room room, RequestNoticeDto data) {

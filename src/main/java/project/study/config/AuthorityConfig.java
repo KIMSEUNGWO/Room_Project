@@ -10,6 +10,7 @@ import project.study.authority.member.authority.ManagerAuthorityImpl;
 import project.study.authority.member.authority.MemberAuthority;
 import project.study.authority.member.authority.MemberAuthorityImpl;
 import project.study.jpaRepository.MemberJpaRepository;
+import project.study.repository.MemberRepository;
 import project.study.service.AdminService;
 import project.study.service.JoinRoomService;
 import project.study.service.NotifyService;
@@ -22,7 +23,7 @@ public class AuthorityConfig {
     private final RoomService roomService;
     private final JoinRoomService joinRoomService;
     private final AdminService adminService;
-    private final MemberJpaRepository memberJpaRepository;
+    private final MemberRepository memberRepository;
     private final NotifyService notifyService;
 
     @Bean
@@ -49,7 +50,7 @@ public class AuthorityConfig {
     @Bean
     @Primary
     public ManagerAuthority managerAuthority() {
-        return new ManagerAuthorityImpl(roomService, memberJpaRepository);
+        return new ManagerAuthorityImpl(roomService, memberRepository);
     }
     @Bean
     @Primary
