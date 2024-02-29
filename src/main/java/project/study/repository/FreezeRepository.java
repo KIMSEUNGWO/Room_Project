@@ -9,12 +9,14 @@ import org.springframework.stereotype.Repository;
 import project.study.authority.admin.dto.RequestNotifyMemberFreezeDto;
 import project.study.domain.Freeze;
 import project.study.domain.Member;
+import project.study.domain.QFreeze;
 import project.study.domain.QMember;
 import project.study.jpaRepository.FreezeJpaRepository;
 
 import java.time.LocalDateTime;
 import java.util.Optional;
 
+import static project.study.domain.QFreeze.*;
 import static project.study.domain.QMember.*;
 
 @Repository
@@ -38,7 +40,7 @@ public class FreezeRepository {
         member.changeStatusToNormal();
     }
 
-    public void save(RequestNotifyMemberFreezeDto dto){
+    public Freeze save(RequestNotifyMemberFreezeDto dto){
 
         Member member1 = query
             .select(member)
@@ -46,11 +48,26 @@ public class FreezeRepository {
             .where(member.memberId.eq(dto.getMemberId()))
             .fetchOne();
 
-        Freeze freeze = Freeze.builder()
-            .member(member1)
-            .freezeEndDate(LocalDateTime.now().plusDays(dto.getFreezePeriod()))
-            .freezeReason(dto.getFreezeReason())
-            .build();
-        freezeJpaRepository.save(freeze);
+        LocalDateTime lastFreeze = query
+            .select(freeze.freezeEndDate)
+            .from(freeze)
+            .orderBy(freeze.freezeEndDate.desc())
+            .where(freeze.member.memberId.eq(dto.getMemberId()))
+            .fetchFirst();
+
+        if(lastFreeze==null){
+            Freeze freeze = Freeze.builder()
+                .freezeEndDate(LocalDateTime.now().plusDays(dto.getFreezePeriod()))
+                .freezeReason(dto.getFreezeReason())
+                .member(member1)
+                .build();
+            return freezeJpaRepository.save(freeze);
+        }
+            Freeze freeze = Freeze.builder()
+                .freezeEndDate(lastFreeze.plusDays(dto.getFreezePeriod()))
+                .freezeReason(dto.getFreezeReason())
+                .member(member1)
+                .build();
+            return freezeJpaRepository.save(freeze);
     }
 }
