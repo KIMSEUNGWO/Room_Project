@@ -6,6 +6,7 @@
     <link rel="stylesheet" href="/css/common.css">
     <link rel="stylesheet" href="/css/notify_read_more.css">
     <script src="/js/admin_read_more.js"></script>
+    <script src="/js/admin_notify.js"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
     <title>신고 자세히 보기</title>
 </head>
@@ -66,7 +67,7 @@
             <th:block th:if="${!#strings.equals(notifyInfo.notifyStatus, '처리완료')}">
                 <div class="process-box">
                     <div class="title-process-status">처리 상태</div>
-                    <input type="text" name="process-status" id="process-status" class="process-status">
+                    <input type="text" name="process-status" id="process-status" class="process-status" placeholder="완료버튼을 누르면 처리완료로 변경됩니다" readonly>
                 </div>
             </th:block>
         </div>

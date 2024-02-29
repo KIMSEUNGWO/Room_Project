@@ -26,6 +26,7 @@ import java.util.stream.Collectors;
 
 import static com.querydsl.jpa.JPAExpressions.select;
 import static project.study.domain.QBasic.*;
+import static project.study.domain.QFreeze.*;
 import static project.study.domain.QJoinRoom.*;
 import static project.study.domain.QMember.*;
 import static project.study.domain.QNotify.*;
@@ -313,6 +314,7 @@ public class AdminRepository {
     }
 
     public SearchNotifyMemberInfoDto searchNotifyMemberInfo(String account) {
+
         return queryFactory
             .select(new QSearchNotifyMemberInfoDto(
                 member.memberId,
@@ -323,11 +325,13 @@ public class AdminRepository {
                 Expressions.stringTemplate("TO_CHAR({0}, {1})", member.memberCreateDate, "YYYY-MM-DD"),
                 member.memberNotifyCount,
                 social.socialType,
-                member.memberStatus))
-            .from(member)
+                member.memberStatus,
+                notify.notifyReason))
+            .from(notify)
+            .leftJoin(notify.criminal, member)
             .leftJoin(member.basic, basic)
-            .leftJoin(member.phone, phone1)
             .leftJoin(member.social, social)
+            .leftJoin(member.phone, phone1)
             .where(accountExpression.eq(account))
             .fetchOne();
     }
@@ -462,7 +466,22 @@ public class AdminRepository {
         .then(social.socialEmail)
         .otherwise(basic.account);
 
+    public void notifyStatusChange(RequestNotifyStatusChangeDto dto){
 
+        queryFactory
+            .update(notify)
+            .set(notify.notifyStatus, NotifyStatus.처리완료)
+            .where(notify.notifyId.eq(dto.getNotifyId()))
+            .execute();
+    }
+
+    public void notifyMemberFreeze(RequestNotifyMemberFreezeDto dto){
+        queryFactory
+            .update(member)
+            .set(member.memberNotifyCount, member.memberNotifyCount.add(1))
+            .set(member.memberStatus, MemberStatusEnum.이용정지)
+            .execute();
+    }
 
     //    public Page<Notify> searchNotify(String word, Pageable pageable){
 //
