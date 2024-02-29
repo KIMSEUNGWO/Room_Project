@@ -4,7 +4,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.transaction.annotation.Transactional;
-import project.study.collection.PasswordManager;
 import project.study.domain.Basic;
 import project.study.domain.Member;
 import project.study.dto.login.requestdto.RequestDefaultLoginDto;
@@ -78,8 +77,7 @@ public class DefaultMember implements MemberInterface {
     }
 
     private void checkPassword(Basic basic, RequestDefaultLoginDto data) {
-        PasswordManager pm = new PasswordManager(basic, encoder);
-        boolean validPassword = pm.isValidPassword(data.getPassword());
+        boolean validPassword = basic.isValidPassword(encoder, data.getPassword());
         if (!validPassword) throw new InvalidLoginException(); // 비밀번호가 일치하지 않음
     }
 }

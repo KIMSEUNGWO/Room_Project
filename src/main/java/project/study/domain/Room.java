@@ -82,4 +82,16 @@ public class Room implements ImageFileEntity {
     public boolean isDeleteRoom() {
         return roomDelete != null;
     }
+
+    @Override
+    public void setImage(String originalName, String storeName) {
+        if (roomImage == null) return;
+        roomImage.setImage(originalName, storeName);
+    }
+
+    @Override
+    public String getStoreImage() {
+        if (roomImage == null) return "";
+        return roomImage.getRoomImageStoreName();
+    }
 }

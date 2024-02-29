@@ -268,7 +268,7 @@ public class RoomRepository {
                     .build();
                 roomPasswordJpaRepository.save(saveRoomPassword);
             } else {                                                        // 이미 패스워드가 설정되어있는 경우
-                roomPassword.setRoomPassword(data.getPassword());
+                roomPassword.changeRoomPassword(data.getPassword());
             }
         }
     }

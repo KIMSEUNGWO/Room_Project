@@ -4,7 +4,10 @@ import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.NoArgsConstructor;
+import project.study.controller.api.sms.FindAccount;
+import project.study.dto.MyPageInfo;
 import project.study.dto.mypage.RequestEditInfoDto;
+import project.study.enums.AuthorityMemberEnum;
 import project.study.enums.MemberStatusEnum;
 
 import java.time.LocalDateTime;
@@ -62,9 +65,6 @@ public class Member implements ImageFileEntity {
         return basic != null;
     }
 
-    public String getMemberName() {
-        return memberName;
-    }
 
     public Long getMemberId() {
         return memberId;
@@ -78,17 +78,17 @@ public class Member implements ImageFileEntity {
         return basic;
     }
 
-    public List<JoinRoom> getJoinRoomList() {
-        return joinRoomList;
-    }
 
     public String getMemberNickname() {
         return memberNickname;
     }
 
-    public Profile getProfile() {
-        return profile;
+    @Override
+    public String getStoreImage() {
+        if (profile == null) return "";
+        return profile.getProfileStoreName();
     }
+
 
     public String getPhoneNumber() {
         if (phone == null) return null;
@@ -100,11 +100,37 @@ public class Member implements ImageFileEntity {
         memberNickname = data.getNickname();
     }
 
-    public void setMemberStatus(MemberStatusEnum memberStatus) {
-        this.memberStatus = memberStatus;
+    @Override
+    public void setImage(String originalName, String storeName) {
+        if (profile == null) return;
+        profile.setImage(originalName, storeName);
     }
 
-    public void setMemberExpireDate(LocalDateTime memberExpireDate) {
-        this.memberExpireDate = memberExpireDate;
+    public void changeStatusToExpire() {
+        this.memberStatus = MemberStatusEnum.탈퇴;
+        this.memberExpireDate = LocalDateTime.now();
+    }
+
+    public int joinRoomCount(AuthorityMemberEnum authorityEnum) {
+        return (int) joinRoomList.stream().filter(joinRoom -> !joinRoom.compareAuthority(authorityEnum)).count();
+    }
+
+    public MyPageInfo getMyPageInto() {
+        return MyPageInfo.builder()
+            .profile(getStoreImage())
+            .name(memberName)
+            .nickname(memberNickname)
+            .phone(getPhoneNumber())
+            .isSocial(isSocialMember())
+            .build();
+    }
+
+    public FindAccount findAccount() {
+        if (isBasicMember()) {
+            return basic.findAccount();
+        } else if (isSocialMember()) {
+            return social.findAccount();
+        }
+        return new FindAccount(null, "다시 시도해주세요.");
     }
 }

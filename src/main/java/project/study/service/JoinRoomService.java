@@ -30,7 +30,7 @@ public class JoinRoomService {
     }
 
     public void validMaxJoinRoom(Member member, HttpServletResponse response) {
-        int nowJoinRoomCount = joinRoomRepository.countByMemberAndAuthority(member, AuthorityMemberEnum.일반);
+        int nowJoinRoomCount = member.joinRoomCount(AuthorityMemberEnum.일반);
         if (nowJoinRoomCount >= WebConst.MAX_JOIN_ROOM_COUNT) {
             throw new ExceedJoinRoomException(response);
         }

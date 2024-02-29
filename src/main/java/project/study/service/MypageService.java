@@ -51,7 +51,7 @@ public class MypageService {
 
     public void deleteMember(Member member, RequestDeleteMemberDto data) {
         mypageRepository.validDeleteMember(member, data.getPassword());
-        member.setMemberStatus(MemberStatusEnum.탈퇴);
-        member.setMemberExpireDate(LocalDateTime.now());
+        member.changeStatusToExpire();
+
     }
 }

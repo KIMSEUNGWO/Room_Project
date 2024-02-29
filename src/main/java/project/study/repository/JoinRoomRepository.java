@@ -127,17 +127,6 @@ public class JoinRoomRepository {
         return joinRoomJpaRepository.existsByMemberAndRoom(member, room);
     }
 
-    public int countByMemberAndAuthority(Member member, AuthorityMemberEnum authorityEnum) {
-        return (int) member.getJoinRoomList().stream().filter(x -> x.getAuthority() != authorityEnum).count();
-//        QJoinRoom j = QJoinRoom.joinRoom;
-//        QMember m = QMember.member;
-//        return query
-//                .select(j.count().intValue())
-//                .from(j)
-//                .where(j.member.eq(member).and(j.authorityEnum.eq(authorityEnum)))
-//                .fetchFirst();
-    }
-
     public void save(JoinRoom saveJoinRoom) {
         joinRoomJpaRepository.save(saveJoinRoom);
     }

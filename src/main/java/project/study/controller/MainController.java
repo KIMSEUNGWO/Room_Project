@@ -11,13 +11,11 @@ import project.study.authority.member.MemberAuthorizationCheck;
 import project.study.authority.member.authority.MemberAuthority;
 import project.study.authority.member.dto.RequestJoinRoomDto;
 import project.study.authority.member.dto.ResponseRoomListDto;
-import project.study.constant.WebConst;
 import project.study.customAnnotation.CallType;
 import project.study.customAnnotation.PathRoom;
 import project.study.customAnnotation.SessionLogin;
 import project.study.domain.Member;
 import project.study.domain.Room;
-import project.study.domain.Social;
 import project.study.dto.MyPageInfo;
 import project.study.dto.room.ResponsePrivateRoomInfoDto;
 import project.study.dto.room.ResponseRoomInfo;
@@ -26,7 +24,6 @@ import project.study.service.MainService;
 import project.study.service.RoomService;
 
 import java.util.List;
-import java.util.Optional;
 
 import static project.study.constant.WebConst.LOGIN_MEMBER;
 
@@ -70,7 +67,7 @@ public class MainController {
             MemberAuthority commonMember = memberAuthorizationCheck.getMemberAuthority(response, member);
             List<ResponseRoomListDto> myRoomList = commonMember.getMyRoomList(member);
             model.addAttribute("myRoomList", myRoomList);
-            model.addAttribute("profile", member.getProfile().getProfileStoreName());
+            model.addAttribute("profile", member.getStoreImage());
         }
 
         return "main";
@@ -80,10 +77,10 @@ public class MainController {
     public String mypage(@SessionLogin Member member, Model model) {
         if (member == null) return "redirect:/?redirectURI=/mypage";
 
-        MyPageInfo info = mainService.getMypageInfo(member);
+        MyPageInfo info = member.getMyPageInto();
 
         model.addAttribute("main", info);
-        model.addAttribute("profile", member.getProfile().getProfileStoreName());
+        model.addAttribute("profile", member.getStoreImage());
         return "mypage";
     }
 

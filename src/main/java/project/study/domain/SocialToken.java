@@ -10,11 +10,6 @@ import project.study.enums.SocialEnum;
 @NoArgsConstructor
 public class SocialToken {
 
-    public SocialToken(String access_token, String refresh_token) {
-        this.access_token = access_token;
-        this.refresh_token = refresh_token;
-    }
-
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "SEQ_SOCIAL_TOKEN")
     private Long socialTokenId;
@@ -25,6 +20,11 @@ public class SocialToken {
 
     private String access_token;
     private String refresh_token;
+
+    public SocialToken(String access_token, String refresh_token) {
+        this.access_token = access_token;
+        this.refresh_token = refresh_token;
+    }
 
     public String getAccess_token() {
         return access_token;

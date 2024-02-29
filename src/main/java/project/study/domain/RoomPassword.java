@@ -23,11 +23,11 @@ public class RoomPassword {
     @JoinColumn(name = "ROOM_ID")
     private Room room;
 
-    public String getRoomPassword() {
-        return roomPassword;
+    public boolean compareRoomPassword(String comparePassword) {
+        return roomPassword.equals(comparePassword);
     }
 
-    public void setRoomPassword(String roomPassword) {
+    public void changeRoomPassword(String roomPassword) {
         this.roomPassword = roomPassword;
     }
 }
