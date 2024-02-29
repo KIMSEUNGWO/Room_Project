@@ -106,8 +106,14 @@ public class RoomRepository {
     }
 
     public void validRoomEditMaxPerson(ErrorList errorList, int nowPerson, String max) {
-        validRoomMaxPerson(errorList, max);
-        if (errorList.hasError()) return;
+        if (max == null || !isNumber(max)) {
+            errorList.addError(new Error("max", "숫자를 입력해주세요."));
+            return;
+        }
+        if (Integer.parseInt(max) < 2 || Integer.parseInt(max) > 6) {
+            errorList.addError(new Error("max", "인원 수를 알맞게 설정해주세요."));
+            return;
+        }
 
         if (nowPerson > Integer.parseInt(max)) {
             errorList.addError(new Error("max", "참여된 회원 수보다 작게 설정할 수 없습니다."));

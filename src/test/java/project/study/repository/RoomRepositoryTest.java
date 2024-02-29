@@ -1,10 +1,8 @@
 package project.study.repository;
 
-import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.transaction.annotation.Transactional;
 import project.study.dto.login.responsedto.Error;
@@ -63,7 +61,7 @@ class RoomRepositoryTest {
 
         // 50자 이하
         roomRepository.validRoomIntro(errorList, intro2);
-        assertThat(errorList.hasError()).isTrue();
+        assertThat(errorList.hasError()).isFalse();
 
         // 50자 이상
         roomRepository.validRoomIntro(errorList, intro3);
