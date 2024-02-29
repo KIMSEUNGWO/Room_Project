@@ -70,6 +70,7 @@ public class MainController {
             MemberAuthority commonMember = memberAuthorizationCheck.getMemberAuthority(response, member);
             List<ResponseRoomListDto> myRoomList = commonMember.getMyRoomList(member);
             model.addAttribute("myRoomList", myRoomList);
+            model.addAttribute("profile", member.getProfile().getProfileStoreName());
         }
 
         return "main";
@@ -82,6 +83,7 @@ public class MainController {
         MyPageInfo info = mainService.getMypageInfo(member);
 
         model.addAttribute("main", info);
+        model.addAttribute("profile", member.getProfile().getProfileStoreName());
         return "mypage";
     }
 

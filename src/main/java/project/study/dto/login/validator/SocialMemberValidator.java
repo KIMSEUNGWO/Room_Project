@@ -30,8 +30,8 @@ public class SocialMemberValidator implements MemberValidator {
     public void validLogin(Member member, HttpServletResponse response) {
         if (member == null) return;
         // 이용정지 회원인지 확인
-        if(!member.isFreezeMember()) return; // 이용정지된 회원이 아님
         if (member.isExpireMember()) throw new SocialException(response, "탈퇴한 회원입니다."); // 탈퇴한 회원인지 확인
+        if(!member.isFreezeMember()) return; // 이용정지된 회원이 아님
 
         Optional<Freeze> findFreeze = freezeRepository.findByMemberId(member.getMemberId());
         if (findFreeze.isEmpty()) return; // Freeze Entity 없음 ( 혹시 모를 예외 처리 )
