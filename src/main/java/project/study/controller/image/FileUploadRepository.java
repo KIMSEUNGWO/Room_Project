@@ -21,7 +21,7 @@ public class FileUploadRepository {
     @Value("${file.dir}")
     private String fileDir;
     private final String defaultProfile = "basic-member-profile.jpg";
-    private final String defaultRoomImage = "basic-member-profile.jpg";
+    private final String defaultRoomImage = "basic-room-profile.jpg";
 
     private final RoomImageJpaRepository roomImageJpaRepository;
     private final ProfileJpaRepository profileJpaRepository;

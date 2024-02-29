@@ -19,7 +19,7 @@ public class Freeze {
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "SEQ_FREEZE")
     private Long freezeId;
 
-    @OneToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "MEMBER_ID")
     private Member member;
 
@@ -46,7 +46,6 @@ public class Freeze {
         String time = String.format("%d-%02d-%02d %02d:%02d", year, month, day, hour, minute);
         return "이용이 정지된 회원입니다. \n ~ " + time + " 까지 \n" + "사유 : " + reason;
     }
-
 
 
 }

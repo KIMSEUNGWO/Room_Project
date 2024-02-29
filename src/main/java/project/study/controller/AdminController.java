@@ -176,7 +176,6 @@ public class AdminController {
     @ResponseBody
     public void notifyMemberFreeze (@RequestBody RequestNotifyMemberFreezeDto dto){
         adminService.notifyMemberFreeze(dto);
-//        freezeRepository.save(dto);
 
     }
 
