@@ -66,8 +66,8 @@ public class AdminService {
         return searchNotifyReadMoreDto;
     }
 
-    public SearchNotifyMemberInfoDto searchNotifyMemberInfo(String account){
-        SearchNotifyMemberInfoDto searchNotifyMemberInfoDto = adminRepository.searchNotifyMemberInfo(account);
+    public SearchNotifyMemberInfoDto searchNotifyMemberInfo(String account, Long notifyId){
+        SearchNotifyMemberInfoDto searchNotifyMemberInfoDto = adminRepository.searchNotifyMemberInfo(notifyId);
         String memberProfile = adminRepository.findMemberProfile(account);
         searchNotifyMemberInfoDto.setMemberProfile(memberProfile);
         return searchNotifyMemberInfoDto;
@@ -87,6 +87,7 @@ public class AdminService {
         adminRepository.notifyStatusChange(dto);
     }
 
+    @Transactional
     public void notifyMemberFreeze(RequestNotifyMemberFreezeDto dto){
         adminRepository.notifyMemberFreeze(dto);
         freezeRepository.save(dto);

@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.*;
 import project.study.authority.admin.dto.*;
 import project.study.domain.Admin;
 import project.study.authority.admin.dto.RequestNotifyStatusChangeDto;
+import project.study.repository.FreezeRepository;
 import project.study.service.AdminService;
 
 import java.util.Map;
@@ -19,6 +20,7 @@ import java.util.Optional;
 public class AdminController {
 
     private final AdminService adminService;
+    private final FreezeRepository freezeRepository;
 
     @GetMapping("/admin/login")
     public String adminLogin(){
@@ -157,8 +159,9 @@ public class AdminController {
     }
 
     @GetMapping("/admin/notify/member_info")
-    public String notifyMemberInfo(@RequestParam(value = "account") String account, Model model) {
-        SearchNotifyMemberInfoDto searchNotifyMemberInfoDto = adminService.searchNotifyMemberInfo(account);
+    public String notifyMemberInfo(@RequestParam(value = "account") String account,
+                                   @RequestParam(value = "notifyId") Long notifyId, Model model) {
+        SearchNotifyMemberInfoDto searchNotifyMemberInfoDto = adminService.searchNotifyMemberInfo(account, notifyId);
         model.addAttribute("memberInfo", searchNotifyMemberInfoDto);
         return "/admin/notify_member";
     }
@@ -172,11 +175,9 @@ public class AdminController {
     @PostMapping("/admin/notify/member/freeze")
     @ResponseBody
     public void notifyMemberFreeze (@RequestBody RequestNotifyMemberFreezeDto dto){
-//        adminService.notifyMemberFreeze(dto);
+        adminService.notifyMemberFreeze(dto);
+//        freezeRepository.save(dto);
 
-        System.out.println("dto = " + dto.getMemberId());
-        System.out.println("dto.getFreezeEndDate() = " + dto.getFreezePeriod());
-        System.out.println("dto.getFreezeReason() = " + dto.getFreezeReason());
     }
 
 }

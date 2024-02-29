@@ -313,7 +313,7 @@ public class AdminRepository {
         return new SearchNotifyImageDto(store, original);
     }
 
-    public SearchNotifyMemberInfoDto searchNotifyMemberInfo(String account) {
+    public SearchNotifyMemberInfoDto searchNotifyMemberInfo(Long notifyId) {
 
         return queryFactory
             .select(new QSearchNotifyMemberInfoDto(
@@ -332,7 +332,7 @@ public class AdminRepository {
             .leftJoin(member.basic, basic)
             .leftJoin(member.social, social)
             .leftJoin(member.phone, phone1)
-            .where(accountExpression.eq(account))
+            .where(notify.notifyId.eq(notifyId))
             .fetchOne();
     }
 
@@ -480,6 +480,7 @@ public class AdminRepository {
             .update(member)
             .set(member.memberNotifyCount, member.memberNotifyCount.add(1))
             .set(member.memberStatus, MemberStatusEnum.이용정지)
+            .where(member.memberId.eq(dto.getMemberId()))
             .execute();
     }
 

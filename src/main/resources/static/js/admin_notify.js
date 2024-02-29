@@ -20,8 +20,9 @@ window.addEventListener('load', function(){
 
     memberInfoPop.forEach(function(pop){
         pop.addEventListener('click', function(){
-            var account = pop.getAttribute('id');
-            memberInfoOpenPopUp(account);
+            var notifyId = pop.getAttribute('id');
+            var account = pop.innerHTML;
+            memberInfoOpenPopUp(account, notifyId);
         });
     });
 
@@ -31,10 +32,6 @@ function notifyReedMoreOpenPopUp(notifyId){
     window.open('/admin/notify/read_more?notifyId=' + notifyId, '신고 자세히 보기', 'width=500, height=750');
 };
 
-function memberInfoOpenPopUp(account){
-    window.open('/admin/notify/member_info?account=' + account, '멤버 정보', 'width=600, height=750');
-};
-
-function responseUpdate(response){
-    $('.entity').html(response);
+function memberInfoOpenPopUp(account, notifyId){
+    window.open('/admin/notify/member_info?account=' + account + '&notifyId=' + notifyId, '멤버 정보', 'width=600, height=750');
 };
