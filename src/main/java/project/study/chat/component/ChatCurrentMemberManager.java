@@ -2,6 +2,7 @@ package project.study.chat.component;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
+import project.study.domain.Member;
 
 import java.util.*;
 
@@ -9,22 +10,22 @@ import java.util.*;
 @RequiredArgsConstructor
 public class ChatCurrentMemberManager {
 
-    private final Map<Long, Set<String>> currentChatMember;
+    private final Map<Long, Set<String>> currentChatMember = new HashMap<>();
 
-    public void plus(Long roomId, String nickname) {
+    public void plus(Long roomId, Member member) {
         if (!currentChatMember.containsKey(roomId)) {
             currentChatMember.put(roomId, new HashSet<>());
         }
         Set<String> nicknameList = currentChatMember.get(roomId);
-        nicknameList.add(nickname);
+        nicknameList.add(member.getMemberNickname());
     }
-    public void minus(Long roomId, String nickname) {
+    public void minus(Long roomId, Member member) {
         Set<String> nicknameList = currentChatMember.get(roomId);
-        nicknameList.remove(nickname);
+        nicknameList.remove(member.getMemberNickname());
     }
 
-    public List<String> getMemberList(Long roomId) {
+    public Set<String> getMemberList(Long roomId) {
         System.out.println("currentChatMember = " + currentChatMember.get(roomId));
-        return currentChatMember.get(roomId).stream().toList();
+        return currentChatMember.get(roomId);
     }
 }

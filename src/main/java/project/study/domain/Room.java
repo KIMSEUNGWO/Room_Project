@@ -12,7 +12,6 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 @Entity
-@Getter
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
@@ -81,6 +80,38 @@ public class Room implements ImageFileEntity {
 
     public boolean isDeleteRoom() {
         return roomDelete != null;
+    }
+
+    public int joinRoomSize() {
+        return joinRoomList.size();
+    }
+
+    public int getRoomLimit() {
+        return roomLimit;
+    }
+
+    public RoomPassword getRoomPassword() {
+        return roomPassword;
+    }
+
+    public List<JoinRoom> getJoinRoomList() {
+        return joinRoomList;
+    }
+
+    public String getRoomIntro() {
+        return roomIntro;
+    }
+
+    public RoomNotice getRoomNotice() {
+        return roomNotice;
+    }
+
+    public String getRoomTitle() {
+        return roomTitle;
+    }
+
+    public Long getRoomId() {
+        return roomId;
     }
 
     @Override

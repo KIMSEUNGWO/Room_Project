@@ -13,8 +13,10 @@ import project.study.jpaRepository.MemberJpaRepository;
 import project.study.jpaRepository.RoomJpaRepository;
 
 import java.time.LocalDateTime;
-import java.util.List;
 import java.util.Optional;
+import java.util.Set;
+
+import static project.study.chat.MessageType.*;
 
 @Service
 @RequiredArgsConstructor
@@ -34,18 +36,18 @@ public class ChatService {
     }
 
     public void accessCount(ChatDto chat, Member member) {
-        currentMemberManager.plus(chat.getRoomId(), member.getMemberNickname());
+        currentMemberManager.plus(chat.getRoomId(), member);
     }
 
     public ChatObject<ResponseChatMemberList> changeToMemberListDto(ChatDto chat) {
-        List<String> memberList = currentMemberManager.getMemberList(chat.getRoomId());
+        Set<String> memberList = currentMemberManager.getMemberList(chat.getRoomId());
         ResponseChatMemberList responseChatMemberList = new ResponseChatMemberList(memberList);
         return new ChatObject<>(chat, responseChatMemberList);
     }
 
     public void accessRemove(Member member, Long roomId) {
         chatAccessToken.remove(member.getMemberId());
-        currentMemberManager.minus(roomId, member.getMemberNickname());
+        currentMemberManager.minus(roomId, member);
     }
 
     public Room findByRoom(Long roomId) {
@@ -68,7 +70,7 @@ public class ChatService {
         ChatDto chat = ChatDto.builder()
                 .roomId(room.getRoomId())
                 .time(LocalDateTime.now())
-                .type(MessageType.EXIT)
+                .type(EXIT)
                 .sender(member.getMemberNickname())
                 .message(member.getMemberNickname() + "님이 방에서 나가셨습니다.")
                 .build();
@@ -93,7 +95,7 @@ public class ChatService {
                 .roomId(room.getRoomId())
                 .token(kickMember.getMemberId())
                 .time(LocalDateTime.now())
-                .type(MessageType.KICK)
+                .type(KICK)
                 .sender(kickMember.getMemberNickname())
                 .message(kickMember.getMemberNickname() + "님이 강퇴당했습니다.")
                 .build();
@@ -104,7 +106,7 @@ public class ChatService {
             .roomId(room.getRoomId())
             .token(nextManager.getMemberId())
             .time(LocalDateTime.now())
-            .type(MessageType.ENTRUST)
+            .type(ENTRUST)
             .sender(nextManager.getMemberNickname())
             .message(nextManager.getMemberNickname() + "님이 방장이 되셨습니다.")
             .build();

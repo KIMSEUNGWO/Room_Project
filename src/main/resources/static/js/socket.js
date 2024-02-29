@@ -228,7 +228,7 @@ function onMessageReceived(payload) {
         history.innerHTML += centerMessage(chat.message);
     }
 
-    if (chat.type === 'NOTICE') {
+    if (chat.type === 'NOTICE' || chat.type === 'NOTICE_DELETE') {
         updateNotice(chat.data);
         history.innerHTML += centerMessage(chat.message);
     }

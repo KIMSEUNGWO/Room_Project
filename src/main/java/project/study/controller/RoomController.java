@@ -116,7 +116,9 @@ public class RoomController {
     @GetMapping("/room/{room}/notice")
     public ResponseEntity<ResponseDto> roomNotice(@SessionAttribute(name = LOGIN_MEMBER, required = false) Long memberId, @PathRoom("room") Room room) {
 
-        joinRoomService.exitsByMemberAndRoom(memberId, room);
+        boolean exitsByMemberAndRoom = joinRoomService.exitsByMemberAndRoom(memberId, room);
+        if (!exitsByMemberAndRoom) throw new RestFulException(new ResponseDto("error", "권한 없음"));
+
 
         ResponseRoomNotice responseRoomNotice = roomService.getNotice(room);
 

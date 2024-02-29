@@ -51,7 +51,9 @@ public class ChatController {
 
     @GetMapping("/room/{room}/access")
     public ResponseEntity<ResponseDto> accessToken(@SessionAttribute(name = WebConst.LOGIN_MEMBER, required = false) Long memberId, @PathRoom("room") Room room) {
-        joinRoomService.exitsByMemberAndRoom(memberId, room);
+        boolean exitsByMemberAndRoom = joinRoomService.exitsByMemberAndRoom(memberId, room);
+        if (!exitsByMemberAndRoom) throw new RestFulException(new ResponseDto("error", "권한 없음"));
+
 
         chatAccessToken.createAccessToken(memberId, room.getRoomId());
         return new ResponseEntity<>(new ResponseDto("ok", String.valueOf(memberId)), HttpStatus.OK);
@@ -76,7 +78,7 @@ public class ChatController {
         chat.setMessage(member.getMemberNickname() + "님이 입장하셨습니다.");
 
         ChatObject<ResponseChatMemberList> responseChatMemberListChatObject = chatService.changeToMemberListDto(chat);
-        template.convertAndSend("/sub/chat/room/" + chat.getRoomId(), responseChatMemberListChatObject);
+        templateSendMessage(room, responseChatMemberListChatObject);
     }
 
     @MessageMapping("/chat/update")
@@ -90,7 +92,7 @@ public class ChatController {
 
         ChatObject<ResponseRoomUpdateInfo> chatObject = new ChatObject<>(chat, roomInfo);
 
-        template.convertAndSend("/sub/chat/room/" + room.getRoomId(), chatObject);
+        templateSendMessage(room, chatObject);
 
     }
 
@@ -109,7 +111,7 @@ public class ChatController {
 
         chatService.saveChat(chat, member, room);
 
-        template.convertAndSend("/sub/chat/room/" + chat.getRoomId(), chat);
+        templateSendMessage(room, chat);
 
     }
 
@@ -124,7 +126,7 @@ public class ChatController {
         chatService.accessRemove(member, room.getRoomId());
 
         ChatObject<ResponseNextManager> chat = chatService.exitRoom(member, room);
-        template.convertAndSend("/sub/chat/room/" + roomId, chat);
+        templateSendMessage(room, chat);
 
         return new ResponseEntity<>(new ResponseDto(WebConst.OK, "방 탈퇴 완료"), HttpStatus.OK);
     }
@@ -144,7 +146,7 @@ public class ChatController {
         chatService.accessRemove(kickMember, room.getRoomId());
 
         ChatDto kick = chatService.kickRoom(kickMember, room);
-        template.convertAndSend("/sub/chat/room/" + room.getRoomId(), kick);
+        templateSendMessage(room, kick);
 
         return new ResponseEntity<>(new ResponseDto(WebConst.OK, "성공"), HttpStatus.OK);
     }
@@ -160,8 +162,7 @@ public class ChatController {
 
         ChatDto chat = chatService.nextManagerRoom(nextManager, room);
 
-        template.convertAndSend("/sub/chat/room/" + room.getRoomId(), chat);
-
+        templateSendMessage(room, chat);
         return new ResponseEntity<>(new ResponseDto(WebConst.OK, "성공"), HttpStatus.OK);
     }
     // 공지사항 등록 및 수정
@@ -185,8 +186,7 @@ public class ChatController {
             .build();
 
         ChatObject<ResponseRoomNotice> chatObject = new ChatObject<>(chat, roomNotice);
-        template.convertAndSend("/sub/chat/room/" + room.getRoomId(), chatObject);
-
+        templateSendMessage(room, chatObject);
         return new ResponseEntity<>(new ResponseDto(WebConst.OK, "성공"), HttpStatus.OK);
     }
 
@@ -213,7 +213,7 @@ public class ChatController {
             .message("공지사항이 삭제되었습니다.")
             .build();
 
-        template.convertAndSend("/sub/chat/room/" + room.getRoomId(), chat);
+        templateSendMessage(room, chat);
 
         return new ResponseEntity<>(new ResponseDto(WebConst.OK, "성공"), HttpStatus.OK);
     }
@@ -242,7 +242,10 @@ public class ChatController {
                 .build();
         ChatObject<ResponseChatMemberList> responseChatMemberListChatObject = chatService.changeToMemberListDto(chat);
 
-        template.convertAndSend("/sub/chat/room/" + room.getRoomId(), responseChatMemberListChatObject);
+        templateSendMessage(room, responseChatMemberListChatObject);
+    }
 
+    private void templateSendMessage(Room room, ChatDto chat) {
+        template.convertAndSend("/sub/chat/room/" + room.getRoomId(), chat);
     }
 }
