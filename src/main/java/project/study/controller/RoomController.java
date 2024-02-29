@@ -41,7 +41,6 @@ public class RoomController {
     private final MemberAuthorizationCheck authorizationCheck;
     private final RoomService roomService;
     private final JoinRoomService joinRoomService;
-    private final ChatAccessToken chatAccessToken;
 
     @PostMapping(value = "/room/create")
     public ResponseEntity<ResponseDto> createRoom(@SessionLogin(required = true) Member member, @ModelAttribute RequestCreateRoomDto data, HttpServletResponse response) {
@@ -108,28 +107,16 @@ public class RoomController {
     @GetMapping("/room/{room}/history")
     public ResponseEntity<ResponseDto> chatHistory(@PathRoom("room") Room room) {
         // JoinRoom 검증 안되어있음 아직.
-        // ResponseDto 형식으로 변경해야함
 
         List<ResponseChatHistory> history = roomService.findByChatHistory(room);
         ResponseObject<List<ResponseChatHistory>> result = new ResponseObject<>("ok", "성공", history);
         return new ResponseEntity<>(result, HttpStatus.OK);
     }
 
-    @GetMapping("/room/{room}/access")
-    public ResponseEntity<ResponseDto> accessToken(@SessionLogin(required = true) Member member, @PathRoom("room") Room room) {
-        boolean exitsByMemberAndRoom = joinRoomService.exitsByMemberAndRoom(member, room);
-        if (!exitsByMemberAndRoom) throw new RestFulException(new ResponseDto("error", "권한 없음"));
-
-        chatAccessToken.createAccessToken(member.getMemberId(), room.getRoomId());
-        return new ResponseEntity<>(new ResponseDto("ok", String.valueOf(member.getMemberId())), HttpStatus.OK);
-    }
-
     @GetMapping("/room/{room}/notice")
-    public ResponseEntity<ResponseDto> roomNotice(@SessionLogin(required = true) Member member, @PathRoom("room") Room room) {
-        // ResponseDto 형식으로 변경해야함
+    public ResponseEntity<ResponseDto> roomNotice(@SessionAttribute(name = LOGIN_MEMBER, required = false) Long memberId, @PathRoom("room") Room room) {
 
-        boolean exitsByMemberAndRoom = joinRoomService.exitsByMemberAndRoom(member, room);
-        if (!exitsByMemberAndRoom) throw new RestFulException(new ResponseDto("error", "권한 없음"));
+        joinRoomService.exitsByMemberAndRoom(memberId, room);
 
         ResponseRoomNotice responseRoomNotice = roomService.getNotice(room);
 

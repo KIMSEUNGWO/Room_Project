@@ -26,16 +26,12 @@ import java.time.LocalDateTime;
 public class MypageService {
 
     private final MypageRepository mypageRepository;
-
     private final FileUpload fileUpload;
 
 
     public void editInfo(Member member, RequestEditInfoDto data) {
-
         mypageRepository.validNickname(member, data);
-
         fileUpload.editFile(data.getProfile(), FileUploadType.MEMBER_PROFILE, member);
-
         member.updateInfo(data);
     }
 
@@ -52,6 +48,5 @@ public class MypageService {
     public void deleteMember(Member member, RequestDeleteMemberDto data) {
         mypageRepository.validDeleteMember(member, data.getPassword());
         member.changeStatusToExpire();
-
     }
 }

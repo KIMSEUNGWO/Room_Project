@@ -123,8 +123,8 @@ public class JoinRoomRepository {
     }
 
 
-    public boolean exitsByMemberAndRoom(Member member, Room room) {
-        return joinRoomJpaRepository.existsByMemberAndRoom(member, room);
+    public boolean exitsByMemberAndRoom(Long memberId, Room room) {
+        return joinRoomJpaRepository.existsByMember_memberIdAndRoom(memberId, room);
     }
 
     public void save(JoinRoom saveJoinRoom) {

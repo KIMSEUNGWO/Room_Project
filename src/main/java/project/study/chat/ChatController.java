@@ -20,6 +20,7 @@ import project.study.authority.member.authority.MemberAuthority;
 import project.study.authority.member.dto.RequestEntrustDto;
 import project.study.authority.member.dto.RequestKickDto;
 import project.study.authority.member.dto.RequestNoticeDto;
+import project.study.chat.component.ChatAccessToken;
 import project.study.chat.dto.*;
 import project.study.constant.WebConst;
 import project.study.customAnnotation.PathRoom;
@@ -28,6 +29,8 @@ import project.study.domain.Member;
 import project.study.domain.Room;
 import project.study.dto.abstractentity.ResponseDto;
 import project.study.dto.room.ResponseRoomNotice;
+import project.study.exceptions.RestFulException;
+import project.study.service.JoinRoomService;
 import project.study.service.RoomService;
 
 import java.time.LocalDateTime;
@@ -42,6 +45,17 @@ public class ChatController {
 
     private final MemberAuthorizationCheck authorizationCheck;
     private final RoomService roomService;
+    private final ChatAccessToken chatAccessToken;
+    private final JoinRoomService joinRoomService;
+
+
+    @GetMapping("/room/{room}/access")
+    public ResponseEntity<ResponseDto> accessToken(@SessionAttribute(name = WebConst.LOGIN_MEMBER, required = false) Long memberId, @PathRoom("room") Room room) {
+        joinRoomService.exitsByMemberAndRoom(memberId, room);
+
+        chatAccessToken.createAccessToken(memberId, room.getRoomId());
+        return new ResponseEntity<>(new ResponseDto("ok", String.valueOf(memberId)), HttpStatus.OK);
+    }
 
     @MessageMapping("/chat/enterUser")
     public void enterUser(@Payload ChatDto chat, SimpMessageHeaderAccessor headerAccessor) {

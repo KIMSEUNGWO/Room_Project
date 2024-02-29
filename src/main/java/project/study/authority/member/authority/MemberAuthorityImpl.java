@@ -78,7 +78,7 @@ public class MemberAuthorityImpl implements MemberAuthority{
         String password = data.getPassword();
 
         // 이미 참여한 회원인지 확인
-        boolean alreadyParticipated = joinRoomService.exitsByMemberAndRoom(member, room);
+        boolean alreadyParticipated = joinRoomService.exitsByMemberAndRoom(member.getMemberId(), room);
         if (alreadyParticipated) return;
 
         // 멤버의 최대 참여수 확인
@@ -112,14 +112,11 @@ public class MemberAuthorityImpl implements MemberAuthority{
     @Override
     public void exitRoom(Member member, Room room, HttpServletResponse response) {
         // 참가자인지 확인
-        Optional<JoinRoom> findJoinRoom = joinRoomService.findByMemberAndRoom(member, room);
-        if (findJoinRoom.isEmpty()) throw new NotJoinRoomException(response);
+        JoinRoom joinRoom = joinRoomService.findByMemberAndRoom(member, room, response);
 
-        JoinRoom joinRoom = findJoinRoom.get();
+        Optional<JoinRoom> anotherJoinMember = room.getJoinRoomList().stream().filter(innerJoinRoom -> !innerJoinRoom.equals(joinRoom)).findAny();
 
-        joinRoomService.deleteJoinRoom(joinRoom);
         if (joinRoom.isManager()) {
-            Optional<JoinRoom> anotherJoinMember = room.getJoinRoomList().stream().filter(innerJoinRoom -> !innerJoinRoom.equals(joinRoom)).findAny();
             if (anotherJoinMember.isPresent()) { // 다른회원에게 방장 위임
                 JoinRoom anotherMember = anotherJoinMember.get();
                 anotherMember.changeToAuthority(방장);
@@ -127,6 +124,7 @@ public class MemberAuthorityImpl implements MemberAuthority{
                 roomService.deleteRoom(room);
             }
         }
+        joinRoomService.deleteJoinRoom(joinRoom);
 
     }
 }

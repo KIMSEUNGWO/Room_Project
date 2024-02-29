@@ -13,15 +13,13 @@ import project.study.domain.Room;
 import project.study.domain.RoomNotice;
 import project.study.dto.abstractentity.ResponseDto;
 import project.study.dto.room.ResponseRoomNotice;
-import project.study.enums.AuthorityMemberEnum;
 import project.study.exceptions.RestFulException;
-import project.study.jpaRepository.MemberJpaRepository;
+import project.study.repository.MemberRepository;
 import project.study.service.RoomService;
 
 import java.util.Optional;
 
-import static project.study.enums.AuthorityMemberEnum.방장;
-import static project.study.enums.AuthorityMemberEnum.일반;
+import static project.study.enums.AuthorityMemberEnum.*;
 
 @Component
 @Transactional
@@ -29,7 +27,7 @@ import static project.study.enums.AuthorityMemberEnum.일반;
 public class ManagerAuthorityImpl implements ManagerAuthority{
 
     private final RoomService roomService;
-    private final MemberJpaRepository memberJpaRepository;
+    private final MemberRepository memberRepository;
 
     @Override
     public void editRoom(Room room, RequestEditRoomDto data) {
@@ -43,29 +41,15 @@ public class ManagerAuthorityImpl implements ManagerAuthority{
     @Override
     public Member managerEntrust(Member member, Room room, RequestEntrustDto data) {
         System.out.println("managerEntrust 실행");
-        Optional<Member> findMember = memberJpaRepository.findByMemberNickname(data.getNickname());
-        if (findMember.isEmpty()) throw new RestFulException(new ResponseDto(WebConst.ERROR, "존재하지 않는 회원입니다."));
-        Member nextManagerMember = findMember.get();
+        Member nextManagerMember = memberRepository.findByMemberNickname(data.getNickname());
 
-        Optional<JoinRoom> nextManagerJoinRoom = findByJoinRoomMember(room, nextManagerMember);
-
-        if (nextManagerJoinRoom.isEmpty()) throw new RestFulException(new ResponseDto(WebConst.ERROR, "참여자가 아닙니다."));
-
-        Optional<JoinRoom> managerJoinRoom = findByJoinRoomMember(room, member);
-        if (managerJoinRoom.isEmpty()) throw new RestFulException(new ResponseDto(WebConst.ERROR, "권한이 없습니다."));
-
-        JoinRoom currentManager = managerJoinRoom.get();
-        JoinRoom nextManager = nextManagerJoinRoom.get();
+        JoinRoom currentManager = findByJoinRoomMember(room, nextManagerMember, "참여자가 아닙니다.");
+        JoinRoom nextManager = findByJoinRoomMember(room, member, "권한이 없습니다.");
 
         currentManager.changeToAuthority(일반);
         nextManager.changeToAuthority(방장);
 
         return nextManagerMember;
-    }
-
-    @NotNull
-    private Optional<JoinRoom> findByJoinRoomMember(Room room, Member member) {
-        return room.getJoinRoomList().stream().filter(joinRoom -> joinRoom.compareMember(member)).findFirst();
     }
 
     @Override
@@ -98,18 +82,20 @@ public class ManagerAuthorityImpl implements ManagerAuthority{
     @Override
     public Member kickMember(HttpServletResponse response, Room room, RequestKickDto data) {
         System.out.println("kickMember 실행");
-        Optional<Member> findMember = memberJpaRepository.findByMemberNickname(data.getNickname());
-        if (findMember.isEmpty()) throw new RestFulException(new ResponseDto(WebConst.ERROR, "존재하지 않는 회원입니다."));
-        Member kickMember = findMember.get();
+        Member kickMember = memberRepository.findByMemberNickname(data.getNickname());
 
-        Optional<JoinRoom> findJoinRoom = findByJoinRoomMember(room, kickMember);
+        JoinRoom joinRoom = findByJoinRoomMember(room, kickMember, "참여자가 아닙니다.");
 
-        if (findJoinRoom.isEmpty()) throw new RestFulException(new ResponseDto(WebConst.ERROR, "참여자가 아닙니다."));
-
-        JoinRoom joinRoom = findJoinRoom.get();
         roomService.deleteJoinRoom(joinRoom);
 
         return kickMember;
+    }
+
+    @NotNull
+    private JoinRoom findByJoinRoomMember(Room room, Member member, String errorMessage) {
+        Optional<JoinRoom> findJoinRoom = room.getJoinRoomList().stream().filter(joinRoom -> joinRoom.compareMember(member)).findFirst();
+        if (findJoinRoom.isEmpty()) throw new RestFulException(new ResponseDto(WebConst.ERROR, errorMessage));
+        return findJoinRoom.get();
     }
     
 }
