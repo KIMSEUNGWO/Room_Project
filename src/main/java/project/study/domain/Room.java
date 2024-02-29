@@ -20,7 +20,7 @@ import java.util.List;
 public class Room implements ImageFileEntity {
 
     @Id @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "SEQ_ROOM")
-    @Column(name = "room_id")
+    @Column(name = "ROOM_ID")
     private Long roomId;
 
     private String roomTitle;

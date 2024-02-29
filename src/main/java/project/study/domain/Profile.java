@@ -17,7 +17,7 @@ public class Profile {
     private Long profileId;
 
     @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "memberId")
+    @JoinColumn(name = "MEMBER_ID")
     private Member member;
 
     private String profileOriginalName;

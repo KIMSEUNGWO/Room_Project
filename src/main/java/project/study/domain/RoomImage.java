@@ -9,11 +9,12 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
+@Table(name = "ROOM_IMAGE")
 @SequenceGenerator(name = "SEQ_ROOM_IMAGE", sequenceName = "SEQ_ROOM_IMAGE_ID", allocationSize = 1)
 public class RoomImage {
 
     @Id @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "SEQ_ROOM_IMAGE")
-    @Column(name = "room_image_id")
+    @Column(name = "ROOM_IMAGE_ID")
     private Long roomImageId;
 
     private String roomImageOriginalName;
@@ -21,7 +22,7 @@ public class RoomImage {
     private String roomImageStoreName;
 
     @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "room_id")
+    @JoinColumn(name = "ROOM_ID")
     private Room room;
 
     public String getRoomImageStoreName() {

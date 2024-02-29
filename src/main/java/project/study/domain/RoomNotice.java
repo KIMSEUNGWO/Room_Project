@@ -11,18 +11,19 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
+@Table(name = "ROOM_NOTICE")
 @SequenceGenerator(name = "SEQ_ROOM_NOTICE", sequenceName = "SEQ_ROOM_NOTICE_ID", allocationSize = 1)
 public class RoomNotice {
 
     @Id @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "SEQ_ROOM_NOTICE")
-    @Column(name = "room_notice_id")
+    @Column(name = "ROOM_NOTICE_ID")
     private Long roomNoticeId;
 
     private String roomNoticeContent;
     private LocalDateTime roomNoticeDate;
 
     @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "room")
+    @JoinColumn(name = "ROOM")
     private Room room;
 
 

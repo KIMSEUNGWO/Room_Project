@@ -18,7 +18,7 @@ public class NotifyImage {
     private Long notifyImageId;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "notifyId")
+    @JoinColumn(name = "NOTIFY_ID")
     private Notify notify;
 
     private String notifyImageOriginalName;
