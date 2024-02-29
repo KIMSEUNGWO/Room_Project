@@ -53,9 +53,9 @@ public class ChatController {
         headerAccessor.getSessionAttributes().put("member", member);
         headerAccessor.getSessionAttributes().put("room", room);
 
-        if (member.getProfile() != null) {
-            headerAccessor.getSessionAttributes().put("senderImage", member.getProfile().getProfileStoreName());
-            chat.setSenderImage(member.getProfile().getProfileStoreName());
+        if (member.getStoreImage() != null) {
+            headerAccessor.getSessionAttributes().put("senderImage", member.getStoreImage());
+            chat.setSenderImage(member.getStoreImage());
         }
 
         chat.setSender(member.getMemberNickname());

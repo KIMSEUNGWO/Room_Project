@@ -16,6 +16,7 @@ import project.study.jpaRepository.CertificationJpaRepository;
 import project.study.jpaRepository.MemberJpaRepository;
 
 import java.time.LocalDateTime;
+import java.util.Locale;
 import java.util.Optional;
 
 import static project.study.constant.WebConst.ERROR;
@@ -101,16 +102,7 @@ public class SmsService {
         }
         Member member = findMember.get();
 
-        if (member.isBasicMember()) {
-            Basic basic = member.getBasic();
-            return new FindAccount(null, basic.getAccount());
-        }
-        if (member.isSocialMember()) {
-            Social social = member.getSocial();
-            return new FindAccount(social.getSocialType(), social.getSocialEmail());
-        }
-
-        return new FindAccount(null, "다시 시도해주세요.");
+        return member.findAccount();
     }
 
     public void checkSocialMember(RequestFindPassword data) {
@@ -137,8 +129,7 @@ public class SmsService {
         Member member = findMember.get();
         Basic basic = member.getBasic();
 
-        String password = encoder.encode(data.getPassword());
-        basic.changePassword(password);
+        basic.changePassword(encoder, data.getPassword());
 
     }
 

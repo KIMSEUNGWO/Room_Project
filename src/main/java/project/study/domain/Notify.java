@@ -15,7 +15,6 @@ import java.util.List;
 @NoArgsConstructor
 @Builder
 @Entity
-@Getter
 @Table(name = "NOTIFY")
 @SequenceGenerator(name = "SEQ_NOTIFY", sequenceName = "SEQ_NOTIFY_ID", allocationSize = 1)
 public class Notify implements ImageFileEntity {
@@ -48,4 +47,13 @@ public class Notify implements ImageFileEntity {
     @OneToMany(mappedBy = "notify")
     private List<NotifyImage> notifyImage;
 
+    @Override
+    public void setImage(String originalName, String storeName) {
+
+    }
+
+    @Override
+    public String getStoreImage() {
+        return null;
+    }
 }

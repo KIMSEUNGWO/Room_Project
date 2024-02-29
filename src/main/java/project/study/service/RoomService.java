@@ -99,13 +99,13 @@ public class RoomService {
     }
 
     public void validMaxCreateRoom(Member member) {
-        int nowCount = joinRoomRepository.countByMemberAndAuthority(member, AuthorityMemberEnum.방장);
+        int nowCount = member.joinRoomCount(AuthorityMemberEnum.방장);
         if (nowCount >= WebConst.MAX_CREATE_ROOM_COUNT) throw new CreateExceedRoomException(new ResponseDto(WebConst.ERROR, "방 생성 최대개수를 초과하였습니다."));
     }
 
     public ResponsePrivateRoomInfoDto getResponsePrivateRoomInfoDto(Room room) {
         return ResponsePrivateRoomInfoDto.builder()
-                .image(room.getRoomImage().getRoomImageStoreName())
+                .image(room.getStoreImage())
                 .title(room.getRoomTitle())
                 .intro(room.getRoomIntro())
                 .build();
@@ -140,12 +140,10 @@ public class RoomService {
 
     public ResponseRoomInfo getRoomNotice(Room room, Member member) {
         JoinRoom joinRoom = joinRoomJpaRepository.findByMemberAndRoom(member, room).get();
-        AuthorityMemberEnum authority = joinRoom.getAuthority();
-
         return ResponseRoomInfo.builder()
                 .roomTitle(room.getRoomTitle())
                 .isPublic(room.isPublic())
-                .isManager(authority.isManager())
+                .isManager(joinRoom.isManager())
                 .build();
     }
 
@@ -153,10 +151,7 @@ public class RoomService {
         RoomNotice roomNotice = room.getRoomNotice();
         if (roomNotice == null) return null;
 
-        return ResponseRoomNotice.builder()
-                .content(roomNotice.getRoomNoticeContent())
-                .time(roomNotice.getRoomNoticeDate())
-                .build();
+        return roomNotice.buildResponseRoomNotice();
     }
 
     public ResponseEditRoomForm getEditRoomForm(Room room) {

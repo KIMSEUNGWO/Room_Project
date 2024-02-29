@@ -1,9 +1,6 @@
 package project.study.domain;
 
-public interface ImageFileEntity {
+public interface ImageFileEntityChildren {
 
     void setImage(String originalName, String storeName);
-
-    String getStoreImage();
-
 }

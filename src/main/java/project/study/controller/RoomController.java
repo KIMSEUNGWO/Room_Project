@@ -96,8 +96,7 @@ public class RoomController {
         if (room.isPublic() || room.getRoomPassword() == null) return new ResponseEntity<>(new ResponseDto("error", "잘못된 접근입니다."), HttpStatus.OK);
 
         RoomPassword rp = room.getRoomPassword();
-        String roomPassword = rp.getRoomPassword();
-        if (!roomPassword.equals(password)) {
+        if (!rp.compareRoomPassword(password)) {
             return new ResponseEntity<>(new ResponseDto("invalidPassword", "비밀번호가 일치하지 않습니다."), HttpStatus.OK);
         }
         MemberAuthority commonMember = authorizationCheck.getMemberAuthority(response, member);

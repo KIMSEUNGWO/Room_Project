@@ -80,34 +80,26 @@ public class FileUploadRepository {
 
     public void editProfile(FileUploadDto data) {
         Member member = (Member) data.getParent();
-        Profile profile = member.getProfile();
-
         if (isDefaultImage(data)) {
-            profile.setProfileOriginalName(defaultProfile);
-            profile.setProfileStoreName(defaultProfile);
+            member.setImage(defaultProfile, defaultProfile);
         } else {
-            profile.setProfileOriginalName(data.getImageUploadName());
-            profile.setProfileStoreName(data.getImageStoreName());
+            member.setImage(data.getImageUploadName(), data.getImageStoreName());
         }
     }
 
     public void editRoomImage(FileUploadDto data) {
         Room room = (Room) data.getParent();
-        RoomImage roomImage = room.getRoomImage();
 
         if (isDefaultImage(data)) {
-            roomImage.setRoomImageOriginalName(defaultRoomImage);
-            roomImage.setRoomImageStoreName(defaultRoomImage);
+            room.setImage(defaultRoomImage, defaultRoomImage);
         } else {
-            roomImage.setRoomImageOriginalName(data.getImageUploadName());
-            roomImage.setRoomImageStoreName(data.getImageStoreName());
+            room.setImage(data.getImageUploadName(), data.getImageStoreName());
         }
     }
 
     public void deleteProfile(FileUploadType type, ImageFileEntity parent) {
         Member member = (Member) parent;
-        Profile profile = member.getProfile();
-        String storeName = profile.getProfileStoreName();
+        String storeName = member.getStoreImage();
         if (defaultProfile.equals(storeName)) return;
 
         File profileFile = new File(getFullPath(type, storeName));
@@ -119,8 +111,7 @@ public class FileUploadRepository {
 
     public void deleteRoomImage(FileUploadType type, ImageFileEntity parent) {
         Room room = (Room) parent;
-        RoomImage roomImage = room.getRoomImage();
-        String storeName = roomImage.getRoomImageStoreName();
+        String storeName = room.getStoreImage();
         if (defaultRoomImage.equals(storeName)) return;
 
         File roomImageFile = new File(getFullPath(type, storeName));

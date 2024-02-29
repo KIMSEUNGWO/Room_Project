@@ -44,25 +44,13 @@ public class DefaultMemberValidator implements MemberValidator {
 
         Freeze freeze = findFreeze.get();
         if (freeze.isFinish()) { // Freeze Entity는 존재하지만 이용정지 기간에 풀린 경우
-            freezeRepository.delete(freeze);
-            member.changeStatusToNormal();
+            freezeRepository.delete(freeze, member);
             return;
         }
-        LocalDateTime endDate = freeze.getFreezeEndDate();
-        String reason = freeze.getFreezeReason();
-        throw new FreezeMemberLoginException(combineMessage(endDate, reason)); // 모든 조건에 걸리지 않은 회원은 이용정지 회원임.
+        throw new FreezeMemberLoginException(freeze.printMessage()); // 모든 조건에 걸리지 않은 회원은 이용정지 회원임.
     }
 
-    private String combineMessage(LocalDateTime endDate, String reason) {
-        int year = endDate.getYear();
-        int month = endDate.getMonthValue();
-        int day = endDate.getDayOfMonth();
-        int hour = endDate.getHour();
-        int minute = endDate.getMinute();
 
-        String time = String.format("%d-%02d-%02d %02d:%02d", year, month, day, hour, minute);
-        return "이용이 정지된 회원입니다. \n ~ " + time + " 까지 \n" + "사유 : " + reason;
-    }
 
     @Override
     public void validSignup(RequestSignupDto signupDto) {

@@ -74,7 +74,7 @@ public class ChatService {
                 .build();
         Optional<Member> nextManagerMember = room.getJoinRoomList()
                 .stream()
-                .filter(x -> !x.getMember().equals(member) && x.getAuthority().isManager())
+                .filter(joinRoom -> !joinRoom.compareMember(member) && joinRoom.isManager())
                 .map(JoinRoom::getMember)
                 .findFirst();
 

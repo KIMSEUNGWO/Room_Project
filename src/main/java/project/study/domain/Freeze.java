@@ -32,11 +32,21 @@ public class Freeze {
         return now.isAfter(freezeEndDate);
     }
 
-    public LocalDateTime getFreezeEndDate() {
-        return freezeEndDate;
+    public String printMessage() {
+        return combineMessage(freezeEndDate, freezeReason);
     }
 
-    public String getFreezeReason() {
-        return freezeReason;
+    private String combineMessage(LocalDateTime endDate, String reason) {
+        int year = endDate.getYear();
+        int month = endDate.getMonthValue();
+        int day = endDate.getDayOfMonth();
+        int hour = endDate.getHour();
+        int minute = endDate.getMinute();
+
+        String time = String.format("%d-%02d-%02d %02d:%02d", year, month, day, hour, minute);
+        return "이용이 정지된 회원입니다. \n ~ " + time + " 까지 \n" + "사유 : " + reason;
     }
+
+
+
 }

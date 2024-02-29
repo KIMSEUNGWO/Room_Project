@@ -11,7 +11,7 @@ import lombok.NoArgsConstructor;
 @Entity
 @Table(name = "PROFILE")
 @SequenceGenerator(name = "SEQ_PROFILE", sequenceName = "SEQ_PROFILE_ID", allocationSize = 1)
-public class Profile {
+public class Profile implements ImageFileEntityChildren {
 
     @Id @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "SEQ_PROFILE")
     private Long profileId;
@@ -27,11 +27,11 @@ public class Profile {
         return profileStoreName;
     }
 
-    public void setProfileOriginalName(String profileOriginalName) {
-        this.profileOriginalName = profileOriginalName;
-    }
+    @Override
+    public void setImage(String originalName, String storeName) {
+        this.profileOriginalName = originalName;
+        this.profileStoreName = storeName;
 
-    public void setProfileStoreName(String profileStoreName) {
-        this.profileStoreName = profileStoreName;
+
     }
 }

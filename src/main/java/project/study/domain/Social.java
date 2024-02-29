@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.NoArgsConstructor;
+import project.study.controller.api.sms.FindAccount;
 import project.study.enums.SocialEnum;
 
 @Builder
@@ -12,7 +13,7 @@ import project.study.enums.SocialEnum;
 @Entity
 @Table(name = "SOCIAL")
 @SequenceGenerator(name = "SEQ_SOCIAL", sequenceName = "SEQ_SOCIAL_ID", allocationSize = 1)
-public class Social {
+public class Social implements MemberType {
 
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "SEQ_SOCIAL")
@@ -34,15 +35,20 @@ public class Social {
         return socialType;
     }
 
-    public String getSocialEmail() {
-        return socialEmail;
-    }
-
     public Member getMember() {
         return member;
     }
 
     public SocialToken getToken() {
         return socialToken;
+    }
+
+    @Override
+    public FindAccount findAccount() {
+        return new FindAccount(socialType, socialEmail);
+    }
+
+    public boolean isEqualsSocialType(SocialEnum socialType) {
+        return this.socialType.equals(socialType);
     }
 }

@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.NoArgsConstructor;
+import project.study.dto.room.ResponseRoomNotice;
 
 import java.time.LocalDateTime;
 
@@ -26,17 +27,16 @@ public class RoomNotice {
     @JoinColumn(name = "ROOM")
     private Room room;
 
-
-    public String getRoomNoticeContent() {
-        return roomNoticeContent;
-    }
-
-    public LocalDateTime getRoomNoticeDate() {
-        return roomNoticeDate;
-    }
-
     public void updateNotice(String notice) {
         this.roomNoticeContent = notice;
         this.roomNoticeDate = LocalDateTime.now();
+    }
+
+    public ResponseRoomNotice buildResponseRoomNotice() {
+        return ResponseRoomNotice
+            .builder()
+            .content(roomNoticeContent)
+            .time(roomNoticeDate)
+            .build();
     }
 }

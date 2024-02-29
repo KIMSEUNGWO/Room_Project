@@ -23,7 +23,4 @@ public class Tag {
     @JoinColumn(name = "ROOM_ID")
     private Room room;
 
-    public String getTagName() {
-        return tagName;
-    }
 }

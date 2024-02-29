@@ -8,7 +8,6 @@ import project.study.authority.member.authority.MemberAuthority;
 import project.study.domain.JoinRoom;
 import project.study.domain.Member;
 import project.study.domain.Room;
-import project.study.enums.AuthorityMemberEnum;
 import project.study.exceptions.authority.NotAuthorizedException;
 import project.study.exceptions.authority.NotFoundRoomException;
 import project.study.exceptions.authority.NotJoinRoomException;
@@ -32,8 +31,7 @@ public class MemberAuthorizationCheck {
         if (findJoinRoom.isEmpty()) throw new NotJoinRoomException(response);
 
         JoinRoom joinRoom = findJoinRoom.get();
-        AuthorityMemberEnum authority = joinRoom.getAuthority();
-        if (!authority.isManager()) throw new NotAuthorizedException(response);
+        if (!joinRoom.isManager()) throw new NotAuthorizedException(response);
     }
 
     public ManagerAuthority getManagerAuthority(HttpServletResponse response, Member member, Room room) {

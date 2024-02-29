@@ -39,6 +39,7 @@ application.properties
 
 **/resources/static/images/
 !**/resources/static/images/room_profile/basic-room-profile.jpg
+!**/resources/static/images/member_profile/basic-member-profile.jpg
 
 ### VS Code ###
 .vscode/

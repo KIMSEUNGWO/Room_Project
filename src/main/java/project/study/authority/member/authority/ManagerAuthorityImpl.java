@@ -2,6 +2,7 @@ package project.study.authority.member.authority;
 
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
+import org.jetbrains.annotations.NotNull;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 import project.study.authority.member.dto.*;
@@ -12,13 +13,15 @@ import project.study.domain.Room;
 import project.study.domain.RoomNotice;
 import project.study.dto.abstractentity.ResponseDto;
 import project.study.dto.room.ResponseRoomNotice;
+import project.study.enums.AuthorityMemberEnum;
 import project.study.exceptions.RestFulException;
-import project.study.exceptions.authority.AuthorizationException;
 import project.study.jpaRepository.MemberJpaRepository;
-import project.study.service.JoinRoomService;
 import project.study.service.RoomService;
 
 import java.util.Optional;
+
+import static project.study.enums.AuthorityMemberEnum.방장;
+import static project.study.enums.AuthorityMemberEnum.일반;
 
 @Component
 @Transactional
@@ -44,20 +47,25 @@ public class ManagerAuthorityImpl implements ManagerAuthority{
         if (findMember.isEmpty()) throw new RestFulException(new ResponseDto(WebConst.ERROR, "존재하지 않는 회원입니다."));
         Member nextManagerMember = findMember.get();
 
-        Optional<JoinRoom> nextManagerJoinRoom = room.getJoinRoomList().stream().filter(x -> x.getMember().equals(nextManagerMember)).findFirst();
+        Optional<JoinRoom> nextManagerJoinRoom = findByJoinRoomMember(room, nextManagerMember);
 
         if (nextManagerJoinRoom.isEmpty()) throw new RestFulException(new ResponseDto(WebConst.ERROR, "참여자가 아닙니다."));
 
-        Optional<JoinRoom> managerJoinRoom = room.getJoinRoomList().stream().filter(x -> x.getMember().equals(member)).findFirst();
+        Optional<JoinRoom> managerJoinRoom = findByJoinRoomMember(room, member);
         if (managerJoinRoom.isEmpty()) throw new RestFulException(new ResponseDto(WebConst.ERROR, "권한이 없습니다."));
 
         JoinRoom currentManager = managerJoinRoom.get();
         JoinRoom nextManager = nextManagerJoinRoom.get();
 
-        currentManager.changeToNotManager();
-        nextManager.changeToManager();
+        currentManager.changeToAuthority(일반);
+        nextManager.changeToAuthority(방장);
 
         return nextManagerMember;
+    }
+
+    @NotNull
+    private Optional<JoinRoom> findByJoinRoomMember(Room room, Member member) {
+        return room.getJoinRoomList().stream().filter(joinRoom -> joinRoom.compareMember(member)).findFirst();
     }
 
     @Override
@@ -71,11 +79,7 @@ public class ManagerAuthorityImpl implements ManagerAuthority{
             roomNotice = roomService.saveRoomNotice(room, data);
         }
 
-        return ResponseRoomNotice
-            .builder()
-            .content(roomNotice.getRoomNoticeContent())
-            .time(roomNotice.getRoomNoticeDate())
-            .build();
+        return roomNotice.buildResponseRoomNotice();
     }
 
     private void validNotice(String notice) {
@@ -98,7 +102,7 @@ public class ManagerAuthorityImpl implements ManagerAuthority{
         if (findMember.isEmpty()) throw new RestFulException(new ResponseDto(WebConst.ERROR, "존재하지 않는 회원입니다."));
         Member kickMember = findMember.get();
 
-        Optional<JoinRoom> findJoinRoom = room.getJoinRoomList().stream().filter(x -> x.getMember().equals(kickMember)).findFirst();
+        Optional<JoinRoom> findJoinRoom = findByJoinRoomMember(room, kickMember);
 
         if (findJoinRoom.isEmpty()) throw new RestFulException(new ResponseDto(WebConst.ERROR, "참여자가 아닙니다."));
 

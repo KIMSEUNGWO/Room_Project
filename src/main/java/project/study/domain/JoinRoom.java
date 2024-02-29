@@ -29,31 +29,23 @@ public class JoinRoom {
     @Enumerated(EnumType.STRING)
     private AuthorityMemberEnum authorityEnum;
 
-    public AuthorityMemberEnum getAuthority() {
-        return authorityEnum;
-    }
-
-    public Room getRoom() {
-        return room;
-    }
-
-    public Long getJoinRoomId() {
-        return joinRoomId;
-    }
-
     public Member getMember() {
         return member;
     }
 
-    public void setAuthority(AuthorityMemberEnum authorityEnum) {
-        this.authorityEnum = authorityEnum;
+    public void changeToAuthority(AuthorityMemberEnum authority) {
+        this.authorityEnum = authority;
     }
 
-    public void changeToManager() {
-        this.authorityEnum = AuthorityMemberEnum.방장;
+    public boolean isManager() {
+        return this.authorityEnum.isManager();
     }
 
-    public void changeToNotManager() {
-        this.authorityEnum = AuthorityMemberEnum.일반;
+    public boolean compareAuthority(AuthorityMemberEnum authorityEnum) {
+        return this.authorityEnum.equals(authorityEnum);
+    }
+
+    public boolean compareMember(Member member) {
+        return this.member.equals(member);
     }
 }

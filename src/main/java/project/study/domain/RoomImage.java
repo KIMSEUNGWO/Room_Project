@@ -11,7 +11,7 @@ import lombok.NoArgsConstructor;
 @Builder
 @Table(name = "ROOM_IMAGE")
 @SequenceGenerator(name = "SEQ_ROOM_IMAGE", sequenceName = "SEQ_ROOM_IMAGE_ID", allocationSize = 1)
-public class RoomImage {
+public class RoomImage implements ImageFileEntityChildren {
 
     @Id @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "SEQ_ROOM_IMAGE")
     @Column(name = "ROOM_IMAGE_ID")
@@ -29,11 +29,10 @@ public class RoomImage {
         return roomImageStoreName;
     }
 
-    public void setRoomImageOriginalName(String roomImageOriginalName) {
-        this.roomImageOriginalName = roomImageOriginalName;
-    }
+    @Override
+    public void setImage(String originalName, String storeName) {
+        this.roomImageOriginalName = originalName;
+        this.roomImageStoreName = storeName;
 
-    public void setRoomImageStoreName(String roomImageStoreName) {
-        this.roomImageStoreName = roomImageStoreName;
     }
 }
