@@ -10,6 +10,7 @@ import project.study.authority.admin.dto.*;
 import project.study.domain.*;
 import project.study.jpaRepository.AdminJpaRepository;
 import project.study.repository.AdminRepository;
+import project.study.repository.FreezeRepository;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -23,6 +24,7 @@ public class AdminService {
 
     private final AdminJpaRepository adminJpaRepository;
     private final AdminRepository adminRepository;
+    private final FreezeRepository freezeRepository;
 
     public Optional<Admin> adminLogin(String account, String password){
 
@@ -81,6 +83,14 @@ public class AdminService {
         return adminRepository.searchNotifyIncludeComplete(word, pageable);
     }
 
+    public void notifyStatusChange(RequestNotifyStatusChangeDto dto){
+        adminRepository.notifyStatusChange(dto);
+    }
+
+    public void notifyMemberFreeze(RequestNotifyMemberFreezeDto dto){
+        adminRepository.notifyMemberFreeze(dto);
+        freezeRepository.save(dto);
+    }
 
 //    public Page<SearchNotifyDto> searchNotify(String word, int pageNumber){
 //        PageRequest pageable = PageRequest.of(pageNumber - 1, 10);

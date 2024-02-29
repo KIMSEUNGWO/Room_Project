@@ -33,4 +33,8 @@ function notifyReedMoreOpenPopUp(notifyId){
 
 function memberInfoOpenPopUp(account){
     window.open('/admin/notify/member_info?account=' + account, '멤버 정보', 'width=600, height=750');
-}
+};
+
+function responseUpdate(response){
+    $('.entity').html(response);
+};

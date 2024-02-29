@@ -6,6 +6,7 @@
     <link rel="stylesheet" href="/css/common.css">
     <link rel="stylesheet" href="/css/notify_member.css">
     <script src="/js/admin_notify_member.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
     <title>회원 정보</title>
 </head>
 <body>
@@ -51,7 +52,7 @@
                     </div>
                 </div>
                 <div class="memberInfo-image-box">
-                    <img src="/images/room_profile/basic-room-profile.jpg" th:src="|/images/room_profile/${memberInfo.memberProfile}|" alt="asdf">
+                    <img src="/images/room_profile/basic-room-profile.jpg" th:src="|/images/member_profile/${memberInfo.memberProfile}|" alt="asdf">
                 </div>
             </div>
             <hr>
@@ -62,7 +63,7 @@
                 </div>
                 <div class="adminProcces">
                     <div class="title-freezeReason">정지 사유</div>
-                    <input type="text" name="freezeReason" id="freezeReason">
+                    <input type="text" name="freezeReason" id="freezeReason" th:value="${memberInfo.notifyReason}">
                 </div>
             </div> 
         </div>

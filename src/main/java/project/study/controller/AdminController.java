@@ -8,9 +8,10 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import project.study.authority.admin.dto.*;
 import project.study.domain.Admin;
-import project.study.dto.admin.RequestNotifyStatusChangeDto;
+import project.study.authority.admin.dto.RequestNotifyStatusChangeDto;
 import project.study.service.AdminService;
 
+import java.util.Map;
 import java.util.Optional;
 
 @Controller
@@ -164,13 +165,18 @@ public class AdminController {
 
     @PostMapping("/admin/notify/status/change")
     @ResponseBody
-    public void notifyStatusChange(@RequestBody RequestNotifyStatusChangeDto requestDto){
+    public void notifyStatusChange(@RequestBody RequestNotifyStatusChangeDto dto){
+        adminService.notifyStatusChange(dto);
+    }
 
-        long notifyId = requestDto.getNotifyId();
-        String status = requestDto.getStatus();
+    @PostMapping("/admin/notify/member/freeze")
+    @ResponseBody
+    public void notifyMemberFreeze (@RequestBody RequestNotifyMemberFreezeDto dto){
+//        adminService.notifyMemberFreeze(dto);
 
-        System.out.println("status = " + status);
-        System.out.println("notifyId = " + notifyId);
+        System.out.println("dto = " + dto.getMemberId());
+        System.out.println("dto.getFreezeEndDate() = " + dto.getFreezePeriod());
+        System.out.println("dto.getFreezeReason() = " + dto.getFreezeReason());
     }
 
 }
