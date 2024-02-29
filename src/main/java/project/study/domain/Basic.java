@@ -22,7 +22,7 @@ public class Basic {
     private String salt;
 
     @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "memberId")
+    @JoinColumn(name = "MEMBER_ID")
     private Member member;
 
     public String getAccount() {

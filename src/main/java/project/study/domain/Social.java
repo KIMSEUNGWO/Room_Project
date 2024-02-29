@@ -24,7 +24,7 @@ public class Social {
     private String socialEmail;
 
     @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "memberId")
+    @JoinColumn(name = "MEMBER_ID")
     private Member member;
 
     @OneToOne(mappedBy = "social")

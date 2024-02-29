@@ -19,11 +19,11 @@ public class JoinRoom {
     private Long joinRoomId;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "memberId")
+    @JoinColumn(name = "MEMBER_ID")
     private Member member;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "roomId")
+    @JoinColumn(name = "ROOM_ID")
     private Room room;
 
     @Enumerated(EnumType.STRING)

@@ -13,6 +13,7 @@ import java.time.LocalDateTime;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
+@Table(name = "ROOM_DELETE")
 @SequenceGenerator(name = "SEQ_ROOM_DELETE", sequenceName = "SEQ_ROOM_DELETE_ID", allocationSize = 1)
 public class RoomDelete {
 
@@ -21,7 +22,7 @@ public class RoomDelete {
     private Long roomDeleteId;
 
     @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "roomId")
+    @JoinColumn(name = "ROOM_ID")
     private Room room;
 
     private LocalDateTime roomDeleteDate;

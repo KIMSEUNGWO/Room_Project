@@ -18,7 +18,7 @@ public class Phone {
     private Long phoneId;
 
     @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "memberId")
+    @JoinColumn(name = "MEMBER_ID")
     private Member member;
 
     private String phone;

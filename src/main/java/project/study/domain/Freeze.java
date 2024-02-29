@@ -20,7 +20,7 @@ public class Freeze {
     private Long freezeId;
 
     @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "memberId")
+    @JoinColumn(name = "MEMBER_ID")
     private Member member;
 
     private String freezeReason;

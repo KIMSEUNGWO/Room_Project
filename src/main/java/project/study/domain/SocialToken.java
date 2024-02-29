@@ -19,8 +19,8 @@ public class SocialToken {
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "SEQ_SOCIAL_TOKEN")
     private Long socialTokenId;
 
-    @OneToOne
-    @JoinColumn(name = "socialId")
+    @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "SOCIAL_ID")
     private Social social;
 
     private String access_token;

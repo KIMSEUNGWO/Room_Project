@@ -25,15 +25,15 @@ public class Notify implements ImageFileEntity {
     private Long notifyId;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "reporter_memberId")  // reporter 필드에 대한 컬럼명 변경
+    @JoinColumn(name = "REPORTER_MEMBER_ID")  // reporter 필드에 대한 컬럼명 변경
     private Member reporter;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "criminal_memberId")  // criminal 필드에 대한 컬럼명 변경
+    @JoinColumn(name = "CRIMINAL_MEMBER_ID")  // criminal 필드에 대한 컬럼명 변경
     private Member criminal;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "roomId")
+    @JoinColumn(name = "ROOM_ID")
     private Room room;
 
     @Enumerated(EnumType.STRING)
