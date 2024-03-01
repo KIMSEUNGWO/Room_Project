@@ -14,6 +14,7 @@ import project.study.domain.MockMember;
 import project.study.dto.login.requestdto.RequestDefaultLoginDto;
 import project.study.exceptions.login.ExpireMemberLoginException;
 import project.study.exceptions.login.FreezeMemberLoginException;
+import project.study.exceptions.login.InvalidLoginException;
 import project.study.jpaRepository.FreezeJpaRepository;
 import project.study.jpaRepository.MemberJpaRepository;
 
@@ -31,8 +32,6 @@ class BasicLoginServiceTest {
     private LoginService loginService;
     @Autowired
     private MockMember mockMember;
-    @Autowired
-    private MemberJpaRepository memberJpaRepository;
     @Autowired
     private FreezeJpaRepository freezeJpaRepository;
 
@@ -118,6 +117,42 @@ class BasicLoginServiceTest {
         // when
         assertThatThrownBy(() -> loginService.login(data, session, response))
             .isInstanceOf(ExpireMemberLoginException.class);
+    }
+
+    @Test
+    @DisplayName("아이디 또는 비밀번호가 일치하지 않으면 로그인할 수 없다.")
+    void basicMemberLoginInValid4() {
+        // given
+        MockHttpServletResponse response = new MockHttpServletResponse();
+        MockHttpSession session = new MockHttpSession();
+        Member basicMember = mockMember.createMember().setBasic().build();
+
+        // when
+        RequestDefaultLoginDto data1 = new RequestDefaultLoginDto();
+        data1.setAccount("invalidAccount");
+        data1.setPassword("!@#QWEasd" + (basicMember.getMemberId() - 1));
+        assertThatThrownBy(() -> loginService.login(data1, session, response))
+            .isInstanceOf(InvalidLoginException.class);
+
+
+        RequestDefaultLoginDto data2 = new RequestDefaultLoginDto();
+        data2.setAccount("test" + (basicMember.getMemberId() - 1));
+        data2.setPassword(null);
+        assertThatThrownBy(() -> loginService.login(data2, session, response))
+            .isInstanceOf(InvalidLoginException.class);
+
+        RequestDefaultLoginDto data3 = new RequestDefaultLoginDto();
+        data3.setAccount(null);
+        data3.setPassword("!@#QWEasd" + (basicMember.getMemberId() - 1));
+        assertThatThrownBy(() -> loginService.login(data3, session, response))
+            .isInstanceOf(InvalidLoginException.class);
+
+        RequestDefaultLoginDto data4 = new RequestDefaultLoginDto();
+        data4.setAccount("test" + (basicMember.getMemberId() - 1));
+        data4.setPassword("invalidPassword");
+        assertThatThrownBy(() -> loginService.login(data4, session, response))
+            .isInstanceOf(InvalidLoginException.class);
+
     }
 
 
