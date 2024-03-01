@@ -8,12 +8,9 @@ import org.springframework.transaction.annotation.Transactional;
 import project.study.enums.AuthorityMemberEnum;
 import project.study.enums.MemberStatusEnum;
 import project.study.enums.PublicEnum;
-import project.study.jpaRepository.JoinRoomJpaRepository;
 import project.study.jpaRepository.RoomJpaRepository;
-import project.study.jpaRepository.TagJpaRepository;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.List;
 
 
@@ -84,7 +81,7 @@ public class MockRoom {
             if (count == 0) return this;
 
             for (int i = 0; i < count; i++) {
-                Member member = mockMember.createBasicMember(MemberStatusEnum.정상);
+                Member member = mockMember.createMember().setBasic().build();
                 em.persist(createJoinRoom(i, member));
             }
             return this;
