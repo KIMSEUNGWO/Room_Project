@@ -49,6 +49,13 @@ public class Member implements ImageFileEntity {
     public void changeStatusToNormal() {
         memberStatus = MemberStatusEnum.정상;
     }
+    public void changeStatusToExpire() {
+        this.memberStatus = MemberStatusEnum.탈퇴;
+        this.memberExpireDate = LocalDateTime.now();
+    }
+    public void changeStatusToFreeze() {
+        this.memberStatus = MemberStatusEnum.이용정지;
+    }
     public boolean isFreezeMember() {
         return memberStatus.isFreezeMember();
     }
@@ -104,11 +111,6 @@ public class Member implements ImageFileEntity {
     public void setImage(String originalName, String storeName) {
         if (profile == null) return;
         profile.setImage(originalName, storeName);
-    }
-
-    public void changeStatusToExpire() {
-        this.memberStatus = MemberStatusEnum.탈퇴;
-        this.memberExpireDate = LocalDateTime.now();
     }
 
     public int joinRoomCount(AuthorityMemberEnum authorityEnum) {

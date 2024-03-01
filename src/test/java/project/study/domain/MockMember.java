@@ -15,17 +15,10 @@ import java.util.UUID;
 public class MockMember {
 
     @Autowired
-    private MemberJpaRepository memberJpaRepository;
-    @Autowired
-    private PhoneJpaRepository phoneJpaRepository;
-    @Autowired
-    private BasicJpaRepository basicJpaRepository;
-    @Autowired
-    private SocialJpaRepository socialJpaRepository;
-    @Autowired
-    private FreezeJpaRepository freezeJpaRepository;
-    @Autowired
     private EntityManager em;
+
+    @Autowired
+    private MemberJpaRepository memberJpaRepository;
     @Autowired
     private BCryptPasswordEncoder encoder;
 
@@ -35,71 +28,82 @@ public class MockMember {
     private static final String account = "test";
     private static final String password = "!@#QWEasd";
 
-    public Member createBasicMember(MemberStatusEnum memberStatusEnum) {
-        Member saveMember = getSaveMember(memberStatusEnum);
-        memberJpaRepository.save(saveMember);
+    public MockMemberBuilder createMember() {
+        Member saveMember = getSaveMember();
+        em.persist(saveMember);
 
-        String salt = UUID.randomUUID().toString().substring(0, 6);
-
-        Basic saveBasic = Basic.builder()
-            .member(saveMember)
-            .account(account + index)
-            .password(encoder.encode(password + index + salt))
-            .salt(salt)
-            .build();
-        basicJpaRepository.save(saveBasic);
-
-        if (memberStatusEnum == MemberStatusEnum.이용정지) {
-            Freeze saveFreeze = Freeze.builder()
-                .member(saveMember)
-                .freezeEndDate(LocalDateTime.now().plusMonths(1))
-                .freezeReason("테스트를 위한 이용정지")
-                .build();
-            freezeJpaRepository.save(saveFreeze);
-        }
-
-
-        index++;
-        em.flush();
-        em.clear();
-        return memberJpaRepository.findById(saveMember.getMemberId()).get();
+        return new MockMemberBuilder(memberJpaRepository, em, saveMember);
     }
 
-    public Member createSocialMember(MemberStatusEnum memberStatusEnum, SocialEnum socialType) {
-        Member saveMember = getSaveMember(memberStatusEnum);
-        memberJpaRepository.save(saveMember);
-
-
-        Social saveSocial = Social.builder()
-            .member(saveMember)
-            .socialType(socialType)
-            .socialEmail(account + index + "@naver.com")
-            .build();
-
-        socialJpaRepository.save(saveSocial);
-
-        if (memberStatusEnum == MemberStatusEnum.이용정지) {
-            Freeze saveFreeze = Freeze.builder()
-                .member(saveMember)
-                .freezeEndDate(LocalDateTime.now().plusMonths(1))
-                .freezeReason("테스트를 위한 이용정지")
-                .build();
-            freezeJpaRepository.save(saveFreeze);
-        }
-        index++;
-        em.flush();
-        em.clear();
-        return memberJpaRepository.findById(saveMember.getMemberId()).get();
-    }
-
-    private static Member getSaveMember(MemberStatusEnum memberStatusEnum) {
+    private static Member getSaveMember() {
         return Member.builder()
             .memberNickname(nickname + index)
             .memberName(name)
-            .memberExpireDate((memberStatusEnum == MemberStatusEnum.탈퇴) ? LocalDateTime.now() : null)
-            .memberStatus(memberStatusEnum)
+            .memberStatus(MemberStatusEnum.정상)
             .memberCreateDate(LocalDateTime.now())
             .build();
+    }
+
+    public class MockMemberBuilder {
+
+        private MemberJpaRepository memberJpaRepository;
+        private EntityManager em;
+        private Member member;
+
+        public MockMemberBuilder(MemberJpaRepository memberJpaRepository, EntityManager em, Member member) {
+            this.memberJpaRepository = memberJpaRepository;
+            this.em = em;
+            this.member = member;
+        }
+
+        public MockMemberBuilder setBasic() {
+
+            String salt = UUID.randomUUID().toString().substring(0, 6);
+
+            Basic saveBasic = Basic.builder()
+                .member(member)
+                .account(account + index)
+                .password(encoder.encode(password + index + salt))
+                .salt(salt)
+                .build();
+            em.persist(saveBasic);
+            return this;
+        }
+
+        public MockMemberBuilder setSocial(SocialEnum socialType) {
+            Social saveSocial = Social.builder()
+                .member(member)
+                .socialType(socialType)
+                .socialEmail(account + index + "@naver.com")
+                .build();
+
+            em.persist(saveSocial);
+            return this;
+        }
+
+        public MockMemberBuilder setFreeze(LocalDateTime endDate) {
+            Freeze saveFreeze = Freeze.builder()
+                .member(member)
+                .freezeEndDate(endDate)
+                .freezeReason("테스트를 위한 이용정지")
+                .build();
+            em.persist(saveFreeze);
+            member.changeStatusToFreeze();
+            return this;
+        }
+
+        public MockMemberBuilder setExpire() {
+            member.changeStatusToExpire();
+            return this;
+        }
+
+        public Member build() {
+            em.flush();
+            em.clear();
+            index++;
+            return memberJpaRepository.findById(member.getMemberId()).get();
+        }
+
     }
 
 
