@@ -16,7 +16,7 @@ public abstract class MemberValidator {
 
     private final FreezeRepository freezeRepository;
 
-    public void validLogin(Member member, HttpServletResponse response) {
+    public final void validLogin(Member member, HttpServletResponse response) {
         System.out.println("회원 검증 로직 시작");
         // 이용정지 회원인지 확인
         if (member.isExpireMember()) {
