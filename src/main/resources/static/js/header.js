@@ -83,6 +83,10 @@ window.addEventListener('load', () => {
             return;
         }
 
+        if ((target.id === 'loginAccount' || target.id === 'loginPassword') && e.key === 'Enter') {
+            login();
+        }
+
     })
 
 
@@ -551,37 +555,37 @@ function createFindPassword() {
 }
 
 function createSignupModal() {
-    return  '<div class="signup">' +
-                '<div class="input-box">' +
-                    '<h4>아이디</h4>' +
-                    '<input type="text" name="account" id="account" maxlength="15">' +
-                    '<span class="msg disabled m-account"></span>' +
-                '</div>' +
-                '<div class="input-box">' +
-                    '<h4>비밀번호</h4>' +
-                    '<input type="password" name="password" id="password" minlength="8" placeholder="대,소문자, 특수문자 포함 8자 이상">' +
-                    '<span class="msg disabled m-password"></span>' +
-                '</div>' +
-                '<div class="input-box">' +
-                    '<h4>비밀번호 확인</h4>' +
-                    '<input type="password" name="passwordCheck" id="passwordCheck" minlength="8" placeholder="비밀번호 확인">' +
-                    '<span class="msg disabled m-passwordCheck"></span>' +
-                '</div>' +
-                '<div class="input-box">' +
-                    '<h4>이름</h4>' +
-                    '<input type="text" name="name" id="name" maxlength="8">' +
-                    '<span class="msg disabled m-name"></span>' +
-                '</div>' +
-                '<div class="input-box">' +
-                    '<h4>닉네임</h4>' +
-                    '<input type="text" name="nickname" id="nickname" maxlength="8">' +
-                    '<span class="msg disabled m-nickname"></span>' +
-                '</div>' +
-            '</div>' +
-            '<div class="buttons">' +
-                '<button type="button" id="go-to-login">이전</button>' +
-                '<button type="button" id="signup-confirm">가입하기</button>' +
-            '</div>'
+    return  `<div class="signup">
+                <div class="input-box">
+                    <h4>아이디</h4>
+                    <input type="text" name="account" id="account" maxlength="15">
+                    <span class="msg disabled m-account"></span>
+                </div>
+                <div class="input-box">
+                    <h4>비밀번호</h4>
+                    <input type="password" name="password" id="password" minlength="8" placeholder="대,소문자, 특수문자 포함 8자 이상">
+                    <span class="msg disabled m-password"></span>
+                </div>
+                <div class="input-box">
+                    <h4>비밀번호 확인</h4>
+                    <input type="password" name="passwordCheck" id="passwordCheck" minlength="8" placeholder="비밀번호 확인">
+                    <span class="msg disabled m-passwordCheck"></span>
+                </div>
+                <div class="input-box">
+                    <h4>닉네임</h4>
+                    <input type="text" name="nickname" id="nickname" maxlength="8">
+                    <span class="msg disabled m-nickname"></span>
+                </div>
+                <div class="input-box">
+                    <h4>이름</h4>
+                    <input type="text" name="name" id="name" maxlength="8">
+                    <span class="msg disabled m-name"></span>
+                </div>
+            </div>
+            <div class="buttons">
+                <button type="button" id="go-to-login">이전</button>
+                <button type="button" id="signup-confirm">가입하기</button>
+            </div>`
     
 }
 
