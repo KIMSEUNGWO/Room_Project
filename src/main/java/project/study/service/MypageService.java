@@ -13,11 +13,8 @@ import project.study.dto.login.responsedto.ErrorList;
 import project.study.dto.mypage.RequestChangePasswordDto;
 import project.study.dto.mypage.RequestDeleteMemberDto;
 import project.study.dto.mypage.RequestEditInfoDto;
-import project.study.enums.MemberStatusEnum;
 import project.study.exceptions.RestFulException;
 import project.study.repository.MypageRepository;
-
-import java.time.LocalDateTime;
 
 @Service
 @RequiredArgsConstructor
@@ -37,7 +34,8 @@ public class MypageService {
 
     public void changePassword(Member member, RequestChangePasswordDto data) {
         ErrorList errorList = new ErrorList();
-        mypageRepository.valid(member, data, errorList);
+        mypageRepository.validMember(member, errorList);
+        mypageRepository.validChangePassword(member, data, errorList);
         if (errorList.hasError()) {
             throw new RestFulException(new ResponseObject<>(WebConst.ERROR, "에러", errorList.getErrorList()));
         }
