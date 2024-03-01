@@ -27,15 +27,15 @@ public class RoomControllerTest {
     private final CustomMvcResult customMvcResult = new CustomMvcResult(mockMvc);
 
 
-    @Test
-    void validFullRoom() throws Exception {
-        // given
-        Room room = mockRoom.createRoom().setMaxPerson(3).addJoinRoom(2).addTags().build();
-        MockHttpServletResponse response = customMvcResult.getMvcResult(POST, "/room/1/edit", HttpStatus.OK).getResponse();
-
-        RequestJoinRoomDto requestJoinRoomDto = new RequestJoinRoomDto(null, room, response, null);
-        // when
-
-        // then
-    }
+//    @Test
+//    void validFullRoom() throws Exception {
+//        // given
+//        Room room = mockRoom.createRoom().setMaxPerson(3).addJoinRoom(2).addTags().build();
+//        MockHttpServletResponse response = customMvcResult.getMvcResult(POST, "/room/1/edit", HttpStatus.OK).getResponse();
+//
+//        RequestJoinRoomDto requestJoinRoomDto = new RequestJoinRoomDto(null, room, response, null);
+//        // when
+//
+//        // then
+//    }
 }

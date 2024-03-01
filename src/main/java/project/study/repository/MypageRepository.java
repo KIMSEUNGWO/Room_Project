@@ -9,6 +9,7 @@ import project.study.constant.WebConst;
 import project.study.domain.Basic;
 import project.study.domain.Member;
 import project.study.dto.abstractentity.ResponseDto;
+import project.study.dto.abstractentity.ResponseObject;
 import project.study.dto.login.responsedto.Error;
 import project.study.dto.login.responsedto.ErrorList;
 import project.study.dto.mypage.RequestChangePasswordDto;
@@ -24,7 +25,7 @@ public class MypageRepository {
     private final SignupService signupService;
     private final BCryptPasswordEncoder encoder;
 
-    public void valid(Member member, RequestChangePasswordDto data, ErrorList errorList) {
+    public void validChangePassword(Member member, RequestChangePasswordDto data, ErrorList errorList) {
         if (member.isSocialMember()) {
             throw new RestFulException(new ResponseDto(WebConst.ERROR, "소셜회원은 비밀번호를 변경할 수 없습니다."));
         }
@@ -82,6 +83,17 @@ public class MypageRepository {
         boolean isValidPassword = basic.isValidPassword(encoder, password);
         if (!isValidPassword) {
             throw new RestFulException(new ResponseDto(WebConst.ERROR, "비밀번호가 일치하지 않습니다."));
+        }
+    }
+
+    public void validMember(Member member, ErrorList errorList) {
+        if (member.isFreezeMember()) {
+            errorList.addError(new Error(WebConst.ERROR, "정지된 회원입니다."));
+        } else if (member.isExpireMember()) {
+            errorList.addError(new Error(WebConst.ERROR, "이미 탈퇴한 회원입니다."));
+        }
+        if (errorList.hasError()) {
+            throw new RestFulException(new ResponseObject<>(WebConst.ERROR, "에러", errorList.getErrorList()));
         }
     }
 }
