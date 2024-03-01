@@ -120,7 +120,7 @@ public class RoomRepository {
         }
     }
 
-    public void validTagList(ErrorList errorList, List<String> tags) {
+    public void validTagList(ErrorList errorList, @Nullable List<String> tags) {
         if (tags == null || tags.isEmpty()) return;
 
         if (tags.size() > 5) {
