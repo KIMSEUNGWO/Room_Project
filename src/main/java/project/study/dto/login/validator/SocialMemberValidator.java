@@ -17,30 +17,29 @@ import java.util.Optional;
 import java.util.Random;
 import java.util.stream.Collectors;
 
-@RequiredArgsConstructor
 @Slf4j
-public class SocialMemberValidator implements MemberValidator {
+public class SocialMemberValidator extends MemberValidator {
 
-    private final FreezeRepository freezeRepository;
     private final SocialJpaRepository socialJpaRepository;
     private final MemberJpaRepository memberJpaRepository;
-    @Override
-    public void validLogin(Member member, HttpServletResponse response) {
-        if (member == null) return;
-        // 이용정지 회원인지 확인
-        if (member.isExpireMember()) throw new SocialException(response, "탈퇴한 회원입니다."); // 탈퇴한 회원인지 확인
-        if(!member.isFreezeMember()) return; // 이용정지된 회원이 아님
 
-        Optional<Freeze> findFreeze = freezeRepository.findByMemberId(member.getMemberId());
-        if (findFreeze.isEmpty()) return; // Freeze Entity 없음 ( 혹시 모를 예외 처리 )
-
-        Freeze freeze = findFreeze.get();
-        if (freeze.isFinish()) { // Freeze Entity는 존재하지만 이용정지 기간에 풀린 경우
-            freezeRepository.delete(freeze, member);
-            return;
-        }
-        throw new SocialException(response, freeze.printMessage()); // 모든 조건에 걸리지 않은 회원은 이용정지 회원임.
+    public SocialMemberValidator(FreezeRepository freezeRepository, SocialJpaRepository socialJpaRepository, MemberJpaRepository memberJpaRepository) {
+        super(freezeRepository);
+        this.socialJpaRepository = socialJpaRepository;
+        this.memberJpaRepository = memberJpaRepository;
     }
+
+    @Override
+    void expireMemberLoginException(HttpServletResponse response) {
+        throw new SocialException(response, "탈퇴한 회원입니다."); // 탈퇴한 회원인지 확인
+    }
+
+    @Override
+    void freezeMemberLoginException(Freeze freeze, HttpServletResponse response) {
+        throw new SocialException(response, freeze.printMessage()); // 모든 조건에 걸리지 않은 회원은 이용정지 회원임.
+
+    }
+
     @Override
     public void validSignup(RequestSignupDto signupDto) {
         RequestSocialSignupDto data = (RequestSocialSignupDto) signupDto;
