@@ -1,5 +1,7 @@
 package project.study.authority.admin.authority;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import project.study.authority.admin.dto.SearchMemberDto;
 import project.study.domain.Member;
 
@@ -8,7 +10,7 @@ import java.util.Optional;
 
 public interface MemberInfoAuthority {
 
-//    List<AdminMembersDto> findAllByMember();
-    List<Member> searchMember(SearchMemberDto data);
-    Optional<Member> findByMemberId(Long memberId);
+    Page<SearchMemberDto> searchMember(String word, Pageable pageable);
+    Page<SearchMemberDto> SearchMemberOnlyFreeze(String word, Pageable pageable);
+
 }

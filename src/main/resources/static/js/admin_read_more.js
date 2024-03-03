@@ -24,6 +24,7 @@ function processComplete(){
             success : function(){
                 close();
                 window.opener.location.reload();
+
             }
         });
     });

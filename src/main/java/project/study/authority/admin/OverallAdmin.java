@@ -1,14 +1,11 @@
 package project.study.authority.admin;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Component;
-import project.study.authority.admin.authority.BanAuthority;
-import project.study.authority.admin.authority.MemberInfoAuthority;
-import project.study.authority.admin.authority.NotifyMemberInfoAuthority;
-import project.study.authority.admin.authority.RoomInfoAuthority;
-import project.study.authority.admin.dto.SearchMemberDto;
-import project.study.authority.admin.dto.SearchNotifyDto;
-import project.study.authority.admin.dto.SearchRoomDto;
+import project.study.authority.admin.authority.*;
+import project.study.authority.admin.dto.*;
 import project.study.domain.Member;
 import project.study.domain.Notify;
 import project.study.domain.Room;
@@ -20,63 +17,65 @@ import java.util.Optional;
 
 @Component
 @RequiredArgsConstructor
-public class OverallAdmin implements MemberInfoAuthority, NotifyMemberInfoAuthority, BanAuthority, RoomInfoAuthority {
-
-    private final MemberInfoAuthority memberInfoAuthority;
-    private final NotifyMemberInfoAuthority notifyMemberInfoAuthority;
-    private final BanAuthority banAuthority;
-    private final RoomInfoAuthority roomInfoAuthority;
+public class OverallAdmin implements BanAuthority, ExpireMemberInfoAuthority, MemberInfoAuthority, NotifyMemberInfoAuthority, RoomInfoAuthority {
 
     @Override
-    public List<Room> searchRoom(SearchRoomDto data) {
-        return roomInfoAuthority.searchRoom(data);
+    public void notifyStatusChange(RequestNotifyStatusChangeDto dto) {
+
     }
+
     @Override
-    public List<Room> findAllByRoom() {
-        return roomInfoAuthority.findAllByRoom();
+    public void notifyMemberFreeze(RequestNotifyMemberFreezeDto dto) {
+
     }
+
     @Override
-    public void deleteByRoomId(Long roomId) {
-        roomInfoAuthority.deleteByRoomId(roomId);
+    public Page<SearchExpireMemberDto> searchExpireMember(String word, Pageable pageable) {
+        return null;
     }
-//    @Override
-//    public List<AdminMembersDto> findAllByMember() {
-//        return memberInfoAuthority.findAllByMember();
-//    }
+
     @Override
-    public List<Member> searchMember(SearchMemberDto data) {
-        return memberInfoAuthority.searchMember(data);
+    public Page<SearchMemberDto> searchMember(String word, Pageable pageable) {
+        return null;
     }
+
     @Override
-    public Optional<Member> findByMemberId(Long memberId) {
-        return memberInfoAuthority.findByMemberId(memberId);
+    public Page<SearchMemberDto> SearchMemberOnlyFreeze(String word, Pageable pageable) {
+        return null;
     }
+
     @Override
-    public void ban(Long memberId, BanEnum banEnum, String banReason) {
-        banAuthority.ban(memberId, banEnum, banReason);
+    public Page<SearchNotifyDto> searchNotify(String word, Pageable pageable) {
+        return null;
     }
+
     @Override
-    public void banCancel(Long memberId) {
-        banAuthority.banCancel(memberId);
+    public Page<SearchNotifyDto> searchNotifyIncludeComplete(String word, Pageable pageable) {
+        return null;
     }
+
     @Override
-    public List<Notify> searchNotify(SearchNotifyDto data) {
-        return notifyMemberInfoAuthority.searchNotify(data);
+    public SearchNotifyReadMoreDto searchNotifyReadMore(Long notifyId) {
+        return null;
     }
+
     @Override
-    public List<Notify> findAllByNotify() {
-        return notifyMemberInfoAuthority.findAllByNotify();
+    public SearchNotifyMemberInfoDto searchNotifyMemberInfo(Long notifyId) {
+        return null;
     }
+
     @Override
-    public List<Notify> findAllByNotifyWhereNotifyStatus(NotifyStatus notifyStatus) {
-        return notifyMemberInfoAuthority.findAllByNotifyWhereNotifyStatus(notifyStatus);
+    public Page<SearchRoomDto> searchRoom(String word, Pageable pageable) {
+        return null;
     }
+
     @Override
-    public Optional<Member> findByNotifyMember(Long notifyId) {
-        return notifyMemberInfoAuthority.findByNotifyMember(notifyId);
+    public void deleteJoinRoom(RequestDeleteRoomDto dto) {
+
     }
+
     @Override
-    public void notifyConfirm(Long notifyId) {
-        notifyMemberInfoAuthority.notifyConfirm(notifyId);
+    public void insertRoomDelete(RequestDeleteRoomDto dto) {
+
     }
 }

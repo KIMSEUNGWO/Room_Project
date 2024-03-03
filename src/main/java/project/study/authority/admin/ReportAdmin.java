@@ -1,10 +1,12 @@
 package project.study.authority.admin;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Component;
 import project.study.authority.admin.authority.BanAuthority;
 import project.study.authority.admin.authority.NotifyMemberInfoAuthority;
-import project.study.authority.admin.dto.SearchNotifyDto;
+import project.study.authority.admin.dto.*;
 import project.study.domain.Member;
 import project.study.domain.Notify;
 import project.study.enums.BanEnum;
@@ -17,34 +19,33 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class ReportAdmin implements NotifyMemberInfoAuthority, BanAuthority {
 
-    private final NotifyMemberInfoAuthority notifyMemberInfoAuthority;
-    private final BanAuthority banAuthority;
     @Override
-    public void ban(Long memberId, BanEnum banEnum, String banReason) {
-        banAuthority.ban(memberId, banEnum, banReason);
+    public void notifyStatusChange(RequestNotifyStatusChangeDto dto) {
+
     }
+
     @Override
-    public void banCancel(Long memberId) {
-        banAuthority.banCancel(memberId);
+    public void notifyMemberFreeze(RequestNotifyMemberFreezeDto dto) {
+
     }
+
     @Override
-    public List<Notify> searchNotify(SearchNotifyDto data) {
-        return notifyMemberInfoAuthority.searchNotify(data);
+    public Page<SearchNotifyDto> searchNotify(String word, Pageable pageable) {
+        return null;
     }
+
     @Override
-    public List<Notify> findAllByNotify() {
-        return notifyMemberInfoAuthority.findAllByNotify();
+    public Page<SearchNotifyDto> searchNotifyIncludeComplete(String word, Pageable pageable) {
+        return null;
     }
+
     @Override
-    public List<Notify> findAllByNotifyWhereNotifyStatus(NotifyStatus notifyStatus) {
-        return notifyMemberInfoAuthority.findAllByNotifyWhereNotifyStatus(notifyStatus);
+    public SearchNotifyReadMoreDto searchNotifyReadMore(Long notifyId) {
+        return null;
     }
+
     @Override
-    public Optional<Member> findByNotifyMember(Long notifyId) {
-        return notifyMemberInfoAuthority.findByNotifyMember(notifyId);
-    }
-    @Override
-    public void notifyConfirm(Long notifyId) {
-        notifyMemberInfoAuthority.notifyConfirm(notifyId);
+    public SearchNotifyMemberInfoDto searchNotifyMemberInfo(Long notifyId) {
+        return null;
     }
 }

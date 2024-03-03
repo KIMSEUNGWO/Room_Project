@@ -1,17 +1,23 @@
 package project.study.controller;
 
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import project.study.authority.admin.dto.*;
 import project.study.domain.Admin;
 import project.study.authority.admin.dto.RequestNotifyStatusChangeDto;
+import project.study.domain.Room;
+import project.study.enums.AuthorityAdminEnum;
 import project.study.repository.FreezeRepository;
 import project.study.service.AdminService;
 
+import java.net.http.HttpRequest;
 import java.util.Map;
 import java.util.Optional;
 
@@ -27,7 +33,7 @@ public class AdminController {
         return "/admin/admin_login";
     }
 
-    @PostMapping("/admin/login")
+    @PostMapping("/admin/login.do")
     public String adminLogin(@RequestParam(value = "account") String account,
                              @RequestParam(value = "password") String password,
                              HttpSession session){
@@ -35,8 +41,23 @@ public class AdminController {
         if (admin1.isEmpty()){
             return "redirect:/admin/login";
         }
+        if(admin1.get().getAdminEnum().equals(AuthorityAdminEnum.신고담당관리자)){
+            session.setAttribute("adminId", admin1.get().getAdminId());
+            return "redirect:/admin/notify/get";
+        }
         session.setAttribute("adminId", admin1.get().getAdminId());
         return "redirect:/admin/members/get";
+    }
+
+    @PostMapping("/admin/logout")
+    public ResponseEntity<String> adminLogout(HttpServletRequest request){
+        HttpSession session = request.getSession();
+
+        if(session!=null){
+            session.invalidate();
+        }
+
+        return ResponseEntity.ok("/admin/login");
     }
 
     @GetMapping("/admin/members/get")
@@ -177,6 +198,12 @@ public class AdminController {
     public void notifyMemberFreeze (@RequestBody RequestNotifyMemberFreezeDto dto){
         adminService.notifyMemberFreeze(dto);
 
+    }
+
+    @PostMapping("/admin/room/delete")
+    @ResponseBody
+    public void deleteRoom(@RequestBody RequestDeleteRoomDto dto){
+        adminService.deleteRoom(dto);
     }
 
 }
