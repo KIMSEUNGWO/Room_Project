@@ -1,6 +1,9 @@
 package project.study.authority.admin.authority;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Component;
+import project.study.authority.admin.dto.RequestDeleteRoomDto;
 import project.study.authority.admin.dto.SearchRoomDto;
 import project.study.domain.Room;
 
@@ -8,20 +11,19 @@ import java.util.List;
 
 @Component
 public class RoomInfoAuthorityImpl implements RoomInfoAuthority{
+
     @Override
-    public List<Room> searchRoom(SearchRoomDto data) {
-        System.out.println("searchRoom 실행");
+    public Page<SearchRoomDto> searchRoom(String word, Pageable pageable) {
         return null;
     }
 
     @Override
-    public List<Room> findAllByRoom() {
-        System.out.println("findAllByRoom 실행");
-        return null;
+    public void deleteJoinRoom(RequestDeleteRoomDto dto) {
+
     }
 
     @Override
-    public void deleteByRoomId(Long roomId) {
-        System.out.println("deleteByRoomId 실행");
+    public void insertRoomDelete(RequestDeleteRoomDto dto) {
+
     }
 }

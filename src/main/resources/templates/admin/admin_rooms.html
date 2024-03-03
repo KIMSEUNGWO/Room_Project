@@ -7,12 +7,13 @@
     <link rel="stylesheet" href="/css/header.css">
     <link rel="stylesheet" href="/css/admin_menu.css">
     <link rel="stylesheet" href="/css/admin_members.css">
-    <script src="/js/header.js"></script>
+    <script src="/js/admin_header.js"></script>
     <script src="/js/admin_rooms.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
     <title>방 리스트</title>
 </head>
 <body>
-<header th:replace="~{/common/header :: header}"></header>
+    <header th:replace="~{/common/admin_header :: header}"></header>
     <div class="container">
         <aside>
             <div class="admin-name-wrap">
@@ -83,7 +84,7 @@
                                 <button type="button" class="option-more">
                                     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><path d="M8 256a56 56 0 1 1 112 0A56 56 0 1 1 8 256zm160 0a56 56 0 1 1 112 0 56 56 0 1 1 -112 0zm216-56a56 56 0 1 1 0 112 56 56 0 1 1 0-112z"/></svg>
                                     <ul class="option-menu disabled" name="option-menu">
-                                        <li class="option-exit" name="option-exit">
+                                        <li class="option-exit" name="option-exit" th:id="${room.roomId}">
                                             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><path d="M377.9 105.9L500.7 228.7c7.2 7.2 11.3 17.1 11.3 27.3s-4.1 20.1-11.3 27.3L377.9 406.1c-6.4 6.4-15 9.9-24 9.9c-18.7 0-33.9-15.2-33.9-33.9l0-62.1-128 0c-17.7 0-32-14.3-32-32l0-64c0-17.7 14.3-32 32-32l128 0 0-62.1c0-18.7 15.2-33.9 33.9-33.9c9 0 17.6 3.6 24 9.9zM160 96L96 96c-17.7 0-32 14.3-32 32l0 256c0 17.7 14.3 32 32 32l64 0c17.7 0 32 14.3 32 32s-14.3 32-32 32l-64 0c-53 0-96-43-96-96L0 128C0 75 43 32 96 32l64 0c17.7 0 32 14.3 32 32s-14.3 32-32 32z"/></svg>
                                             <span>방 삭제</span>
                                         </li>

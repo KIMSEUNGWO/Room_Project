@@ -2,18 +2,20 @@ package project.study.authority.admin.authority;
 
 import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Component;
+import project.study.authority.admin.dto.RequestNotifyMemberFreezeDto;
+import project.study.authority.admin.dto.RequestNotifyStatusChangeDto;
 import project.study.enums.BanEnum;
 
 @Component
 public class BanAuthorityImpl implements BanAuthority{
 
     @Override
-    public void ban(Long memberId, BanEnum banEnum, String banReason) {
-        System.out.println("ban 실행");
+    public void notifyStatusChange(RequestNotifyStatusChangeDto dto) {
+
     }
 
     @Override
-    public void banCancel(Long memberId) {
-        System.out.println("banCancel 실행");
+    public void notifyMemberFreeze(RequestNotifyMemberFreezeDto dto) {
+
     }
 }

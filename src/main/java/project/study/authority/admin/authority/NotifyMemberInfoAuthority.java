@@ -1,6 +1,8 @@
 package project.study.authority.admin.authority;
 
-import project.study.authority.admin.dto.SearchNotifyDto;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import project.study.authority.admin.dto.*;
 import project.study.domain.Member;
 import project.study.domain.Notify;
 import project.study.enums.NotifyStatus;
@@ -10,9 +12,9 @@ import java.util.Optional;
 
 public interface NotifyMemberInfoAuthority {
 
-    List<Notify> searchNotify(SearchNotifyDto data);
-    List<Notify> findAllByNotify();
-    List<Notify> findAllByNotifyWhereNotifyStatus(NotifyStatus notifyStatus);
-    Optional<Member> findByNotifyMember(Long notifyId);
-    void notifyConfirm(Long notifyId);
+    Page<SearchNotifyDto> searchNotify(String word, Pageable pageable);
+    Page<SearchNotifyDto> searchNotifyIncludeComplete(String word, Pageable pageable);
+    SearchNotifyReadMoreDto searchNotifyReadMore(Long notifyId);
+    SearchNotifyMemberInfoDto searchNotifyMemberInfo(Long notifyId);
+
 }

@@ -25,7 +25,8 @@ function memberFreeze(){
             contentType : 'application/json',
             data : JSON.stringify({memberId : memberId, freezePeriod : freezePeriod, freezeReason : freezeReason}),
             success : function(){
-               console.log('요청 성공');
+                close();
+                window.opener.location.reload();
             }
         });
     });

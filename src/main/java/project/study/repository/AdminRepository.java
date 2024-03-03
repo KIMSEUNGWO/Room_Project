@@ -20,7 +20,10 @@ import project.study.enums.AuthorityMemberEnum;
 import project.study.enums.MemberStatusEnum;
 import project.study.enums.NotifyStatus;
 import project.study.enums.NotifyType;
+import project.study.jpaRepository.RoomDeleteJpaRepository;
+import project.study.jpaRepository.RoomJpaRepository;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -40,9 +43,12 @@ import static project.study.domain.QSocial.*;
 public class AdminRepository {
 
     private final JPAQueryFactory queryFactory;
+    private final RoomDeleteJpaRepository roomDeleteJpaRepository;
 
-    public AdminRepository(EntityManager em) {
+
+    public AdminRepository(EntityManager em, RoomDeleteJpaRepository roomDeleteJpaRepository) {
         this.queryFactory = new JPAQueryFactory(em);
+        this.roomDeleteJpaRepository = roomDeleteJpaRepository;
     }
 
     public Page<SearchMemberDto> searchMember(String word, Pageable pageable){
@@ -484,27 +490,26 @@ public class AdminRepository {
             .execute();
     }
 
-    //    public Page<Notify> searchNotify(String word, Pageable pageable){
-//
-//        BooleanBuilder builder = new BooleanBuilder();
-//
-//        Predicate predicate = builder.getValue();
-//
-//        List<Notify> content = queryFactory
-//            .select(notify)
-//            .from(notify)
-//            .where(notify.notifyStatus.eq(NotifyStatus.처리중))
-//            .where(predicate)
-//            .offset(pageable.getOffset())
-//            .limit(pageable.getPageSize())
-//            .fetch();
-//
-//        JPAQuery<Notify> count = queryFactory
-//            .select(notify)
-//            .from(notify)
-//            .where(notify.notifyStatus.eq(NotifyStatus.처리중))
-//            .where(predicate);
-//
-//        return PageableExecutionUtils.getPage(content, pageable, () -> count.fetchCount());
-//    }
+    public void deleteJoinRoom(RequestDeleteRoomDto dto){
+        queryFactory
+            .delete(joinRoom)
+            .where(room.roomId.eq(dto.getRoomId()))
+            .execute();
+    }
+
+    public void insertRoomDelete(RequestDeleteRoomDto dto){
+        Room room1 = queryFactory
+            .select(room)
+            .from(room)
+            .where(room.roomId.eq(dto.getRoomId()))
+            .fetchOne();
+
+        RoomDelete roomDelete = RoomDelete.builder()
+            .room(room1)
+            .roomDeleteDate(LocalDateTime.now().plusMonths(1))
+            .build();
+
+        roomDeleteJpaRepository.save(roomDelete);
+
+    }
 }

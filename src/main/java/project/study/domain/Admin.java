@@ -23,6 +23,8 @@ public class Admin {
     private String account;
     private String password;
     private String name;
+
+    @Enumerated(EnumType.STRING)
     private AuthorityAdminEnum adminEnum;
 }
 

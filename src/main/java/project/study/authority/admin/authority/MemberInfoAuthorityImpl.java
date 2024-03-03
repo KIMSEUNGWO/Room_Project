@@ -1,6 +1,8 @@
 package project.study.authority.admin.authority;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Component;
 import project.study.authority.admin.dto.SearchMemberDto;
 import project.study.domain.Member;
@@ -13,22 +15,15 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class MemberInfoAuthorityImpl implements MemberInfoAuthority {
 
-    private final AdminService service;
-
-//    @Override
-//    public List<AdminMembersDto> findAllByMember() {
-//        return service.findAllByMember();
-//    }
+    private final AdminService adminService;
 
     @Override
-    public List<Member> searchMember(SearchMemberDto data) {
-        System.out.println("searchMember 실행");
+    public Page<SearchMemberDto> searchMember(String word, Pageable pageable) {
         return null;
     }
 
     @Override
-    public Optional<Member> findByMemberId(Long memberId) {
-        System.out.println("findByMemberId 실행");
-        return Optional.empty();
+    public Page<SearchMemberDto> SearchMemberOnlyFreeze(String word, Pageable pageable) {
+        return null;
     }
 }

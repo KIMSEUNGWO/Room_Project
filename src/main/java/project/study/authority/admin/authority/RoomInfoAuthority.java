@@ -1,5 +1,8 @@
 package project.study.authority.admin.authority;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import project.study.authority.admin.dto.RequestDeleteRoomDto;
 import project.study.authority.admin.dto.SearchRoomDto;
 import project.study.domain.Room;
 
@@ -7,7 +10,7 @@ import java.util.List;
 
 public interface RoomInfoAuthority {
 
-    List<Room> searchRoom(SearchRoomDto data);
-    List<Room> findAllByRoom();
-    void deleteByRoomId(Long roomId);
+    Page<SearchRoomDto> searchRoom(String word, Pageable pageable);
+    void deleteJoinRoom(RequestDeleteRoomDto dto);
+    void insertRoomDelete(RequestDeleteRoomDto dto);
 }
