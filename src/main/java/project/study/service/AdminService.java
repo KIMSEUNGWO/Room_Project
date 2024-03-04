@@ -28,6 +28,7 @@ public class AdminService {
     private final AdminRepository adminRepository;
     private final FreezeRepository freezeRepository;
 
+    @Transactional
     public Optional<Admin> adminLogin(String account, String password){
 
         Optional<Admin> byAccount = adminJpaRepository.findByAccount(account);
@@ -36,6 +37,11 @@ public class AdminService {
         }
 
         return null;
+    }
+
+
+    public Optional<Admin> findById(Long id){
+        return adminJpaRepository.findById(id);
     }
 
     public Page<SearchMemberDto> searchMember(String word, int pageNumber){
@@ -85,6 +91,7 @@ public class AdminService {
         return adminRepository.searchNotifyIncludeComplete(word, pageable);
     }
 
+    @Transactional
     public void notifyStatusChange(RequestNotifyStatusChangeDto dto){
         adminRepository.notifyStatusChange(dto);
     }

@@ -95,7 +95,7 @@ public class AdminRepository {
             .where(member.memberStatus.eq(MemberStatusEnum.정상).or(member.memberStatus.eq(MemberStatusEnum.이용정지)))
             .where(predicate);
 
-        return PageableExecutionUtils.getPage(content, pageable, () -> count.fetchCount());
+        return PageableExecutionUtils.getPage(content, pageable, () -> count.fetch().size());
     }
 
     public Page<SearchExpireMemberDto> searchExpireMember(String word, Pageable pageable){
@@ -142,7 +142,7 @@ public class AdminRepository {
             .where(member.memberStatus.eq(MemberStatusEnum.탈퇴))
             .where(predicate);
 
-        return PageableExecutionUtils.getPage(content, pageable, () -> count.fetchCount());
+        return PageableExecutionUtils.getPage(content, pageable, () -> count.fetch().size());
     }
 
     private Expression<String> getRoomMember(QRoom r) {
@@ -188,7 +188,7 @@ public class AdminRepository {
             .select(room)
             .from(room)
             .leftJoin(room.joinRoomList, joinRoom);
-        return PageableExecutionUtils.getPage(content, pageable, () -> count.fetchCount());
+        return PageableExecutionUtils.getPage(content, pageable, () -> count.fetch().size());
     }
 
     public Page<SearchNotifyDto> searchNotify(String word, Pageable pageable){
@@ -256,7 +256,7 @@ public class AdminRepository {
             .where(notify.notifyStatus.eq(NotifyStatus.처리중))
             .where(predicate);
 
-        return PageableExecutionUtils.getPage(content, pageable, () -> count.fetchCount());
+        return PageableExecutionUtils.getPage(content, pageable, () -> count.fetch().size());
     }
 
     public SearchNotifyReadMoreDto searchNotifyReadMore(Long notifyId){
@@ -396,7 +396,7 @@ public class AdminRepository {
             .where(member.memberStatus.eq(MemberStatusEnum.이용정지))
             .where(predicate);
 
-        return PageableExecutionUtils.getPage(content, pageable, () -> count.fetchCount());
+        return PageableExecutionUtils.getPage(content, pageable, () -> count.fetch().size());
     }
 
     public Page<SearchNotifyDto> searchNotifyIncludeComplete(String word, Pageable pageable){
@@ -464,7 +464,7 @@ public class AdminRepository {
             .where(notify.notifyStatus.eq(NotifyStatus.처리중).or(notify.notifyStatus.eq(NotifyStatus.처리완료)))
             .where(predicate);
 
-        return PageableExecutionUtils.getPage(content, pageable, () -> count.fetchCount());
+        return PageableExecutionUtils.getPage(content, pageable, () -> count.fetch().size());
     }
 
     private StringExpression accountExpression = new CaseBuilder()
