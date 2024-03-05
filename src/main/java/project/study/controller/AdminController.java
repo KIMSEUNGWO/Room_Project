@@ -36,15 +36,15 @@ public class AdminController {
     public String adminLogin(@RequestParam(value = "account") String account,
                              @RequestParam(value = "password") String password,
                              HttpSession session){
-        Optional<Admin> admin1 = adminService.adminLogin(account, password);
-        if (admin1.isEmpty()){
-            return "redirect:/admin/login";
-        }
-        if(admin1.get().getAdminEnum().equals(AuthorityAdminEnum.신고담당관리자)){
-            session.setAttribute("adminId", admin1.get().getAdminId());
+        Optional<Admin> findAdmin = adminService.adminLogin(account, password);
+        if (findAdmin.isEmpty()) return "redirect:/admin/login";
+
+        Admin admin = findAdmin.get();
+        session.setAttribute("adminId", admin.getAdminId());
+
+        if(admin.isReport()){
             return "redirect:/admin/notify/get";
         }
-        session.setAttribute("adminId", admin1.get().getAdminId());
         return "redirect:/admin/members/get";
     }
 
