@@ -1,6 +1,5 @@
 package project.study.service;
 
-import com.querydsl.core.Tuple;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -9,15 +8,10 @@ import org.springframework.transaction.annotation.Transactional;
 import project.study.authority.admin.dto.*;
 import project.study.domain.*;
 import project.study.jpaRepository.AdminJpaRepository;
-import project.study.jpaRepository.RoomJpaRepository;
 import project.study.repository.AdminRepository;
 import project.study.repository.FreezeRepository;
-import project.study.repository.RoomRepository;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -41,12 +35,13 @@ public class AdminService {
 
 
     public Optional<Admin> findById(Long id){
+        if (id == null) return Optional.empty();
         return adminJpaRepository.findById(id);
     }
 
-    public Page<SearchMemberDto> searchMember(String word, int pageNumber){
+    public Page<SearchMemberDto> searchMember(String word, int pageNumber, String freezeOnly){
         PageRequest pageable = PageRequest.of(pageNumber - 1, 10);
-        return adminRepository.searchMember(word, pageable);
+        return adminRepository.searchMember(word, pageable, freezeOnly);
     }
 
     public Page<SearchExpireMemberDto> searchExpireMember(String word, int pageNumber){
@@ -59,9 +54,9 @@ public class AdminService {
         return adminRepository.searchRoom(word, pageable);
     }
 
-    public Page<SearchNotifyDto> searchNotify(String word, int pageNumber){
+    public Page<SearchNotifyDto> searchNotify(String word, int pageNumber, String containComplete){
         PageRequest pageable = PageRequest.of(pageNumber - 1, 10);
-        return adminRepository.searchNotify(word, pageable);
+        return adminRepository.searchNotify(word, pageable, containComplete);
     }
 
     public SearchNotifyReadMoreDto searchNotifyReadMore(Long notifyId){
@@ -81,15 +76,6 @@ public class AdminService {
         return searchNotifyMemberInfoDto;
     }
 
-    public Page<SearchMemberDto> SearchMemberOnlyFreeze(String word, int pageNumber){
-        PageRequest pageable = PageRequest.of(pageNumber - 1, 10);
-        return adminRepository.SearchMemberOnlyFreeze(word, pageable);
-    }
-
-    public Page<SearchNotifyDto> searchNotifyIncludeComplete(String word, int pageNumber){
-        PageRequest pageable = PageRequest.of(pageNumber - 1, 10);
-        return adminRepository.searchNotifyIncludeComplete(word, pageable);
-    }
 
     @Transactional
     public void notifyStatusChange(RequestNotifyStatusChangeDto dto){
@@ -107,6 +93,5 @@ public class AdminService {
         adminRepository.deleteJoinRoom(dto);
         adminRepository.insertRoomDelete(dto);
     }
-
 
 }
