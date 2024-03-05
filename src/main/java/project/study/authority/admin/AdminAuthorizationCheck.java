@@ -17,12 +17,12 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class AdminAuthorizationCheck {
 
-    private final AdminJpaRepository adminJpaRepository;
+    private final AdminService adminService;
     private final OverallAdmin overallAdmin;
     private final ReportAdmin reportAdmin;
 
     public OverallAdmin getOverallAdmin(Long adminId, HttpServletResponse response) {
-        Optional<Admin> findAdmin = findById(adminId);
+        Optional<Admin> findAdmin = adminService.findById(adminId);
         if (findAdmin.isEmpty() || !findAdmin.get().isOverall()) {
             throw new AuthorizationException(response, "권한이 없습니다");
         }
@@ -30,15 +30,10 @@ public class AdminAuthorizationCheck {
     }
 
     public ReportAdmin getReportAdmin(Long adminId, HttpServletResponse response){
-        Optional<Admin> findAdmin = findById(adminId);
+        Optional<Admin> findAdmin = adminService.findById(adminId);
         if (findAdmin.isEmpty() || !findAdmin.get().isReport()) {
             throw new AuthorizationException(response, "권한이 없습니다");
         }
         return reportAdmin;
-    }
-
-    private Optional<Admin> findById(Long adminId) {
-        if (adminId == null) return Optional.empty();
-        return adminJpaRepository.findById(adminId);
     }
 }
