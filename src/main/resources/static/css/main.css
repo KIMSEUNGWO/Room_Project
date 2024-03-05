@@ -1,6 +1,6 @@
 .container {
     width: 100%;
-    min-height: 40rem;
+    min-height: 70rem;
     padding: 0 2rem;
     position: relative;
 }
@@ -30,6 +30,9 @@
     display: flex;
     align-items: center;
     justify-content: center;
+}
+.slogan-box * {
+    pointer-events: none;
 }
 
 .slogan-text {
@@ -91,10 +94,11 @@
 }
 .search-wrapper {
     width: 30rem;
-    height: 3rem;
     border-radius: 2rem;
     background-color: rgb(245, 245, 245);  
     padding: 0.3rem 1rem;
+    box-shadow: 5px 10px 10px rgb(156, 156, 156) inset, 0px 10px 10px rgb(73, 73, 79);
+    transition: width 0.4s ease;
 }
 .search-wrap {
     width: 100%;
@@ -105,10 +109,10 @@
 }
 .search-wrap input {
     width: 100%;
-    height: 100%;
+    height: 3rem;
     color: black;
-    font-size: 1rem;
-    background-color: rgb(245, 245, 245);
+    font-size: 1.2rem;
+    background-color: rgb(0, 0, 0, 0)
 }
 #searchBtn {
     width: 3rem;
@@ -127,30 +131,83 @@
     background-color: rgb(245, 245, 245);;
 }
 
+.search-wrapper.display {
+    width: 35rem;
+    transition: width 0.4s ease-in-out;
+
+}
+
+
+.option-btn * {
+    fill: black;
+    color: black;
+    font-size: 1.1rem;
+    pointer-events: none;
+}
+
+
 
 /* 방 리스트 */
+.find {
+    color: var(--important-color);
+}
 .room-template {
-    margin-bottom: 2rem;
+
+    margin-bottom: 5rem;
 }
 .room-template > h2 {
     margin-bottom: 2rem;
+}
+.room-template.disabled {
+    display: none;
+}
+.search-result.change .room-list {
+    opacity: 0;
+    transition: opacity 0.5s ease-in-out;
+}
+.search-result .room-list {
+    opacity: 1;
+    transition: opacity 0.5s ease;
 }
 
 .room-list {
     display: flex;
     flex-wrap: wrap;
     gap: 1.5rem;
+    min-height: 32rem;
+}
+.room-list-empty {
+    width: 100%;
+    height: 32rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: rgb(22, 26, 31);
+    border-radius: 1rem;
+    font-size: 2.5rem;
+    font-weight: bold;
+    color: rgb(49, 49, 49);
 }
 
 .room {
     width: 20rem;
-    height: 35rem;
+    height: 32rem;
     border-radius: 1rem;
     padding: 1rem;
     background-color: var(--room-bg-color);
     display: flex;
     flex-direction: column;
     justify-content: space-between;
+}
+.search-result .room.join {
+    background-color: var(--room-join-bg-color);
+
+    .more {
+        background-color: var(--room-join-bg-color);
+    }
+    .more:hover {
+        background-color: var(--room-bg-color);
+    }
 }
 .room :not(.room-top) {
     text-align: center;
@@ -160,42 +217,6 @@
     align-items: center;
     justify-content: right;
     gap: 0.5rem;
-}
-.onoff-box {
-    font-size: 0.8rem;
-    border-radius: 1rem;
-    padding: 0.1rem 0.5rem;
-    display: flex;
-    align-items: center;
-    gap: 0.3rem;
-}
-.onoff-box::before {
-    content: '';
-    display: inline-block;
-    width: 3px;
-    height: 3px;
-    border-radius: 1rem;
-}
-.onoff-box.onoff span {
-    color: var(--onoff);
-}
-.onoff-box.onoff::before {
-    background-color: var(--onoff);
-    border: 0.1rem solid var(--onoff)
-}
-.onoff-box.on span {
-    color: var(--on);
-}
-.onoff-box.on::before {
-    background-color: var(--on);
-    border: 0.1rem solid var(--on)
-}
-.onoff-box.off span {
-    color: var(--off);
-}
-.onoff-box.off::before {
-    background-color: var(--off);
-    border: 0.1rem solid var(--off);
 }
 
 .more {
@@ -248,6 +269,9 @@
     font-size: 0.9rem;
     margin-bottom: 0.5rem;
 }
+.more-menu li * {
+    pointer-events: none;
+}
 .more-menu li span {
     color: var(--gray)
 }
@@ -273,11 +297,19 @@
 .room-title {
     font-size: 1.2rem;
     display: block;
+    line-height: 4rem;
+    overflow-x: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
 }
 .room-content {
     display: block;
-
+    max-height: 5.5rem;
+    text-overflow: ellipsis;
     color: var(--gray);
+}
+.room-wrap2 {
+    margin-top: 0.5rem;
 }
 
 .tag-list {
@@ -295,32 +327,28 @@
     gap: 0.3rem;
     padding: 0.3rem 0.5rem;
     justify-content: space-between;
-    flex-wrap: wrap;
+    flex-wrap: nowrap;
     font-size: 0.9rem;
-
     transition: background-color 0.2s ease-in-out;
+    max-width: 8.5rem;
+}
+.tag * {
+    pointer-events: none;
+}
+.tag span {
+    text-overflow: ellipsis;
+    overflow-x: hidden;
+    white-space: nowrap;
 }
 .tag:hover {
     background-color: rgb(88, 88, 88);
     transition: background-color 0.2s ease-in-out;
 }
 
-.weeks {
-    display: flex;
-    align-items: center;
-    gap: 1rem;
-    flex-wrap: nowrap;
-    justify-content: center;
+.button-box {
+    margin-top: 1rem;
 }
-.weeks .week {
-    width: 2.5rem;
-    height: 2.5rem;
-    border-radius: 100%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    background-color: rgb(58, 57, 88);
-}
+
 
 .enterBtn {
     height: 2.8rem;
@@ -345,4 +373,11 @@
     color: white;
     font-size: 0.9rem;
     pointer-events: none;
+}
+
+.enterBtn.disabled {
+    background-color: rgb(33, 33, 42);
+}
+.enterBtn.disabled:hover {
+    background-color: rgb(33, 33, 42);
 }

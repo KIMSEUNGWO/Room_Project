@@ -1,10 +1,10 @@
 @font-face {
     font-family: 'Default-Font';
-    src: url(/static/font/TmoneyRoundWindRegular.otf);
+    src: url(/font/TmoneyRoundWindRegular.otf);
 }
 @font-face {
     font-family: 'Default-Bold-Font';
-    src: url(/static/font/TmoneyRoundWindExtraBold.otf);
+    src: url(/font/TmoneyRoundWindExtraBold.otf);
 }
 
 :root {
@@ -14,8 +14,24 @@
     --border-radius : 0.5rem;
     --important-color : rgb(87, 227, 190);
     --room-bg-color : rgb(22, 27, 34);
+    --room-join-bg-color : rgb(45, 53, 66);
     --room-bg-hover-color : rgb(35, 43, 54);
     --gray : rgb(168, 168, 168);
+    --light-gray : rgb(220, 220, 220);
+    
+    --inside-textarea-border-color : rgb(33, 35, 41);
+    --inside-textarea-color : rgb(43, 46, 54);
+    --modal-wrap-color : rgba(35, 38, 47);
+
+    --confirm-color : rgb(81, 147, 81);
+    --error-color : rgb(255, 83, 83);
+    --error-hover-color : rgb(226, 75, 75);
+
+    --mypage-btn-color : rgb(63, 68, 79);
+    --mypage-btn-hover-color : rgb(84, 90, 103);
+
+    --mypage-save-btn-color : rgb(70, 176, 91);
+    --mypage-save-btn-hover-color : rgb(65, 161, 84);
 }
 
 * {
@@ -75,7 +91,10 @@ pre {
     padding: 1rem 0 0 0;
 }
 .error {
-    color: rgb(255, 83, 83);
+    color: var(--error-color);
+}
+.non-error {
+    color: var(--confirm-color);
 }
 
 /* 모달창 */
@@ -110,7 +129,7 @@ pre {
 .modal-wrap {
     border-radius: 1rem;
     padding: 2rem;
-    background-color: rgba(35, 38, 47);
+    background-color: var(--modal-wrap-color);
 }
 .modal-title {
     width: 100%;
@@ -125,4 +144,14 @@ pre {
 
 .modal-content {
     width: 100%;
+}
+
+.msg {
+    margin-top: 0.3rem;
+    display: block;
+    font-size: 0.9rem;
+
+}
+.msg.disabled {
+    display: none;
 }
