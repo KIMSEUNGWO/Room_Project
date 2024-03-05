@@ -9,19 +9,15 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import project.study.authority.admin.AdminAuthorizationCheck;
 import project.study.authority.admin.OverallAdmin;
+import project.study.authority.admin.ReportAdmin;
 import project.study.authority.admin.dto.*;
 import project.study.domain.Admin;
 import project.study.authority.admin.dto.RequestNotifyStatusChangeDto;
-import project.study.domain.Room;
 import project.study.enums.AuthorityAdminEnum;
-import project.study.repository.FreezeRepository;
 import project.study.service.AdminService;
 
-import java.net.http.HttpRequest;
-import java.util.Map;
 import java.util.Optional;
 
 @Controller
@@ -69,190 +65,126 @@ public class AdminController {
                                @RequestParam(value = "onlyFreezeMembers", required = false) String freezeOnly,
                                @SessionAttribute(name = "adminId", required = false) Long adminId,
                                HttpServletResponse response){
+        OverallAdmin overallAdmin = check.getOverallAdmin(adminId, response);
 
-        Optional<Admin> admin = adminService.findById(adminId);
-        String name = admin.get().getName();
-        AuthorityAdminEnum adminEnum = admin.get().getAdminEnum();
+        Admin admin = adminService.findById(adminId).get();
 
-        if (freezeOnly == null || !freezeOnly.equals("on")) {
-
-            OverallAdmin overallAdmin = check.getOverallAdmin(adminId, response);
-            Page<SearchMemberDto> searchMemberDtoList = overallAdmin.searchMember(word, pageNumber);
-
-            if(searchMemberDtoList.isEmpty()){
-                model.addAttribute("page", searchMemberDtoList);
-                model.addAttribute("word", word);
-                model.addAttribute("errorMsg", "결과가 존재하지 않습니다.");
-                model.addAttribute("freezeOnly", freezeOnly != null);
-                model.addAttribute("adminName", name);
-                model.addAttribute("adminEnum", adminEnum);
-                return "/admin/admin_members";
-            }
-            model.addAttribute("page", searchMemberDtoList);
-            model.addAttribute("word", word);
-            model.addAttribute("freezeOnly", freezeOnly != null);
-            model.addAttribute("adminName", name);
-            model.addAttribute("adminEnum", adminEnum);
-            return "/admin/admin_members";
-
-        }
-
-        Page<SearchMemberDto> freezeMemberList = adminService.SearchMemberOnlyFreeze(word, pageNumber);
-
-        if (freezeMemberList.isEmpty()) {
-            model.addAttribute("page", freezeMemberList);
-            model.addAttribute("word", word);
-            model.addAttribute("errorMsg", "결과가 존재하지 않습니다.");
-            model.addAttribute("freezeOnly", freezeOnly != null);
-            model.addAttribute("adminName", name);
-            model.addAttribute("adminEnum", adminEnum);
-            return "/admin/admin_members";
-        }
-
-        model.addAttribute("page", freezeMemberList);
         model.addAttribute("word", word);
         model.addAttribute("freezeOnly", freezeOnly != null);
-        model.addAttribute("adminName", name);
-        model.addAttribute("adminEnum", adminEnum);
+        model.addAttribute("adminName", admin.getName());
+        model.addAttribute("adminEnum", admin.getAdminEnum());
+        model.addAttribute("page", overallAdmin.searchMember(word, pageNumber, freezeOnly));
         return "/admin/admin_members";
 
     }
 
     @GetMapping("/admin/expire/get")
     public String searchExpireMember(@RequestParam(value = "word", required = false, defaultValue = "") String word,
-                                   @RequestParam(defaultValue = "1", value = "page") int pageNumber,  Model model, HttpSession session){
+                                   @RequestParam(defaultValue = "1", value = "page") int pageNumber,  Model model,
+                                     HttpServletResponse response,
+                                     @SessionAttribute(name = "adminId", required = false) Long adminId){
 
-        Long adminId = (Long) session.getAttribute("adminId");
-        Optional<Admin> admin = adminService.findById(adminId);
-        String name = admin.get().getName();
-        AuthorityAdminEnum adminEnum = admin.get().getAdminEnum();
+        OverallAdmin overallAdmin = check.getOverallAdmin(adminId, response);
+        Admin admin = adminService.findById(adminId).get();
 
-        Page<SearchExpireMemberDto> searchExpireMemberList = adminService.searchExpireMember(word, pageNumber);
+        Page<SearchExpireMemberDto> searchExpireMemberList = overallAdmin.searchExpireMember(word, pageNumber);
 
-        if(searchExpireMemberList.isEmpty()){
-            model.addAttribute("page", searchExpireMemberList);
-            model.addAttribute("word", word);
-            model.addAttribute("errorMsg", "결과가 존재하지 않습니다.");
-            model.addAttribute("adminName", name);
-            model.addAttribute("adminEnum", adminEnum);
-            return "/admin/admin_expire";
-        }
         model.addAttribute("page", searchExpireMemberList);
         model.addAttribute("word", word);
-        model.addAttribute("adminName", name);
-        model.addAttribute("adminEnum", adminEnum);
+        model.addAttribute("adminName", admin.getName());
+        model.addAttribute("adminEnum", admin.getAdminEnum());
         return "/admin/admin_expire";
     }
 
 
     @GetMapping("/admin/rooms/get")
     public String searchRoom(@RequestParam(value = "word", required = false, defaultValue = "") String word,
-                           @RequestParam(defaultValue = "1", value = "page") int pageNumber,  Model model, HttpSession session){
+                           @RequestParam(defaultValue = "1", value = "page") int pageNumber,  Model model,
+                             HttpServletResponse response,
+                             @SessionAttribute(name = "adminId", required = false) Long adminId){
 
-        Long adminId = (Long) session.getAttribute("adminId");
-        Optional<Admin> admin = adminService.findById(adminId);
-        String name = admin.get().getName();
-        AuthorityAdminEnum adminEnum = admin.get().getAdminEnum();
+        OverallAdmin overallAdmin = check.getOverallAdmin(adminId, response);
+        Admin admin = adminService.findById(adminId).get();
 
-        Page<SearchRoomDto> searchRoomList = adminService.searchRoom(word, pageNumber);
+        Page<SearchRoomDto> searchRoomList = overallAdmin.searchRoom(word, pageNumber);
 
-        if(searchRoomList.isEmpty()){
-            model.addAttribute("page", searchRoomList);
-            model.addAttribute("word", word);
-            model.addAttribute("errorMsg", "결과가 존재하지 않습니다.");
-            model.addAttribute("adminName", name);
-            model.addAttribute("adminEnum", adminEnum);
-            return "/admin/admin_rooms";
-        }
         model.addAttribute("page", searchRoomList);
         model.addAttribute("word", word);
-        model.addAttribute("adminName", name);
-        model.addAttribute("adminEnum", adminEnum);
+        model.addAttribute("adminName", admin.getName());
+        model.addAttribute("adminEnum", admin.getAdminEnum());
         return "/admin/admin_rooms";
     }
 
     @GetMapping("/admin/notify/get")
     public String searchNotify(@RequestParam(value = "word", required = false, defaultValue = "") String word,
-                                   @RequestParam(defaultValue = "1", value = "page") int pageNumber,  Model model,
-                                   @RequestParam(value = "withComplete", required = false) String containComplete,
-                               HttpSession session){
+                               @RequestParam(defaultValue = "1", value = "page") int pageNumber,  Model model,
+                               @RequestParam(value = "withComplete", required = false) String containComplete,
+                               @SessionAttribute(name = "adminId", required = false) Long adminId,
+                               HttpServletResponse response){
 
-        Long adminId = (Long) session.getAttribute("adminId");
-        Optional<Admin> admin = adminService.findById(adminId);
-        String name = admin.get().getName();
-        AuthorityAdminEnum adminEnum = admin.get().getAdminEnum();
+        ReportAdmin reportAdmin = check.getReportAdmin(adminId, response);
+        Admin admin = adminService.findById(adminId).get();
 
-        if(containComplete==null || !containComplete.equals("on")){
+        Page<SearchNotifyDto> searchNotifyList = reportAdmin.searchNotify(word, pageNumber, containComplete);
 
-            Page<SearchNotifyDto> searchNotifyList = adminService.searchNotify(word, pageNumber);
-            if(searchNotifyList.isEmpty()){
-                model.addAttribute("page", searchNotifyList);
-                model.addAttribute("word", word);
-                model.addAttribute("errorMsg", "결과가 존재하지 않습니다.");
-                model.addAttribute("containComplete", containComplete != null);
-                model.addAttribute("adminName", name);
-                model.addAttribute("adminEnum", adminEnum);
-                return "/admin/admin_notify";
-            }
-            model.addAttribute("page", searchNotifyList);
-            model.addAttribute("word", word);
-            model.addAttribute("containComplete", containComplete != null);
-            model.addAttribute("adminName", name);
-            model.addAttribute("adminEnum", adminEnum);
-            return "/admin/admin_notify";
-        }
-
-        Page<SearchNotifyDto> searchNotifyList = adminService.searchNotifyIncludeComplete(word, pageNumber);
-
-        if(searchNotifyList.isEmpty()){
-            model.addAttribute("page", searchNotifyList);
-            model.addAttribute("word", word);
-            model.addAttribute("errorMsg", "결과가 존재하지 않습니다.");
-            model.addAttribute("containComplete", containComplete != null);
-            model.addAttribute("adminName", name);
-            model.addAttribute("adminEnum", adminEnum);
-            return "/admin/admin_notify";
-        }
         model.addAttribute("page", searchNotifyList);
         model.addAttribute("word", word);
         model.addAttribute("containComplete", containComplete != null);
-        model.addAttribute("adminName", name);
-        model.addAttribute("adminEnum", adminEnum);
+        model.addAttribute("adminName", admin.getName());
+        model.addAttribute("adminEnum", admin.getAdminEnum());
+
         return "/admin/admin_notify";
     }
 
     @GetMapping("/admin/notify/read_more")
-    public String notifyReadMore(@RequestParam(value = "notifyId") Long notifyId, Model model){
-        SearchNotifyReadMoreDto searchNotifyReadMoreDto = adminService.searchNotifyReadMore(notifyId);
+    public String notifyReadMore(@RequestParam(value = "notifyId") Long notifyId, Model model,
+                                 @SessionAttribute(name = "adminId", required = false) Long adminId,
+                                 HttpServletResponse response){
+        ReportAdmin reportAdmin = check.getReportAdmin(adminId, response);
+
+        SearchNotifyReadMoreDto searchNotifyReadMoreDto = reportAdmin.searchNotifyReadMore(notifyId);
         model.addAttribute("notifyInfo", searchNotifyReadMoreDto);
         return "/admin/notify_read_more";
     }
 
     @GetMapping("/admin/notify/member_info")
     public String notifyMemberInfo(@RequestParam(value = "account") String account,
-                                   @RequestParam(value = "notifyId") Long notifyId, Model model) {
-        SearchNotifyMemberInfoDto searchNotifyMemberInfoDto = adminService.searchNotifyMemberInfo(account, notifyId);
+                                   @RequestParam(value = "notifyId") Long notifyId, Model model,
+                                   @SessionAttribute(name = "adminId", required = false) Long adminId,
+                                   HttpServletResponse response) {
+        ReportAdmin reportAdmin = check.getReportAdmin(adminId, response);
+
+        SearchNotifyMemberInfoDto searchNotifyMemberInfoDto = reportAdmin.searchNotifyMemberInfo(account, notifyId);
         model.addAttribute("memberInfo", searchNotifyMemberInfoDto);
         return "/admin/notify_member";
     }
 
     @PostMapping("/admin/notify/status/change")
     @ResponseBody
-    public void notifyStatusChange(@RequestBody RequestNotifyStatusChangeDto dto){
-        adminService.notifyStatusChange(dto);
+    public void notifyStatusChange(@RequestBody RequestNotifyStatusChangeDto dto,
+                                   @SessionAttribute(name = "adminId", required = false) Long adminId,
+                                   HttpServletResponse response){
+        ReportAdmin reportAdmin = check.getReportAdmin(adminId, response);
+        reportAdmin.notifyStatusChange(dto);
     }
 
     @PostMapping("/admin/notify/member/freeze")
     @ResponseBody
-    public void notifyMemberFreeze (@RequestBody RequestNotifyMemberFreezeDto dto){
-        adminService.notifyMemberFreeze(dto);
+    public void notifyMemberFreeze (@RequestBody RequestNotifyMemberFreezeDto dto,
+                                    @SessionAttribute(name = "adminId", required = false) Long adminId,
+                                    HttpServletResponse response){
+        ReportAdmin reportAdmin = check.getReportAdmin(adminId, response);
+        reportAdmin.notifyMemberFreeze(dto);
 
     }
 
     @PostMapping("/admin/room/delete")
     @ResponseBody
-    public void deleteRoom(@RequestBody RequestDeleteRoomDto dto){
-        adminService.deleteRoom(dto);
+    public void deleteRoom(@RequestBody RequestDeleteRoomDto dto,
+                           @SessionAttribute(name = "adminId", required = false) Long adminId,
+                           HttpServletResponse response){
+        OverallAdmin overallAdmin = check.getOverallAdmin(adminId, response);
+        overallAdmin.deleteJoinRoom(dto);
     }
 
 }

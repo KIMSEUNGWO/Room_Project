@@ -4,7 +4,6 @@ import com.querydsl.core.BooleanBuilder;
 import com.querydsl.core.Tuple;
 import com.querydsl.core.types.Expression;
 import com.querydsl.core.types.Predicate;
-import com.querydsl.core.types.Projections;
 import com.querydsl.core.types.dsl.*;
 import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
@@ -12,16 +11,13 @@ import jakarta.persistence.EntityManager;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.support.PageableExecutionUtils;
-import org.springframework.expression.spel.ast.Projection;
 import org.springframework.stereotype.Repository;
 import project.study.authority.admin.dto.*;
 import project.study.domain.*;
 import project.study.enums.AuthorityMemberEnum;
 import project.study.enums.MemberStatusEnum;
 import project.study.enums.NotifyStatus;
-import project.study.enums.NotifyType;
 import project.study.jpaRepository.RoomDeleteJpaRepository;
-import project.study.jpaRepository.RoomJpaRepository;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -29,7 +25,6 @@ import java.util.stream.Collectors;
 
 import static com.querydsl.jpa.JPAExpressions.select;
 import static project.study.domain.QBasic.*;
-import static project.study.domain.QFreeze.*;
 import static project.study.domain.QJoinRoom.*;
 import static project.study.domain.QMember.*;
 import static project.study.domain.QNotify.*;
@@ -51,7 +46,7 @@ public class AdminRepository {
         this.roomDeleteJpaRepository = roomDeleteJpaRepository;
     }
 
-    public Page<SearchMemberDto> searchMember(String word, Pageable pageable){
+    public Page<SearchMemberDto> searchMember(String word, Pageable pageable, String freezeOnly){
 
         BooleanBuilder builder = new BooleanBuilder();
 
@@ -79,7 +74,7 @@ public class AdminRepository {
             .leftJoin(member.basic, basic)
             .leftJoin(member.phone, phone1)
             .leftJoin(member.social, social)
-            .where(member.memberStatus.eq(MemberStatusEnum.정상).or(member.memberStatus.eq(MemberStatusEnum.이용정지)))
+            .where(member.memberStatus.eq(MemberStatusEnum.이용정지).or(isFreezeOnly(freezeOnly)))
             .where(predicate)
             .offset(pageable.getOffset())
             .limit(pageable.getPageSize())
@@ -92,10 +87,16 @@ public class AdminRepository {
             .leftJoin(member.basic, basic)
             .leftJoin(member.phone, phone1)
             .leftJoin(member.social, social)
-            .where(member.memberStatus.eq(MemberStatusEnum.정상).or(member.memberStatus.eq(MemberStatusEnum.이용정지)))
+            .where(member.memberStatus.eq(MemberStatusEnum.이용정지).or(isFreezeOnly(freezeOnly)))
             .where(predicate);
 
         return PageableExecutionUtils.getPage(content, pageable, () -> count.fetch().size());
+    }
+
+    private BooleanExpression isFreezeOnly(String freezeOnly) {
+        System.out.println("freezeOnly = " + freezeOnly);
+        if (freezeOnly != null && freezeOnly.equals("on")) return null;
+        return member.memberStatus.eq(MemberStatusEnum.정상);
     }
 
     public Page<SearchExpireMemberDto> searchExpireMember(String word, Pageable pageable){
@@ -191,7 +192,7 @@ public class AdminRepository {
         return PageableExecutionUtils.getPage(content, pageable, () -> count.fetch().size());
     }
 
-    public Page<SearchNotifyDto> searchNotify(String word, Pageable pageable){
+    public Page<SearchNotifyDto> searchNotify(String word, Pageable pageable, String containComplete){
 
         QMember reporterMember = new QMember("reporterMember");
         QMember criminalMember = new QMember("criminalMember");
@@ -243,7 +244,7 @@ public class AdminRepository {
             .leftJoin(reporterMember.social, reporterSocial)
             .leftJoin(criminalMember.basic, criminalBasic)
             .leftJoin(criminalMember.social, criminalSocial)
-            .where(notify.notifyStatus.eq(NotifyStatus.처리중))
+            .where(notify.notifyStatus.eq(NotifyStatus.처리중).or(isComplete(containComplete)))
             .where(predicate)
             .orderBy(notify.notifyDate.desc())
             .offset(pageable.getOffset())
@@ -253,10 +254,15 @@ public class AdminRepository {
         JPAQuery<Notify> count = queryFactory
             .select(notify)
             .from(notify)
-            .where(notify.notifyStatus.eq(NotifyStatus.처리중))
+            .where(notify.notifyStatus.eq(NotifyStatus.처리중).or(isComplete(containComplete)))
             .where(predicate);
 
         return PageableExecutionUtils.getPage(content, pageable, () -> count.fetch().size());
+    }
+
+    private Predicate isComplete(String containComplete) {
+        if (containComplete == null || !containComplete.equals("on")) return null;
+        return notify.notifyStatus.eq(NotifyStatus.처리완료);
     }
 
     public SearchNotifyReadMoreDto searchNotifyReadMore(Long notifyId){
@@ -353,119 +359,6 @@ public class AdminRepository {
             .fetchOne();
     }
 
-    public Page<SearchMemberDto> SearchMemberOnlyFreeze(String word, Pageable pageable){
-        BooleanBuilder builder = new BooleanBuilder();
-
-        StringPath socialType = Expressions.stringPath(String.valueOf(social.socialType));
-
-        builder.or(accountExpression.likeIgnoreCase("%" + word + "%"));
-        builder.or(member.memberName.likeIgnoreCase("%" + word + "%"));
-        builder.or(member.memberNickname.likeIgnoreCase("%" + word + "%"));
-        builder.or(phone1.phone.likeIgnoreCase("%" + word + "%"));
-        builder.or(socialType.likeIgnoreCase("%" + word + "%"));
-
-        Predicate predicate = builder.getValue();
-
-        List<SearchMemberDto> content = queryFactory
-            .select(new QSearchMemberDto(
-                Expressions.stringTemplate("{0}", accountExpression).as("memberAccount"),
-                member.memberName,
-                member.memberNickname,
-                phone1.phone,
-                Expressions.stringTemplate("TO_CHAR({0}, {1})", member.memberCreateDate, "YYYY-MM-DD"),
-                member.memberNotifyCount,
-                social.socialType,
-                member.memberStatus))
-            .from(member)
-            .leftJoin(member.basic, basic)
-            .leftJoin(member.phone, phone1)
-            .leftJoin(member.social, social)
-            .where(member.memberStatus.eq(MemberStatusEnum.이용정지))
-            .where(predicate)
-            .offset(pageable.getOffset())
-            .limit(pageable.getPageSize())
-            .orderBy(member.memberCreateDate.desc())
-            .fetch();
-
-        JPAQuery<Member> count = queryFactory
-            .select(member)
-            .from(member)
-            .leftJoin(member.basic, basic)
-            .leftJoin(member.phone, phone1)
-            .leftJoin(member.social, social)
-            .where(member.memberStatus.eq(MemberStatusEnum.이용정지))
-            .where(predicate);
-
-        return PageableExecutionUtils.getPage(content, pageable, () -> count.fetch().size());
-    }
-
-    public Page<SearchNotifyDto> searchNotifyIncludeComplete(String word, Pageable pageable){
-
-        QMember reporterMember = new QMember("reporterMember");
-        QMember criminalMember = new QMember("criminalMember");
-
-        QBasic reporterBasic = new QBasic("reporterBasic");
-        QBasic criminalBasic = new QBasic("criminalBasic");
-
-        QSocial reporterSocial = new QSocial("reporterSocial");
-        QSocial criminalSocial = new QSocial("criminalSocial");
-
-
-        StringExpression reporterAccountExpression = new CaseBuilder()
-            .when(Expressions.stringPath(String.valueOf(reporterBasic.account)).isNull())
-            .then(reporterSocial.socialEmail)
-            .otherwise(reporterBasic.account);
-
-        StringExpression criminalAccountExpression = new CaseBuilder()
-            .when(Expressions.stringPath(String.valueOf(criminalBasic.account)).isNull())
-            .then(criminalSocial.socialEmail)
-            .otherwise(criminalBasic.account);
-
-        StringPath notifyStatus = Expressions.stringPath(String.valueOf(notify.notifyStatus));
-
-        BooleanBuilder builder = new BooleanBuilder();
-
-        builder.or(reporterAccountExpression.likeIgnoreCase("%" + word + "%"));
-        builder.or(criminalAccountExpression.likeIgnoreCase("%" + word + "%"));
-        builder.or(room.roomId.like("%" + word + "%"));
-        builder.or(notify.notifyReason.stringValue().likeIgnoreCase("%" + word + "%"));
-        builder.or(notifyStatus.likeIgnoreCase("%" + word + "%"));
-
-        Predicate predicate = builder.getValue();
-
-        List<SearchNotifyDto> content = queryFactory
-            .select(new QSearchNotifyDto(
-                Expressions.stringTemplate("{0}", reporterAccountExpression).as("reporterMemberAccount"),
-                Expressions.stringTemplate("{0}", criminalAccountExpression).as("criminalMemberAccount"),
-                room.roomId,
-                Expressions.stringTemplate("TO_CHAR({0}, {1})", notify.notifyDate, "YYYY-MM-DD"),
-                notify.notifyReason,
-                notify.notifyId,
-                notify.notifyStatus
-            ))
-            .from(notify)
-            .leftJoin(notify.room, room)
-            .leftJoin(notify.reporter, reporterMember).on(reporterMember.eq(reporterMember))
-            .leftJoin(notify.criminal, criminalMember).on(criminalMember.eq(criminalMember))
-            .leftJoin(reporterMember.basic, reporterBasic)
-            .leftJoin(reporterMember.social, reporterSocial)
-            .leftJoin(criminalMember.basic, criminalBasic)
-            .leftJoin(criminalMember.social, criminalSocial)
-            .where(notify.notifyStatus.eq(NotifyStatus.처리중).or(notify.notifyStatus.eq(NotifyStatus.처리완료)))
-            .where(predicate)
-            .offset(pageable.getOffset())
-            .limit(pageable.getPageSize())
-            .orderBy(notify.notifyDate.desc())
-            .fetch();
-
-        JPAQuery<Notify> count = queryFactory
-            .select(notify)
-            .from(notify)
-            .where(notify.notifyStatus.eq(NotifyStatus.처리중).or(notify.notifyStatus.eq(NotifyStatus.처리완료)))
-            .where(predicate);
-
-        return PageableExecutionUtils.getPage(content, pageable, () -> count.fetch().size());
-    }
 
     private StringExpression accountExpression = new CaseBuilder()
         .when(Expressions.stringPath(String.valueOf(basic.account)).isNull())

@@ -34,6 +34,11 @@ public class AuthorityConfig {
 
     @Bean
     @Primary
+    public ExpireMemberInfoAuthority expireMemberInfoAuthority() {
+        return new ExpireMemberInfoAuthorityImpl(adminService);
+    }
+    @Bean
+    @Primary
     public MemberInfoAuthority memberInfoAuthority() {
         return new MemberInfoAuthorityImpl(adminService);
     }
