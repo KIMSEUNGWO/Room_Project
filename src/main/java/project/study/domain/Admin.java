@@ -26,6 +26,14 @@ public class Admin {
 
     @Enumerated(EnumType.STRING)
     private AuthorityAdminEnum adminEnum;
+
+    public boolean isOverall() {
+        return adminEnum.equals(AuthorityAdminEnum.최고관리자);
+    }
+
+    public boolean isReport() {
+        return adminEnum.equals(AuthorityAdminEnum.신고담당관리자) || isOverall();
+    }
 }
 
 

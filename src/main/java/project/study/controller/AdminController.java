@@ -10,6 +10,8 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+import project.study.authority.admin.AdminAuthorizationCheck;
+import project.study.authority.admin.OverallAdmin;
 import project.study.authority.admin.dto.*;
 import project.study.domain.Admin;
 import project.study.authority.admin.dto.RequestNotifyStatusChangeDto;
@@ -27,7 +29,7 @@ import java.util.Optional;
 public class AdminController {
 
     private final AdminService adminService;
-    private final FreezeRepository freezeRepository;
+    private final AdminAuthorizationCheck check;
 
     @GetMapping("/admin/login")
     public String adminLogin(){
@@ -65,17 +67,17 @@ public class AdminController {
     public String searchMember(@RequestParam(value = "word", required = false, defaultValue = "") String word,
                                @RequestParam(defaultValue = "1", value = "page") int pageNumber, Model model,
                                @RequestParam(value = "onlyFreezeMembers", required = false) String freezeOnly,
-                               HttpSession session){
+                               @SessionAttribute(name = "adminId", required = false) Long adminId,
+                               HttpServletResponse response){
 
-        Long adminId = (Long) session.getAttribute("adminId");
         Optional<Admin> admin = adminService.findById(adminId);
         String name = admin.get().getName();
         AuthorityAdminEnum adminEnum = admin.get().getAdminEnum();
 
         if (freezeOnly == null || !freezeOnly.equals("on")) {
 
-
-            Page<SearchMemberDto> searchMemberDtoList = adminService.searchMember(word, pageNumber);
+            OverallAdmin overallAdmin = check.getOverallAdmin(adminId, response);
+            Page<SearchMemberDto> searchMemberDtoList = overallAdmin.searchMember(word, pageNumber);
 
             if(searchMemberDtoList.isEmpty()){
                 model.addAttribute("page", searchMemberDtoList);

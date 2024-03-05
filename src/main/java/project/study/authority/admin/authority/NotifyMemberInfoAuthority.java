@@ -12,9 +12,9 @@ import java.util.Optional;
 
 public interface NotifyMemberInfoAuthority {
 
-    Page<SearchNotifyDto> searchNotify(String word, Pageable pageable);
-    Page<SearchNotifyDto> searchNotifyIncludeComplete(String word, Pageable pageable);
+    Page<SearchNotifyDto> searchNotify(String word, int pageNumber);
+    Page<SearchNotifyDto> searchNotifyIncludeComplete(String word, int pageNumber);
     SearchNotifyReadMoreDto searchNotifyReadMore(Long notifyId);
-    SearchNotifyMemberInfoDto searchNotifyMemberInfo(Long notifyId);
+    SearchNotifyMemberInfoDto searchNotifyMemberInfo(String account, Long notifyId);
 
 }

@@ -19,33 +19,36 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class ReportAdmin implements NotifyMemberInfoAuthority, BanAuthority {
 
+    private final NotifyMemberInfoAuthority notifyMemberInfoAuthority;
+    private final BanAuthority banAuthority;
+
     @Override
     public void notifyStatusChange(RequestNotifyStatusChangeDto dto) {
-
+        banAuthority.notifyStatusChange(dto);
     }
 
     @Override
     public void notifyMemberFreeze(RequestNotifyMemberFreezeDto dto) {
-
+        banAuthority.notifyMemberFreeze(dto);
     }
 
     @Override
-    public Page<SearchNotifyDto> searchNotify(String word, Pageable pageable) {
-        return null;
+    public Page<SearchNotifyDto> searchNotify(String word, int pageNumber) {
+        return notifyMemberInfoAuthority.searchNotify(word, pageNumber);
     }
 
     @Override
-    public Page<SearchNotifyDto> searchNotifyIncludeComplete(String word, Pageable pageable) {
-        return null;
+    public Page<SearchNotifyDto> searchNotifyIncludeComplete(String word, int pageNumber) {
+        return notifyMemberInfoAuthority.searchNotifyIncludeComplete(word, pageNumber);
     }
 
     @Override
     public SearchNotifyReadMoreDto searchNotifyReadMore(Long notifyId) {
-        return null;
+        return notifyMemberInfoAuthority.searchNotifyReadMore(notifyId);
     }
 
     @Override
-    public SearchNotifyMemberInfoDto searchNotifyMemberInfo(Long notifyId) {
-        return null;
+    public SearchNotifyMemberInfoDto searchNotifyMemberInfo(String account, Long notifyId) {
+        return notifyMemberInfoAuthority.searchNotifyMemberInfo(account, notifyId);
     }
 }

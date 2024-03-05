@@ -29,7 +29,7 @@ public class AuthorityConfig {
     @Bean
     @Primary
     public BanAuthority banAuthority() {
-        return new BanAuthorityImpl();
+        return new BanAuthorityImpl(adminService);
     }
 
     @Bean
@@ -40,12 +40,12 @@ public class AuthorityConfig {
     @Bean
     @Primary
     public NotifyMemberInfoAuthority notifyMemberInfoAuthority() {
-        return new NotifyMemberInfoAuthorityImpl();
+        return new NotifyMemberInfoAuthorityImpl(adminService);
     }
     @Bean
     @Primary
     public RoomInfoAuthority roomInfoAuthority() {
-        return new RoomInfoAuthorityImpl();
+        return new RoomInfoAuthorityImpl(adminService);
     }
     @Bean
     @Primary
