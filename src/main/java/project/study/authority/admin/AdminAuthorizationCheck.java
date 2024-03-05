@@ -31,7 +31,7 @@ public class AdminAuthorizationCheck {
 
     public ReportAdmin getReportAdmin(Long adminId, HttpServletResponse response){
         Optional<Admin> findAdmin = adminService.findById(adminId);
-        if (findAdmin.isEmpty() || !findAdmin.get().isReport()) {
+        if (findAdmin.isEmpty() || !findAdmin.get().isOverall() || !findAdmin.get().isReport()) {
             throw new AuthorizationException(response, "권한이 없습니다");
         }
         return reportAdmin;

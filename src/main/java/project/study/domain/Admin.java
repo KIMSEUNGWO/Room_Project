@@ -32,7 +32,7 @@ public class Admin {
     }
 
     public boolean isReport() {
-        return adminEnum.equals(AuthorityAdminEnum.신고담당관리자) || isOverall();
+        return adminEnum.equals(AuthorityAdminEnum.신고담당관리자);
     }
 }
 
