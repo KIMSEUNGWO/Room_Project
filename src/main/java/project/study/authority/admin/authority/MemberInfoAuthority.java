@@ -10,7 +10,7 @@ import java.util.Optional;
 
 public interface MemberInfoAuthority {
 
-    Page<SearchMemberDto> searchMember(String word, Pageable pageable);
-    Page<SearchMemberDto> SearchMemberOnlyFreeze(String word, Pageable pageable);
+    Page<SearchMemberDto> searchMember(String word, int pageNumber);
+    Page<SearchMemberDto> SearchMemberOnlyFreeze(String word, int pageNumber);
 
 }

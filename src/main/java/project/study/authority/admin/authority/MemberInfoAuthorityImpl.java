@@ -18,12 +18,12 @@ public class MemberInfoAuthorityImpl implements MemberInfoAuthority {
     private final AdminService adminService;
 
     @Override
-    public Page<SearchMemberDto> searchMember(String word, Pageable pageable) {
-        return null;
+    public Page<SearchMemberDto> searchMember(String word, int pageNumber) {
+        return adminService.searchMember(word, pageNumber);
     }
 
     @Override
-    public Page<SearchMemberDto> SearchMemberOnlyFreeze(String word, Pageable pageable) {
-        return null;
+    public Page<SearchMemberDto> SearchMemberOnlyFreeze(String word, int pageNumber) {
+        return adminService.SearchMemberOnlyFreeze(word, pageNumber);
     }
 }

@@ -17,65 +17,34 @@ import java.util.Optional;
 
 @Component
 @RequiredArgsConstructor
-public class OverallAdmin implements BanAuthority, ExpireMemberInfoAuthority, MemberInfoAuthority, NotifyMemberInfoAuthority, RoomInfoAuthority {
+public class OverallAdmin implements ExpireMemberInfoAuthority, MemberInfoAuthority, RoomInfoAuthority {
+
+    private final ExpireMemberInfoAuthority expireMemberInfoAuthority;
+    private final MemberInfoAuthority memberInfoAuthority;
+    private final RoomInfoAuthority roomInfoAuthority;
 
     @Override
-    public void notifyStatusChange(RequestNotifyStatusChangeDto dto) {
-
+    public Page<SearchExpireMemberDto> searchExpireMember(String word, int pageNumber) {
+        return expireMemberInfoAuthority.searchExpireMember(word, pageNumber);
     }
 
     @Override
-    public void notifyMemberFreeze(RequestNotifyMemberFreezeDto dto) {
-
+    public Page<SearchMemberDto> searchMember(String word, int pageNumber) {
+        return memberInfoAuthority.searchMember(word, pageNumber);
     }
 
     @Override
-    public Page<SearchExpireMemberDto> searchExpireMember(String word, Pageable pageable) {
-        return null;
+    public Page<SearchMemberDto> SearchMemberOnlyFreeze(String word, int pageNumber) {
+        return memberInfoAuthority.SearchMemberOnlyFreeze(word, pageNumber);
     }
 
     @Override
-    public Page<SearchMemberDto> searchMember(String word, Pageable pageable) {
-        return null;
-    }
-
-    @Override
-    public Page<SearchMemberDto> SearchMemberOnlyFreeze(String word, Pageable pageable) {
-        return null;
-    }
-
-    @Override
-    public Page<SearchNotifyDto> searchNotify(String word, Pageable pageable) {
-        return null;
-    }
-
-    @Override
-    public Page<SearchNotifyDto> searchNotifyIncludeComplete(String word, Pageable pageable) {
-        return null;
-    }
-
-    @Override
-    public SearchNotifyReadMoreDto searchNotifyReadMore(Long notifyId) {
-        return null;
-    }
-
-    @Override
-    public SearchNotifyMemberInfoDto searchNotifyMemberInfo(Long notifyId) {
-        return null;
-    }
-
-    @Override
-    public Page<SearchRoomDto> searchRoom(String word, Pageable pageable) {
-        return null;
+    public Page<SearchRoomDto> searchRoom(String word, int pageNumber) {
+        return roomInfoAuthority.searchRoom(word, pageNumber);
     }
 
     @Override
     public void deleteJoinRoom(RequestDeleteRoomDto dto) {
-
-    }
-
-    @Override
-    public void insertRoomDelete(RequestDeleteRoomDto dto) {
-
+        roomInfoAuthority.deleteJoinRoom(dto);
     }
 }
