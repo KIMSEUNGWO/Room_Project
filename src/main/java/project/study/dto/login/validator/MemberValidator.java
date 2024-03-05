@@ -18,6 +18,8 @@ public abstract class MemberValidator {
 
     public final void validLogin(Member member, HttpServletResponse response) {
         System.out.println("회원 검증 로직 시작");
+
+        if (member == null) return;
         // 이용정지 회원인지 확인
         if (member.isExpireMember()) {
             expireMemberLoginException(response); // 탈퇴한 회원인지 확인
