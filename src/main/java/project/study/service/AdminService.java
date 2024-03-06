@@ -24,15 +24,10 @@ public class AdminService {
 
     @Transactional
     public Optional<Admin> adminLogin(String account, String password){
-
         Optional<Admin> byAccount = adminJpaRepository.findByAccount(account);
 
-        if(byAccount.isPresent()){
-            Admin admin = byAccount.get();
-
-            if(admin.getPassword().equals(password)){
-                return adminJpaRepository.findByAccount(account);
-            }
+        if(byAccount.isPresent() && byAccount.get().getPassword().equals(password)){
+            return adminJpaRepository.findByAccount(account);
         }
 
         return Optional.empty();
@@ -67,10 +62,9 @@ public class AdminService {
     public SearchNotifyReadMoreDto searchNotifyReadMore(Long notifyId){
         SearchNotifyReadMoreDto searchNotifyReadMoreDto = adminRepository.searchNotifyReadMore(notifyId);
         SearchNotifyImageDto searchNotifyImageDto = adminRepository.searchNotifyImage(notifyId);
-        for (String s : searchNotifyImageDto.getNotifyImageOriginalName()){
-            searchNotifyReadMoreDto.setNotifyImageStoreName(searchNotifyImageDto.getNotifyImageStoreName());
-            searchNotifyReadMoreDto.setNotifyImageOriginalName(searchNotifyImageDto.getNotifyImageOriginalName());
-        }
+
+        searchNotifyReadMoreDto.setNotifyImageStoreName(searchNotifyImageDto.getNotifyImageStoreName());
+        searchNotifyReadMoreDto.setNotifyImageOriginalName(searchNotifyImageDto.getNotifyImageOriginalName());
         return searchNotifyReadMoreDto;
     }
 
