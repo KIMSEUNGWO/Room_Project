@@ -8,6 +8,7 @@ import com.querydsl.core.types.dsl.*;
 import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import jakarta.persistence.EntityManager;
+import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.support.PageableExecutionUtils;
@@ -35,16 +36,11 @@ import static project.study.domain.QRoom.*;
 import static project.study.domain.QSocial.*;
 
 @Repository
+@RequiredArgsConstructor
 public class AdminRepository {
 
     private final JPAQueryFactory queryFactory;
     private final RoomDeleteJpaRepository roomDeleteJpaRepository;
-
-
-    public AdminRepository(EntityManager em, RoomDeleteJpaRepository roomDeleteJpaRepository) {
-        this.queryFactory = new JPAQueryFactory(em);
-        this.roomDeleteJpaRepository = roomDeleteJpaRepository;
-    }
 
     public Page<SearchMemberDto> searchMember(String word, Pageable pageable, String freezeOnly){
 

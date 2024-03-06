@@ -26,11 +26,16 @@ public class AdminService {
     public Optional<Admin> adminLogin(String account, String password){
 
         Optional<Admin> byAccount = adminJpaRepository.findByAccount(account);
-        if (byAccount.get().getPassword().equals(password)){
-            return adminJpaRepository.findByAccount(account);
+
+        if(byAccount.isPresent()){
+            Admin admin = byAccount.get();
+
+            if(admin.getPassword().equals(password)){
+                return adminJpaRepository.findByAccount(account);
+            }
         }
 
-        return null;
+        return Optional.empty();
     }
 
 

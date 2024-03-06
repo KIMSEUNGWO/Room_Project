@@ -5,13 +5,15 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="/css/common.css">
     <link rel="stylesheet" href="/css/admin_login.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="/js/admin_login.js"></script>
     <title>Document</title>
 </head>
 <body>
     <div class="container">
         <div class="modal">
             <div class="modal-wrap ">
-                <form method="post" action="/admin/login.do">
+                <form id="login-form" method="post" action="/admin/login.do">
                     <div class="modal-content">
                         <div class="logo">로고 자리</div>
                         <div class="modal-input-box">
