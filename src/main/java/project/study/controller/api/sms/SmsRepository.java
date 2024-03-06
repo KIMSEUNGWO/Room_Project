@@ -95,6 +95,17 @@ public class SmsRepository {
             throw new SmsException(new ResponseDto("error", "인증이 만료되었습니다."));
         }
     }
+    // TODO
+    // noRollbackFor 나중에 확인해봐야 함
+    @Transactional(noRollbackFor = {SmsException.class})
+    protected void validCertificationPhone(Certification certification, RequestSms data) {
+        try {
+            certification.changePasswordValid(data);
+        } catch (ExceedExpireException e) { // 인증시간 만료이면 인증 삭제 후 Exception 발생
+            certificationJpaRepository.delete(certification);
+            throw new SmsException(new ResponseDto("error", "인증이 만료되었습니다."));
+        }
+    }
 
     public Optional<Member> findByNameAndPhone(String name, String phone) {
         return memberJpaRepository.findByMemberNameAndMemberPhone(name, phone);

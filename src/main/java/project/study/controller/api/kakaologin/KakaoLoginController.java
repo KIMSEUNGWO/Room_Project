@@ -25,12 +25,10 @@ public class KakaoLoginController {
     private final KakaoLoginService kakaoLoginService;
     @ResponseBody
     @GetMapping("/login/kakao")
-    public ResponseEntity<ResponseDto> kakaologin(@RequestParam(name = "code") String code, HttpServletRequest request, HttpServletResponse response) {
+    public void kakaologin(@RequestParam(name = "code") String code, HttpServletRequest request, HttpServletResponse response) {
         HttpSession session = request.getSession();
 
         kakaoLoginService.login(code, session, response);
-
-        return null;
     }
 
 

@@ -21,15 +21,11 @@ import static project.study.domain.QMember.*;
 
 @Repository
 @Slf4j
+@RequiredArgsConstructor
 public class FreezeRepository {
 
     private final FreezeJpaRepository freezeJpaRepository;
     private final JPAQueryFactory query;
-
-    public FreezeRepository(FreezeJpaRepository freezeJpaRepository, EntityManager em) {
-        this.freezeJpaRepository = freezeJpaRepository;
-        this.query = new JPAQueryFactory(em);
-    }
 
     public Optional<Freeze> findByMemberId(Long memberId) {
         return freezeJpaRepository.findByMember_MemberId(memberId);

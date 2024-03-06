@@ -874,6 +874,46 @@ aside .buttons button:hover {
     display: none;
 }
 
+.require-phone-wrap {
+    position: absolute;
+    width: 14rem;
+    background-color: rgb(43, 46, 70);
+    border-radius: 1rem;
+    padding: 1rem;
+    right: 1rem;
+    bottom: 3.5rem;
+    animation: requirePhone 1.8s infinite;
+}
+.require-phone-wrap span {
+    display: block;
+    text-align: center;
+    font-size: 1.05rem;
+}
+.require-phone-wrap a {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-top: 1rem;
+    width: 100%;
+    height: 3rem;
+    border-radius: 0.5rem;
+    background-color: rgb(82, 86, 128);
+    cursor: pointer;
+}
+.require-phone-wrap a * {
+    pointer-events: none;
+}
+.require-phone-wrap a:hover {
+    background-color: rgb(73, 77, 113);
+    text-decoration: none;
+}
+
+@keyframes requirePhone {
+    0% { bottom: 3.5rem }
+    50% { bottom: 3.7rem }
+    100% { bottom : 3.5rem}
+}
+
 
 
 .kick-room-confirm, .entrust-room-confirm {

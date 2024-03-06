@@ -7,6 +7,7 @@ import com.querydsl.jpa.JPAExpressions;
 import com.querydsl.jpa.JPQLQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import jakarta.persistence.EntityManager;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Repository;
@@ -21,15 +22,12 @@ import java.util.Optional;
 
 @Repository
 @Slf4j
+@RequiredArgsConstructor
 public class JoinRoomRepository {
 
     private final JoinRoomJpaRepository joinRoomJpaRepository;
     private final JPAQueryFactory query;
 
-    public JoinRoomRepository(JoinRoomJpaRepository joinRoomJpaRepository, EntityManager em) {
-        this.joinRoomJpaRepository = joinRoomJpaRepository;
-        this.query = new JPAQueryFactory(em);
-    }
 
     public void createJoinRoom(Room room, Member member) {
         JoinRoom saveJoinRoom = JoinRoom.builder()

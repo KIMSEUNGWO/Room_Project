@@ -67,7 +67,10 @@ public class ChatController {
         Member member  = chatService.getMember(chat.getToken(), chat.getRoomId());
         chatService.accessCount(chat, member); // 현재 접속중인 회원 리스트에 추가
 
+        boolean hasPhone = member.hasPhone();
+
         headerAccessor.getSessionAttributes().put("member", member);
+        headerAccessor.getSessionAttributes().put("hasPhone", hasPhone);
         headerAccessor.getSessionAttributes().put("roomId", chat.getRoomId());
 
         chat.setSenderImage(member.getStoreImage());
@@ -76,6 +79,11 @@ public class ChatController {
 
         ChatObject<ResponseChatMemberList> responseChatMemberListChatObject = chatService.changeToMemberListDto(chat);
         templateSendMessage(chat.getRoomId(), responseChatMemberListChatObject);
+
+        if (!hasPhone) {
+            ChatDto requirePhone = ChatDto.builder().type(MessageType.REQUIRE_PHONE).build();
+            templateSendMessage(chat.getRoomId(), requirePhone);
+        }
     }
 
     @MessageMapping("/chat/update")
@@ -96,6 +104,10 @@ public class ChatController {
 
     @MessageMapping("/chat/sendMessage")
     public void sendMessage(@Payload ChatDto chat, SimpMessageHeaderAccessor headerAccessor) {
+        boolean hasPhone = (boolean) headerAccessor.getSessionAttributes().get("hasPhone");
+        if (!hasPhone) {
+            return;
+        }
 
         Member member = (Member) headerAccessor.getSessionAttributes().get("member");
         Long roomId = (Long) headerAccessor.getSessionAttributes().get("roomId");

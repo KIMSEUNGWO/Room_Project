@@ -7,7 +7,7 @@ import lombok.ToString;
 @Getter
 @Setter
 @ToString
-public abstract class RequestSms {
+public class RequestSms {
 
     private String name;
     private String phone;

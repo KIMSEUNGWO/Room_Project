@@ -84,26 +84,23 @@ public class RoomService {
 
     public List<ResponseRoomListDto> getMyRoomList(Member member) {
         List<ResponseRoomListDto> roomInfo = joinRoomRepository.getRoomInfo(member);
-        for (ResponseRoomListDto data : roomInfo) {
-            List<String> tagList = tagRepository.findAllByRoomId(data.getRoomId());
-            data.setTagList(tagList);
-        }
+        roomInfo.iterator()
+            .forEachRemaining(data -> data.setTagList(tagRepository.findAllByRoomId(data.getRoomId())));
         return roomInfo;
     }
 
 
     public List<ResponseRoomListDto> searchRoomList(Long memberId, String word, Pageable pageable) {
         List<ResponseRoomListDto> roomInfo = joinRoomRepository.search(memberId, word, pageable);
-        for (ResponseRoomListDto data : roomInfo) {
-            List<String> tagList = tagRepository.findAllByRoomId(data.getRoomId());
-            data.setTagList(tagList);
-        }
+        roomInfo.iterator()
+            .forEachRemaining(data -> data.setTagList(tagRepository.findAllByRoomId(data.getRoomId())));
         return roomInfo;
     }
 
     public void validMaxCreateRoom(Member member) {
-        int nowCount = member.joinRoomCount(AuthorityMemberEnum.방장);
-        if (nowCount >= WebConst.MAX_CREATE_ROOM_COUNT) throw new CreateExceedRoomException(new ResponseDto(WebConst.ERROR, "방 생성 최대개수를 초과하였습니다."));
+        if (member.isExceedJoinRoom(AuthorityMemberEnum.방장)) {
+            throw new CreateExceedRoomException(new ResponseDto(WebConst.ERROR, "방 생성 최대개수를 초과하였습니다."));
+        }
     }
 
     public ResponsePrivateRoomInfoDto getResponsePrivateRoomInfoDto(Room room) {
@@ -157,8 +154,7 @@ public class RoomService {
 
     public ResponseEditRoomForm getEditRoomForm(Room room) {
         ResponseEditRoomForm form = roomRepository.getResponseEditRoomForm(room);
-        List<String> tagList = tagRepository.findAllByRoomId(room.getRoomId());
-        form.setTagList(tagList);
+        form.setTagList(tagRepository.findAllByRoomId(room.getRoomId()));
         return form;
     }
 

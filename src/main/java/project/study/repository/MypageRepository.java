@@ -17,6 +17,8 @@ import project.study.dto.mypage.RequestEditInfoDto;
 import project.study.exceptions.RestFulException;
 import project.study.service.SignupService;
 
+import static project.study.constant.WebConst.*;
+
 @Repository
 @RequiredArgsConstructor
 @Slf4j
@@ -27,7 +29,7 @@ public class MypageRepository {
 
     public void validChangePassword(Member member, RequestChangePasswordDto data, ErrorList errorList) {
         if (member.isSocialMember()) {
-            throw new RestFulException(new ResponseDto(WebConst.ERROR, "소셜회원은 비밀번호를 변경할 수 없습니다."));
+            throw new RestFulException(new ResponseDto(ERROR, "소셜회원은 비밀번호를 변경할 수 없습니다."));
         }
         String nowPassword = data.getNowPassword();
         String changePassword = data.getChangePassword();
@@ -82,18 +84,18 @@ public class MypageRepository {
         Basic basic = member.getBasic();
         boolean isValidPassword = basic.isValidPassword(encoder, password);
         if (!isValidPassword) {
-            throw new RestFulException(new ResponseDto(WebConst.ERROR, "비밀번호가 일치하지 않습니다."));
+            throw new RestFulException(new ResponseDto(ERROR, "비밀번호가 일치하지 않습니다."));
         }
     }
 
     public void validMember(Member member, ErrorList errorList) {
         if (member.isFreezeMember()) {
-            errorList.addError(new Error(WebConst.ERROR, "정지된 회원입니다."));
+            errorList.addError(new Error(ERROR, "정지된 회원입니다."));
         } else if (member.isExpireMember()) {
-            errorList.addError(new Error(WebConst.ERROR, "이미 탈퇴한 회원입니다."));
+            errorList.addError(new Error(ERROR, "이미 탈퇴한 회원입니다."));
         }
         if (errorList.hasError()) {
-            throw new RestFulException(new ResponseObject<>(WebConst.ERROR, "에러", errorList.getErrorList()));
+            throw new RestFulException(new ResponseObject<>(ERROR, "에러", errorList.getErrorList()));
         }
     }
 }
