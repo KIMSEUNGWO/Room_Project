@@ -141,7 +141,7 @@ public class RoomRepository {
     }
     @Transactional
     public void createRoomImage(RequestCreateRoomDto data, Room room) {
-        fileUpload.saveFile(data.getProfile(), FileUploadType.ROOM_PROFILE, room);
+        fileUpload.saveFile(data.getImage(), FileUploadType.ROOM_PROFILE, room);
     }
     @Transactional
     public void createTags(RequestCreateRoomDto data, Room room) {

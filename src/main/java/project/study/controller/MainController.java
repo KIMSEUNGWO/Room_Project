@@ -53,9 +53,8 @@ public class MainController {
 
     @GetMapping("/room/{room}/private")
     public String roomPrivate(@SessionLogin(required = true, type = CallType.CONTROLLER) Member member, @PathRoom("room") Room room, Model model) {
-        if (room.isPublic()) {
-            return "redirect:/";
-        }
+        if (room.isPublic()) return "redirect:/";
+
         ResponsePrivateRoomInfoDto data = roomService.getResponsePrivateRoomInfoDto(room);
         model.addAttribute("room", data);
         return "room_private";
@@ -77,7 +76,7 @@ public class MainController {
     public String mypage(@SessionLogin Member member, Model model) {
         if (member == null) return "redirect:/?redirectURI=/mypage";
 
-        MyPageInfo info = member.getMyPageInto();
+        MyPageInfo info = member.getMyPageInfo();
 
         model.addAttribute("main", info);
         model.addAttribute("profile", member.getStoreImage());
@@ -85,13 +84,10 @@ public class MainController {
     }
 
     @GetMapping("/logout")
-    public String logout(@SessionLogin(type = CallType.CONTROLLER) Member member, HttpServletRequest request) {
+    public String logout(@SessionLogin(type = CallType.CONTROLLER) Member member, HttpSession session) {
         if (member == null) return "redirect:/";
 
-        HttpSession session = request.getSession();
         session.removeAttribute(LOGIN_MEMBER);
-
-        if (!member.isSocialMember()) return "redirect:/";
 
         return "redirect:" + mainService.logout(member);
     }

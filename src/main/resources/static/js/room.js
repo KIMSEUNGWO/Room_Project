@@ -378,7 +378,7 @@ function editResult(json) {
 
     if (json.result == 'ok') {
         insertModalSize('modal-edit-room');
-        modal_content.innerHTML = editRoomModal(json.editRoom);
+        modal_content.innerHTML = editRoomModal(json.data);
         modal.classList.remove('disabled');
     } else if (json.result == 'error') {
         al(json.result, '실패', json.message);

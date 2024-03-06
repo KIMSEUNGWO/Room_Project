@@ -1,7 +1,5 @@
 window.addEventListener('load', () => {
-    const modal = document.querySelector('.modal');
     const modal_content = document.querySelector('.modal-content');
-
 
     // 부모에게 이벤트 위임
     modal_content.addEventListener('click', (e) => {
@@ -9,28 +7,27 @@ window.addEventListener('load', () => {
 
         createRoomMessageInit();
 
-
-        if (target.id == 'room-cancel') {
+        if (target.id === 'room-cancel') {
             modalExit();
             return;
         }
 
-        if (target.id == 'room-edit') {
+        if (target.id === 'room-edit') {
             roomEditSubmit();
         }
 
-        if (target.id == 'defaultImage') {
+        if (target.id === 'defaultImage') {
             defaultImageChange();
         }
 
-        if (target.id == 'img') {
+        if (target.id === 'img') {
             let changeImageInput = document.querySelector('input[name="roomImage"]');
             changeImageInput.click();
             imageInputAddEventListener(changeImageInput);
             return;
         }
 
-        if (target.name == 'max') {
+        if (target.name === 'max') {
             clearLabel();
             let label = document.querySelector('label[for="' + target.id + '"]');
             label.setAttribute('aria-selected', 'true');
@@ -46,16 +43,16 @@ window.addEventListener('load', () => {
             return;
         }
 
-        if (target.getAttribute('for') == 'private') {
-            let public = document.querySelector('label[for="public"]');
-            public.setAttribute('aria-selected', 'false');
+        if (target.getAttribute('for') === 'private') {
+            let publicLabel = document.querySelector('label[for="public"]');
+            publicLabel.setAttribute('aria-selected', 'false');
             target.setAttribute('aria-selected', 'true');
             let password_box = document.querySelector('.password-box');
             password_box.classList.remove('disabled');
         }
-        if (target.getAttribute('for') == 'public') {
-            let private = document.querySelector('label[for="private"]');
-            private.setAttribute('aria-selected', 'false');
+        if (target.getAttribute('for') === 'public') {
+            let privateLabel = document.querySelector('label[for="private"]');
+            privateLabel.setAttribute('aria-selected', 'false');
             target.setAttribute('aria-selected', 'true');
             let password_box = document.querySelector('.password-box');
             password_box.classList.add('disabled');
@@ -176,7 +173,7 @@ function roomEditResult(json) {
         sendRoomInfoUpdate();
     }
     if (json.result == 'error') {
-        json.errorList.forEach(error => {
+        json.data.forEach(error => {
             let msgBox = document.querySelector('.m-' + error.location);
             let result = {result : 'error', message : error.message};
             printMessageFromJson(result, msgBox);

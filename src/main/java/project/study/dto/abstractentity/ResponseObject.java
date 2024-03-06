@@ -11,4 +11,9 @@ public class ResponseObject<T> extends ResponseDto {
         super(result, message);
         this.data = data;
     }
+
+    public ResponseObject(String message, T data) {
+        super(message);
+        this.data = data;
+    }
 }

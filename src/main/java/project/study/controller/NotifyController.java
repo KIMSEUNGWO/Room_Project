@@ -11,12 +11,15 @@ import org.springframework.web.bind.annotation.RestController;
 import project.study.authority.member.MemberAuthorizationCheck;
 import project.study.authority.member.authority.MemberAuthority;
 import project.study.authority.member.dto.RequestNotifyDto;
+import project.study.constant.WebConst;
 import project.study.customAnnotation.CallType;
 import project.study.customAnnotation.PathRoom;
 import project.study.customAnnotation.SessionLogin;
 import project.study.domain.Member;
 import project.study.domain.Room;
 import project.study.dto.abstractentity.ResponseDto;
+
+import static project.study.constant.WebConst.OK;
 
 @RestController
 @RequiredArgsConstructor
@@ -35,7 +38,6 @@ public class NotifyController {
         MemberAuthority memberAuthority = authorizationCheck.getMemberAuthority(response, member);
         memberAuthority.notify(member, room, data);
 
-
-        return new ResponseEntity<>(new ResponseDto("ok", "성공"), HttpStatus.OK);
+        return ResponseEntity.ok(new ResponseDto(OK, "성공"));
     }
 }

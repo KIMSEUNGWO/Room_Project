@@ -12,16 +12,7 @@ import java.util.List;
 @Getter
 @Setter
 @ToString
-public class RequestEditRoomDto {
+public class RequestEditRoomDto extends RequestCreateRoomDto {
 
-    @Nullable
-    private MultipartFile image;
     private boolean defaultImage;
-    private String title;
-    private String intro;
-    private String max;
-    private List<String> tags;
-    private PublicEnum roomPublic;
-    @Nullable
-    private String password;
 }

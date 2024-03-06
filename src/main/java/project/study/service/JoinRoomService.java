@@ -20,6 +20,8 @@ import project.study.repository.RoomRepository;
 
 import java.util.Optional;
 
+import static project.study.enums.AuthorityMemberEnum.*;
+
 @Service
 @RequiredArgsConstructor
 @Slf4j
@@ -34,8 +36,7 @@ public class JoinRoomService {
     }
 
     public void validMaxJoinRoom(Member member, HttpServletResponse response) {
-        int nowJoinRoomCount = member.joinRoomCount(AuthorityMemberEnum.일반);
-        if (nowJoinRoomCount >= WebConst.MAX_JOIN_ROOM_COUNT) {
+        if (member.isExceedJoinRoom(일반)) {
             throw new ExceedJoinRoomException(response);
         }
     }
@@ -46,7 +47,7 @@ public class JoinRoomService {
         JoinRoom saveJoinRoom = JoinRoom.builder()
                 .room(data.getRoom())
                 .member(data.getMember())
-                .authorityEnum(AuthorityMemberEnum.일반)
+                .authorityEnum(일반)
                 .build();
         joinRoomRepository.save(saveJoinRoom);
     }

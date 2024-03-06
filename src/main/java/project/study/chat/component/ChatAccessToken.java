@@ -1,6 +1,7 @@
 package project.study.chat.component;
 
 import org.springframework.stereotype.Component;
+import project.study.constant.WebConst;
 import project.study.dto.abstractentity.ResponseDto;
 import project.study.exceptions.RestFulException;
 
@@ -22,7 +23,7 @@ public class ChatAccessToken {
 
     public Long getMemberId(Long memberId, Long roomId) {
         Long room = accessToken.get(memberId);
-        if (room == null || !room.equals(roomId)) throw new RestFulException(new ResponseDto("error", "권한 없음"));
+        if (room == null || !room.equals(roomId)) throw new RestFulException(new ResponseDto(WebConst.ERROR, "권한 없음"));
         return memberId;
     }
 
