@@ -22,7 +22,7 @@ public class MockMember {
     @Autowired
     private BCryptPasswordEncoder encoder;
 
-    private static int index = 100000;
+    private static int index = 0;
     private static final String nickname = "테스트닉네임";
     private static final String name = "테스트이름";
     private static final String account = "test";

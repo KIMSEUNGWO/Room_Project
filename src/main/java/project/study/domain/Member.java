@@ -148,4 +148,12 @@ public class Member implements ImageFileEntity {
     public boolean isExceedJoinRoom(AuthorityMemberEnum authority) {
         return joinRoomCount(authority) >= WebConst.MAX_JOIN_ROOM_COUNT;
     }
+
+    public boolean hasPhone() {
+        return this.phone != null;
+    }
+
+    public void changePhone(String phone) {
+        this.phone.changePhone(phone);
+    }
 }

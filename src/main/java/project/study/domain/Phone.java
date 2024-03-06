@@ -26,4 +26,8 @@ public class Phone {
     public String getPhone() {
         return phone;
     }
+
+    public void changePhone(String phone) {
+        this.phone = phone;
+    }
 }

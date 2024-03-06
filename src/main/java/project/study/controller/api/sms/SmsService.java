@@ -5,18 +5,15 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import project.study.domain.Basic;
-import project.study.domain.Certification;
-import project.study.domain.Member;
-import project.study.domain.Social;
+import project.study.domain.*;
 import project.study.dto.abstractentity.ResponseDto;
 import project.study.enums.SocialEnum;
 import project.study.exceptions.sms.*;
 import project.study.jpaRepository.CertificationJpaRepository;
 import project.study.jpaRepository.MemberJpaRepository;
+import project.study.jpaRepository.PhoneJpaRepository;
 
 import java.time.LocalDateTime;
-import java.util.Locale;
 import java.util.Optional;
 
 import static project.study.constant.WebConst.ERROR;
@@ -32,7 +29,7 @@ public class SmsService {
 
     private final SmsRepository smsRepository;
     private final CertificationJpaRepository certificationJpaRepository;
-    private final MemberJpaRepository memberJpaRepository;
+    private final PhoneJpaRepository phoneJpaRepository;
     private final BCryptPasswordEncoder encoder;
 
     protected void sendSMS(RequestSms data) {
@@ -72,12 +69,13 @@ public class SmsService {
         return findCertification.get();
     }
 
-    protected void validFindAccountCertification(Certification certification, RequestFindAccount data) {
+    protected void validCertification(Certification certification, RequestSms data) {
         smsRepository.validCertification(certification, data);
     }
-    protected void validFindPasswordCertification(Certification certification, RequestFindPassword data) {
-        smsRepository.validCertification(certification, data);
+    public void validCertificationPhone(Certification certification, RequestSms data) {
+        smsRepository.validCertificationPhone(certification, data);
     }
+
     public void validChangePassword(RequestChangePassword data) {
         if (data.getPassword() == null || data.getPasswordCheck() == null) {
             throw new SmsException(new ResponseDto(ERROR, "비밀번호를 입력해주세요."));
@@ -94,7 +92,7 @@ public class SmsService {
         }
     }
 
-    public FindAccount getFindAccount(RequestFindAccount data) {
+    public FindAccount getFindAccount(RequestSms data) {
         System.out.println("getFindAccount()");
         Optional<Member> findMember = smsRepository.findByNameAndPhone(data.getName(), data.getPhone());
         if (findMember.isEmpty()) {
@@ -134,7 +132,20 @@ public class SmsService {
     }
 
     @Transactional
-    public void deleteAllByCertification(RequestFindAccount data) {
+    public void deleteAllByCertification(RequestSms data) {
         certificationJpaRepository.deleteAllByNameAndPhone(data.getName(), data.getPhone());
+    }
+
+
+    public void changePhone(Member member, Certification certification) {
+        if (member.hasPhone()) {
+            member.changePhone(certification.getPhone());
+        } else {
+            Phone savePhone = Phone.builder()
+                .member(member)
+                .phone(certification.getPhone())
+                .build();
+            phoneJpaRepository.save(savePhone);
+        }
     }
 }

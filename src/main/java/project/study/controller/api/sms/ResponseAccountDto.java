@@ -12,4 +12,9 @@ public class ResponseAccountDto extends ResponseDto {
         super(result, message);
         this.findAccount = findAccount;
     }
+
+    public ResponseAccountDto(String message, FindAccount findAccount) {
+        super(message);
+        this.findAccount = findAccount;
+    }
 }

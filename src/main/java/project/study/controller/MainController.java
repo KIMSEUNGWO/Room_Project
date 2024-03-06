@@ -47,6 +47,7 @@ public class MainController {
         model.addAttribute("max", room.getRoomLimit());
         model.addAttribute("memberList", memberList);
         model.addAttribute("roomInfo", roomInfo);
+        model.addAttribute("hasPhone", member.hasPhone());
 
         return "room";
     }

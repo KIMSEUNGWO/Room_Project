@@ -8,5 +8,6 @@ public enum MessageType {
     NOTICE, // 공지사항 변경
     KICK, // 강퇴
     ENTRUST, // 방장 위임
+    REQUIRE_PHONE,
     EXIT; // 방에서 완전히 나감
 }

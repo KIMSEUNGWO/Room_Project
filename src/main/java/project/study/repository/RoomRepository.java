@@ -4,10 +4,9 @@ import com.querydsl.core.types.Projections;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.core.types.dsl.EnumPath;
 import com.querydsl.jpa.impl.JPAQueryFactory;
-import jakarta.persistence.EntityManager;
 import jakarta.servlet.http.HttpServletResponse;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.lang.Nullable;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
@@ -15,7 +14,6 @@ import project.study.authority.member.dto.RequestEditRoomDto;
 import project.study.authority.member.dto.RequestJoinRoomDto;
 import project.study.chat.domain.QChat;
 import project.study.chat.dto.ResponseChatHistory;
-import project.study.chat.jparepository.ChatJpaRepository;
 import project.study.controller.image.FileUpload;
 import project.study.controller.image.FileUploadType;
 import project.study.domain.*;
@@ -39,26 +37,16 @@ import java.util.Optional;
 
 @Repository
 @Slf4j
+@RequiredArgsConstructor
 public class RoomRepository {
 
     private final RoomJpaRepository roomJpaRepository;
     private final TagJpaRepository tagJpaRepository;
     private final RoomPasswordJpaRepository roomPasswordJpaRepository;
     private final RoomDeleteJpaRepository roomDeleteJpaRepository;
-    private final ChatJpaRepository chatJpaRepository;
     private final FileUpload fileUpload;
     private final JPAQueryFactory query;
 
-    @Autowired
-    public RoomRepository(RoomJpaRepository roomJpaRepository, TagJpaRepository tagJpaRepository, RoomPasswordJpaRepository roomPasswordJpaRepository, FileUpload fileUpload, EntityManager em, ChatJpaRepository chatJpaRepository, RoomDeleteJpaRepository roomDeleteJpaRepository) {
-        this.roomJpaRepository = roomJpaRepository;
-        this.tagJpaRepository = tagJpaRepository;
-        this.chatJpaRepository = chatJpaRepository;
-        this.roomPasswordJpaRepository = roomPasswordJpaRepository;
-        this.roomDeleteJpaRepository = roomDeleteJpaRepository;
-        this.fileUpload = fileUpload;
-        this.query = new JPAQueryFactory(em);
-    }
 
     public void validRoomTitle(ErrorList errorList, String title) {
         if (title == null || title.length() < 2 || title.length() > 10) {

@@ -1,5 +1,7 @@
 package project.study.config;
 
+import com.querydsl.jpa.impl.JPAQueryFactory;
+import jakarta.persistence.EntityManager;
 import jakarta.servlet.MultipartConfigElement;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
@@ -26,6 +28,13 @@ public class WebConfig implements WebMvcConfigurer {
 
     private final MemberJpaRepository memberJpaRepository;
     private final RoomJpaRepository roomJpaRepository;
+    private final EntityManager em;
+
+    @Bean
+    public JPAQueryFactory query() {
+        return new JPAQueryFactory(em);
+    }
+
     @Bean
     public MultipartResolver multipartResolver() {
         return new StandardServletMultipartResolver();

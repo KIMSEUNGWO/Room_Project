@@ -33,8 +33,23 @@ public class Certification {
         if (LocalDateTime.now().isAfter(expireDate)) {
             throw new ExceedExpireException();
         }
-        if (!name.equals(data.getName()) || !phone.equals(data.getPhone()) || !certificationNumber.equals(data.getCertification())) {
+        if (!name.equals(data.getName()) ||
+            !phone.equals(data.getPhone()) ||
+            !certificationNumber.equals(data.getCertification())) {
             throw new SmsException(new ResponseDto("error", "인증에 실패했습니다."));
         }
+    }
+
+    public void changePasswordValid(RequestSms data) throws ExceedExpireException {
+        if (LocalDateTime.now().isAfter(expireDate)) {
+            throw new ExceedExpireException();
+        }
+        if (!phone.equals(data.getPhone()) || !certificationNumber.equals(data.getCertification())) {
+            throw new SmsException(new ResponseDto("error", "인증에 실패했습니다."));
+        }
+    }
+
+    public String getPhone() {
+        return phone;
     }
 }

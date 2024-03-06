@@ -42,7 +42,10 @@ window.addEventListener('load', () => {
     const passwordPop = document.querySelector('.passwordPop');
     if (passwordPop != null) {
         const pwdBtn = document.querySelector('#pwdBtn'); // 비밀번호 변경 버튼
-        pwdBtn.addEventListener('click', () => passwordPop.parentElement.classList.remove('disabled'));
+        pwdBtn.addEventListener('click', () => {
+            initialPassword();
+            passwordPop.parentElement.classList.remove('disabled')
+        });
 
         // 비밀번호 찾기 이동
         const findPassword = document.querySelector('#findPassword');
@@ -92,7 +95,7 @@ window.addEventListener('load', () => {
                 return;
             }
             let password = document.querySelector('input[name="deletePassword"]');
-            fetchPost('/member/delete', {password : password.value}, deleteResult);
+            fetchPost('/member/delete', {password : password != null ? password.value : null}, deleteResult);
         })
 
     }
@@ -115,7 +118,7 @@ window.addEventListener('load', () => {
             let phone = document.querySelector('input[name="phones"]').value;
             let json = {phone : phone};
     
-            fetchPost('/sms/send/find', json, sendSMS);
+            fetchPost('/sms/send', json, sendSMS);
         })
 
         // 인증번호 확인 로직
@@ -136,8 +139,9 @@ window.addEventListener('load', () => {
                 return;
             }
     
-            let json = {phone : phone.value, certificationNumber : certification.value};
-            fetchPost('/changePhone/confirm', json, resultPhone);
+            let json = {phone : phone.value, certification : certification.value};
+            console.log(json);
+            fetchPost('/changePhone', json, resultPhone);
         }) 
     }
 
@@ -218,6 +222,8 @@ function initialPassword() {
     let currPwError = document.querySelector('#bfpw');
     let changePwError = document.querySelector('#cpw');
     let checkPwError = document.querySelector('#cpwc');
+
+    if (currPwError == null || changePwError == null || checkPwError == null) return;
 
     currPwError.innerHTML = '';
     changePwError.innerHTML = '';
@@ -353,9 +359,12 @@ function modalFindPassword() {
     modal.classList.remove('disabled');
 }
 function resultPhone(result) {
-    if (result.result == 'ok') {
+    if (result.result === 'ok') {
         alert(result.message);
         location.reload();
+    } else if (result.result === 'error') {
+        let cPhone = document.querySelector('.confirmPhoneCheck');
+        printFalse(cPhone, result.message);
     }
     
 }
@@ -370,7 +379,11 @@ function sendSMS(result) {
             alert("잠시 후에 시도해주세요.");
             return;
         }
-        var cPhone = document.querySelector('.confirmPhone');
+        // 타이머 색상 제거
+        let timer = document.querySelector('.limitTime');
+        timer.style.removeProperty('color');
+
+        let cPhone = document.querySelector('.confirmPhone');
         printTrue(cPhone, result.message);
         clearInterval(timerInterval);
 
@@ -380,7 +393,7 @@ function sendSMS(result) {
 }
 
 function validPhone() {
-    var cPhone = document.querySelector('.confirmPhone');
+    let cPhone = document.querySelector('.confirmPhone');
     if (checkPhone()){
         printTrue(cPhone, '');
         return null;
@@ -408,14 +421,14 @@ function printFalse(cTag, message) {
 }
 
 function checkPhone() {
-    var validPhobe = document.querySelector('input[name="phones"]');
-    var phoneRegex = /^(010)-[0-9]{3,4}-[0-9]{4}$/;
+    let validPhobe = document.querySelector('input[name="phones"]');
+    let phoneRegex = /^(010)[0-9]{7,9}$/;
     return phoneRegex.test(validPhobe.value);
 }
 
 function limitClick() {
-    var seconds = 10;
-    var timerId = setInterval(function(){
+    let seconds = 10;
+    let timerId = setInterval(function(){
         // 시간 감소
         seconds--;
         // 시간이 0이면 타이머 중지
@@ -431,9 +444,9 @@ function limitClick() {
 
 function limitTimer() {
     let timer = document.querySelector('.limitTime');
-    var minutes = 5;
-    var seconds = 0;
-    var timerId = setInterval(function(){
+    let minutes = 5;
+    let seconds = 0;
+    let timerId = setInterval(function(){
         // 시간 감소
         seconds--;
     
@@ -447,8 +460,8 @@ function limitTimer() {
         }
     
         // 분과 초를 2자리 숫자로 표시
-        var formattedMinutes = ('0' + minutes).slice(-2);
-        var formattedSeconds = ('0' + seconds).slice(-2);
+        let formattedMinutes = ('0' + minutes).slice(-2);
+        let formattedSeconds = ('0' + seconds).slice(-2);
     
         // 타이머 업데이트
         timer.textContent = formattedMinutes + ':' + formattedSeconds;
