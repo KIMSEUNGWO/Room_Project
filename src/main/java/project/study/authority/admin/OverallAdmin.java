@@ -8,7 +8,7 @@ import project.study.authority.admin.dto.*;
 
 @Component
 @RequiredArgsConstructor
-public class OverallAdmin implements ExpireMemberInfoAuthority, MemberInfoAuthority, RoomInfoAuthority {
+public class OverallAdmin implements ExpireMemberInfoAuthority, MemberInfoAuthority, RoomInfoAuthority  {
 
     private final ExpireMemberInfoAuthority expireMemberInfoAuthority;
     private final MemberInfoAuthority memberInfoAuthority;

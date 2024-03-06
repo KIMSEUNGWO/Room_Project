@@ -1,9 +1,8 @@
-window.addEventListener('load',function(){
+$(function(){
+   
+    let logoutBtn = $('#btn-logout');
 
-    let logoutBtn = document.querySelector('#btn-logout');
-
-    logoutBtn.addEventListener('click', function(){
-
+    logoutBtn.on('click', function(){        
         $.ajax({
             url : '/admin/logout',
             type : 'POST',

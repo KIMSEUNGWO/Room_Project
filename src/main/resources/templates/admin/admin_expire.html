@@ -7,6 +7,7 @@
     <link rel="stylesheet" href="/css/header.css">
     <link rel="stylesheet" href="/css/admin_menu.css">
     <link rel="stylesheet" href="/css/admin_members.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
     <script src="/js/admin_header.js"></script>
     <title>탈퇴한 회원</title>
 </head>
@@ -118,7 +119,7 @@
                     </div>
                 </th:block>
                 <th:block th:if="${page.content.isEmpty()}">
-                    <div class="errorMsg" th:text="${errorMsg}"></div>
+                    <div class="errorMsg">결과가 존재하지 않습니다.</div>
                 </th:block>
             </div>
         </div>
