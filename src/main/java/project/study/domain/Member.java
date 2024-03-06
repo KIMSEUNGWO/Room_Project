@@ -4,14 +4,18 @@ import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.NoArgsConstructor;
+import project.study.constant.WebConst;
 import project.study.controller.api.sms.FindAccount;
 import project.study.dto.MyPageInfo;
 import project.study.dto.mypage.RequestEditInfoDto;
 import project.study.enums.AuthorityMemberEnum;
 import project.study.enums.MemberStatusEnum;
+import project.study.enums.SocialEnum;
 
 import java.time.LocalDateTime;
 import java.util.List;
+
+import static project.study.enums.MemberStatusEnum.*;
 
 @AllArgsConstructor
 @NoArgsConstructor
@@ -47,14 +51,14 @@ public class Member implements ImageFileEntity {
     private List<JoinRoom> joinRoomList;
 
     public void changeStatusToNormal() {
-        memberStatus = MemberStatusEnum.정상;
+        memberStatus = 정상;
     }
     public void changeStatusToExpire() {
-        this.memberStatus = MemberStatusEnum.탈퇴;
+        this.memberStatus = 탈퇴;
         this.memberExpireDate = LocalDateTime.now();
     }
     public void changeStatusToFreeze() {
-        this.memberStatus = MemberStatusEnum.이용정지;
+        this.memberStatus = 이용정지;
     }
     public boolean isFreezeMember() {
         return memberStatus.isFreezeMember();
@@ -117,7 +121,7 @@ public class Member implements ImageFileEntity {
         return (int) joinRoomList.stream().filter(joinRoom -> !joinRoom.compareAuthority(authorityEnum)).count();
     }
 
-    public MyPageInfo getMyPageInto() {
+    public MyPageInfo getMyPageInfo() {
         return MyPageInfo.builder()
             .profile(getStoreImage())
             .name(memberName)
@@ -134,5 +138,14 @@ public class Member implements ImageFileEntity {
             return social.findAccount();
         }
         return new FindAccount(null, "다시 시도해주세요.");
+    }
+
+    public boolean isKakao() {
+        if (!isSocialMember()) return false;
+        return social.isEqualsSocialType(SocialEnum.KAKAO);
+    }
+
+    public boolean isExceedJoinRoom(AuthorityMemberEnum authority) {
+        return joinRoomCount(authority) >= WebConst.MAX_JOIN_ROOM_COUNT;
     }
 }

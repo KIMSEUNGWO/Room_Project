@@ -128,14 +128,14 @@ function roomCreateSubmit() {
     // 자바스크립트 코드
     let formData = new FormData();
     if (image.files.length > 0) {
-        formData.append('profile', image.files.item(0));
+        formData.append('image', image.files.item(0));
     }
     formData.append('title', title.value);
     formData.append('intro', intro.value);
     formData.append('max', max.value);
     formData.append('tags', convertTags(tags));
     formData.append('roomPublic', public.value);
-    if (public.id != 'public') {
+    if (public.id !== 'public') {
         formData.append('password', roomPassword.value);
     }
 
@@ -166,7 +166,7 @@ function roomCreateResult(json) {
     if (json.result == 'ok') {
         al(json.result, json.message, '');
         modalExit();
-        setTimeout(() => window.location.href = json.redirectURI, 1000);
+        setTimeout(() => window.location.href = json.data, 1000);
     }
     if (json.result == 'error') {
         al (json.result, '방 생성 제한', json.message);

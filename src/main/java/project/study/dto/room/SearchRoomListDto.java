@@ -17,4 +17,10 @@ public class SearchRoomListDto extends ResponseDto {
         this.word = word;
         this.roomList = roomList;
     }
+
+    public SearchRoomListDto(String message, String word, List<ResponseRoomListDto> roomList) {
+        super(message);
+        this.word = word;
+        this.roomList = roomList;
+    }
 }

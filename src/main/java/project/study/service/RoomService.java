@@ -17,6 +17,7 @@ import project.study.domain.Room;
 import project.study.authority.member.dto.RequestCreateRoomDto;
 import project.study.domain.RoomNotice;
 import project.study.dto.abstractentity.ResponseDto;
+import project.study.dto.abstractentity.ResponseObject;
 import project.study.dto.login.responsedto.ErrorList;
 import project.study.dto.login.responsedto.ResponseSignupdto;
 import project.study.dto.room.*;
@@ -56,26 +57,28 @@ public class RoomService {
 
     public void validRoomData(RequestCreateRoomDto data) {
         ErrorList errorList = new ErrorList();
-        roomRepository.validRoomTitle(errorList, data.getTitle());
-        roomRepository.validRoomIntro(errorList, data.getIntro());
-        roomRepository.validPublic(errorList, data.getRoomPublic(), data.getPassword());
+        validRoomInfo(data, errorList);
         roomRepository.validRoomMaxPerson(errorList, data.getMax());
-        roomRepository.validTagList(errorList, data.getTags());
 
         if (errorList.hasError()) {
-            throw new CreateRoomException(new ResponseSignupdto("error", "방 생성 오류", errorList.getErrorList()));
+            throw new CreateRoomException(new ResponseSignupdto(WebConst.ERROR, "방 생성 오류", errorList.getErrorList()));
         }
     }
-    public void validEditRoomData(Room room, RequestEditRoomDto data) {
-        ErrorList errorList = new ErrorList();
+
+    private void validRoomInfo(RequestCreateRoomDto data, ErrorList errorList) {
         roomRepository.validRoomTitle(errorList, data.getTitle());
         roomRepository.validRoomIntro(errorList, data.getIntro());
         roomRepository.validPublic(errorList, data.getRoomPublic(), data.getPassword());
-        roomRepository.validRoomEditMaxPerson(errorList, room.joinRoomSize(), data.getMax());
         roomRepository.validTagList(errorList, data.getTags());
+    }
+
+    public void validEditRoomData(Room room, RequestEditRoomDto data) {
+        ErrorList errorList = new ErrorList();
+        validRoomInfo(data, errorList);
+        roomRepository.validRoomEditMaxPerson(errorList, room.joinRoomSize(), data.getMax());
 
         if (errorList.hasError()) {
-            throw new CreateRoomException(new ResponseSignupdto("error", "방 정보 변경 오류", errorList.getErrorList()));
+            throw new CreateRoomException(new ResponseObject<>(WebConst.ERROR, "방 정보 변경 오류", errorList.getErrorList()));
         }
     }
 
@@ -116,6 +119,10 @@ public class RoomService {
         Optional<Room> findRoom = roomRepository.findById(roomId);
         if (findRoom.isEmpty()) throw new IllegalRoomException(response, "방 정보를 찾을 수 없습니다.");
         return findRoom.get();
+    }
+    public Optional<Room> findById(Long roomId) {
+        if (roomId == null) return Optional.empty();
+        return roomRepository.findById(roomId);
     }
 
     public void deleteRoom(Room room) {

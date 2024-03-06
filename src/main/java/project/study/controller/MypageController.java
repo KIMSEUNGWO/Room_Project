@@ -2,13 +2,8 @@ package project.study.controller;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
-import project.study.constant.WebConst;
+import org.springframework.web.bind.annotation.*;
 import project.study.customAnnotation.CallType;
 import project.study.customAnnotation.SessionLogin;
 import project.study.domain.Member;
@@ -31,7 +26,7 @@ public class MypageController {
         System.out.println("data = " + data);
         mypageService.editInfo(member, data);
 
-        return new ResponseEntity<>(new ResponseDto(WebConst.OK, "변경 완료"), HttpStatus.OK);
+        return ResponseEntity.ok(new ResponseDto("변경 완료"));
     }
 
     @PostMapping("/member/delete")
@@ -42,7 +37,7 @@ public class MypageController {
 
         mypageService.deleteMember(member, data);
 
-        return new ResponseEntity<>(new ResponseDto(WebConst.OK, "탈퇴가 완료되었습니다."), HttpStatus.OK);
+        return ResponseEntity.ok(new ResponseDto("탈퇴가 완료되었습니다."));
     }
 
     @PostMapping("/change/password")
@@ -52,7 +47,7 @@ public class MypageController {
         System.out.println("data = " + data);
         mypageService.changePassword(member, data);
 
-        return new ResponseEntity<>(new ResponseDto(WebConst.OK, "변경 완료"), HttpStatus.OK);
+        return ResponseEntity.ok(new ResponseDto("변경 완료"));
     }
 
 

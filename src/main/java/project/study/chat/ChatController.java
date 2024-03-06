@@ -34,6 +34,9 @@ import project.study.service.JoinRoomService;
 import project.study.service.RoomService;
 
 import java.time.LocalDateTime;
+import java.util.Optional;
+
+import static project.study.constant.WebConst.*;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -50,13 +53,12 @@ public class ChatController {
 
 
     @GetMapping("/room/{room}/access")
-    public ResponseEntity<ResponseDto> accessToken(@SessionAttribute(name = WebConst.LOGIN_MEMBER, required = false) Long memberId, @PathRoom("room") Room room) {
+    public ResponseEntity<ResponseDto> accessToken(@SessionAttribute(name = LOGIN_MEMBER, required = false) Long memberId, @PathRoom("room") Room room) {
         boolean exitsByMemberAndRoom = joinRoomService.exitsByMemberAndRoom(memberId, room);
-        if (!exitsByMemberAndRoom) throw new RestFulException(new ResponseDto("error", "권한 없음"));
-
+        if (!exitsByMemberAndRoom) throw new RestFulException(new ResponseDto(ERROR, "권한 없음"));
 
         chatAccessToken.createAccessToken(memberId, room.getRoomId());
-        return new ResponseEntity<>(new ResponseDto("ok", String.valueOf(memberId)), HttpStatus.OK);
+        return ResponseEntity.ok(new ResponseDto(String.valueOf(memberId)));
     }
 
     @MessageMapping("/chat/enterUser")
@@ -64,35 +66,31 @@ public class ChatController {
         System.out.println("enterUser = " + chat);
         Member member  = chatService.getMember(chat.getToken(), chat.getRoomId());
         chatService.accessCount(chat, member); // 현재 접속중인 회원 리스트에 추가
-        Room room = chatService.findByRoom(chat.getRoomId());
 
         headerAccessor.getSessionAttributes().put("member", member);
-        headerAccessor.getSessionAttributes().put("room", room);
+        headerAccessor.getSessionAttributes().put("roomId", chat.getRoomId());
 
-        if (member.getStoreImage() != null) {
-            headerAccessor.getSessionAttributes().put("senderImage", member.getStoreImage());
-            chat.setSenderImage(member.getStoreImage());
-        }
-
+        chat.setSenderImage(member.getStoreImage());
         chat.setSender(member.getMemberNickname());
         chat.setMessage(member.getMemberNickname() + "님이 입장하셨습니다.");
 
         ChatObject<ResponseChatMemberList> responseChatMemberListChatObject = chatService.changeToMemberListDto(chat);
-        templateSendMessage(room, responseChatMemberListChatObject);
+        templateSendMessage(chat.getRoomId(), responseChatMemberListChatObject);
     }
 
     @MessageMapping("/chat/update")
     public void roomUpdate(@Payload ChatDto chat, SimpMessageHeaderAccessor headerAccessor) {
-        Room room = (Room) headerAccessor.getSessionAttributes().get("room");
+        Long roomId = (Long) headerAccessor.getSessionAttributes().get("roomId");
+        Optional<Room> findRoom = roomService.findById(roomId);
+        if (findRoom.isEmpty()) return;
+        Room room = findRoom.get();
 
         ResponseRoomUpdateInfo roomInfo = chatService.getResponseRoomUpdateInfo(room);
 
         chat.setMessage("방 설정이 변경되었습니다.");
         chat.setTime(LocalDateTime.now());
 
-        ChatObject<ResponseRoomUpdateInfo> chatObject = new ChatObject<>(chat, roomInfo);
-
-        templateSendMessage(room, chatObject);
+        templateSendMessage(roomId, new ChatObject<>(chat, roomInfo));
 
     }
 
@@ -100,10 +98,12 @@ public class ChatController {
     public void sendMessage(@Payload ChatDto chat, SimpMessageHeaderAccessor headerAccessor) {
 
         Member member = (Member) headerAccessor.getSessionAttributes().get("member");
-        Room room = (Room) headerAccessor.getSessionAttributes().get("room");
-        String senderImage = (String) headerAccessor.getSessionAttributes().get("senderImage");
+        Long roomId = (Long) headerAccessor.getSessionAttributes().get("roomId");
+        Optional<Room> findRoom = roomService.findById(roomId);
+        if (findRoom.isEmpty()) return;
+        Room room = findRoom.get();
 
-        chat.setSenderImage(senderImage);
+        chat.setSenderImage(member.getStoreImage());
         chat.setSender(member.getMemberNickname());
         chat.setMessage(chat.getMessage());
         chat.setTime(LocalDateTime.now());
@@ -111,7 +111,7 @@ public class ChatController {
 
         chatService.saveChat(chat, member, room);
 
-        templateSendMessage(room, chat);
+        templateSendMessage(roomId, chat);
 
     }
 
@@ -125,10 +125,8 @@ public class ChatController {
 
         chatService.accessRemove(member, room.getRoomId());
 
-        ChatObject<ResponseNextManager> chat = chatService.exitRoom(member, room);
-        templateSendMessage(room, chat);
-
-        return new ResponseEntity<>(new ResponseDto(WebConst.OK, "방 탈퇴 완료"), HttpStatus.OK);
+        templateSendMessage(room.getRoomId(), chatService.exitRoom(member, room));
+        return ResponseEntity.ok(new ResponseDto("방 탈퇴 완료"));
     }
 
 
@@ -146,9 +144,9 @@ public class ChatController {
         chatService.accessRemove(kickMember, room.getRoomId());
 
         ChatDto kick = chatService.kickRoom(kickMember, room);
-        templateSendMessage(room, kick);
+        templateSendMessage(room.getRoomId(), kick);
 
-        return new ResponseEntity<>(new ResponseDto(WebConst.OK, "성공"), HttpStatus.OK);
+        return ResponseEntity.ok(new ResponseDto("성공"));
     }
     // 매니저 위임
     @ResponseBody
@@ -162,8 +160,8 @@ public class ChatController {
 
         ChatDto chat = chatService.nextManagerRoom(nextManager, room);
 
-        templateSendMessage(room, chat);
-        return new ResponseEntity<>(new ResponseDto(WebConst.OK, "성공"), HttpStatus.OK);
+        templateSendMessage(room.getRoomId(), chat);
+        return ResponseEntity.ok(new ResponseDto("성공"));
     }
     // 공지사항 등록 및 수정
     @ResponseBody
@@ -185,9 +183,8 @@ public class ChatController {
             .message("공지사항이 등록되었습니다.")
             .build();
 
-        ChatObject<ResponseRoomNotice> chatObject = new ChatObject<>(chat, roomNotice);
-        templateSendMessage(room, chatObject);
-        return new ResponseEntity<>(new ResponseDto(WebConst.OK, "성공"), HttpStatus.OK);
+        templateSendMessage(room.getRoomId(), new ChatObject<>(chat, roomNotice));
+        return ResponseEntity.ok(new ResponseDto("성공"));
     }
 
     // 공지사항 삭제
@@ -199,7 +196,7 @@ public class ChatController {
         ManagerAuthority managerMember = authorizationCheck.getManagerAuthority(response, member, room);
 
         if (!room.hasNotice()) {
-            return new ResponseEntity<>(new ResponseDto(WebConst.ERROR, "공지사항이 존재하지 않습니다."), HttpStatus.OK);
+            return ResponseEntity.ok(new ResponseDto(ERROR, "공지사항이 존재하지 않습니다."));
         }
 
         managerMember.deleteNotice(room);
@@ -213,9 +210,9 @@ public class ChatController {
             .message("공지사항이 삭제되었습니다.")
             .build();
 
-        templateSendMessage(room, chat);
+        templateSendMessage(room.getRoomId(), chat);
 
-        return new ResponseEntity<>(new ResponseDto(WebConst.OK, "성공"), HttpStatus.OK);
+        return ResponseEntity.ok(new ResponseDto("성공"));
     }
 
 
@@ -227,12 +224,14 @@ public class ChatController {
 
         // stomp 세션에 있던 uuid 와 roomId 를 확인해서 채팅방 유저 리스트와 room 에서 해당 유저를 삭제
         Member member = (Member) headerAccessor.getSessionAttributes().get("member");
-        Room room = (Room) headerAccessor.getSessionAttributes().get("room");
+        Long roomId = (Long) headerAccessor.getSessionAttributes().get("roomId");
+        Optional<Room> findRoom = roomService.findById(roomId);
+        if (findRoom.isEmpty()) return;
+        Room room = findRoom.get();
 
         chatService.accessRemove(member, room.getRoomId());
 
         log.info("headAccessor {}", headerAccessor);
-
 
         ChatDto chat = ChatDto.builder()
                 .type(MessageType.LEAVE)
@@ -240,12 +239,11 @@ public class ChatController {
                 .sender(member.getMemberNickname())
                 .message(member.getMemberNickname() + "님이 채팅방에서 나가셨습니다.")
                 .build();
-        ChatObject<ResponseChatMemberList> responseChatMemberListChatObject = chatService.changeToMemberListDto(chat);
 
-        templateSendMessage(room, responseChatMemberListChatObject);
+        templateSendMessage(room.getRoomId(), chatService.changeToMemberListDto(chat));
     }
 
-    private void templateSendMessage(Room room, ChatDto chat) {
-        template.convertAndSend("/sub/chat/room/" + room.getRoomId(), chat);
+    private void templateSendMessage(Long roomId, ChatDto chat) {
+        template.convertAndSend("/sub/chat/room/" + roomId, chat);
     }
 }

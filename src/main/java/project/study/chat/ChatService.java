@@ -1,5 +1,6 @@
 package project.study.chat;
 
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -25,7 +26,6 @@ public class ChatService {
 
     private final ChatRepository chatRepository;
     private final MemberJpaRepository memberJpaRepository;
-    private final RoomJpaRepository roomJpaRepository;
     private final ChatAccessToken chatAccessToken;
     private final ChatCurrentMemberManager currentMemberManager;
 
@@ -48,10 +48,6 @@ public class ChatService {
     public void accessRemove(Member member, Long roomId) {
         chatAccessToken.remove(member.getMemberId());
         currentMemberManager.minus(roomId, member);
-    }
-
-    public Room findByRoom(Long roomId) {
-        return roomJpaRepository.findById(roomId).get();
     }
 
     public void saveChat(ChatDto chat, Member member, Room room) {
@@ -111,4 +107,5 @@ public class ChatService {
             .message(nextManager.getMemberNickname() + "님이 방장이 되셨습니다.")
             .build();
     }
+
 }

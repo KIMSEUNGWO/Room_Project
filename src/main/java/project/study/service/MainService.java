@@ -18,11 +18,10 @@ public class MainService {
     private final KakaoLoginService kakaoLoginService;
 
     public String logout(Member member) {
-        Social social = member.getSocial();
+        if (!member.isSocialMember()) return "/";
 
-        if (social.isEqualsSocialType(KAKAO)) {
-            return kakaoLoginService.logout(member);
-        }
+        if (member.isKakao()) return kakaoLoginService.logout(member);
+
         return "/";
     }
 

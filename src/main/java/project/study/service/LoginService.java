@@ -8,7 +8,6 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import project.study.controller.image.FileUpload;
-import project.study.domain.Member;
 import project.study.dto.login.DefaultMemberFactory;
 import project.study.dto.login.MemberFactory;
 import project.study.dto.login.requestdto.RequestDefaultLoginDto;
@@ -32,8 +31,7 @@ public class LoginService {
     @Transactional
     public void login(RequestDefaultLoginDto data, HttpSession session, HttpServletResponse response) {
         MemberFactory factory = new DefaultMemberFactory(basicJpaRepository, memberJpaRepository, freezeRepository, fileUpload, encoder);
-        Member member = factory.login(data, session, response);
-
+        factory.login(data, session, response);
     }
 
     @Transactional

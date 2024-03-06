@@ -239,7 +239,7 @@ function onMessageReceived(payload) {
         history.innerHTML += centerMessage(chat.message);
     }
     
-    if (chat.type == 'ENTRUST') {
+    if (chat.type === 'ENTRUST') {
         changeManager(chat.sender);
         setting(chat.token);
         updateMemberOption(chat.token);
@@ -399,7 +399,7 @@ function changeLockSvg() {
     let roomTitleWrap = document.querySelector('.room-title');
     let roomTitle = document.querySelector('#roomTitle');
 
-    if (roomTitleWrap.children.private == null) {
+    if (roomTitleWrap.children.namedItem('private') == null) {
         roomTitleWrap.insertBefore(getPrivateSvg(), roomTitle);
     }
 }
