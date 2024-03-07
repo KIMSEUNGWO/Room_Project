@@ -13,6 +13,11 @@ public class MemberInfoAuthorityImpl implements MemberInfoAuthority {
     private final AdminService adminService;
 
     @Override
+    public Page<SearchMemberDto> searchMember(int pageNumber) {
+        return adminService.searchMember(pageNumber);
+    }
+
+    @Override
     public Page<SearchMemberDto> searchMember(String word, int pageNumber, String freezeOnly) {
         return adminService.searchMember(word, pageNumber, freezeOnly);
     }

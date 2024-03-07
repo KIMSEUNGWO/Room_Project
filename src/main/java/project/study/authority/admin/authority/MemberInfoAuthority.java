@@ -5,6 +5,7 @@ import project.study.authority.admin.dto.SearchMemberDto;
 
 public interface MemberInfoAuthority {
 
+    Page<SearchMemberDto> searchMember(int pageNumber);
     Page<SearchMemberDto> searchMember(String word, int pageNumber, String freezeOnly);
 
 

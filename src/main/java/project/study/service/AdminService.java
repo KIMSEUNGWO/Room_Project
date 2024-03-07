@@ -26,10 +26,11 @@ public class AdminService {
     public Optional<Admin> adminLogin(String account, String password){
         Optional<Admin> byAccount = adminJpaRepository.findByAccount(account);
 
-        if(byAccount.isPresent() && byAccount.get().getPassword().equals(password)){
+        // TODO
+        // 검증해야됨
+        if(byAccount.isPresent() && byAccount.get().isMatchesPassword(password)){
             return adminJpaRepository.findByAccount(account);
         }
-
         return Optional.empty();
     }
 
@@ -37,6 +38,11 @@ public class AdminService {
     public Optional<Admin> findById(Long id){
         if (id == null) return Optional.empty();
         return adminJpaRepository.findById(id);
+    }
+
+    public Page<SearchMemberDto> searchMember(int pageNumber){
+        PageRequest pageable = PageRequest.of(pageNumber - 1, 10);
+        return adminRepository.searchMember(pageable);
     }
 
     public Page<SearchMemberDto> searchMember(String word, int pageNumber, String freezeOnly){
@@ -60,12 +66,12 @@ public class AdminService {
     }
 
     public SearchNotifyReadMoreDto searchNotifyReadMore(Long notifyId){
-        SearchNotifyReadMoreDto searchNotifyReadMoreDto = adminRepository.searchNotifyReadMore(notifyId);
-        SearchNotifyImageDto searchNotifyImageDto = adminRepository.searchNotifyImage(notifyId);
+        SearchNotifyReadMoreDto readMore = adminRepository.searchNotifyReadMore(notifyId);
+        SearchNotifyImageDto notifyImage = adminRepository.searchNotifyImage(notifyId);
 
-        searchNotifyReadMoreDto.setNotifyImageStoreName(searchNotifyImageDto.getNotifyImageStoreName());
-        searchNotifyReadMoreDto.setNotifyImageOriginalName(searchNotifyImageDto.getNotifyImageOriginalName());
-        return searchNotifyReadMoreDto;
+        readMore.serImage(notifyImage);
+
+        return readMore;
     }
 
     public SearchNotifyMemberInfoDto searchNotifyMemberInfo(String account, Long notifyId){

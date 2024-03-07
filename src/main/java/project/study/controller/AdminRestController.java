@@ -18,12 +18,13 @@ import java.util.Optional;
 
 @RestController
 @RequiredArgsConstructor
+@RequestMapping("/admin")
 public class AdminRestController {
 
     private final AdminService adminService;
     private final AdminAuthorizationCheck check;
 
-    @PostMapping("/admin/login.do")
+    @PostMapping("/login.do")
     public ResponseEntity<String> adminLogin(@RequestParam(value = "account") String account,
                            @RequestParam(value = "password") String password,
                            HttpSession session){
@@ -40,7 +41,7 @@ public class AdminRestController {
         return ResponseEntity.ok("/admin/members");
     }
 
-    @PostMapping("/admin/logout")
+    @PostMapping("/logout")
     public ResponseEntity<String> adminLogout(HttpServletRequest request){
         HttpSession session = request.getSession();
 
@@ -50,16 +51,27 @@ public class AdminRestController {
         return ResponseEntity.ok("/admin/login");
     }
 
-    @GetMapping("/admin/members/get")
+//    @GetMapping("/members/get")
+//    public ResponseEntity<Page<SearchMemberDto>> searchMember(@RequestParam(value = "word", required = false, defaultValue = "") String word,
+//                                                              @RequestParam(defaultValue = "1", value = "page") int pageNumber,
+//                                                              @RequestParam(value = "onlyFreezeMembers", required = false) String freezeOnly,
+//                                                              @SessionAttribute(name = "adminId", required = false) Long adminId,
+//                                                              HttpServletResponse response){
+//        OverallAdmin overallAdmin = check.getOverallAdmin(adminId, response);
+//
+//        Page<SearchMemberDto> page = overallAdmin.searchMember(word, pageNumber, freezeOnly);
+//        return ResponseEntity.ok(page);
+//    }
+
+    @GetMapping("/members/get")
     public ResponseEntity<Page<SearchMemberDto>> searchMember(@RequestParam(value = "word", required = false, defaultValue = "") String word,
-                                                              @RequestParam(defaultValue = "1", value = "page") int pageNumber, Model model,
+                                                              @RequestParam(defaultValue = "1", value = "page") int pageNumber,
                                                               @RequestParam(value = "onlyFreezeMembers", required = false) String freezeOnly,
                                                               @SessionAttribute(name = "adminId", required = false) Long adminId,
                                                               HttpServletResponse response){
         OverallAdmin overallAdmin = check.getOverallAdmin(adminId, response);
 
-        Admin admin = adminService.findById(adminId).get();
-        Page<SearchMemberDto> searchMemberDto = overallAdmin.searchMember(word, pageNumber, freezeOnly);
-        return ResponseEntity.ok(searchMemberDto);
+        Page<SearchMemberDto> page = overallAdmin.searchMember(word, pageNumber, freezeOnly);
+        return ResponseEntity.ok(page);
     }
 }
