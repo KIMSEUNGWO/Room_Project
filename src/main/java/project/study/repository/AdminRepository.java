@@ -42,6 +42,39 @@ public class AdminRepository {
     private final JPAQueryFactory queryFactory;
     private final RoomDeleteJpaRepository roomDeleteJpaRepository;
 
+    public Page<SearchMemberDto> searchMember(Pageable pageable){
+
+        List<SearchMemberDto> content = queryFactory
+            .select(new QSearchMemberDto(
+                Expressions.stringTemplate("{0}", accountExpression).as("memberAccount"),
+                member.memberName,
+                member.memberNickname,
+                phone1.phone,
+                Expressions.stringTemplate("TO_CHAR({0}, {1})", member.memberCreateDate, "YYYY-MM-DD"),
+                member.memberNotifyCount,
+                social.socialType,
+                member.memberStatus))
+            .from(member)
+            .leftJoin(member.basic, basic)
+            .leftJoin(member.phone, phone1)
+            .leftJoin(member.social, social)
+            .where(member.memberStatus.eq(MemberStatusEnum.이용정지).or(member.memberStatus.eq(MemberStatusEnum.정상)))
+            .offset(pageable.getOffset())
+            .limit(pageable.getPageSize())
+            .orderBy(member.memberCreateDate.desc())
+            .fetch();
+
+        JPAQuery<Member> count = queryFactory
+            .select(member)
+            .from(member)
+            .leftJoin(member.basic, basic)
+            .leftJoin(member.phone, phone1)
+            .leftJoin(member.social, social)
+            .where(member.memberStatus.eq(MemberStatusEnum.이용정지).or(member.memberStatus.eq(MemberStatusEnum.정상)));
+
+        return PageableExecutionUtils.getPage(content, pageable, () -> count.fetch().size());
+    }
+
     public Page<SearchMemberDto> searchMember(String word, Pageable pageable, String freezeOnly){
 
         BooleanBuilder builder = new BooleanBuilder();

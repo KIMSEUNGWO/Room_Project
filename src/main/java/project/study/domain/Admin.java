@@ -5,6 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import project.study.authority.admin.dto.SearchNotifyImageDto;
 import project.study.enums.AuthorityAdminEnum;
 
 @Builder
@@ -34,6 +35,12 @@ public class Admin {
     public boolean isReport() {
         return adminEnum.equals(AuthorityAdminEnum.신고담당관리자) || isOverall();
     }
+
+    public boolean isMatchesPassword(String password) {
+        return this.password.equals(password);
+    }
+
+
 }
 
 

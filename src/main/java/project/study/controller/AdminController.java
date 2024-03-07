@@ -22,37 +22,49 @@ import java.util.Optional;
 
 @Controller
 @RequiredArgsConstructor
+@RequestMapping("/admin")
 public class AdminController {
 
     private final AdminService adminService;
     private final AdminAuthorizationCheck check;
 
-    @GetMapping("/admin/login")
+    @GetMapping("/login")
     public String adminLogin(){
         return "admin/admin_login";
     }
 
-    @GetMapping("/admin/members")
-    public String adminMembers() {
-        return "admin/admin_members";
-    }
-
-    @GetMapping("/admin/expire")
+    @GetMapping("/expire")
     public String adminExpire(){
         return "admin/admin_expire";
     }
 
-    @GetMapping("/admin/rooms")
+    @GetMapping("/rooms")
     public String adminRooms(){
         return "admin/admin_rooms";
     }
 
-    @GetMapping("/admin/notify")
+    @GetMapping("/notify")
     public String adminNotifyMembers() {
         return "admin/admin_notify";
     }
 
-//    @GetMapping("/admin/members/get")
+    @GetMapping("/members")
+    public String searchMember(@RequestParam(defaultValue = "1", value = "page") int pageNumber, Model model,
+                               @SessionAttribute(name = "adminId", required = false) Long adminId,
+                               HttpServletResponse response){
+        OverallAdmin overallAdmin = check.getOverallAdmin(adminId, response);
+
+        Admin admin = adminService.findById(adminId).get();
+        Page<SearchMemberDto> data = overallAdmin.searchMember(pageNumber);
+
+        model.addAttribute("adminName", admin.getName());
+        model.addAttribute("adminEnum", admin.getAdminEnum());
+        model.addAttribute("page", data);
+        return "admin/admin_members";
+    }
+
+
+//    @GetMapping("/members/get")
 //    public String searchMember(@RequestParam(value = "word", required = false, defaultValue = "") String word,
 //                               @RequestParam(defaultValue = "1", value = "page") int pageNumber, Model model,
 //                               @RequestParam(value = "onlyFreezeMembers", required = false) String freezeOnly,
@@ -68,7 +80,6 @@ public class AdminController {
 //        model.addAttribute("adminEnum", admin.getAdminEnum());
 //        model.addAttribute("page", overallAdmin.searchMember(word, pageNumber, freezeOnly));
 //        return "/admin/admin_members";
-//
 //    }
 //
 //    @GetMapping("/admin/expire/get")

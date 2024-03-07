@@ -38,5 +38,10 @@ public class SearchNotifyReadMoreDto {
         this.notifyId = notifyId;
         this.notifyStatus = notifyStatus;
     }
+
+    public void serImage(SearchNotifyImageDto notifyImage) {
+        this.notifyImageOriginalName = notifyImage.getNotifyImageOriginalName();
+        this.notifyImageStoreName = notifyImage.getNotifyImageStoreName();
+    }
 }
 

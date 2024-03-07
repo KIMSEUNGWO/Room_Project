@@ -20,6 +20,11 @@ public class OverallAdmin implements ExpireMemberInfoAuthority, MemberInfoAuthor
     }
 
     @Override
+    public Page<SearchMemberDto> searchMember(int pageNumber) {
+        return memberInfoAuthority.searchMember(pageNumber);
+    }
+
+    @Override
     public Page<SearchMemberDto> searchMember(String word, int pageNumber, String freezeOnly) {
         return memberInfoAuthority.searchMember(word, pageNumber, freezeOnly);
     }
@@ -34,4 +39,6 @@ public class OverallAdmin implements ExpireMemberInfoAuthority, MemberInfoAuthor
     public void deleteJoinRoom(RequestDeleteRoomDto dto) {
         roomInfoAuthority.deleteJoinRoom(dto);
     }
+
+
 }
