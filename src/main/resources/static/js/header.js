@@ -663,11 +663,11 @@ function createCreateRoomModal() {
                         '<label for="private" aria-selected="false">비공개방</label>' +
                     '</div>' +
                 '</div>' +
-                '<span class="msg disabled m-public"></span>' +
+                '<span class="msg disabled m-roomPublic"></span>' +
                 '<div class="input-box password-box disabled">' +
                     '<h4>비밀번호 설정</h4>' +
                     '<input type="password" name="room-password" id="room-password" placeholder="비밀번호 4~6자리를 설정해주세요." minlength="4" maxlength="6">' +
-                    '<span class="msg disabled m-private-password"></span>' +
+                    '<span class="msg disabled m-roomPassword"></span>' +
                 '</div>' +
                 '<span class="msg disabled m-max"></span>' +
                 '<div class="input-wrap tag-wrap">' +
@@ -679,7 +679,7 @@ function createCreateRoomModal() {
                         '</div>' +
                     '</div>' +
                 '</div>' +
-                '<span class="msg disabled m-tag"></span>' +
+                '<span class="msg disabled m-tags"></span>' +
             '</div>' +
             '<div class="buttons">' +
                 '<button type="button" id="room-cancel">취소</button>' +

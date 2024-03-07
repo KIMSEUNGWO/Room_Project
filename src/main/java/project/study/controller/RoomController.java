@@ -5,6 +5,8 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import project.study.authority.member.MemberAuthorizationCheck;
 import project.study.authority.member.authority.ManagerAuthority;
@@ -40,8 +42,12 @@ public class RoomController {
     private final JoinRoomService joinRoomService;
 
     @PostMapping(value = "/room/create")
-    public ResponseEntity<ResponseDto> createRoom(@SessionLogin(required = true) Member member, @ModelAttribute RequestCreateRoomDto data, HttpServletResponse response) {
+    public ResponseEntity<ResponseDto> createRoom(@SessionLogin(required = true) Member member,
+                                                  @Validated @ModelAttribute RequestCreateRoomDto data,
+                                                  BindingResult bindingResult,
+                                                  HttpServletResponse response) {
         System.out.println("data = " + data);
+        data.valid(bindingResult, "방 생성 에러");
 
         MemberAuthority commonMember = authorizationCheck.getMemberAuthority(response, member);
         Long roomId = commonMember.createRoom(member, data);
@@ -51,7 +57,9 @@ public class RoomController {
     }
 
     @GetMapping("/room/{room}/edit")
-    public ResponseEntity<ResponseDto> getEditRoomForm(@SessionLogin(required = true) Member member, @PathRoom("room") Room room, HttpServletResponse response) {
+    public ResponseEntity<ResponseDto> getEditRoomForm(@SessionLogin(required = true) Member member,
+                                                       @PathRoom("room") Room room,
+                                                       HttpServletResponse response) {
         authorizationCheck.getManagerAuthority(response, member, room);
 
         ResponseEditRoomForm editRoomForm = roomService.getEditRoomForm(room);
@@ -63,11 +71,14 @@ public class RoomController {
     public ResponseEntity<ResponseDto> editRoom(@SessionLogin(required = true) Member member,
                                                 @PathRoom("room") Room room,
                                                 HttpServletResponse response,
-                                                @ModelAttribute RequestEditRoomDto data) {
+                                                @Validated @ModelAttribute RequestEditRoomDto data,
+                                                BindingResult bindingResult) {
         ManagerAuthority managerMember = authorizationCheck.getManagerAuthority(response, member, room);
         System.out.println("RequestEditRoomDto = " + data);
-        System.out.println(data.getMax());
+
+        data.validEdit(bindingResult, room);
         managerMember.editRoom(room, data);
+
         return ResponseEntity.ok(new ResponseDto("성공"));
     }
 
