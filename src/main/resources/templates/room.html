@@ -84,7 +84,7 @@
                     <div class="newMessageWrap disabled">
                         <button type="button" id="newMessage">새로운 메세지</button>
                     </div>
-                    <div class="require-phone-wrap">
+                    <div class="require-phone-wrap" th:unless="${hasPhone}">
                         <span>휴대폰 인증이 필요합니다.</span>
                         <a href="/mypage">인증</a>
                     </div>
