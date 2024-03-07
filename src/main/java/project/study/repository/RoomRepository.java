@@ -7,7 +7,6 @@ import com.querydsl.jpa.impl.JPAQueryFactory;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.lang.Nullable;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 import project.study.authority.member.dto.RequestEditRoomDto;
@@ -18,8 +17,6 @@ import project.study.controller.image.FileUpload;
 import project.study.controller.image.FileUploadType;
 import project.study.domain.*;
 import project.study.authority.member.dto.RequestCreateRoomDto;
-import project.study.dto.login.responsedto.Error;
-import project.study.dto.login.responsedto.ErrorList;
 import project.study.dto.room.ResponseEditRoomForm;
 import project.study.dto.room.ResponseRoomMemberList;
 import project.study.enums.AuthorityMemberEnum;
@@ -48,80 +45,12 @@ public class RoomRepository {
     private final JPAQueryFactory query;
 
 
-    public void validRoomTitle(ErrorList errorList, String title) {
-        if (title == null || title.length() < 2 || title.length() > 10) {
-            errorList.addError(new Error("title", "방 제목은 2~10자 이하만 가능합니다."));
-        }
-    }
-
-    public void validRoomIntro(ErrorList errorList, @Nullable String intro) {
-        if (intro != null && intro.length() > 50) {
-            errorList.addError(new Error("intro", "소개글은 50자 까지 가능합니다."));
-        }
-    }
-
-    public void validRoomMaxPerson(ErrorList errorList, String max) {
-        if (max == null || !isNumber(max) || Integer.parseInt(max) < 2 || Integer.parseInt(max) > 6) {
-            errorList.addError(new Error("max", "인원 수를 알맞게 설정해주세요."));
-        }
-    }
-
-    public void validPublic(ErrorList errorList, PublicEnum roomPublic, String password) {
-        if (roomPublic == null) {
-            errorList.addError(new Error("public", "공개 여부를 설정해주세요."));
-            return;
-        }
-        if (roomPublic.isPublic() && password != null) {
-            errorList.addError(new Error("public", "공개방은 비밀번호를 설정할 수 없습니다."));
-            return;
-        }
-        if (!roomPublic.isPublic() && password == null) {
-            errorList.addError(new Error("public", "비공개방은 비밀번호를 설정해야합니다."));
-            return;
-        }
-        if (password != null && (password.length() < 4 || password.length() > 6)) {
-            errorList.addError(new Error("private-password", "비밀번호는 4~6자만 가능합니다,."));
-        }
-    }
-
-    private boolean isNumber(String max) {
-        try {
-            Integer.parseInt(max);
-            return true;
-        } catch (NumberFormatException e) {
-            return false;
-        }
-    }
-
-    public void validRoomEditMaxPerson(ErrorList errorList, int nowPerson, String max) {
-        if (max == null || !isNumber(max)) {
-            errorList.addError(new Error("max", "숫자를 입력해주세요."));
-            return;
-        }
-        if (Integer.parseInt(max) < 2 || Integer.parseInt(max) > 6) {
-            errorList.addError(new Error("max", "인원 수를 알맞게 설정해주세요."));
-            return;
-        }
-
-        if (nowPerson > Integer.parseInt(max)) {
-            errorList.addError(new Error("max", "참여된 회원 수보다 작게 설정할 수 없습니다."));
-        }
-    }
-
-    public void validTagList(ErrorList errorList, @Nullable List<String> tags) {
-        if (tags == null || tags.isEmpty()) return;
-
-        if (tags.size() > 5) {
-            errorList.addError(new Error("tag", "태그는 5개까지 가능합니다."));
-        }
-    }
-
     @Transactional
     public Room createRoom(RequestCreateRoomDto data) {
         Room saveRoom = Room.builder()
             .roomTitle(data.getTitle())
             .roomIntro(data.getIntro())
-            .roomLimit(Integer.parseInt(data.getMax()))
+            .roomLimit(data.getMax())
             .roomPublic(data.getRoomPublic())
             .roomCreateDate(LocalDateTime.now())
             .build();
@@ -148,7 +77,7 @@ public class RoomRepository {
         if (data.getRoomPublic() == PublicEnum.PUBLIC) return;
 
         RoomPassword saveRoomPassword = RoomPassword.builder()
-            .roomPassword(data.getPassword())
+            .roomPassword(data.getRoomPassword())
             .room(room)
             .build();
 
@@ -257,11 +186,11 @@ public class RoomRepository {
             if (roomPassword == null) {                                     // 패스워드가 설정되어있지 않을 경우
                 RoomPassword saveRoomPassword = RoomPassword.builder()
                     .room(room)
-                    .roomPassword(data.getPassword())
+                    .roomPassword(data.getRoomPassword())
                     .build();
                 roomPasswordJpaRepository.save(saveRoomPassword);
             } else {                                                        // 이미 패스워드가 설정되어있는 경우
-                roomPassword.changeRoomPassword(data.getPassword());
+                roomPassword.changeRoomPassword(data.getRoomPassword());
             }
         }
     }

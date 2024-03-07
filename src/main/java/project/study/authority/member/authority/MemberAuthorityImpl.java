@@ -14,9 +14,7 @@ import project.study.domain.Member;
 import project.study.domain.Notify;
 import project.study.domain.Room;
 import project.study.dto.abstractentity.ResponseDto;
-import project.study.enums.AuthorityMemberEnum;
 import project.study.exceptions.RestFulException;
-import project.study.exceptions.authority.NotJoinRoomException;
 import project.study.exceptions.authority.joinroom.InvalidPublicPasswordException;
 import project.study.service.JoinRoomService;
 import project.study.service.NotifyService;
@@ -41,7 +39,6 @@ public class MemberAuthorityImpl implements MemberAuthority{
     @Override
     public Long createRoom(Member member, RequestCreateRoomDto data) {
         roomService.validMaxCreateRoom(member);
-        roomService.validRoomData(data);
         return roomService.createRoom(data, member);
     }
 
