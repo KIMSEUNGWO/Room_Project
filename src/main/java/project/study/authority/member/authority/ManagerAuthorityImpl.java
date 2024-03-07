@@ -32,10 +32,7 @@ public class ManagerAuthorityImpl implements ManagerAuthority{
     @Override
     public void editRoom(Room room, RequestEditRoomDto data) {
         System.out.println("editRoom 실행");
-
-        roomService.validEditRoomData(room, data);
         roomService.editRoom(room, data);
-
     }
 
     @Override

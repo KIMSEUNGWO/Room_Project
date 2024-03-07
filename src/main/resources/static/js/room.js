@@ -540,11 +540,11 @@ function editRoomModal(editRoom) {
                         <label for="private" aria-selected="${editRoom.roomPublic == 'PRIVATE'}">비공개방</label>
                     </div>
                 </div>
-                <span class="msg disabled m-public"></span>
+                <span class="msg disabled m-roomPublic"></span>
                 <div class="input-box password-box ${editRoom.roomPublic == 'PUBLIC' ? 'disabled' : ''}">
                     <h4>비밀번호 설정</h4>
                     <input type="password" name="room-password" id="room-password" placeholder="비밀번호 4~6자리를 설정해주세요." minlength="4" maxlength="6" value="${editRoom.password != null ? editRoom.password : ''}">
-                    <span class="msg disabled m-private-password"></span>
+                    <span class="msg disabled m-roomPassword"></span>
                 </div>
                 <span class="msg disabled m-max"></span>
                 <div class="input-wrap tag-wrap">

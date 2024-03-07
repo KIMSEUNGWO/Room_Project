@@ -102,7 +102,7 @@ function createRoomMessageInit() {
     }
     title.addEventListener('focus', () => messageInit(document.querySelector('.m-title')));
     intro.addEventListener('focus', () => messageInit(document.querySelector('.m-intro')));
-    password.addEventListener('focus', () => messageInit(document.querySelector('.m-private-password')));
+    password.addEventListener('focus', () => messageInit(document.querySelector('.m-roomPassword')));
 }
 
 function fetchCreateRoom(url, formData, callback) {
@@ -159,7 +159,7 @@ function roomEditSubmit() {
     formData.append('roomPublic', public.value);
     formData.append('defaultImage', defaultImageInputRadio.checked);
     if (public.id != 'public') {
-        formData.append('password', roomPassword.value);
+        formData.append('roomPassword', roomPassword.value);
     }
 
     fetchCreateRoom('/room/' + getRoomId() + '/edit', formData, roomEditResult);
@@ -243,7 +243,7 @@ function validValue(value) {
 function validPublic(errorList, public) {
     if (public.id != 'private') return;
 
-    let message = document.querySelector('.m-private-password');
+    let message = document.querySelector('.m-roomPassword');
 
     let roomPassword = document.querySelector('input[name="room-password"]').value;
     if (roomPassword.length == 0) {

@@ -91,7 +91,7 @@ function createRoomMessageInit() {
     }
     title.addEventListener('focus', () => messageInit(document.querySelector('.m-title')));
     intro.addEventListener('focus', () => messageInit(document.querySelector('.m-intro')));
-    password.addEventListener('focus', () => messageInit(document.querySelector('.m-private-password')));
+    password.addEventListener('focus', () => messageInit(document.querySelector('.m-roomPassword')));
 }
 function roomCreateSubmit() {
     let image = document.querySelector('input[name="roomImage"]');
@@ -136,7 +136,7 @@ function roomCreateSubmit() {
     formData.append('tags', convertTags(tags));
     formData.append('roomPublic', public.value);
     if (public.id !== 'public') {
-        formData.append('password', roomPassword.value);
+        formData.append('roomPassword', roomPassword.value);
     }
 
     fetchCreateRoom('/room/create', formData, roomCreateResult);
@@ -163,16 +163,22 @@ function fetchCreateRoom(url, formData, callback) {
  * }
  */
 function roomCreateResult(json) {
-    if (json.result == 'ok') {
+    if (json.result === 'ok') {
         al(json.result, json.message, '');
         modalExit();
         setTimeout(() => window.location.href = json.data, 1000);
     }
-    if (json.result == 'error') {
-        al (json.result, '방 생성 제한', json.message);
-        changeToCreateRoom();
+    if (json.result === 'error') {
+        al (json.result, '방 생성 실패', json.message);
+        let errorList = json.data;
+        for (let i=0;i<errorList.length;i++) {
+            let msgBox = document.querySelector('.m-' + errorList[i].location);
+            let json = {result : 'error', message : errorList[i].message};
+            printMessage(json, msgBox);
+        }
+        // changeToCreateRoom();
     }
-    if (json.result == 'notLogin') {
+    if (json.result === 'notLogin') {
         al('error', '로그인 필요', json.message);
         changeToLogin();
     }
@@ -234,7 +240,7 @@ function validValue(value) {
 function validPublic(errorList, public) {
     if (public.id != 'private') return;
 
-    let message = document.querySelector('.m-private-password');
+    let message = document.querySelector('.m-roomPassword');
 
     let roomPassword = document.querySelector('input[name="room-password"]').value;
     if (roomPassword.length == 0) {
