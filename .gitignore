@@ -38,8 +38,8 @@ application.properties
 /.nb-gradle/
 
 **/resources/static/images/
-!basic-room-profile.png
-!basic-member-profile.png
+!basic-room-profile.jpg
+!basic-member-profile.jpg
 !DAGONG.png
 
 
