@@ -37,9 +37,9 @@ application.properties
 /nbdist/
 /.nb-gradle/
 
-!basic-room-profile.jpg
-!basic-member-profile.jpg
-!DAGONG.png
+!**/resources/static/images/room_profile/basic-room-profile.jpg
+!**/resources/static/images/member_profile/basic-member-profile.jpg
+!**/resources/static/images/DAGONG.png
 
 **/resources/static/images/
 
