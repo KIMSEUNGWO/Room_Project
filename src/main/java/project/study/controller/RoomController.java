@@ -35,13 +35,14 @@ import static project.study.constant.WebConst.*;
 @RestController
 @RequiredArgsConstructor
 @Slf4j
+@RequestMapping("/room")
 public class RoomController {
 
     private final MemberAuthorizationCheck authorizationCheck;
     private final RoomService roomService;
     private final JoinRoomService joinRoomService;
 
-    @PostMapping(value = "/room/create")
+    @PostMapping(value = "/create")
     public ResponseEntity<ResponseDto> createRoom(@SessionLogin(required = true) Member member,
                                                   @Validated @ModelAttribute RequestCreateRoomDto data,
                                                   BindingResult bindingResult,
@@ -56,7 +57,7 @@ public class RoomController {
         return ResponseEntity.ok(new ResponseObject<>("방 생성 완료", redirectURI));
     }
 
-    @GetMapping("/room/{room}/edit")
+    @GetMapping("/{room}/edit")
     public ResponseEntity<ResponseDto> getEditRoomForm(@SessionLogin(required = true) Member member,
                                                        @PathRoom("room") Room room,
                                                        HttpServletResponse response) {
@@ -67,7 +68,7 @@ public class RoomController {
         return ResponseEntity.ok(new ResponseObject<>("조회성공", editRoomForm));
     }
 
-    @PostMapping("/room/{room}/edit")
+    @PostMapping("/{room}/edit")
     public ResponseEntity<ResponseDto> editRoom(@SessionLogin(required = true) Member member,
                                                 @PathRoom("room") Room room,
                                                 HttpServletResponse response,
@@ -82,26 +83,15 @@ public class RoomController {
         return ResponseEntity.ok(new ResponseDto("성공"));
     }
 
-    @GetMapping("/search")
-    public ResponseEntity<ResponseDto> search(@SessionAttribute(name = LOGIN_MEMBER, required = false) Long memberId, @RequestParam("word") String word, Pageable pageable) {
-        System.out.println("word = " + word + " pageable = " + pageable.getPageNumber());
 
-        List<ResponseRoomListDto> roomList = roomService.searchRoomList(memberId, word, pageable);
 
-        for (ResponseRoomListDto data : roomList) {
-            System.out.println("data = " + data);
-        }
-
-        return ResponseEntity.ok(new SearchRoomListDto("검색성공", word, roomList));
-    }
-
-    @PostMapping("/room/{room}/private")
+    @PostMapping("/{room}/private")
     public ResponseEntity<ResponseDto> roomPrivate(@SessionLogin(required = true) Member member,
                                                    @PathRoom("room") Room room,
                                                    @RequestBody String password,
                                                    HttpServletResponse response) {
 
-        if (room.isPublic() || room.getRoomPassword() == null) return ResponseEntity.ok(new ResponseDto(ERROR, "잘못된 접근입니다."));
+        if (room.isPublic() || room.getRoomPassword() == null) return ResponseEntity.badRequest().body(new ResponseDto(ERROR, "잘못된 접근입니다."));
 
         RoomPassword rp = room.getRoomPassword();
         if (!rp.compareRoomPassword(password)) {
@@ -113,7 +103,7 @@ public class RoomController {
         return ResponseEntity.ok(new ResponseDto("/room/" + room.getRoomId()));
     }
 
-    @GetMapping("/room/{room}/history")
+    @GetMapping("/{room}/history")
     public ResponseEntity<ResponseDto> chatHistory(@PathRoom("room") Room room) {
         // JoinRoom 검증 안되어있음 아직.
 
@@ -121,7 +111,7 @@ public class RoomController {
         return ResponseEntity.ok(new ResponseObject<>("성공", history));
     }
 
-    @GetMapping("/room/{room}/notice")
+    @GetMapping("/{room}/notice")
     public ResponseEntity<ResponseDto> roomNotice(@SessionAttribute(name = LOGIN_MEMBER, required = false) Long memberId, @PathRoom("room") Room room) {
 
         boolean exitsByMemberAndRoom = joinRoomService.exitsByMemberAndRoom(memberId, room);
