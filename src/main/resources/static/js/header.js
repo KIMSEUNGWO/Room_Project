@@ -555,10 +555,14 @@ function createFindPassword() {
 }
 
 function createSignupModal() {
-    return  `<div class="signup">
+    return  `<div class="modal-logo">
+                <div>회원가입</div>
+                <img src="/images/DAGONG.png" alt="" style="width: 50%;">
+            </div>
+            <div class="signup">
                 <div class="input-box">
                     <h4>아이디</h4>
-                    <input type="text" name="account" id="account" maxlength="15">
+                    <input type="text" name="account" id="account" maxlength="15" placeholder="아이디를 입력해주세요">
                     <span class="msg disabled m-account"></span>
                 </div>
                 <div class="input-box">
@@ -573,48 +577,53 @@ function createSignupModal() {
                 </div>
                 <div class="input-box">
                     <h4>닉네임</h4>
-                    <input type="text" name="nickname" id="nickname" maxlength="8">
+                    <input type="text" name="nickname" id="nickname" maxlength="8" placeholder="닉네임을 입력해주세요">
                     <span class="msg disabled m-nickname"></span>
                 </div>
                 <div class="input-box">
                     <h4>이름</h4>
-                    <input type="text" name="name" id="name" maxlength="8">
+                    <input type="text" name="name" id="name" maxlength="8" placeholder="이름을 입력해주세요">
                     <span class="msg disabled m-name"></span>
                 </div>
             </div>
             <div class="buttons">
                 <button type="button" id="go-to-login">이전</button>
                 <button type="button" id="signup-confirm">가입하기</button>
+            </div>
             </div>`
     
 }
 
 function createLoginModal() {
-return  '<div class="modal-input-box">' +
-            '<input type="text" name="loginAccount" id="loginAccount" placeholder="아이디">' +
-            '<input type="password" name="loginPassword" id="loginPassword" placeholder="비밀번호" minlength="8">' +
-        '</div>' +
-        '<div class="error-box">' +
-            '<span class="error m-login"></span>' +
-        '</div>' +
-        '<button type="button" id="login">로그인</button>' +
-        '<div class="modal-sub-menu">' +
-            '<div>' +
-                '<a id="signup">아직 회원이 아니신가요?</a>' +
-            '</div>' +
-            '<div class="go-to-find">' +
-                '<a class="find" id="findAccount">아이디 찾기</a>' +
-                '<a class="find" id="findPassword">비밀번호 찾기</a>' +
-            '</div>' +
-        '</div>' +
-        '<div class="social-box">' +
-            '<button type="button" class="social" id="kakao">' +
-                '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="none">' +
-                    '<path d="M9.98613 0.909058C4.47157 0.909058 0 4.28535 0 8.45987C0 11.0379 1.71984 13.314 4.34398 14.6731L3.29543 18.4485C3.29543 18.4485 3.12344 18.8207 3.39528 18.9879C3.47157 19.0542 3.57033 19.0909 3.67268 19.0909C3.77502 19.0909 3.87378 19.0542 3.95007 18.9879L8.74897 15.8974C9.16506 15.9352 9.58113 15.9621 10.0139 15.9621C15.5284 15.9621 20 12.5912 20 8.41131C20 4.2314 15.5007 0.909058 9.98613 0.909058Z" fill="#181602"/>' +
-                '</svg>' +
-                '<span>카카오톡으로 로그인하기</span>' +
-            '</button>' +
-        '</div>';
+return `<div class="modal-logo">
+            <div>시작하기</div>
+            <img src="/images/DAGONG.png" alt="">
+        </div>
+        <div class="modal-input-box">
+            <input type="text" name="loginAccount" id="loginAccount" placeholder="아이디">
+            <input type="password" name="loginPassword" id="loginPassword" placeholder="비밀번호" minlength="8">
+        </div>
+        <div class="error-box">
+            <span class="error m-login"></span>
+        </div>
+        <button type="button" id="login">로그인</button>
+        <div class="modal-sub-menu">
+            <div>
+                <a id="signup">아직 회원이 아니신가요?</a>
+            </div>
+            <div class="go-to-find">
+                <a class="find" id="findAccount">아이디 찾기</a>
+                <a class="find" id="findPassword">비밀번호 찾기</a>
+            </div>
+        </div>
+        <div class="social-box">
+            <button type="button" class="social" id="kakao">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="none">
+                    <path d="M9.98613 0.909058C4.47157 0.909058 0 4.28535 0 8.45987C0 11.0379 1.71984 13.314 4.34398 14.6731L3.29543 18.4485C3.29543 18.4485 3.12344 18.8207 3.39528 18.9879C3.47157 19.0542 3.57033 19.0909 3.67268 19.0909C3.77502 19.0909 3.87378 19.0542 3.95007 18.9879L8.74897 15.8974C9.16506 15.9352 9.58113 15.9621 10.0139 15.9621C15.5284 15.9621 20 12.5912 20 8.41131C20 4.2314 15.5007 0.909058 9.98613 0.909058Z" fill="#181602"/>
+                </svg>
+                <span>카카오톡으로 로그인하기</span>
+            </button>
+        </div>`;
 }
 
 function createCreateRoomModal() {

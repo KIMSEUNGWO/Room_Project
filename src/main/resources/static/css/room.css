@@ -16,6 +16,20 @@ body {
     grid-template-rows: 8% 92%;
     overflow-y: hidden;
 }
+
+.left-title {
+    display: flex;
+    gap: 1.5rem;
+}
+.room-logo {
+    width: 8rem;
+    display: flex;
+    align-items: center;
+}
+.room-logo img {
+    width: 100%;
+}
+
 .room-title {
     display: flex;
     align-items: center;
