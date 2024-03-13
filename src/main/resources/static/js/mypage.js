@@ -34,9 +34,6 @@ window.addEventListener('load', () => {
         fetchFormData('/member/editInfo', formData, editInfoResult);
 
     })
-    // 닉네임 중복검사
-    const nickname = document.querySelector('input[name="nickname"]');
-    nickname.addEventListener('focusout', () => fetchDistinct('/distinct/nickname', nickname.value, distinctNameResult));
 
     // 비밀번호 변경 pop
     const passwordPop = document.querySelector('.passwordPop');
@@ -285,11 +282,6 @@ function validPasswordCheck(passwordInput, passwordCheckInput) {
     messageInit(m_passwordCheck);
 }
 
-
-function distinctNameResult(json) {
-    const m_nickname = document.querySelector('.m-nickname');
-    printMessage(json, m_nickname);
-}
 function printMessage(json, msgBox) {
     messageInit(msgBox);
     if (json.result == 'ok') {

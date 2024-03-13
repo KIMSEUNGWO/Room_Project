@@ -4,9 +4,14 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Pageable;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.SessionAttribute;
 import project.study.authority.member.MemberAuthorizationCheck;
 import project.study.authority.member.authority.MemberAuthority;
 import project.study.authority.member.dto.RequestJoinRoomDto;
@@ -17,9 +22,11 @@ import project.study.customAnnotation.SessionLogin;
 import project.study.domain.Member;
 import project.study.domain.Room;
 import project.study.dto.MyPageInfo;
+import project.study.dto.abstractentity.ResponseDto;
 import project.study.dto.room.ResponsePrivateRoomInfoDto;
 import project.study.dto.room.ResponseRoomInfo;
 import project.study.dto.room.ResponseRoomMemberList;
+import project.study.dto.room.SearchRoomListDto;
 import project.study.service.MainService;
 import project.study.service.RoomService;
 
@@ -71,6 +78,20 @@ public class MainController {
         }
 
         return "main";
+    }
+
+    @ResponseBody
+    @GetMapping("/search")
+    public ResponseEntity<ResponseDto> search(@SessionAttribute(name = LOGIN_MEMBER, required = false) Long memberId, @RequestParam("word") String word, Pageable pageable) {
+        System.out.println("word = " + word + " pageable = " + pageable.getPageNumber());
+
+        List<ResponseRoomListDto> roomList = roomService.searchRoomList(memberId, word, pageable);
+
+        for (ResponseRoomListDto data : roomList) {
+            System.out.println("data = " + data);
+        }
+
+        return ResponseEntity.ok(new SearchRoomListDto("검색성공", word, roomList));
     }
 
     @GetMapping("/mypage")
