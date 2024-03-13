@@ -1,13 +1,26 @@
-# :pushpin: 룸 프로젝트
+# 룸 프로젝트
 
-## 1. 제작 기간 & 참여 인원
+
+## 제작 기간 & 참여 인원
 
 -   2024년 02월 02일 ~ 
 -   팀 프로젝트(2인)
 
 </br>
 
-## 2. 사용 기술
+## 배포주소
+> 주소 :
+
+</br>
+
+## 팀원소개
+|김승우|오승찬|
+|:----------:|:----------:|
+|<img src="https://avatars.githubusercontent.com/u/128001994?v=4" style="width:250px; height:250px;"/>|<img src="https://avatars.githubusercontent.com/u/126455161?s=64&v=4" style="width:250px; height:250px;"/>|
+|[@KIMSEUNGWOO](https://github.com/KIMSEUNGWO)|[@SEUNGCHAN](https://github.com/seungchan5)
+|팀장 백엔드|백엔드|
+
+## 사용 기술
 
 #### `Back-end`
 
@@ -23,7 +36,7 @@
 -   CSS3
 -   Javascript
 
-## 3. 요구사항
+## 요구사항
 
 ### 회원
 
