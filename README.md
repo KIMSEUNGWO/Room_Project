@@ -1,5 +1,6 @@
 # 룸 프로젝트
 
+</br>
 
 ## 제작 기간 & 참여 인원
 
@@ -40,7 +41,37 @@
 </br>
 
 ## 프로젝트 관리
-바로가기 : [<img src="https://github.com/KIMSEUNGWO/Room_Project/assets/128001994/2456b22d-3903-425a-b6e4-22a20a20df7e" style="width:200px;"/>](https://tmd8635.notion.site/4b36eab2dd094e8ab0d33081cb9b6e7c?pvs=4)
+
+### 노션 바로가기
+
+[<img src="https://github.com/KIMSEUNGWO/Room_Project/assets/128001994/2456b22d-3903-425a-b6e4-22a20a20df7e" style="width:200px;"/>](https://tmd8635.notion.site/4b36eab2dd094e8ab0d33081cb9b6e7c?pvs=4)
+
+### 노션 소개
+
+<details>
+    <summary>노션 소개 펼쳐보기</summary>
+  
+#### > 워크플레이스
+
+<img src="https://github.com/KIMSEUNGWO/Room_Project/assets/128001994/00285a12-7528-4c12-bb62-0ac0e2e4958c" />
+
+프로젝트의 스케쥴과 기능들을 담은 메인화면
+
+#### > 기획 및 기능 (1/2)
+
+<img src="https://github.com/KIMSEUNGWO/Room_Project/assets/128001994/d6bb522c-ade0-4c14-ae8a-01183ce90e06"/>
+
+프로젝트의 기획 및 기능을 정리해둔 문서목록
+
+#### > 기획 및 기능 (2/2)
+
+<img src="https://github.com/KIMSEUNGWO/Room_Project/assets/128001994/8cb1771c-01c6-4f72-b24a-868886616e73"/>
+
+기획 및 기능에는 제한사항이 작성되어있다.
+
+
+</details>
+
 
 
 </br>
