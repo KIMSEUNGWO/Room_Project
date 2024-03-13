@@ -88,12 +88,20 @@
 
 #### > API 문서 상세
 
->
-
 |<img src="https://github.com/KIMSEUNGWO/Room_Project/assets/128001994/35fc8817-1d95-4de5-ab67-3b2bcd3f9d5e "><img src="https://github.com/KIMSEUNGWO/Room_Project/assets/128001994/ea070e2b-5dc5-4f19-996a-364248a8fd17"><img src="https://github.com/KIMSEUNGWO/Room_Project/assets/128001994/2449cfbb-7578-44a6-bd9e-bc3f933d7e8d"><img src="https://github.com/KIMSEUNGWO/Room_Project/assets/128001994/d4e09667-35ed-44c0-854e-94ee43182d9e">|
 |-|
 
+#### > 자료
 
+> ***프로젝트에 관한 자료나 공유해야하는 자료를 담은 자료실***
+
+|<img src="https://github.com/KIMSEUNGWO/Room_Project/assets/128001994/0c4fad85-eb78-40e7-b4c8-ae2e24ad2db5">|
+|-|
+
+#### > 자료상세
+
+|<img src="https://github.com/KIMSEUNGWO/Room_Project/assets/128001994/8ed30215-447e-475a-a2c8-c5d4fd269f77 "><img src="https://github.com/KIMSEUNGWO/Room_Project/assets/128001994/96a2d56d-b605-47c8-bd87-7cfc13f503c0"><img src="https://github.com/KIMSEUNGWO/Room_Project/assets/128001994/df3af525-b6e5-46a6-9b4e-fca1f97cc30e">|
+|-|
 
 </details>
 
