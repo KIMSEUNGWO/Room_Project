@@ -20,6 +20,8 @@
 |[@KIMSEUNGWOO](https://github.com/KIMSEUNGWO)|[@SEUNGCHAN](https://github.com/seungchan5)
 |팀장 백엔드|백엔드|
 
+</br>
+
 ## 사용 기술
 
 #### `Back-end`
@@ -35,8 +37,16 @@
 -   HTML5
 -   CSS3
 -   Javascript
+</br>
 
-## 요구사항
+## 프로젝트 관리
+바로가기 : [<img src="https://github.com/KIMSEUNGWO/Room_Project/assets/128001994/2456b22d-3903-425a-b6e4-22a20a20df7e" style="width:200px;"/>](https://tmd8635.notion.site/4b36eab2dd094e8ab0d33081cb9b6e7c?pvs=4)
+
+
+</br>
+
+## 화면 구성
+
 
 ### 회원
 
