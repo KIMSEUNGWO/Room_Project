@@ -53,21 +53,46 @@
   
 #### > 워크플레이스
 
-<img src="https://github.com/KIMSEUNGWO/Room_Project/assets/128001994/00285a12-7528-4c12-bb62-0ac0e2e4958c" />
+> ***프로젝트의 스케쥴과 기능들을 담은 메인화면***
 
-프로젝트의 스케쥴과 기능들을 담은 메인화면
+|<img src="https://github.com/KIMSEUNGWO/Room_Project/assets/128001994/00285a12-7528-4c12-bb62-0ac0e2e4958c"/>|
+|-|
 
 #### > 기획 및 기능 (1/2)
 
-<img src="https://github.com/KIMSEUNGWO/Room_Project/assets/128001994/d6bb522c-ade0-4c14-ae8a-01183ce90e06"/>
+> ***프로젝트의 기획 및 기능을 정리해둔 문서목록***
 
-프로젝트의 기획 및 기능을 정리해둔 문서목록
+|<img src="https://github.com/KIMSEUNGWO/Room_Project/assets/128001994/d6bb522c-ade0-4c14-ae8a-01183ce90e06"/>|
+|-|
 
 #### > 기획 및 기능 (2/2)
 
-<img src="https://github.com/KIMSEUNGWO/Room_Project/assets/128001994/8cb1771c-01c6-4f72-b24a-868886616e73"/>
+> ***기획 및 기능에는 제한사항이 작성되어있다.***
 
-기획 및 기능에는 제한사항이 작성되어있다.
+|<img src="https://github.com/KIMSEUNGWO/Room_Project/assets/128001994/8cb1771c-01c6-4f72-b24a-868886616e73"/>|
+|-|
+
+#### > 공통 API문서
+
+> ***공통 API문서가 작성되어있습니다. 객체 생성규칙, 반환 객체 정의 등***
+
+|<img src="https://github.com/KIMSEUNGWO/Room_Project/assets/128001994/55f2bd54-d0af-4ae6-ae4b-41207f27ad3d"/>|
+|-|
+
+#### > API 문서
+
+> ***RestFul API 문서를 정리한 목록***
+
+|<img src="https://github.com/KIMSEUNGWO/Room_Project/assets/128001994/2291c2d4-d3b2-472f-97be-a587c0d926f8">|
+|-|
+
+#### > API 문서 상세
+
+>
+
+|<img src="https://github.com/KIMSEUNGWO/Room_Project/assets/128001994/35fc8817-1d95-4de5-ab67-3b2bcd3f9d5e "><img src="https://github.com/KIMSEUNGWO/Room_Project/assets/128001994/ea070e2b-5dc5-4f19-996a-364248a8fd17"><img src="https://github.com/KIMSEUNGWO/Room_Project/assets/128001994/2449cfbb-7578-44a6-bd9e-bc3f933d7e8d"><img src="https://github.com/KIMSEUNGWO/Room_Project/assets/128001994/d4e09667-35ed-44c0-854e-94ee43182d9e">|
+|-|
+
 
 
 </details>
