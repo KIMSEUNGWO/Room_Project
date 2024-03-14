@@ -6,6 +6,7 @@ import lombok.Builder;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 
 @AllArgsConstructor
 @NoArgsConstructor
@@ -22,14 +23,12 @@ public class Freeze {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "MEMBER_ID")
     private Member member;
-
     private String freezeReason;
     private LocalDateTime freezeEndDate;
 
 
     public boolean isFinish() {
-        LocalDateTime now = LocalDateTime.now();
-        return now.isAfter(freezeEndDate);
+        return LocalDateTime.now().isAfter(freezeEndDate);
     }
 
     public String printMessage() {
@@ -37,14 +36,8 @@ public class Freeze {
     }
 
     private String combineMessage(LocalDateTime endDate, String reason) {
-        int year = endDate.getYear();
-        int month = endDate.getMonthValue();
-        int day = endDate.getDayOfMonth();
-        int hour = endDate.getHour();
-        int minute = endDate.getMinute();
-
-        String time = String.format("%d-%02d-%02d %02d:%02d", year, month, day, hour, minute);
-        return "이용이 정지된 회원입니다. \n ~ " + time + " 까지 \n" + "사유 : " + reason;
+        String dateFormat = endDate.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm"));
+        return String.format("이용이 정지된 회원입니다. \n ~ %s 까지 \n 사유 : %s", dateFormat ,reason);
     }
 
 

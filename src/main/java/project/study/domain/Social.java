@@ -3,6 +3,7 @@ package project.study.domain;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 import project.study.controller.api.sms.FindAccount;
 import project.study.enums.SocialEnum;
@@ -19,25 +20,19 @@ public class Social implements MemberType {
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "SEQ_SOCIAL")
     private Long socialId;
 
+    @Getter
     @Enumerated(EnumType.STRING)
     private SocialEnum socialType;
 
     private String socialEmail;
 
+    @Getter
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "MEMBER_ID")
     private Member member;
 
     @OneToOne(mappedBy = "social")
     private SocialToken socialToken;
-
-    public SocialEnum getSocialType() {
-        return socialType;
-    }
-
-    public Member getMember() {
-        return member;
-    }
 
     public SocialToken getToken() {
         return socialToken;

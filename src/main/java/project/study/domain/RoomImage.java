@@ -3,6 +3,7 @@ package project.study.domain;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @Entity
@@ -18,16 +19,12 @@ public class RoomImage implements ImageFileEntityChildren {
     private Long roomImageId;
 
     private String roomImageOriginalName;
-
+    @Getter
     private String roomImageStoreName;
 
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "ROOM_ID")
     private Room room;
-
-    public String getRoomImageStoreName() {
-        return roomImageStoreName;
-    }
 
     @Override
     public void setImage(String originalName, String storeName) {

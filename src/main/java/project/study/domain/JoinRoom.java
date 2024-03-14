@@ -3,6 +3,7 @@ package project.study.domain;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 import project.study.authority.member.dto.ResponseRoomListDto;
 import project.study.enums.AuthorityMemberEnum;
@@ -19,6 +20,7 @@ public class JoinRoom {
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "SEQ_JOIN_ROOM")
     private Long joinRoomId;
 
+    @Getter
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "MEMBER_ID")
     private Member member;
@@ -29,10 +31,6 @@ public class JoinRoom {
 
     @Enumerated(EnumType.STRING)
     private AuthorityMemberEnum authorityEnum;
-
-    public Member getMember() {
-        return member;
-    }
 
     public void changeToAuthority(AuthorityMemberEnum authority) {
         this.authorityEnum = authority;

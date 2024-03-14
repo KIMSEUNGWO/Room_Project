@@ -64,10 +64,7 @@ public class RoomRepository {
     public void createTags(RequestCreateRoomDto data, Room room) {
         List<String> tags = data.getTags();
         for (String tag : tags) {
-            Tag saveTag = Tag.builder()
-                .tagName(tag)
-                .room(room)
-                .build();
+            Tag saveTag = new Tag(tag, room);
             tagJpaRepository.save(saveTag);
         }
     }
@@ -200,10 +197,7 @@ public class RoomRepository {
 
         List<String> tags = data.getTags();
         for (String tag : tags) {
-            Tag saveTag = Tag.builder()
-                .room(room)
-                .tagName(tag)
-                .build();
+            Tag saveTag = new Tag(tag, room);
             tagJpaRepository.save(saveTag);
         }
     }

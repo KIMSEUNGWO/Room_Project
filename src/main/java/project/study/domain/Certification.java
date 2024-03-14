@@ -3,6 +3,7 @@ package project.study.domain;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 import project.study.controller.api.sms.RequestSms;
 import project.study.dto.abstractentity.ResponseDto;
@@ -22,20 +23,17 @@ public class Certification {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "SEQ_CERTIFICATION")
     private Long certificationId;
-
     private String name;
+    @Getter
     private String phone;
     private String certificationNumber;
-
     private LocalDateTime expireDate;
 
     public void valid(RequestSms data) throws ExceedExpireException {
         if (LocalDateTime.now().isAfter(expireDate)) {
             throw new ExceedExpireException();
         }
-        if (!name.equals(data.getName()) ||
-            !phone.equals(data.getPhone()) ||
-            !certificationNumber.equals(data.getCertification())) {
+        if (!name.equals(data.getName()) || !phone.equals(data.getPhone()) || !certificationNumber.equals(data.getCertification())) {
             throw new SmsException(new ResponseDto("error", "인증에 실패했습니다."));
         }
     }
@@ -47,9 +45,5 @@ public class Certification {
         if (!phone.equals(data.getPhone()) || !certificationNumber.equals(data.getCertification())) {
             throw new SmsException(new ResponseDto("error", "인증에 실패했습니다."));
         }
-    }
-
-    public String getPhone() {
-        return phone;
     }
 }

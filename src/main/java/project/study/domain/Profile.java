@@ -3,6 +3,7 @@ package project.study.domain;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @Builder
@@ -21,17 +22,12 @@ public class Profile implements ImageFileEntityChildren {
     private Member member;
 
     private String profileOriginalName;
+    @Getter
     private String profileStoreName;
-
-    public String getProfileStoreName() {
-        return profileStoreName;
-    }
 
     @Override
     public void setImage(String originalName, String storeName) {
         this.profileOriginalName = originalName;
         this.profileStoreName = storeName;
-
-
     }
 }
