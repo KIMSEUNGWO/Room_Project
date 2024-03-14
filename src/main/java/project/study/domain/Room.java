@@ -159,6 +159,24 @@ public class Room implements ImageFileEntity {
 
     @Getter
     @Builder
+    public static class ResponseRoomUpdateInfo {
+
+        private boolean isPublic;
+        private String title;
+        private int max;
+
+    }
+
+    public ResponseRoomUpdateInfo getResponseRoomUpdateInfo() {
+        return ResponseRoomUpdateInfo.builder()
+                .title(roomTitle)
+                .isPublic(isPublic())
+                .max(roomLimit)
+                .build();
+    }
+
+    @Getter
+    @Builder
     public static class ResponsePrivateRoomInfoDto {
 
         private final String image;
@@ -172,6 +190,5 @@ public class Room implements ImageFileEntity {
                 .intro(roomIntro)
                 .build();
     }
-
 
 }
