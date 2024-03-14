@@ -7,7 +7,7 @@ import org.springframework.stereotype.Component;
 @Component
 public class Criteria {
 
-    private final int amount = 1;
+    private final int amount = 10;
 
     public int getStartNum(int pageNumber) {
         return (pageNumber - 1) * amount + 1;

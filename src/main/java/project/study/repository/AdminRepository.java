@@ -10,6 +10,7 @@ import com.querydsl.jpa.impl.JPAQueryFactory;
 import jakarta.persistence.EntityManager;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.support.PageableExecutionUtils;
 import org.springframework.stereotype.Repository;
@@ -18,6 +19,7 @@ import project.study.domain.*;
 import project.study.enums.AuthorityMemberEnum;
 import project.study.enums.MemberStatusEnum;
 import project.study.enums.NotifyStatus;
+import project.study.jpaRepository.NotifyJpaRepository;
 import project.study.jpaRepository.RoomDeleteJpaRepository;
 
 import java.time.LocalDateTime;
@@ -249,6 +251,13 @@ public class AdminRepository {
         JPAQuery<Notify> count = queryFactory
             .select(notify)
             .from(notify)
+            .leftJoin(notify.room, room)
+            .leftJoin(notify.reporter, reporterMember).on(reporterMember.eq(reporterMember))
+            .leftJoin(notify.criminal, criminalMember).on(criminalMember.eq(criminalMember))
+            .leftJoin(reporterMember.basic, reporterBasic)
+            .leftJoin(reporterMember.social, reporterSocial)
+            .leftJoin(criminalMember.basic, criminalBasic)
+            .leftJoin(criminalMember.social, criminalSocial)
             .where(notify.notifyStatus.eq(NotifyStatus.처리중).or(isComplete(containComplete)))
             .where(predicate);
 
