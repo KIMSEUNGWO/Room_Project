@@ -19,6 +19,7 @@ import project.study.customAnnotation.PathRoom;
 import project.study.customAnnotation.SessionLogin;
 import project.study.domain.Member;
 import project.study.domain.Room;
+import project.study.domain.RoomNotice;
 import project.study.domain.RoomPassword;
 import project.study.dto.abstractentity.ResponseDto;
 import project.study.authority.member.dto.RequestCreateRoomDto;
@@ -91,11 +92,10 @@ public class RoomController {
                                                    @RequestBody String password,
                                                    HttpServletResponse response) {
 
-        if (room.isPublic() || room.getRoomPassword() == null) return ResponseEntity.badRequest().body(new ResponseDto(ERROR, "잘못된 접근입니다."));
+        if (room.isPublic() || !room.hasRoomPassword()) return ResponseEntity.badRequest().body(new ResponseDto(ERROR, "잘못된 접근입니다."));
 
-        RoomPassword rp = room.getRoomPassword();
-        if (!rp.compareRoomPassword(password)) {
-            return ResponseEntity.ok(new ResponseDto("invalidPassword", "비밀번호가 일치하지 않습니다."));
+        if (!room.isValidPassword(password)) {
+            return ResponseEntity.badRequest().body(new ResponseDto("invalidPassword", "비밀번호가 일치하지 않습니다."));
         }
         MemberAuthority commonMember = authorizationCheck.getMemberAuthority(response, member);
         commonMember.joinRoom(new RequestJoinRoomDto(member, room, response, password));
@@ -117,7 +117,7 @@ public class RoomController {
         boolean exitsByMemberAndRoom = joinRoomService.exitsByMemberAndRoom(memberId, room);
         if (!exitsByMemberAndRoom) throw new RestFulException(new ResponseDto(ERROR, "권한 없음"));
 
-        ResponseRoomNotice responseRoomNotice = roomService.getNotice(room);
+        RoomNotice.ResponseRoomNotice responseRoomNotice = room.getChatInsideNotice();
 
         return ResponseEntity.ok(new ResponseObject<>("성공", responseRoomNotice));
     }

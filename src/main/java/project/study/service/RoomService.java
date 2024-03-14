@@ -80,14 +80,6 @@ public class RoomService {
         }
     }
 
-    public ResponsePrivateRoomInfoDto getResponsePrivateRoomInfoDto(Room room) {
-        return ResponsePrivateRoomInfoDto.builder()
-                .image(room.getStoreImage())
-                .title(room.getRoomTitle())
-                .intro(room.getRoomIntro())
-                .build();
-    }
-
     public Room findByRoom(String roomIdStr, HttpServletResponse response) {
         Long roomId = roomRepository.getNumberFormat(roomIdStr, response);
         Optional<Room> findRoom = roomRepository.findById(roomId);
@@ -113,22 +105,6 @@ public class RoomService {
         return byChatHistory;
     }
 
-    public ResponseRoomInfo getRoomNotice(Room room, Member member) {
-        JoinRoom joinRoom = joinRoomJpaRepository.findByMemberAndRoom(member, room).get();
-        return ResponseRoomInfo.builder()
-                .roomTitle(room.getRoomTitle())
-                .isPublic(room.isPublic())
-                .isManager(joinRoom.isManager())
-                .build();
-    }
-
-    public ResponseRoomNotice getNotice(Room room) {
-        RoomNotice roomNotice = room.getRoomNotice();
-        if (roomNotice == null) return null;
-
-        return roomNotice.buildResponseRoomNotice();
-    }
-
     public ResponseEditRoomForm getEditRoomForm(Room room) {
         ResponseEditRoomForm form = roomRepository.getResponseEditRoomForm(room);
         form.setTagList(tagRepository.findAllByRoomId(room.getRoomId()));
@@ -136,10 +112,7 @@ public class RoomService {
     }
 
     public void editRoom(Room room, RequestEditRoomDto data) {
-        room.setRoomTitle(data.getTitle());
-        room.setRoomIntro(data.getIntro());
-        room.setRoomPublic(data.getRoomPublic());
-        room.setRoomLimit(data.getMax());
+        room.editRoom(data);
 
         roomRepository.editRoomImage(room, data);
         roomRepository.editRoomPassword(room, data);

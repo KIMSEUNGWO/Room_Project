@@ -12,7 +12,6 @@ import project.study.domain.Member;
 import project.study.domain.Room;
 import project.study.domain.RoomNotice;
 import project.study.dto.abstractentity.ResponseDto;
-import project.study.dto.room.ResponseRoomNotice;
 import project.study.exceptions.RestFulException;
 import project.study.repository.MemberRepository;
 import project.study.service.RoomService;
@@ -50,17 +49,16 @@ public class ManagerAuthorityImpl implements ManagerAuthority{
     }
 
     @Override
-    public ResponseRoomNotice uploadNotice(Room room, RequestNoticeDto data) {
+    public RoomNotice.ResponseRoomNotice uploadNotice(Room room, RequestNoticeDto data) {
 
         validNotice(data.getNotice());
-        RoomNotice roomNotice = room.getRoomNotice();
-        if (room.hasNotice()) {
-            roomNotice.updateNotice(data.getNotice());
-        } else {
-            roomNotice = roomService.saveRoomNotice(room, data);
-        }
 
-        return roomNotice.buildResponseRoomNotice();
+        if (!room.hasNotice()) {
+            RoomNotice saveRoomNotice = roomService.saveRoomNotice(room, data);
+            return saveRoomNotice.buildResponseRoomNotice();
+        }
+        room.updateNotice(data.getNotice());
+        return room.getChatInsideNotice();
     }
 
     private void validNotice(String notice) {
