@@ -1,6 +1,5 @@
 package project.study.chat;
 
-import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -11,7 +10,6 @@ import project.study.domain.JoinRoom;
 import project.study.domain.Member;
 import project.study.domain.Room;
 import project.study.jpaRepository.MemberJpaRepository;
-import project.study.jpaRepository.RoomJpaRepository;
 
 import java.time.LocalDateTime;
 import java.util.Optional;
@@ -54,14 +52,6 @@ public class ChatService {
         chatRepository.saveChat(chat, member, room);
     }
 
-    public ResponseRoomUpdateInfo getResponseRoomUpdateInfo(Room room) {
-        return ResponseRoomUpdateInfo.builder()
-                .isPublic(room.isPublic())
-                .title(room.getRoomTitle())
-                .max(room.getRoomLimit())
-                .build();
-    }
-
     public ChatObject<ResponseNextManager> exitRoom(Member member, Room room) {
         ChatDto chat = ChatDto.builder()
                 .roomId(room.getRoomId())
@@ -77,8 +67,7 @@ public class ChatService {
                 .findFirst();
 
         if (nextManagerMember.isEmpty()) {
-            ResponseNextManager responseNextManager = new ResponseNextManager("", 0L);
-            return new ChatObject<>(chat, responseNextManager);
+            return new ChatObject<>(chat, new ResponseNextManager("", 0L));
         }
 
         Member nextMember = nextManagerMember.get();

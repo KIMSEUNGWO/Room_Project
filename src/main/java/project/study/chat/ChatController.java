@@ -91,7 +91,7 @@ public class ChatController {
         if (findRoom.isEmpty()) return;
         Room room = findRoom.get();
 
-        ResponseRoomUpdateInfo roomInfo = chatService.getResponseRoomUpdateInfo(room);
+        Room.ResponseRoomUpdateInfo roomInfo = room.getResponseRoomUpdateInfo();
 
         chat.setMessage("방 설정이 변경되었습니다.");
         chat.setTime(LocalDateTime.now());
