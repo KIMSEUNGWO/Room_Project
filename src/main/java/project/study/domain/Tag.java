@@ -1,15 +1,11 @@
 package project.study.domain;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @Entity
-@AllArgsConstructor
 @NoArgsConstructor
-@Builder
 @Table(name = "TAG")
 @SequenceGenerator(name = "SEQ_TAG", sequenceName = "SEQ_TAG_ID", allocationSize = 1)
 public class Tag {
@@ -25,4 +21,8 @@ public class Tag {
     @JoinColumn(name = "ROOM_ID")
     private Room room;
 
+    public Tag(String tagName, Room room) {
+        this.tagName = tagName;
+        this.room = room;
+    }
 }

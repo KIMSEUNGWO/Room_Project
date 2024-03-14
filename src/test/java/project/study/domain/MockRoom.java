@@ -8,7 +8,6 @@ import org.springframework.transaction.annotation.Transactional;
 import project.study.controller.image.FileUpload;
 import project.study.controller.image.FileUploadType;
 import project.study.enums.AuthorityMemberEnum;
-import project.study.enums.MemberStatusEnum;
 import project.study.enums.PublicEnum;
 import project.study.jpaRepository.RoomJpaRepository;
 
@@ -73,11 +72,11 @@ public class MockRoom {
         }
 
         public MockRoomBuilder addTags() {
-            Tag tag1 = Tag.builder().tagName("1").room(room).build();
-            Tag tag2 = Tag.builder().tagName("2").room(room).build();
-            Tag tag3 = Tag.builder().tagName("3").room(room).build();
-            Tag tag4 = Tag.builder().tagName("4").room(room).build();
-            Tag tag5 = Tag.builder().tagName("5").room(room).build();
+            Tag tag1 = new Tag("1", room);
+            Tag tag2 = new Tag("2", room);
+            Tag tag3 = new Tag("3", room);
+            Tag tag4 = new Tag("4", room);
+            Tag tag5 = new Tag("5", room);
             List<Tag> tagList = List.of(tag1, tag2, tag3, tag4, tag5);
             for (Tag tag : tagList) {
                 em.persist(tag);

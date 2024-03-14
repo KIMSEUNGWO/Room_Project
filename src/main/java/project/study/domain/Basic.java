@@ -3,6 +3,7 @@ package project.study.domain;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import project.study.controller.api.sms.FindAccount;
@@ -23,17 +24,10 @@ public class Basic implements MemberType {
     private String password;
     private String salt;
 
+    @Getter
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "MEMBER_ID")
     private Member member;
-
-    public String getAccount() {
-        return account;
-    }
-
-    public Member getMember() {
-        return member;
-    }
 
     public boolean isValidPassword(BCryptPasswordEncoder encoder, String comparePassword) {
         String loginPassword = combineSalt(comparePassword);
