@@ -220,7 +220,6 @@ input[type="checkbox"] {
     height: 3rem;
     display: flex;
     justify-content: center;
-    gap: 0.3rem;
 }
 .pagination button {
     width: 1.5rem;
@@ -234,7 +233,6 @@ input[type="checkbox"] {
 }
 .buttons {
     display: flex;
-
 }
 
 .buttons a {

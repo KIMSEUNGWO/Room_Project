@@ -3,12 +3,8 @@ package project.study.authority.admin;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
-import project.study.authority.admin.OverallAdmin;
-import project.study.authority.admin.ReportAdmin;
 import project.study.domain.Admin;
-import project.study.enums.AuthorityAdminEnum;
 import project.study.exceptions.authority.AuthorizationException;
-import project.study.jpaRepository.AdminJpaRepository;
 import project.study.service.AdminService;
 
 import java.util.Optional;
@@ -31,7 +27,8 @@ public class AdminAuthorizationCheck {
 
     public ReportAdmin getReportAdmin(Long adminId, HttpServletResponse response){
         Optional<Admin> findAdmin = adminService.findById(adminId);
-        if (findAdmin.isEmpty() || !findAdmin.get().isOverall() || !findAdmin.get().isReport()) {
+
+        if (findAdmin.isEmpty() || !findAdmin.get().isReport()) {
             throw new AuthorizationException(response, "권한이 없습니다");
         }
         return reportAdmin;
