@@ -3,8 +3,8 @@ package project.study.domain;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
-import project.study.dto.room.ResponseRoomNotice;
 
 import java.time.LocalDateTime;
 
@@ -39,4 +39,14 @@ public class RoomNotice {
             .time(roomNoticeDate)
             .build();
     }
+
+    @Getter
+    @Builder
+    public static class ResponseRoomNotice {
+
+        private String content; // 공지사항 내용
+        private LocalDateTime time; // 공지사항 시간
+
+    }
+
 }

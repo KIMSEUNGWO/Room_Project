@@ -4,7 +4,6 @@ import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.event.EventListener;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.Payload;
@@ -22,13 +21,12 @@ import project.study.authority.member.dto.RequestKickDto;
 import project.study.authority.member.dto.RequestNoticeDto;
 import project.study.chat.component.ChatAccessToken;
 import project.study.chat.dto.*;
-import project.study.constant.WebConst;
 import project.study.customAnnotation.PathRoom;
 import project.study.customAnnotation.SessionLogin;
 import project.study.domain.Member;
 import project.study.domain.Room;
+import project.study.domain.RoomNotice;
 import project.study.dto.abstractentity.ResponseDto;
-import project.study.dto.room.ResponseRoomNotice;
 import project.study.exceptions.RestFulException;
 import project.study.service.JoinRoomService;
 import project.study.service.RoomService;
@@ -184,7 +182,7 @@ public class ChatController {
         System.out.println("data = " + data);
         ManagerAuthority managerMember = authorizationCheck.getManagerAuthority(response, member, room);
 
-        ResponseRoomNotice roomNotice = managerMember.uploadNotice(room, data);
+        RoomNotice.ResponseRoomNotice roomNotice = managerMember.uploadNotice(room, data);
 
         ChatDto chat = ChatDto.builder()
             .roomId(room.getRoomId())

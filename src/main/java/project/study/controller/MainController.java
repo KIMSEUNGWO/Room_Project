@@ -6,7 +6,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -23,8 +22,6 @@ import project.study.domain.Member;
 import project.study.domain.Room;
 import project.study.dto.MyPageInfo;
 import project.study.dto.abstractentity.ResponseDto;
-import project.study.dto.room.ResponsePrivateRoomInfoDto;
-import project.study.dto.room.ResponseRoomInfo;
 import project.study.dto.room.ResponseRoomMemberList;
 import project.study.dto.room.SearchRoomListDto;
 import project.study.service.MainService;
@@ -49,7 +46,7 @@ public class MainController {
         commonMember.joinRoom(new RequestJoinRoomDto(member, room, response, null));
 
         List<ResponseRoomMemberList> memberList = roomService.getResponseRoomMemberList(room, member);
-        ResponseRoomInfo roomInfo = roomService.getRoomNotice(room, member);
+        Room.ResponseRoomInfo roomInfo = room.getResponseRoomInfo(member);
 
         model.addAttribute("max", room.getRoomLimit());
         model.addAttribute("memberList", memberList);
@@ -63,7 +60,7 @@ public class MainController {
     public String roomPrivate(@SessionLogin(required = true, type = CallType.CONTROLLER) Member member, @PathRoom("room") Room room, Model model) {
         if (room.isPublic()) return "redirect:/";
 
-        ResponsePrivateRoomInfoDto data = roomService.getResponsePrivateRoomInfoDto(room);
+        Room.ResponsePrivateRoomInfoDto data = room.getResponsePrivateRoomInfo();
         model.addAttribute("room", data);
         return "room_private";
     }

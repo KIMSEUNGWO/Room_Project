@@ -85,9 +85,9 @@ public class MemberAuthorityImpl implements MemberAuthority{
         if (!room.isPublic()) {
             if (password == null) execute(response, room.getRoomId());
 
-            if (room.getRoomPassword() == null) throw new InvalidPublicPasswordException(response, "문제가 생겼습니다. 관리자에게 문의해주세요.");
+            if (!room.hasRoomPassword()) throw new InvalidPublicPasswordException(response, "문제가 생겼습니다. 관리자에게 문의해주세요.");
 
-            if (!room.getRoomPassword().compareRoomPassword(password)) throw new InvalidPublicPasswordException(response, "비밀번호가 일치하지 않습니다..");
+            if (!room.isValidPassword(password)) throw new InvalidPublicPasswordException(response, "비밀번호가 일치하지 않습니다.");
         }
 
         joinRoomService.joinRoom(data);

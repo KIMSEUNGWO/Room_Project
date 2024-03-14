@@ -3,13 +3,16 @@ package project.study.domain;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import project.study.authority.member.dto.RequestEditRoomDto;
 import project.study.authority.member.dto.ResponseRoomListDto;
 import project.study.chat.domain.Chat;
 import project.study.enums.PublicEnum;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 
 @Entity
 @Builder
@@ -18,14 +21,17 @@ import java.util.List;
 @SequenceGenerator(name = "SEQ_ROOM", sequenceName = "SEQ_ROOM_ID", allocationSize = 1)
 public class Room implements ImageFileEntity {
 
+    @Getter
     @Id @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "SEQ_ROOM")
-    @Column(name = "ROOM_ID")
     private Long roomId;
 
+    @Getter
     private String roomTitle;
 
+    @Getter
     private String roomIntro;
 
+    @Getter
     private int roomLimit;
 
     private LocalDateTime roomCreateDate;
@@ -39,15 +45,18 @@ public class Room implements ImageFileEntity {
     @OneToOne(mappedBy = "room", fetch = FetchType.LAZY)
     private RoomImage roomImage;
 
+    @Getter
     @OneToOne(mappedBy = "room", fetch = FetchType.LAZY)
     private RoomPassword roomPassword;
 
+    @Getter
     @OneToOne(mappedBy = "room", fetch = FetchType.LAZY)
     private RoomNotice roomNotice;
 
     @OneToOne(mappedBy = "room", fetch = FetchType.LAZY)
     private RoomDelete roomDelete;
 
+    @Getter
     @OneToMany(mappedBy = "room", fetch = FetchType.LAZY)
     private List<JoinRoom> joinRoomList;
 
@@ -58,20 +67,9 @@ public class Room implements ImageFileEntity {
         return roomPublic.isPublic();
     }
 
-    public void setRoomTitle(String roomTitle) {
-        this.roomTitle = roomTitle;
-    }
-
-    public void setRoomIntro(String roomIntro) {
-        this.roomIntro = roomIntro;
-    }
-
+    // 테스트용도로만 사용되는 메소드
     public void setRoomLimit(int roomLimit) {
         this.roomLimit = roomLimit;
-    }
-
-    public void setRoomPublic(PublicEnum roomPublic) {
-        this.roomPublic = roomPublic;
     }
 
     public boolean hasNotice() {
@@ -86,33 +84,6 @@ public class Room implements ImageFileEntity {
         return joinRoomList.size();
     }
 
-    public int getRoomLimit() {
-        return roomLimit;
-    }
-
-    public RoomPassword getRoomPassword() {
-        return roomPassword;
-    }
-
-    public List<JoinRoom> getJoinRoomList() {
-        return joinRoomList;
-    }
-
-    public String getRoomIntro() {
-        return roomIntro;
-    }
-
-    public RoomNotice getRoomNotice() {
-        return roomNotice;
-    }
-
-    public String getRoomTitle() {
-        return roomTitle;
-    }
-
-    public Long getRoomId() {
-        return roomId;
-    }
 
     @Override
     public void setImage(String originalName, String storeName) {
@@ -139,5 +110,68 @@ public class Room implements ImageFileEntity {
                 .tagList(tags.stream().map(Tag::getTagName).toList())
                 .build();
     }
+
+
+
+    public void editRoom(RequestEditRoomDto data) {
+        roomTitle = data.getTitle();
+        roomIntro = data.getIntro();
+        roomPublic = data.getRoomPublic();
+        roomLimit = data.getMax();
+    }
+
+    public RoomNotice.ResponseRoomNotice getChatInsideNotice() {
+        if (!hasNotice()) return null;
+        return roomNotice.buildResponseRoomNotice();
+    }
+
+    public void updateNotice(String notice) {
+        if (!hasNotice()) return;
+        roomNotice.updateNotice(notice);
+    }
+
+    public boolean hasRoomPassword() {
+        return roomPassword != null;
+    }
+    public boolean isValidPassword(String password) {
+        if (!hasRoomPassword()) return false;
+        return roomPassword.compareRoomPassword(password);
+    }
+
+    @Getter
+    @Builder
+    public static class ResponseRoomInfo {
+
+        private String roomTitle;
+        private boolean isPublic;
+        private boolean isManager;
+
+    }
+    public ResponseRoomInfo getResponseRoomInfo(Member member) {
+        Optional<JoinRoom> findJoinRoom = joinRoomList.stream().filter(joinRoom -> joinRoom.compareMember(member)).findFirst();
+        return findJoinRoom.map(joinRoom -> ResponseRoomInfo.builder()
+                        .roomTitle(roomTitle)
+                        .isPublic(isPublic())
+                        .isManager(joinRoom.isManager())
+                        .build())
+                .orElse(null);
+    }
+
+    @Getter
+    @Builder
+    public static class ResponsePrivateRoomInfoDto {
+
+        private final String image;
+        private final String title;
+        private final String intro;
+    }
+    public ResponsePrivateRoomInfoDto getResponsePrivateRoomInfo() {
+        return ResponsePrivateRoomInfoDto.builder()
+                .image(getStoreImage())
+                .title(roomTitle)
+                .intro(roomIntro)
+                .build();
+    }
+
 
 }
