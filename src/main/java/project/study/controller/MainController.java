@@ -1,12 +1,12 @@
 package project.study.controller;
 
-import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -85,7 +85,11 @@ public class MainController {
     public ResponseEntity<ResponseDto> search(@SessionAttribute(name = LOGIN_MEMBER, required = false) Long memberId, @RequestParam("word") String word, Pageable pageable) {
         System.out.println("word = " + word + " pageable = " + pageable.getPageNumber());
 
+        long startTime = System.currentTimeMillis();
         List<ResponseRoomListDto> roomList = roomService.searchRoomList(memberId, word, pageable);
+        long endTime = System.currentTimeMillis();
+
+        System.out.println("걸린시간 = " + (endTime - startTime) + "ms");
 
         for (ResponseRoomListDto data : roomList) {
             System.out.println("data = " + data);
@@ -113,4 +117,5 @@ public class MainController {
 
         return "redirect:" + mainService.logout(member);
     }
+
 }

@@ -3,6 +3,7 @@ package project.study.domain;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 import project.study.constant.WebConst;
 import project.study.controller.api.sms.FindAccount;
@@ -25,9 +26,12 @@ import static project.study.enums.MemberStatusEnum.*;
 @SequenceGenerator(name = "SEQ_MEMBER", sequenceName = "SEQ_MEMBER_ID", allocationSize = 1)
 public class Member implements ImageFileEntity {
 
+    @Getter
     @Id @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "SEQ_MEMBER")
     private Long memberId;
     private String memberName;
+
+    @Getter
     private String memberNickname;
     private LocalDateTime memberCreateDate;
     @Enumerated(EnumType.STRING)
@@ -36,8 +40,10 @@ public class Member implements ImageFileEntity {
     private LocalDateTime memberExpireDate;
 
     // Not Columns
+    @Getter
     @OneToOne(mappedBy = "member", fetch = FetchType.LAZY)
     private Social social;
+    @Getter
     @OneToOne(mappedBy = "member", fetch = FetchType.LAZY)
     private Basic basic;
 
@@ -47,6 +53,8 @@ public class Member implements ImageFileEntity {
     private Phone phone;
     @OneToMany(mappedBy = "member")
     private List<Freeze> freeze;
+
+    @Getter
     @OneToMany(mappedBy = "member", fetch = FetchType.LAZY)
     private List<JoinRoom> joinRoomList;
 
@@ -77,44 +85,23 @@ public class Member implements ImageFileEntity {
     }
 
 
-    public Long getMemberId() {
-        return memberId;
-    }
-
-    public Social getSocial() {
-        return social;
-    }
-
-    public Basic getBasic() {
-        return basic;
-    }
-
-
-    public String getMemberNickname() {
-        return memberNickname;
-    }
-
     @Override
     public String getStoreImage() {
-        if (profile == null) return "";
-        return profile.getProfileStoreName();
+        return (profile == null) ? "" : profile.getProfileStoreName();
+    }
+    @Override
+    public void setImage(String originalName, String storeName) {
+        if (profile == null) return;
+        profile.setImage(originalName, storeName);
     }
 
-
     public String getPhoneNumber() {
-        if (phone == null) return null;
-        return phone.getPhone();
+        return (phone == null) ? null : phone.getPhone();
     }
 
     public void updateInfo(RequestEditInfoDto data) {
         memberName = data.getName();
         memberNickname = data.getNickname();
-    }
-
-    @Override
-    public void setImage(String originalName, String storeName) {
-        if (profile == null) return;
-        profile.setImage(originalName, storeName);
     }
 
     public int joinRoomCount(AuthorityMemberEnum authorityEnum) {

@@ -53,18 +53,25 @@ public class RoomService {
 
 
     public List<ResponseRoomListDto> getMyRoomList(Member member) {
-        List<ResponseRoomListDto> roomInfo = joinRoomRepository.getRoomInfo(member);
-        roomInfo.iterator()
-            .forEachRemaining(data -> data.setTagList(tagRepository.findAllByRoomId(data.getRoomId())));
-        return roomInfo;
+        List<JoinRoom> joinRoomList = member.getJoinRoomList();
+
+        List<ResponseRoomListDto> temp = new ArrayList<>();
+        for (JoinRoom joinRoom : joinRoomList) {
+            temp.add(joinRoom.getResponseRoomListDto());
+        }
+
+        return temp;
     }
 
 
     public List<ResponseRoomListDto> searchRoomList(Long memberId, String word, Pageable pageable) {
-        List<ResponseRoomListDto> roomInfo = joinRoomRepository.search(memberId, word, pageable);
-        roomInfo.iterator()
-            .forEachRemaining(data -> data.setTagList(tagRepository.findAllByRoomId(data.getRoomId())));
-        return roomInfo;
+        List<Room> roomInfo = joinRoomRepository.search(word, pageable);
+
+        List<ResponseRoomListDto> temp = new ArrayList<>();
+        for (Room room : roomInfo) {
+            temp.add(room.getResponseRoomListDto(memberId));
+        }
+        return temp;
     }
 
     public void validMaxCreateRoom(Member member) {

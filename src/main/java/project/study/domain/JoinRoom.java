@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.NoArgsConstructor;
+import project.study.authority.member.dto.ResponseRoomListDto;
 import project.study.enums.AuthorityMemberEnum;
 
 @AllArgsConstructor
@@ -47,5 +48,9 @@ public class JoinRoom {
 
     public boolean compareMember(Member member) {
         return this.member.equals(member);
+    }
+
+    public ResponseRoomListDto getResponseRoomListDto() {
+        return room.getResponseRoomListDto(null);
     }
 }
