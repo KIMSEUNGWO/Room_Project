@@ -9,7 +9,6 @@ import project.study.authority.member.authority.ManagerAuthority;
 import project.study.authority.member.authority.ManagerAuthorityImpl;
 import project.study.authority.member.authority.MemberAuthority;
 import project.study.authority.member.authority.MemberAuthorityImpl;
-import project.study.jpaRepository.MemberJpaRepository;
 import project.study.repository.MemberRepository;
 import project.study.service.AdminService;
 import project.study.service.JoinRoomService;

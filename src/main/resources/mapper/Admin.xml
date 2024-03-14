@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="project.study.repository.AdminMapper">
+
+    <select id="searchMember" resultType="project.study.authority.admin.dto.SearchMemberDto">
+        <![CDATA[
+            select * from(
+                select
+                    row_number() over(order by m.member_create_date desc) as rn,
+                    COALESCE(b.account, s.social_email) AS memberAccount,
+                    m.member_name as memberName,
+                    m.member_nickname as memberNickname,
+                    p.phone as memberPhone,
+                    to_char(m.member_create_date, 'yyyy-MM-dd') as memberCreateDate,
+                    m.member_notify_count as memberNotifyCount,
+                    s.social_type as socialType,
+                    m.member_status as memberStatus
+                from member m
+                left join basic b ON m.member_id = b.member_id
+                left join social s ON m.member_id = s.member_id
+                left join phone p on m.member_id = p.member_id
+                where (m.member_status = '정상' or m.member_status = '이용정지')
+                order by m.member_create_date desc) t
+            where rn between #{startNum} and #{endNum}
+        ]]>
+    </select>
+
+    <select id="getTotalCnt" resultType="int">
+        select count(*) from member
+    </select>
+
+</mapper>

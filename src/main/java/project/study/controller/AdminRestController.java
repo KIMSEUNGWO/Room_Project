@@ -6,11 +6,11 @@ import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
-import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import project.study.authority.admin.AdminAuthorizationCheck;
 import project.study.authority.admin.OverallAdmin;
-import project.study.authority.admin.dto.SearchMemberDto;
+import project.study.authority.admin.ReportAdmin;
+import project.study.authority.admin.dto.*;
 import project.study.domain.Admin;
 import project.study.service.AdminService;
 
@@ -35,10 +35,9 @@ public class AdminRestController {
         Admin admin = findAdmin.get();
         session.setAttribute("adminId", admin.getAdminId());
 
-        if(!admin.isOverall() && admin.isReport()){
-            return ResponseEntity.ok("/admin/notify");
-        }
-        return ResponseEntity.ok("/admin/members");
+        if (admin.isOverall()) return ResponseEntity.ok("/admin/members");
+        if (admin.isReport()) return ResponseEntity.ok("/admin/notify");
+        else return ResponseEntity.ok("/admin/login");
     }
 
     @PostMapping("/logout")
@@ -51,27 +50,86 @@ public class AdminRestController {
         return ResponseEntity.ok("/admin/login");
     }
 
-//    @GetMapping("/members/get")
-//    public ResponseEntity<Page<SearchMemberDto>> searchMember(@RequestParam(value = "word", required = false, defaultValue = "") String word,
-//                                                              @RequestParam(defaultValue = "1", value = "page") int pageNumber,
-//                                                              @RequestParam(value = "onlyFreezeMembers", required = false) String freezeOnly,
-//                                                              @SessionAttribute(name = "adminId", required = false) Long adminId,
-//                                                              HttpServletResponse response){
-//        OverallAdmin overallAdmin = check.getOverallAdmin(adminId, response);
-//
-//        Page<SearchMemberDto> page = overallAdmin.searchMember(word, pageNumber, freezeOnly);
-//        return ResponseEntity.ok(page);
-//    }
-
     @GetMapping("/members/get")
-    public ResponseEntity<Page<SearchMemberDto>> searchMember(@RequestParam(value = "word", required = false, defaultValue = "") String word,
+    public ResponseEntity<Page<SearchMemberDto>> searchNotify(@RequestParam(value = "word", required = false, defaultValue = "") String word,
+                               @RequestParam(value = "onlyFreezeMembers", required = false) String freezeOnly,
+                               @RequestParam(defaultValue = "1", value = "page") int pageNumber,
+                               @SessionAttribute(name = "adminId", required = false) Long adminId,
+                               HttpServletResponse response){
+
+        OverallAdmin overallAdmin = check.getOverallAdmin(adminId, response);
+        Admin admin = adminService.findById(adminId).get();
+
+        Page<SearchMemberDto> page = overallAdmin.searchMember(word, freezeOnly, pageNumber);
+
+        return ResponseEntity.ok(page);
+    }
+
+    @GetMapping("/admin/expire/get")
+    public ResponseEntity<Page<SearchExpireMemberDto>> searchExpireMember(@RequestParam(value = "word", required = false, defaultValue = "") String word,
+                                                                          @RequestParam(defaultValue = "1", value = "page") int pageNumber,
+                                                                          @SessionAttribute(name = "adminId", required = false) Long adminId,
+                                                                          HttpServletResponse response){
+
+        OverallAdmin overallAdmin = check.getOverallAdmin(adminId, response);
+        Admin admin = adminService.findById(adminId).get();
+
+        Page<SearchExpireMemberDto> page = overallAdmin.searchExpireMember(word, pageNumber);
+
+        return ResponseEntity.ok(page);
+    }
+
+    @GetMapping("/admin/rooms/get")
+    public ResponseEntity<Page<SearchRoomDto>> searchRoom(@RequestParam(value = "word", required = false, defaultValue = "") String word,
+                                                          @RequestParam(defaultValue = "1", value = "page") int pageNumber,
+                                                          @SessionAttribute(name = "adminId", required = false) Long adminId,
+                                                          HttpServletResponse response){
+
+        OverallAdmin overallAdmin = check.getOverallAdmin(adminId, response);
+        Admin admin = adminService.findById(adminId).get();
+
+        Page<SearchRoomDto> page = overallAdmin.searchRoom(word, pageNumber);
+
+        return ResponseEntity.ok(page);
+    }
+
+    @GetMapping("/admin/notify/get")
+    public ResponseEntity<Page<SearchNotifyDto>> searchNotify(@RequestParam(value = "word", required = false, defaultValue = "") String word,
                                                               @RequestParam(defaultValue = "1", value = "page") int pageNumber,
-                                                              @RequestParam(value = "onlyFreezeMembers", required = false) String freezeOnly,
+                                                              @RequestParam(value = "withComplete", required = false) String containComplete,
                                                               @SessionAttribute(name = "adminId", required = false) Long adminId,
                                                               HttpServletResponse response){
-        OverallAdmin overallAdmin = check.getOverallAdmin(adminId, response);
 
-        Page<SearchMemberDto> page = overallAdmin.searchMember(word, pageNumber, freezeOnly);
+        ReportAdmin reportAdmin = check.getReportAdmin(adminId, response);
+        Admin admin = adminService.findById(adminId).get();
+
+        Page<SearchNotifyDto> page = reportAdmin.searchNotify(word, pageNumber, containComplete);
+
         return ResponseEntity.ok(page);
+    }
+
+    @PostMapping("/admin/notify/status/change")
+    public void notifyStatusChange(@RequestBody RequestNotifyStatusChangeDto dto,
+                                   @SessionAttribute(name = "adminId", required = false) Long adminId,
+                                   HttpServletResponse response){
+        ReportAdmin reportAdmin = check.getReportAdmin(adminId, response);
+        reportAdmin.notifyStatusChange(dto);
+    }
+
+    @PostMapping("/admin/notify/member/freeze")
+    public void notifyMemberFreeze (@RequestBody RequestNotifyMemberFreezeDto dto,
+                                    @SessionAttribute(name = "adminId", required = false) Long adminId,
+                                    HttpServletResponse response){
+        ReportAdmin reportAdmin = check.getReportAdmin(adminId, response);
+        reportAdmin.notifyMemberFreeze(dto);
+
+    }
+
+    @PostMapping("/admin/room/delete")
+    public void deleteRoom(@RequestBody RequestDeleteRoomDto dto,
+                           @SessionAttribute(name = "adminId", required = false) Long adminId,
+                           HttpServletResponse response){
+        OverallAdmin overallAdmin = check.getOverallAdmin(adminId, response);
+        overallAdmin.deleteJoinRoom(dto);
     }
 }

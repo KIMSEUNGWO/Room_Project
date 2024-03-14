@@ -1,11 +1,9 @@
 package project.study.authority.admin.authority;
 
 import lombok.RequiredArgsConstructor;
-import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Component;
 import project.study.authority.admin.dto.RequestNotifyMemberFreezeDto;
 import project.study.authority.admin.dto.RequestNotifyStatusChangeDto;
-import project.study.enums.BanEnum;
 import project.study.service.AdminService;
 
 @Component

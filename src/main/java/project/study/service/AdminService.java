@@ -2,15 +2,20 @@ package project.study.service;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import project.study.authority.admin.dto.*;
 import project.study.domain.*;
+import project.study.dto.admin.Criteria;
 import project.study.jpaRepository.AdminJpaRepository;
+import project.study.repository.AdminMapper;
 import project.study.repository.AdminRepository;
 import project.study.repository.FreezeRepository;
 
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -21,6 +26,13 @@ public class AdminService {
     private final AdminJpaRepository adminJpaRepository;
     private final AdminRepository adminRepository;
     private final FreezeRepository freezeRepository;
+    private final AdminMapper adminMapper;
+    private final Criteria criteria;
+
+    public Page<SearchMemberDto> searchMemberDto(int pageNumber){
+        List<SearchMemberDto> data = adminMapper.searchMember(criteria.getStartNum(pageNumber), criteria.getEndNum(pageNumber));
+        return new PageImpl<>(data, criteria.getPageable(pageNumber), adminMapper.getTotalCnt());
+    }
 
     @Transactional
     public Optional<Admin> adminLogin(String account, String password){
@@ -34,20 +46,14 @@ public class AdminService {
         return Optional.empty();
     }
 
-
     public Optional<Admin> findById(Long id){
         if (id == null) return Optional.empty();
         return adminJpaRepository.findById(id);
     }
 
-    public Page<SearchMemberDto> searchMember(int pageNumber){
+    public Page<SearchMemberDto> searchMember(String word, String freezeOnly, int pageNumber){
         PageRequest pageable = PageRequest.of(pageNumber - 1, 10);
-        return adminRepository.searchMember(pageable);
-    }
-
-    public Page<SearchMemberDto> searchMember(String word, int pageNumber, String freezeOnly){
-        PageRequest pageable = PageRequest.of(pageNumber - 1, 10);
-        return adminRepository.searchMember(word, pageable, freezeOnly);
+        return adminRepository.searchMember(word, freezeOnly, pageable);
     }
 
     public Page<SearchExpireMemberDto> searchExpireMember(String word, int pageNumber){
@@ -99,4 +105,7 @@ public class AdminService {
         adminRepository.insertRoomDelete(dto);
     }
 
+    public int getTotalCnt() {
+        return adminMapper.getTotalCnt();
+    }
 }

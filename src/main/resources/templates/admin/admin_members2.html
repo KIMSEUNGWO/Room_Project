@@ -16,9 +16,9 @@
     <header th:replace="~{/common/admin_header :: header}"></header>
     <div class="container">
         <aside>
-            <div class="admin-name-wrap">
-                <span class="admin-name" th:text="${adminName}">오승찬 </span><span class="admin-enum" th:text="${adminEnum}">신고 관리자</span>
-            </div>
+<!--            <div class="admin-name-wrap">-->
+<!--                <span class="admin-name" th:text="${adminName}">오승찬 </span><span class="admin-enum" th:text="${adminEnum}">신고 관리자</span>-->
+<!--            </div>-->
             <div class="menu-list-wrap">
                 <div class="category">
                     <h4>일반</h4>
@@ -76,7 +76,7 @@
                         <div class="status">상태</div>
                     </div>
                     <div class="table-list">
-                        <div class="entity" th:if="${!page.content.isEmpty()}" th:each="member : ${page.content}">
+                        <div class="entity" th:each="member : ${page.content}">
                             <div class="email" th:text="${member.memberAccount}">starosc</div>
                             <div class="name" th:text="${member.memberName}">오승찬하하</div>
                             <div class="nickname" th:text="${member.memberNickname}">닉네임</div>
@@ -89,37 +89,37 @@
                     </div>
                 </div>
                 <div class="page-box">
-                    <div class="pagination" th:if="${!page.content.isEmpty()}">
-                        <div class="buttons">
-                            <button type="button" id="last-left" th:if="${page.number > 0}">
-                                <a th:href="@{'?page=' + 1}">
-                                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><path d="M41.4 233.4c-12.5 12.5-12.5 32.8 0 45.3l160 160c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L109.3 256 246.6 118.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0l-160 160zm352-160l-160 160c-12.5 12.5-12.5 32.8 0 45.3l160 160c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L301.3 256 438.6 118.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0z"/></svg>
-                                </a>
-                            </button>
-                            <button type="button" id="left" th:if="${page.number > 0}">
-                                <a th:href="@{'?page=' + ${page.number}}">
-                                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><path d="M41.4 233.4c-12.5 12.5-12.5 32.8 0 45.3l160 160c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L109.3 256 246.6 118.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0l-160 160z"/></svg>
-                                </a>
-                            </button>
-                        </div>
+<!--                    <div class="pagination" th:if="${!page.content.isEmpty()}">-->
+<!--                        <div class="buttons">-->
+<!--                            <button type="button" id="last-left" th:if="${page.number > 0}">-->
+<!--                                <a th:href="@{'?page=' + 1}">-->
+<!--                                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><path d="M41.4 233.4c-12.5 12.5-12.5 32.8 0 45.3l160 160c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L109.3 256 246.6 118.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0l-160 160zm352-160l-160 160c-12.5 12.5-12.5 32.8 0 45.3l160 160c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L301.3 256 438.6 118.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0z"/></svg>-->
+<!--                                </a>-->
+<!--                            </button>-->
+<!--                            <button type="button" id="left" th:if="${page.number > 0}">-->
+<!--                                <a th:href="@{'?page=' + ${page.number}}">-->
+<!--                                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><path d="M41.4 233.4c-12.5 12.5-12.5 32.8 0 45.3l160 160c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L109.3 256 246.6 118.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0l-160 160z"/></svg>-->
+<!--                                </a>-->
+<!--                            </button>-->
+<!--                        </div>-->
                         <div id="page">
                             <button type="button" class="page-num" th:each="i : ${#numbers.sequence(1, page.totalPages)}">
-                                <a th:href="@{'?page=' + ${i}}">[[${i}]]</a>
+                                <a th:href="|?pageNo=${i}|" th:text="${i}"></a>
                             </button>
                         </div>
-                        <div class="buttons">
-                            <button type="button" id="right" th:if="${!page.last}">
-                                <a th:href="@{'?page=' + ${page.number+2}}">
-                                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><path d="M278.6 233.4c12.5 12.5 12.5 32.8 0 45.3l-160 160c-12.5 12.5-32.8 12.5-45.3 0s-12.5-32.8 0-45.3L210.7 256 73.4 118.6c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0l160 160z"/></svg>
-                                </a>
-                            </button>
-                            <button type="button" id="last-right" th:if="${!page.last}">
-                                <a th:href="@{'?page=' + ${page.totalPages}}">
-                                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><path d="M470.6 278.6c12.5-12.5 12.5-32.8 0-45.3l-160-160c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3L402.7 256 265.4 393.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0l160-160zm-352 160l160-160c12.5-12.5 12.5-32.8 0-45.3l-160-160c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3L210.7 256 73.4 393.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0z"/></svg>
-                                </a>
-                            </button>
-                        </div>
-                    </div>
+<!--                        <div class="buttons">-->
+<!--                            <button type="button" id="right" th:if="${!page.last}">-->
+<!--                                <a th:href="@{'?page=' + ${page.number+2}}">-->
+<!--                                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><path d="M278.6 233.4c12.5 12.5 12.5 32.8 0 45.3l-160 160c-12.5 12.5-32.8 12.5-45.3 0s-12.5-32.8 0-45.3L210.7 256 73.4 118.6c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0l160 160z"/></svg>-->
+<!--                                </a>-->
+<!--                            </button>-->
+<!--                            <button type="button" id="last-right" th:if="${!page.last}">-->
+<!--                                <a th:href="@{'?page=' + ${page.totalPages}}">-->
+<!--                                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><path d="M470.6 278.6c12.5-12.5 12.5-32.8 0-45.3l-160-160c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3L402.7 256 265.4 393.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0l160-160zm-352 160l160-160c12.5-12.5 12.5-32.8 0-45.3l-160-160c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3L210.7 256 73.4 393.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0z"/></svg>-->
+<!--                                </a>-->
+<!--                            </button>-->
+<!--                        </div>-->
+<!--                    </div>-->
                     <!-- <div class="errorMsg" th:if="${page.content.isEmpty()}">결과가 존재하지 않습니다.</div> -->
                 </div>
             </div>
