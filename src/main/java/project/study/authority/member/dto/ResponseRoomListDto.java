@@ -21,7 +21,4 @@ public class ResponseRoomListDto {
     private Integer maxPerson;
     private List<String> tagList; // {"태그명", "태그명", "태그명", ... }
 
-    public void setTagList(List<String> tagList) {
-        this.tagList = tagList;
-    }
 }

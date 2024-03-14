@@ -5,6 +5,8 @@ import jakarta.persistence.EntityManager;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
+import project.study.controller.image.FileUpload;
+import project.study.controller.image.FileUploadType;
 import project.study.enums.AuthorityMemberEnum;
 import project.study.enums.MemberStatusEnum;
 import project.study.enums.PublicEnum;
@@ -24,6 +26,9 @@ public class MockRoom {
     private MockMember mockMember;
     @Autowired
     private EntityManager em;
+    @Autowired
+    private FileUpload fileUpload;
+
 
     public MockRoomBuilder createRoom() {
         Room saveRoom = Room.builder()
@@ -34,6 +39,9 @@ public class MockRoom {
             .roomCreateDate(LocalDateTime.now())
             .build();
         em.persist(saveRoom);
+
+        fileUpload.saveFile(null, FileUploadType.ROOM_PROFILE, saveRoom);
+
         return new MockRoomBuilder(roomJpaRepository, mockMember, em, saveRoom);
     }
     public MockRoomBuilder createRoom(PublicEnum publicEnum, RoomPassword roomPassword) {

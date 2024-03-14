@@ -3,8 +3,8 @@ package project.study.domain;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
-import lombok.Getter;
 import lombok.NoArgsConstructor;
+import project.study.authority.member.dto.ResponseRoomListDto;
 import project.study.chat.domain.Chat;
 import project.study.enums.PublicEnum;
 
@@ -125,4 +125,19 @@ public class Room implements ImageFileEntity {
         if (roomImage == null) return "";
         return roomImage.getRoomImageStoreName();
     }
+
+    public ResponseRoomListDto getResponseRoomListDto(Long memberId) {
+        return ResponseRoomListDto.builder()
+                .roomId(roomId)
+                .roomImage(getStoreImage())
+                .roomTitle(roomTitle)
+                .roomIntro(roomIntro)
+                .roomPublic(isPublic())
+                .roomJoin(memberId != null && joinRoomList.stream().anyMatch(joinRoom -> joinRoom.getMember().getMemberId().equals(memberId)))
+                .nowPerson(joinRoomSize())
+                .maxPerson(roomLimit)
+                .tagList(tags.stream().map(Tag::getTagName).toList())
+                .build();
+    }
+
 }

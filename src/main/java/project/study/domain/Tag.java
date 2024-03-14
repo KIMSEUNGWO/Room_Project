@@ -3,6 +3,7 @@ package project.study.domain;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @Entity
@@ -17,6 +18,7 @@ public class Tag {
     @Column(name = "TAG_ID")
     private Long tagId;
 
+    @Getter
     private String tagName;
 
     @ManyToOne(fetch = FetchType.LAZY)

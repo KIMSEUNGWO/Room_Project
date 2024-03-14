@@ -4,6 +4,8 @@ import jakarta.persistence.EntityManager;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Component;
+import project.study.controller.image.FileUpload;
+import project.study.controller.image.FileUploadType;
 import project.study.enums.MemberStatusEnum;
 import project.study.enums.SocialEnum;
 import project.study.jpaRepository.*;
@@ -21,6 +23,8 @@ public class MockMember {
     private MemberJpaRepository memberJpaRepository;
     @Autowired
     private BCryptPasswordEncoder encoder;
+    @Autowired
+    private FileUpload fileUpload;
 
     private static int index = 0;
     private static final String nickname = "테스트닉네임";
@@ -31,6 +35,8 @@ public class MockMember {
     public MockMemberBuilder createMember() {
         Member saveMember = getSaveMember();
         em.persist(saveMember);
+
+        fileUpload.saveFile(null, FileUploadType.MEMBER_PROFILE, saveMember);
 
         return new MockMemberBuilder(memberJpaRepository, em, saveMember);
     }
