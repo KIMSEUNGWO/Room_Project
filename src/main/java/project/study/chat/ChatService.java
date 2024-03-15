@@ -5,13 +5,13 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import project.study.chat.component.ChatAccessToken;
 import project.study.chat.component.ChatCurrentMemberManager;
+import project.study.chat.component.ChatManager;
 import project.study.chat.dto.*;
 import project.study.domain.JoinRoom;
 import project.study.domain.Member;
 import project.study.domain.Room;
 import project.study.jpaRepository.MemberJpaRepository;
 
-import java.time.LocalDateTime;
 import java.util.Optional;
 import java.util.Set;
 
@@ -53,48 +53,19 @@ public class ChatService {
     }
 
     public ChatObject<ResponseNextManager> exitRoom(Member member, Room room) {
-        ChatDto chat = ChatDto.builder()
-                .roomId(room.getRoomId())
-                .time(LocalDateTime.now())
-                .type(EXIT)
-                .sender(member.getMemberNickname())
-                .message(member.getMemberNickname() + "님이 방에서 나가셨습니다.")
-                .build();
+        ChatDto chat = ChatManager.sendMessageChatDto(member, room, EXIT, member.getMemberNickname() + "님이 방에서 나가셨습니다.");
+
         Optional<Member> nextManagerMember = room.getJoinRoomList()
                 .stream()
                 .filter(joinRoom -> !joinRoom.compareMember(member) && joinRoom.isManager())
                 .map(JoinRoom::getMember)
                 .findFirst();
 
-        if (nextManagerMember.isEmpty()) {
-            return new ChatObject<>(chat, new ResponseNextManager("", 0L));
-        }
+        ResponseNextManager responseNextManager = nextManagerMember
+                .map(ResponseNextManager::new)
+                .orElse(new ResponseNextManager());
 
-        Member nextMember = nextManagerMember.get();
-        ResponseNextManager responseNextManager = new ResponseNextManager(nextMember.getMemberNickname(), nextMember.getMemberId());
         return new ChatObject<>(chat, responseNextManager);
-    }
-
-    public ChatDto kickRoom(Member kickMember, Room room) {
-        return ChatDto.builder()
-                .roomId(room.getRoomId())
-                .token(kickMember.getMemberId())
-                .time(LocalDateTime.now())
-                .type(KICK)
-                .sender(kickMember.getMemberNickname())
-                .message(kickMember.getMemberNickname() + "님이 강퇴당했습니다.")
-                .build();
-    }
-
-    public ChatDto nextManagerRoom(Member nextManager, Room room) {
-        return ChatDto.builder()
-            .roomId(room.getRoomId())
-            .token(nextManager.getMemberId())
-            .time(LocalDateTime.now())
-            .type(ENTRUST)
-            .sender(nextManager.getMemberNickname())
-            .message(nextManager.getMemberNickname() + "님이 방장이 되셨습니다.")
-            .build();
     }
 
 }

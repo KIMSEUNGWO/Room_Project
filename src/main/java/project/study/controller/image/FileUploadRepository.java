@@ -12,6 +12,8 @@ import project.study.jpaRepository.RoomImageJpaRepository;
 
 import java.io.File;
 
+import static project.study.constant.WebConst.*;
+
 @Repository
 @RequiredArgsConstructor
 @Transactional
@@ -20,9 +22,6 @@ public class FileUploadRepository {
 
     @Value("${file.dir}")
     private String fileDir;
-    private final String defaultProfile = "basic-member-profile.jpg";
-    private final String defaultRoomImage = "basic-room-profile.jpg";
-
     private final RoomImageJpaRepository roomImageJpaRepository;
     private final ProfileJpaRepository profileJpaRepository;
     private final NotifyImageJpaRepository notifyImageJpaRepository;
@@ -31,8 +30,8 @@ public class FileUploadRepository {
         RoomImage saveRoomImage;
         if (isDefaultImage(data)) {
             saveRoomImage = RoomImage.builder()
-                .roomImageOriginalName(defaultRoomImage)
-                .roomImageStoreName(defaultRoomImage)
+                .roomImageOriginalName(DEFAULT_ROOM_IMAGE)
+                .roomImageStoreName(DEFAULT_ROOM_IMAGE)
                 .room((Room) data.getParent())
                 .build();
         } else {
@@ -49,8 +48,8 @@ public class FileUploadRepository {
         Profile saveProfile;
         if (isDefaultImage(data)) {
             saveProfile = Profile.builder()
-                .profileOriginalName(defaultProfile)
-                .profileStoreName(defaultProfile)
+                .profileOriginalName(DEFAULT_PROFILE)
+                .profileStoreName(DEFAULT_PROFILE)
                 .member((Member) data.getParent())
                 .build();
         } else {
@@ -81,7 +80,7 @@ public class FileUploadRepository {
     public void editProfile(FileUploadDto data) {
         Member member = (Member) data.getParent();
         if (isDefaultImage(data)) {
-            member.setImage(defaultProfile, defaultProfile);
+            member.setImage(DEFAULT_PROFILE, DEFAULT_PROFILE);
         } else {
             member.setImage(data.getImageUploadName(), data.getImageStoreName());
         }
@@ -91,7 +90,7 @@ public class FileUploadRepository {
         Room room = (Room) data.getParent();
 
         if (isDefaultImage(data)) {
-            room.setImage(defaultRoomImage, defaultRoomImage);
+            room.setImage(DEFAULT_ROOM_IMAGE, DEFAULT_ROOM_IMAGE);
         } else {
             room.setImage(data.getImageUploadName(), data.getImageStoreName());
         }
@@ -100,7 +99,7 @@ public class FileUploadRepository {
     public void deleteProfile(FileUploadType type, ImageFileEntity parent) {
         Member member = (Member) parent;
         String storeName = member.getStoreImage();
-        if (defaultProfile.equals(storeName)) return;
+        if (DEFAULT_PROFILE.equals(storeName)) return;
 
         File profileFile = new File(getFullPath(type, storeName));
         if (profileFile.delete()) {
@@ -112,7 +111,7 @@ public class FileUploadRepository {
     public void deleteRoomImage(FileUploadType type, ImageFileEntity parent) {
         Room room = (Room) parent;
         String storeName = room.getStoreImage();
-        if (defaultRoomImage.equals(storeName)) return;
+        if (DEFAULT_ROOM_IMAGE.equals(storeName)) return;
 
         File roomImageFile = new File(getFullPath(type, storeName));
         if (roomImageFile.delete()) {

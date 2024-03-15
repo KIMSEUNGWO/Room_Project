@@ -1,12 +1,19 @@
 package project.study.chat.dto;
 
-import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
+import project.study.domain.Member;
 
 @Getter
-@AllArgsConstructor
+@NoArgsConstructor
 public class ResponseNextManager {
 
-    private String nextManager;
-    private Long token;
+    private String nextManager = "";
+    private Long token = 0L;
+
+    public ResponseNextManager(Member member) {
+        this.nextManager = member.getMemberNickname();
+        this.token = member.getMemberId();
+    }
+
 }

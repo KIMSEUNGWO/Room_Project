@@ -6,9 +6,9 @@
 </head>
 <body>
     <header th:fragment="header">
-        <div class="l-header">
+        <a href="/" class="l-header">
             <img src="/images/DAGONG.png" alt="" srcset="">
-        </div>
+        </a>
         <div class="menu-header"></div>
         <div class="r-header">
             <button type="button" id="btn-login" th:unless="${session.memberId}">로그인</button>
