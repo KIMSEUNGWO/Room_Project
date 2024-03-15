@@ -109,6 +109,7 @@
 
 |메인화면|
 |-|
+|<img src="https://github.com/KIMSEUNGWO/Room_Project/assets/128001994/e74817e4-7cd1-4362-9d86-4d9108edb174"/>|
 
 |관리자화면|
 |-|
