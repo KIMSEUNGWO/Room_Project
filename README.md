@@ -121,16 +121,20 @@
 <br>
 
 ### 관리자
-|관리자화면|페이지이름|
+|이용중인 회원리스트|탈퇴한 회원리스트|
 |:------:|:------:|
-|<img src="" width="" height=""/>|<img src="" width="" height=""/>|
-|페이지이름|페이지이름|
-|<img src="" width="" height=""/>|<img src="" width="" height=""/>|
-
+|<img src="https://github.com/KIMSEUNGWO/Room_Project/assets/126455161/206e0bdf-9a62-4aa1-96f8-3081802b82ad" width="" height=""/>|<img src="https://github.com/KIMSEUNGWO/Room_Project/assets/126455161/94253175-3f5c-48d3-8076-acf2c0ec7f45" width="" height=""/>|
+|현재 생성된 방 리스트|신고 리스트|
+|<img src="https://github.com/KIMSEUNGWO/Room_Project/assets/126455161/9fce0886-499a-4e5d-86bf-4ab4bca39de6" width="" height=""/>|<img src="https://github.com/KIMSEUNGWO/Room_Project/assets/126455161/20a07e51-7ca2-4341-bfe3-044362d12977" width="" height=""/>|
+|신고내용 자세히 보기|신고당한 회원 정보 및 정지처리|
+|<img src="https://github.com/KIMSEUNGWO/Room_Project/assets/126455161/6cf7bada-4205-47a8-bdc0-b615297c080e" width="" height=""/>|<img src="https://github.com/KIMSEUNGWO/Room_Project/assets/126455161/05f1942b-18d7-4ad4-b412-4f9e45bd00ce" width="" height=""/>|
 1. 구현내용 자유롭게 추가
 2.
 
+
 <br>
+
+
 
 ### 채팅방
 |채팅방화면|설정변경|
