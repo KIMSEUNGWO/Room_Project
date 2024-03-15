@@ -20,6 +20,7 @@ import project.study.authority.member.dto.RequestEntrustDto;
 import project.study.authority.member.dto.RequestKickDto;
 import project.study.authority.member.dto.RequestNoticeDto;
 import project.study.chat.component.ChatAccessToken;
+import project.study.chat.component.ChatManager;
 import project.study.chat.dto.*;
 import project.study.customAnnotation.PathRoom;
 import project.study.customAnnotation.SessionLogin;
@@ -34,6 +35,8 @@ import project.study.service.RoomService;
 import java.time.LocalDateTime;
 import java.util.Optional;
 
+import static project.study.chat.MessageType.ENTRUST;
+import static project.study.chat.MessageType.KICK;
 import static project.study.constant.WebConst.*;
 
 @Slf4j
@@ -153,7 +156,7 @@ public class ChatController {
 
         chatService.accessRemove(kickMember, room.getRoomId());
 
-        ChatDto kick = chatService.kickRoom(kickMember, room);
+        ChatDto kick = ChatManager.sendMessageChatDto(kickMember, room, KICK, kickMember.getMemberNickname() + "님이 강퇴당했습니다.");
         templateSendMessage(room.getRoomId(), kick);
 
         return ResponseEntity.ok(new ResponseDto("성공"));
@@ -168,7 +171,7 @@ public class ChatController {
         ManagerAuthority managerMember = authorizationCheck.getManagerAuthority(response, member, room);
         Member nextManager = managerMember.managerEntrust(member, room, data);
 
-        ChatDto chat = chatService.nextManagerRoom(nextManager, room);
+        ChatDto chat = ChatManager.sendMessageChatDto(nextManager, room, ENTRUST, nextManager.getMemberNickname() + "님이 방장이 되셨습니다.");
 
         templateSendMessage(room.getRoomId(), chat);
         return ResponseEntity.ok(new ResponseDto("성공"));
@@ -184,14 +187,7 @@ public class ChatController {
 
         RoomNotice.ResponseRoomNotice roomNotice = managerMember.uploadNotice(room, data);
 
-        ChatDto chat = ChatDto.builder()
-            .roomId(room.getRoomId())
-            .type(MessageType.NOTICE)
-            .sender(member.getMemberNickname())
-            .time(LocalDateTime.now())
-            .token(member.getMemberId())
-            .message("공지사항이 등록되었습니다.")
-            .build();
+        ChatDto chat = ChatManager.sendMessageChatDto(member, room, MessageType.NOTICE, "공지사항이 등록되었습니다.");
 
         templateSendMessage(room.getRoomId(), new ChatObject<>(chat, roomNotice));
         return ResponseEntity.ok(new ResponseDto("성공"));
@@ -211,14 +207,7 @@ public class ChatController {
 
         managerMember.deleteNotice(room);
 
-        ChatDto chat = ChatDto.builder()
-            .roomId(room.getRoomId())
-            .type(MessageType.NOTICE)
-            .sender(member.getMemberNickname())
-            .time(LocalDateTime.now())
-            .token(member.getMemberId())
-            .message("공지사항이 삭제되었습니다.")
-            .build();
+        ChatDto chat = ChatManager.sendMessageChatDto(member, room, MessageType.NOTICE, "공지사항이 삭제되었습니다.");
 
         templateSendMessage(room.getRoomId(), chat);
 
@@ -243,12 +232,7 @@ public class ChatController {
 
         log.info("headAccessor {}", headerAccessor);
 
-        ChatDto chat = ChatDto.builder()
-                .type(MessageType.LEAVE)
-                .roomId(room.getRoomId())
-                .sender(member.getMemberNickname())
-                .message(member.getMemberNickname() + "님이 채팅방에서 나가셨습니다.")
-                .build();
+        ChatDto chat = ChatManager.sendMessageChatDto(member, room, MessageType.LEAVE, member.getMemberNickname() + "님이 채팅방에서 나가셨습니다.");
 
         templateSendMessage(room.getRoomId(), chatService.changeToMemberListDto(chat));
     }

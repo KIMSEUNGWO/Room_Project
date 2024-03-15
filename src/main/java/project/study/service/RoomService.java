@@ -9,7 +9,7 @@ import org.springframework.transaction.annotation.Transactional;
 import project.study.authority.member.dto.RequestEditRoomDto;
 import project.study.authority.member.dto.RequestNoticeDto;
 import project.study.authority.member.dto.ResponseRoomListDto;
-import project.study.chat.dto.ResponseChatHistory;
+import project.study.chat.domain.Chat;
 import project.study.constant.WebConst;
 import project.study.domain.JoinRoom;
 import project.study.domain.Member;
@@ -99,10 +99,9 @@ public class RoomService {
         return roomRepository.getResponseRoomMemberList(room, member);
     }
 
-    public List<ResponseChatHistory> findByChatHistory(Room room) {
-        List<ResponseChatHistory> byChatHistory = roomRepository.findByChatHistory(room);
-        byChatHistory.sort(Comparator.comparing(ResponseChatHistory::getTime));
-        return byChatHistory;
+    public List<Chat.ResponseChatHistory> findByChatHistory(Room room) {
+        List<Chat> byChatHistory = roomRepository.findByChatHistory(room);
+        return byChatHistory.stream().map(Chat::getResponseChatHistory).toList();
     }
 
     public ResponseEditRoomForm getEditRoomForm(Room room) {

@@ -31,7 +31,6 @@ public class Member implements ImageFileEntity {
     private Long memberId;
     private String memberName;
 
-    @Getter
     private String memberNickname;
     private LocalDateTime memberCreateDate;
     @Enumerated(EnumType.STRING)
@@ -57,6 +56,11 @@ public class Member implements ImageFileEntity {
     @Getter
     @OneToMany(mappedBy = "member", fetch = FetchType.LAZY)
     private List<JoinRoom> joinRoomList;
+
+    public String getMemberNickname() {
+        if (isExpireMember()) return "탈퇴한사용자";
+        return memberNickname;
+    }
 
     public void changeStatusToNormal() {
         memberStatus = 정상;
@@ -87,7 +91,9 @@ public class Member implements ImageFileEntity {
 
     @Override
     public String getStoreImage() {
-        return (profile == null) ? "" : profile.getProfileStoreName();
+        if (profile == null) return "";
+        if (isExpireMember()) return WebConst.EXPIRE_MEMBER_PROFILE;
+        return profile.getProfileStoreName();
     }
     @Override
     public void setImage(String originalName, String storeName) {

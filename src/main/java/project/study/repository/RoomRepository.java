@@ -11,8 +11,8 @@ import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 import project.study.authority.member.dto.RequestEditRoomDto;
 import project.study.authority.member.dto.RequestJoinRoomDto;
+import project.study.chat.domain.Chat;
 import project.study.chat.domain.QChat;
-import project.study.chat.dto.ResponseChatHistory;
 import project.study.controller.image.FileUpload;
 import project.study.controller.image.FileUploadType;
 import project.study.domain.*;
@@ -123,27 +123,12 @@ public class RoomRepository {
         return authorityEnum.eq(AuthorityMemberEnum.방장);
     }
 
-    public List<ResponseChatHistory> findByChatHistory(Room room) {
-        QRoom r = QRoom.room;
-        QChat c = QChat.chat;
-        QMember m = QMember.member;
-        QProfile p = QProfile.profile;
-
-        return query.select(Projections.fields(ResponseChatHistory.class,
-                            m.memberId.as("token"),
-                            m.memberNickname.as("sender"),
-                            p.profileStoreName.as("senderImage"),
-                            c.message.as("message"),
-                            c.sendDate.as("time")
-                            ))
-                    .from(c)
-                    .join(r).on(c.room.eq(r))
-                    .join(m).on(c.sendMember.eq(m))
-                    .leftJoin(p).on(p.member.eq(m))
-                    .where(r.eq(room))
-                    .orderBy(c.chatId.asc())
-                    .limit(50)
-                    .fetch();
+    public List<Chat> findByChatHistory(Room room) {
+        return query.select(QChat.chat)
+                .from(QChat.chat)
+                .where(QRoom.room.eq(room))
+                .limit(50)
+                .fetch();
     }
 
     public ResponseEditRoomForm getResponseEditRoomForm(Room room) {

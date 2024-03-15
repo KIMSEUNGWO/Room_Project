@@ -1,10 +1,7 @@
 package project.study.chat.domain;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import project.study.domain.Member;
 import project.study.domain.Room;
 
@@ -33,4 +30,27 @@ public class Chat {
     @Lob
     private String message;
     private LocalDateTime sendDate;
+
+    @Getter
+    @Builder
+    public static class ResponseChatHistory {
+
+        private Long token;
+        private String sender;
+        private String senderImage;
+        private String message;
+        private LocalDateTime time;
+
+        public ResponseChatHistory(Member sendMember, String message, LocalDateTime sendDate) {
+            this.token = sendMember.getMemberId();
+            this.sender = sendMember.getMemberNickname();
+            this.senderImage = sendMember.getStoreImage();
+            this.message = message;
+            this.time = sendDate;
+        }
+
+    }
+    public ResponseChatHistory getResponseChatHistory() {
+        return new ResponseChatHistory(sendMember, message, sendDate);
+    }
 }

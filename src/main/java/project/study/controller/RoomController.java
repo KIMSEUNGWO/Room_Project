@@ -3,7 +3,6 @@ package project.study.controller;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
@@ -13,14 +12,12 @@ import project.study.authority.member.authority.ManagerAuthority;
 import project.study.authority.member.authority.MemberAuthority;
 import project.study.authority.member.dto.RequestEditRoomDto;
 import project.study.authority.member.dto.RequestJoinRoomDto;
-import project.study.authority.member.dto.ResponseRoomListDto;
-import project.study.chat.dto.ResponseChatHistory;
+import project.study.chat.domain.Chat;
 import project.study.customAnnotation.PathRoom;
 import project.study.customAnnotation.SessionLogin;
 import project.study.domain.Member;
 import project.study.domain.Room;
 import project.study.domain.RoomNotice;
-import project.study.domain.RoomPassword;
 import project.study.dto.abstractentity.ResponseDto;
 import project.study.authority.member.dto.RequestCreateRoomDto;
 import project.study.dto.abstractentity.ResponseObject;
@@ -107,7 +104,7 @@ public class RoomController {
     public ResponseEntity<ResponseDto> chatHistory(@PathRoom("room") Room room) {
         // JoinRoom 검증 안되어있음 아직.
 
-        List<ResponseChatHistory> history = roomService.findByChatHistory(room);
+        List<Chat.ResponseChatHistory> history = roomService.findByChatHistory(room);
         return ResponseEntity.ok(new ResponseObject<>("성공", history));
     }
 
