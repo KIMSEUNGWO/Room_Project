@@ -68,15 +68,15 @@ public class MemberAuthorityImpl implements MemberAuthority{
     }
 
     @Override
-    public void joinRoom(RequestJoinRoomDto data) {
+    public JoinRoom joinRoom(RequestJoinRoomDto data) {
         Member member = data.getMember();
         Room room = data.getRoom();
         HttpServletResponse response = data.getResponse();
         String password = data.getPassword();
 
         // 이미 참여한 회원인지 확인
-        boolean alreadyParticipated = joinRoomService.exitsByMemberAndRoom(member.getMemberId(), room);
-        if (alreadyParticipated) return;
+        Optional<JoinRoom> findJoinRoom = joinRoomService.findByMemberAndRoom(member, room);
+        if (findJoinRoom.isPresent()) return findJoinRoom.get();
 
         // 멤버의 최대 참여수 확인
         joinRoomService.validMaxJoinRoom(member, response);
@@ -90,7 +90,7 @@ public class MemberAuthorityImpl implements MemberAuthority{
             if (!room.isValidPassword(password)) throw new InvalidPublicPasswordException(response, "비밀번호가 일치하지 않습니다.");
         }
 
-        joinRoomService.joinRoom(data);
+        return joinRoomService.joinRoom(data);
     }
 
     private String execute(HttpServletResponse response, Long roomId) {

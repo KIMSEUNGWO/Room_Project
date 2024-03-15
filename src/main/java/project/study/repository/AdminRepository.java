@@ -7,10 +7,8 @@ import com.querydsl.core.types.Predicate;
 import com.querydsl.core.types.dsl.*;
 import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
-import jakarta.persistence.EntityManager;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.support.PageableExecutionUtils;
 import org.springframework.stereotype.Repository;
@@ -19,20 +17,17 @@ import project.study.domain.*;
 import project.study.enums.AuthorityMemberEnum;
 import project.study.enums.MemberStatusEnum;
 import project.study.enums.NotifyStatus;
-import project.study.jpaRepository.NotifyJpaRepository;
 import project.study.jpaRepository.RoomDeleteJpaRepository;
 
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import static com.querydsl.jpa.JPAExpressions.select;
 import static project.study.domain.QBasic.*;
 import static project.study.domain.QJoinRoom.*;
 import static project.study.domain.QMember.*;
 import static project.study.domain.QNotify.*;
 import static project.study.domain.QNotifyImage.*;
-import static project.study.domain.QPhone.*;
 import static project.study.domain.QProfile.*;
 import static project.study.domain.QRoom.*;
 import static project.study.domain.QSocial.*;
@@ -53,7 +48,7 @@ public class AdminRepository {
         builder.or(accountExpression.likeIgnoreCase("%" +word + "%"));
         builder.or(member.memberName.likeIgnoreCase("%" + word + "%"));
         builder.or(member.memberNickname.likeIgnoreCase("%" + word + "%"));
-        builder.or(phone1.phone.likeIgnoreCase("%" + word + "%"));
+        builder.or(member.phone.likeIgnoreCase("%" + word + "%"));
         builder.or(socialType.likeIgnoreCase("%" + word + "%"));
 
         Predicate predicate = builder.getValue();
@@ -63,14 +58,13 @@ public class AdminRepository {
                 Expressions.stringTemplate("{0}", accountExpression).as("memberAccount"),
                 member.memberName,
                 member.memberNickname,
-                phone1.phone,
+                member.phone,
                 Expressions.stringTemplate("TO_CHAR({0}, {1})", member.memberCreateDate, "YYYY-MM-DD"),
                 member.memberNotifyCount,
                 social.socialType,
                 member.memberStatus))
             .from(member)
             .leftJoin(member.basic, basic)
-            .leftJoin(member.phone, phone1)
             .leftJoin(member.social, social)
             .where(member.memberStatus.eq(MemberStatusEnum.이용정지).or(isFreezeOnly(freezeOnly)))
             .where(predicate)
@@ -83,7 +77,6 @@ public class AdminRepository {
             .select(member)
             .from(member)
             .leftJoin(member.basic, basic)
-            .leftJoin(member.phone, phone1)
             .leftJoin(member.social, social)
             .where(member.memberStatus.eq(MemberStatusEnum.이용정지).or(isFreezeOnly(freezeOnly)))
             .where(predicate);
@@ -105,7 +98,7 @@ public class AdminRepository {
         builder.or(accountExpression.likeIgnoreCase("%" + word + "%"));
         builder.or(member.memberName.likeIgnoreCase("%" + word + "%"));
         builder.or(member.memberNickname.likeIgnoreCase("%" + word + "%"));
-        builder.or(phone1.phone.likeIgnoreCase("%" + word + "%"));
+        builder.or(member.phone.likeIgnoreCase("%" + word + "%"));
         builder.or(socialType.likeIgnoreCase("%" + word + "%"));
 
         Predicate predicate = builder.getValue();
@@ -115,14 +108,13 @@ public class AdminRepository {
                 Expressions.stringTemplate("{0}", accountExpression).as("memberAccount"),
                 member.memberName,
                 member.memberNickname,
-                phone1.phone,
+                member.phone,
                 Expressions.stringTemplate("TO_CHAR({0}, {1})", member.memberCreateDate, "YYYY-MM-DD"),
                 Expressions.stringTemplate("TO_CHAR({0}, {1})", member.memberExpireDate, "YYYY-MM-DD"),
                 social.socialType,
                 member.memberStatus))
             .from(member)
             .leftJoin(member.basic, basic)
-            .leftJoin(member.phone, phone1)
             .leftJoin(member.social, social)
             .where(member.memberStatus.eq(MemberStatusEnum.탈퇴))
             .where(predicate)
@@ -135,7 +127,6 @@ public class AdminRepository {
             .select(member)
             .from(member)
             .leftJoin(member.basic, basic)
-            .leftJoin(member.phone, phone1)
             .leftJoin(member.social, social)
             .where(member.memberStatus.eq(MemberStatusEnum.탈퇴))
             .where(predicate);
@@ -337,7 +328,7 @@ public class AdminRepository {
                 Expressions.stringTemplate("{0}", accountExpression).as("memberAccount"),
                 member.memberName,
                 member.memberNickname,
-                phone1.phone,
+                member.phone,
                 Expressions.stringTemplate("TO_CHAR({0}, {1})", member.memberCreateDate, "YYYY-MM-DD"),
                 member.memberNotifyCount,
                 social.socialType,
@@ -347,7 +338,6 @@ public class AdminRepository {
             .leftJoin(notify.criminal, member)
             .leftJoin(member.basic, basic)
             .leftJoin(member.social, social)
-            .leftJoin(member.phone, phone1)
             .where(notify.notifyId.eq(notifyId))
             .fetchOne();
     }

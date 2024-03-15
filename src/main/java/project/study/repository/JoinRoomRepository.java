@@ -63,8 +63,8 @@ public class JoinRoomRepository {
         return joinRoomJpaRepository.existsByMember_memberIdAndRoom(memberId, room);
     }
 
-    public void save(JoinRoom saveJoinRoom) {
-        joinRoomJpaRepository.save(saveJoinRoom);
+    public JoinRoom save(JoinRoom saveJoinRoom) {
+        return joinRoomJpaRepository.save(saveJoinRoom);
     }
 
     public Optional<JoinRoom> findByMemberAndRoom(Member member, Room room) {

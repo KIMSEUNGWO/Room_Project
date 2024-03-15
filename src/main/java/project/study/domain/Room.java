@@ -147,14 +147,12 @@ public class Room implements ImageFileEntity {
         private boolean isManager;
 
     }
-    public ResponseRoomInfo getResponseRoomInfo(Member member) {
-        Optional<JoinRoom> findJoinRoom = joinRoomList.stream().filter(joinRoom -> joinRoom.compareMember(member)).findFirst();
-        return findJoinRoom.map(joinRoom -> ResponseRoomInfo.builder()
+    public ResponseRoomInfo getResponseRoomInfo(JoinRoom joinRoom) {
+        return ResponseRoomInfo.builder()
                         .roomTitle(roomTitle)
                         .isPublic(isPublic())
                         .isManager(joinRoom.isManager())
-                        .build())
-                .orElse(null);
+                        .build();
     }
 
     @Getter

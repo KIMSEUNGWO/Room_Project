@@ -5,14 +5,12 @@ import org.springframework.transaction.annotation.Transactional;
 import project.study.controller.api.kakaologin.KakaoLoginRepository;
 import project.study.domain.SocialToken;
 import project.study.domain.Member;
-import project.study.domain.Phone;
 import project.study.domain.Social;
 import project.study.dto.login.requestdto.*;
 import project.study.enums.MemberStatusEnum;
 import project.study.enums.SocialEnum;
 import project.study.jpaRepository.SocialTokenJpaRepository;
 import project.study.jpaRepository.MemberJpaRepository;
-import project.study.jpaRepository.PhoneJpaRepository;
 import project.study.jpaRepository.SocialJpaRepository;
 
 import java.time.LocalDateTime;
@@ -25,7 +23,6 @@ public class KakaoMember implements MemberInterface{
     private final MemberJpaRepository memberJpaRepository;
     private final SocialJpaRepository socialJpaRepository;
     private final SocialTokenJpaRepository socialTokenJpaRepository;
-    private final PhoneJpaRepository phoneJpaRepository;
 
     @Transactional
     @Override
@@ -37,15 +34,9 @@ public class KakaoMember implements MemberInterface{
                 .memberNickname(data.getNickName())
                 .memberCreateDate(LocalDateTime.now())
                 .memberStatus(MemberStatusEnum.정상)
+                .phone(data.getPhone())
                 .build();
         memberJpaRepository.save(saveMember);
-
-        Phone savePhone = Phone.builder()
-            .phone(data.getPhone())
-            .member(saveMember)
-            .build();
-        phoneJpaRepository.save(savePhone);
-
 
         Social saveSocial = Social.builder()
                 .socialType(SocialEnum.KAKAO)

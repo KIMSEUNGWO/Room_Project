@@ -16,11 +16,10 @@ public class KakaoMemberFactory implements MemberFactory{
     private final MemberJpaRepository memberJpaRepository;
     private final SocialJpaRepository socialJpaRepository;
     private final SocialTokenJpaRepository socialTokenJpaRepository;
-    private final PhoneJpaRepository phoneJpaRepository;
     private final FileUpload fileUpload;
     @Override
     public MemberInterface createMember() {
-        return new KakaoMember(kakaoLoginRepository, memberJpaRepository, socialJpaRepository, socialTokenJpaRepository, phoneJpaRepository);
+        return new KakaoMember(kakaoLoginRepository, memberJpaRepository, socialJpaRepository, socialTokenJpaRepository);
     }
 
     @Override

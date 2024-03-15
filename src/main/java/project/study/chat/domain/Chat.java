@@ -32,7 +32,6 @@ public class Chat {
     private LocalDateTime sendDate;
 
     @Getter
-    @Builder
     public static class ResponseChatHistory {
 
         private Long token;

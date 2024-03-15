@@ -37,7 +37,7 @@ public class JoinRoomService {
         }
     }
 
-    public synchronized void joinRoom(RequestJoinRoomDto data) {
+    public synchronized JoinRoom joinRoom(RequestJoinRoomDto data) {
         roomRepository.validFullRoom(data);
 
         JoinRoom saveJoinRoom = JoinRoom.builder()
@@ -45,13 +45,16 @@ public class JoinRoomService {
                 .member(data.getMember())
                 .authorityEnum(일반)
                 .build();
-        joinRoomRepository.save(saveJoinRoom);
+        return joinRoomRepository.save(saveJoinRoom);
     }
 
     public JoinRoom findByMemberAndRoom(Member member, Room room, HttpServletResponse response) {
         Optional<JoinRoom> findJoinRoom = joinRoomRepository.findByMemberAndRoom(member, room);
         if (findJoinRoom.isEmpty()) throw new NotJoinRoomException(response);
         return findJoinRoom.get();
+    }
+    public Optional<JoinRoom> findByMemberAndRoom(Member member, Room room) {
+        return joinRoomRepository.findByMemberAndRoom(member, room);
     }
 
     public void deleteJoinRoom(JoinRoom joinRoom) {
