@@ -107,45 +107,57 @@
 
 ## 화면 구성
 
-|메인화면|
-|:------:|
-|<img src="https://github.com/KIMSEUNGWO/Room_Project/assets/128001994/e74817e4-7cd1-4362-9d86-4d9108edb174"/>|
-|김승우|
+### 메인
+
+|메인화면|방생성|
+|:-----:|:-----:|
+|<img src="https://github.com/KIMSEUNGWO/Room_Project/assets/128001994/e74817e4-7cd1-4362-9d86-4d9108edb174" width="1000"/>|<img src="https://github.com/KIMSEUNGWO/Room_Project/assets/128001994/1410f6c5-d061-4074-bc23-61ade9d6d0d8">|
+|로그인|채팅방 나가기|
+|<img src="https://github.com/KIMSEUNGWO/Room_Project/assets/128001994/5be8ca57-2ec3-4e6a-a265-ed220e1b9371">|<img src="https://github.com/KIMSEUNGWO/Room_Project/assets/128001994/d5508481-63ba-420e-81cd-581922a9532e" style="height: 400px">|
+
 1. 구현내용 자유롭게 추가
 2.
 
 <br>
 
-|관리자화면|
-|:------:|
-|<img src=""/>|
-|오승찬|
+### 관리자
+|관리자화면|페이지이름|
+|:------:|:------:|
+|<img src="" width="" height=""/>|<img src="" width="" height=""/>|
+|페이지이름|페이지이름|
+|<img src="" width="" height=""/>|<img src="" width="" height=""/>|
+
 1. 구현내용 자유롭게 추가
 2.
 
 <br>
 
-|채팅방|
-|:------:|
-|<img src=""/>|
-|김승우|
+### 채팅방
+|채팅방화면|설정변경|
+|:------:|:------:|
+|<img src="https://github.com/KIMSEUNGWO/Room_Project/assets/128001994/9076534e-7204-41d2-bbb5-86eca0850d52" width="1000" height=""/>|<img src="https://github.com/KIMSEUNGWO/Room_Project/assets/128001994/971f5b96-f27f-4d1e-ad9f-3ecfd85dd00b" width="" height=""/>|
+|공지사항변경|방장권한|
+|<img src="https://github.com/KIMSEUNGWO/Room_Project/assets/128001994/8fd92229-77b4-4599-9fc3-4a1085f9c0dc" width="" height=""/>|<img src="https://github.com/KIMSEUNGWO/Room_Project/assets/128001994/6026aaff-29f7-4fa7-9853-d7f6306f6dec" width="" height=""/>|
+|신고기능|비공개방 참여|
+|<img src="https://github.com/KIMSEUNGWO/Room_Project/assets/128001994/9328b8f7-4821-48e9-a8ae-44ecd4d2df69" width="" height=""/>|<img src="https://github.com/KIMSEUNGWO/Room_Project/assets/128001994/2a9e5bdf-203f-4120-9e65-bc334c5fedc9" width="" height="400" />|
+
 1. 구현내용 자유롭게 추가
 2.
 
 <br>
 
-|마이페이지|
-|:------:|
-|<img src=""/>|
-|김승우|
+### 마이페이지
+|마이페이지화면|휴대폰변경|
+|:------:|:------:|
+|<img src="https://github.com/KIMSEUNGWO/Room_Project/assets/128001994/b8b389bf-4a6a-4323-b2cc-410ab71492f9" width="" height=""/>|<img src="https://github.com/KIMSEUNGWO/Room_Project/assets/128001994/849f0aeb-db7b-40cb-8d38-37596062ff99" width="" height=""/>|
+|비밀번호변경|계정삭제|
+|<img src="https://github.com/KIMSEUNGWO/Room_Project/assets/128001994/849f0aeb-db7b-40cb-8d38-37596062ff99" width="" height=""/>|<img src="https://github.com/KIMSEUNGWO/Room_Project/assets/128001994/fe4fc60a-6878-49e9-9c69-b5fe0704b12e" width="" height=""/>|
+
 1. 구현내용 자유롭게 추가
 2.
 
 <br>
 
-|화상회의(구현중)|
-|:------:|
-|<img src=""/>|
-|구현중|
+### 화상회의(구현중)
 
 <br>
