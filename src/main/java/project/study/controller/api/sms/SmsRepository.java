@@ -1,8 +1,5 @@
 package project.study.controller.api.sms;
 
-import com.querydsl.core.QueryFactory;
-import com.querydsl.jpa.impl.JPAQueryFactory;
-import jakarta.persistence.EntityManager;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import net.nurigo.sdk.NurigoApp;
@@ -16,8 +13,6 @@ import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 import project.study.domain.Certification;
 import project.study.domain.Member;
-import project.study.domain.QMember;
-import project.study.domain.QPhone;
 import project.study.dto.abstractentity.ResponseDto;
 import project.study.exceptions.sms.ExceedExpireException;
 import project.study.exceptions.sms.MessageSendException;
@@ -28,9 +23,6 @@ import project.study.jpaRepository.MemberJpaRepository;
 import java.util.Optional;
 import java.util.Random;
 import java.util.stream.Collectors;
-
-import static project.study.domain.QMember.member;
-import static project.study.domain.QPhone.phone1;
 
 @Repository
 @RequiredArgsConstructor
@@ -108,6 +100,6 @@ public class SmsRepository {
     }
 
     public Optional<Member> findByNameAndPhone(String name, String phone) {
-        return memberJpaRepository.findByMemberNameAndMemberPhone(name, phone);
+        return memberJpaRepository.findByMemberNameAndPhone(name, phone);
     }
 }

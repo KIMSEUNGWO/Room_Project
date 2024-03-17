@@ -256,7 +256,7 @@
     display: none;
 }
 .more-menu li:last-child {
-    margin-bottom: 1rem;
+    /*margin-bottom: 1rem;*/
 }
 .more-menu li {
     width: 100%;

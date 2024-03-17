@@ -83,7 +83,7 @@ public class SmsController {
 
         smsService.validCertificationPhone(certification, data);
 
-        smsService.changePhone(member, certification);
+        member.changePhone(certification.getPhone());
 
         return ResponseEntity.ok(new ResponseDto("휴대폰 변경 완료"));
     }

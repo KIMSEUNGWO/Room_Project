@@ -1,10 +1,10 @@
 package project.study.domain;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
+import project.study.constant.WebConst;
+import project.study.dto.abstractentity.ResponseDto;
+import project.study.exceptions.RestFulException;
 
 import java.time.LocalDateTime;
 
@@ -48,5 +48,27 @@ public class RoomNotice {
         private LocalDateTime time; // 공지사항 시간
 
     }
+
+    @Getter
+    @Setter
+    public static class RequestNoticeDto {
+
+        private String notice;
+
+        public void validNotice() {
+            if (this.notice.length() > 300) {
+                throw new RestFulException(new ResponseDto(WebConst.ERROR, "300자 이내로 작성해주세요."));
+            }
+        }
+
+        public RoomNotice saveRoomNotice(Room room) {
+            return RoomNotice.builder()
+                    .room(room)
+                    .roomNoticeContent(this.notice)
+                    .roomNoticeDate(LocalDateTime.now())
+                    .build();
+        }
+    }
+
 
 }

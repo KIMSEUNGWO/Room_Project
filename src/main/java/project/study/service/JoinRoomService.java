@@ -12,7 +12,6 @@ import project.study.exceptions.NotLoginMemberRestException;
 import project.study.exceptions.authority.NotJoinRoomException;
 import project.study.exceptions.authority.joinroom.ExceedJoinRoomException;
 import project.study.repository.JoinRoomRepository;
-import project.study.repository.RoomRepository;
 
 import java.util.Optional;
 
@@ -24,7 +23,6 @@ import static project.study.enums.AuthorityMemberEnum.*;
 public class JoinRoomService {
 
     private final JoinRoomRepository joinRoomRepository;
-    private final RoomRepository roomRepository;
 
     public boolean exitsByMemberAndRoom(Long memberId, Room room) {
         if (memberId == null) throw new NotLoginMemberRestException();
@@ -37,21 +35,18 @@ public class JoinRoomService {
         }
     }
 
-    public synchronized void joinRoom(RequestJoinRoomDto data) {
-        roomRepository.validFullRoom(data);
-
-        JoinRoom saveJoinRoom = JoinRoom.builder()
-                .room(data.getRoom())
-                .member(data.getMember())
-                .authorityEnum(일반)
-                .build();
-        joinRoomRepository.save(saveJoinRoom);
+    public synchronized JoinRoom joinRoom(RequestJoinRoomDto data) {
+        JoinRoom saveJoinRoom = data.saveJoinRoom();
+        return joinRoomRepository.save(saveJoinRoom);
     }
 
     public JoinRoom findByMemberAndRoom(Member member, Room room, HttpServletResponse response) {
         Optional<JoinRoom> findJoinRoom = joinRoomRepository.findByMemberAndRoom(member, room);
         if (findJoinRoom.isEmpty()) throw new NotJoinRoomException(response);
         return findJoinRoom.get();
+    }
+    public Optional<JoinRoom> findByMemberAndRoom(Member member, Room room) {
+        return joinRoomRepository.findByMemberAndRoom(member, room);
     }
 
     public void deleteJoinRoom(JoinRoom joinRoom) {

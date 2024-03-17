@@ -81,12 +81,6 @@ public class RoomRepository {
         roomPasswordJpaRepository.save(saveRoomPassword);
     }
 
-    public void validFullRoom(RequestJoinRoomDto data) {
-        Room room = data.getRoom();
-        int maxPerson = room.getRoomLimit();
-        int nowPerson = room.joinRoomSize();
-        if (nowPerson >= maxPerson) throw new FullRoomException(data.getResponse(), "방이 가득찼습니다.");
-    }
 
     public Long getNumberFormat(String roomIdStr, HttpServletResponse response) {
         try {

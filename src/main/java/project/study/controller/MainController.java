@@ -18,6 +18,7 @@ import project.study.authority.member.dto.ResponseRoomListDto;
 import project.study.customAnnotation.CallType;
 import project.study.customAnnotation.PathRoom;
 import project.study.customAnnotation.SessionLogin;
+import project.study.domain.JoinRoom;
 import project.study.domain.Member;
 import project.study.domain.Room;
 import project.study.dto.MyPageInfo;
@@ -43,12 +44,12 @@ public class MainController {
     @GetMapping("/room/{room}")
     public String joinRoom(@SessionLogin(required = true, type = CallType.CONTROLLER) Member member, @PathRoom("room") Room room, HttpServletResponse response, Model model){
         MemberAuthority commonMember = memberAuthorizationCheck.getMemberAuthority(response, member);
-        commonMember.joinRoom(new RequestJoinRoomDto(member, room, response, null));
+        JoinRoom joinRoom = commonMember.joinRoom(new RequestJoinRoomDto(member, room, response, null));
 
         List<ResponseRoomMemberList> memberList = roomService.getResponseRoomMemberList(room, member);
-        Room.ResponseRoomInfo roomInfo = room.getResponseRoomInfo(member);
+        Room.ResponseRoomInfo roomInfo = room.getResponseRoomInfo(joinRoom);
 
-        model.addAttribute("max", room.getRoomLimit());
+
         model.addAttribute("memberList", memberList);
         model.addAttribute("roomInfo", roomInfo);
         model.addAttribute("hasPhone", member.hasPhone());

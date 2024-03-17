@@ -10,7 +10,7 @@ public interface ManagerAuthority {
 
     void editRoom(Room room, RequestEditRoomDto data);
     Member managerEntrust(Member member, Room room, RequestEntrustDto data);
-    RoomNotice.ResponseRoomNotice uploadNotice(Room room, RequestNoticeDto data);
+    RoomNotice.ResponseRoomNotice uploadNotice(Room room, RoomNotice.RequestNoticeDto data);
     void deleteNotice(Room room);
     Member kickMember(HttpServletResponse response, Room room, RequestKickDto data);
 }

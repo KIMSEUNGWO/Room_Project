@@ -10,8 +10,6 @@ import project.study.dto.abstractentity.ResponseDto;
 import project.study.enums.SocialEnum;
 import project.study.exceptions.sms.*;
 import project.study.jpaRepository.CertificationJpaRepository;
-import project.study.jpaRepository.MemberJpaRepository;
-import project.study.jpaRepository.PhoneJpaRepository;
 
 import java.time.LocalDateTime;
 import java.util.Optional;
@@ -29,7 +27,6 @@ public class SmsService {
 
     private final SmsRepository smsRepository;
     private final CertificationJpaRepository certificationJpaRepository;
-    private final PhoneJpaRepository phoneJpaRepository;
     private final BCryptPasswordEncoder encoder;
 
     protected void sendSMS(RequestSms data) {
@@ -136,16 +133,4 @@ public class SmsService {
         certificationJpaRepository.deleteAllByNameAndPhone(data.getName(), data.getPhone());
     }
 
-
-    public void changePhone(Member member, Certification certification) {
-        if (member.hasPhone()) {
-            member.changePhone(certification.getPhone());
-        } else {
-            Phone savePhone = Phone.builder()
-                .member(member)
-                .phone(certification.getPhone())
-                .build();
-            phoneJpaRepository.save(savePhone);
-        }
-    }
 }

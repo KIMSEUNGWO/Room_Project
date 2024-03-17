@@ -3,7 +3,6 @@ package project.study.controller;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -11,7 +10,6 @@ import org.springframework.web.bind.annotation.RestController;
 import project.study.authority.member.MemberAuthorizationCheck;
 import project.study.authority.member.authority.MemberAuthority;
 import project.study.authority.member.dto.RequestNotifyDto;
-import project.study.constant.WebConst;
 import project.study.customAnnotation.CallType;
 import project.study.customAnnotation.PathRoom;
 import project.study.customAnnotation.SessionLogin;
@@ -33,11 +31,8 @@ public class NotifyController {
                                               HttpServletResponse response,
                                               @PathRoom("room") Room room,
                                               @ModelAttribute RequestNotifyDto data) {
-
-        System.out.println("data = " + data);
         MemberAuthority memberAuthority = authorizationCheck.getMemberAuthority(response, member);
         memberAuthority.notify(member, room, data);
-
         return ResponseEntity.ok(new ResponseDto(OK, "성공"));
     }
 }

@@ -37,6 +37,8 @@ public class Member implements ImageFileEntity {
     private MemberStatusEnum memberStatus;
     private int memberNotifyCount;
     private LocalDateTime memberExpireDate;
+    @Getter
+    private String phone;
 
     // Not Columns
     @Getter
@@ -48,8 +50,7 @@ public class Member implements ImageFileEntity {
 
     @OneToOne(mappedBy = "member", fetch = FetchType.LAZY)
     private Profile profile;
-    @OneToOne(mappedBy = "member", fetch = FetchType.LAZY)
-    private Phone phone;
+
     @OneToMany(mappedBy = "member")
     private List<Freeze> freeze;
 
@@ -101,10 +102,6 @@ public class Member implements ImageFileEntity {
         profile.setImage(originalName, storeName);
     }
 
-    public String getPhoneNumber() {
-        return (phone == null) ? null : phone.getPhone();
-    }
-
     public void updateInfo(RequestEditInfoDto data) {
         memberName = data.getName();
         memberNickname = data.getNickname();
@@ -119,7 +116,7 @@ public class Member implements ImageFileEntity {
             .profile(getStoreImage())
             .name(memberName)
             .nickname(memberNickname)
-            .phone(getPhoneNumber())
+            .phone(phone)
             .isSocial(isSocialMember())
             .build();
     }
@@ -142,11 +139,12 @@ public class Member implements ImageFileEntity {
         return joinRoomCount(authority) >= WebConst.MAX_JOIN_ROOM_COUNT;
     }
 
+
     public boolean hasPhone() {
         return this.phone != null;
     }
 
     public void changePhone(String phone) {
-        this.phone.changePhone(phone);
+        this.phone = phone;
     }
 }

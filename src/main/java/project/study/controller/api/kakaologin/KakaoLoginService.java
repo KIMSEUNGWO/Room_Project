@@ -13,7 +13,6 @@ import project.study.dto.login.requestdto.RequestSocialLoginDto;
 import project.study.dto.login.requestdto.RequestSocialSignupDto;
 import project.study.jpaRepository.SocialTokenJpaRepository;
 import project.study.jpaRepository.MemberJpaRepository;
-import project.study.jpaRepository.PhoneJpaRepository;
 import project.study.jpaRepository.SocialJpaRepository;
 import project.study.repository.FreezeRepository;
 
@@ -32,13 +31,12 @@ public class KakaoLoginService {
     private final MemberJpaRepository memberJpaRepository;
     private final SocialJpaRepository socialJpaRepository;
     private final SocialTokenJpaRepository socialTokenJpaRepository;
-    private final PhoneJpaRepository phoneJpaRepository;
     private final FileUpload fileUpload;
 
     public void login(String code, HttpSession session, HttpServletResponse response) {
         RequestSocialLoginDto data = new RequestSocialLoginDto(code);
 
-        MemberFactory factory = new KakaoMemberFactory(freezeRepository, kakaoLoginRepository, memberJpaRepository, socialJpaRepository, socialTokenJpaRepository, phoneJpaRepository, fileUpload);
+        MemberFactory factory = new KakaoMemberFactory(freezeRepository, kakaoLoginRepository, memberJpaRepository, socialJpaRepository, socialTokenJpaRepository, fileUpload);
         Member loginMember = factory.login(data, session, response);
         if (loginMember == null) {
             RequestSocialSignupDto signupDto = new RequestSocialSignupDto(data, response);
@@ -72,7 +70,7 @@ public class KakaoLoginService {
     }
 
     public String logout(Member member) {
-        MemberFactory factory = new KakaoMemberFactory(freezeRepository, kakaoLoginRepository, memberJpaRepository, socialJpaRepository, socialTokenJpaRepository, phoneJpaRepository, fileUpload);
+        MemberFactory factory = new KakaoMemberFactory(freezeRepository, kakaoLoginRepository, memberJpaRepository, socialJpaRepository, socialTokenJpaRepository, fileUpload);
         return factory.logout(member);
     }
 }
