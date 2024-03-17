@@ -23,30 +23,21 @@ public class MypageController {
     @PostMapping("/member/editInfo")
     public ResponseEntity<ResponseDto> editInfo(@SessionLogin(required = true, type = CallType.REST_CONTROLLER) Member member,
                                                 @ModelAttribute RequestEditInfoDto data) {
-        System.out.println("data = " + data);
         mypageService.editInfo(member, data);
-
         return ResponseEntity.ok(new ResponseDto("변경 완료"));
     }
 
     @PostMapping("/member/delete")
     public ResponseEntity<ResponseDto> deleteMember(@SessionLogin(required = true, type = CallType.REST_CONTROLLER) Member member,
                                                     @RequestBody RequestDeleteMemberDto data) {
-        System.out.println("회원 탈퇴 로직");
-        System.out.println("password = " + data.getPassword());
-
         mypageService.deleteMember(member, data);
-
         return ResponseEntity.ok(new ResponseDto("탈퇴가 완료되었습니다."));
     }
 
     @PostMapping("/change/password")
     public ResponseEntity<ResponseDto> changePassword(@SessionLogin(required = true, type = CallType.REST_CONTROLLER) Member member,
                                                       @RequestBody RequestChangePasswordDto data) {
-        System.out.println("member.getMemberNickname() = " + member.getMemberNickname());
-        System.out.println("data = " + data);
         mypageService.changePassword(member, data);
-
         return ResponseEntity.ok(new ResponseDto("변경 완료"));
     }
 

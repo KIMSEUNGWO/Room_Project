@@ -18,7 +18,6 @@ import project.study.authority.member.authority.ManagerAuthority;
 import project.study.authority.member.authority.MemberAuthority;
 import project.study.authority.member.dto.RequestEntrustDto;
 import project.study.authority.member.dto.RequestKickDto;
-import project.study.authority.member.dto.RequestNoticeDto;
 import project.study.chat.component.ChatAccessToken;
 import project.study.chat.component.ChatManager;
 import project.study.chat.dto.*;
@@ -181,7 +180,7 @@ public class ChatController {
     @PostMapping("/room/{room}/notice")
     public ResponseEntity<ResponseDto> roomUploadNotice(@SessionLogin(required = true) Member member, @PathRoom("room") Room room,
                                             HttpServletResponse response,
-                                            @RequestBody RequestNoticeDto data) {
+                                            @RequestBody RoomNotice.RequestNoticeDto data) {
         System.out.println("data = " + data);
         ManagerAuthority managerMember = authorizationCheck.getManagerAuthority(response, member, room);
 

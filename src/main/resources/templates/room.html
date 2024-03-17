@@ -26,7 +26,7 @@
                     </a>
                     <div class="room-title">
                         <svg th:unless="${roomInfo.isPublic}" xmlns="http://www.w3.org/2000/svg" id="private" viewBox="0 0 448 512"><path d="M144 144v48H304V144c0-44.2-35.8-80-80-80s-80 35.8-80 80zM80 192V144C80 64.5 144.5 0 224 0s144 64.5 144 144v48h16c35.3 0 64 28.7 64 64V448c0 35.3-28.7 64-64 64H64c-35.3 0-64-28.7-64-64V256c0-35.3 28.7-64 64-64H80z"/></svg>
-                        <span th:text="${roomInfo.roomTitle}" id="roomTitle">무슨무슨 방</span>    
+                        <span th:text="${roomInfo.title}" id="roomTitle">무슨무슨 방</span>
                     </div>
                 </div>
                 <button type="button" id="setting" class="room-setting" th:if="${roomInfo.isManager}">
@@ -99,7 +99,7 @@
         <aside>
             <div class="member-wraper">
                 <div class="member-wrap">
-                    <h4>전체회원 (<h4 id="current" th:text="${#lists.size(memberList)}">0</h4>/<h4 id="maximum" th:text="${max}">4</h4>)</h4>
+                    <h4>전체회원 (<h4 id="current" th:text="${#lists.size(memberList)}">0</h4>/<h4 id="maximum" th:text="${roomInfo.max}">4</h4>)</h4>
                     <hr>
                     <div class="member-list" data-is-online="false">
                         <div class="member" th:each="member : ${memberList}">

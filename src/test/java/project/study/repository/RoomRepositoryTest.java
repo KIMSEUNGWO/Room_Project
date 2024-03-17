@@ -21,8 +21,6 @@ class RoomRepositoryTest {
 
     @Autowired
     private MockRoom mockRoom;
-    @Autowired
-    private RoomRepository roomRepository;
 
     @Test
     @DisplayName("방이 가득차지 않았을 때 방에 참가")
@@ -34,8 +32,9 @@ class RoomRepositoryTest {
         MockHttpServletResponse response = new MockHttpServletResponse();
         RequestJoinRoomDto data = new RequestJoinRoomDto(null, room, response, null);
 
+
         // 예외가 발생하지 않음
-        assertThatCode(() -> roomRepository.validFullRoom(data))
+        assertThatCode(data::validFullRoom)
             .doesNotThrowAnyException();
 
         assertThat(response.getStatus()).isEqualTo(HttpStatus.OK.value());
@@ -53,7 +52,7 @@ class RoomRepositoryTest {
 
         // 예외가 발생함
         assertThatThrownBy(() -> {
-            roomRepository.validFullRoom(data);
+            data.validFullRoom();
             assertThat(response.getStatus()).isEqualTo(HttpStatus.BAD_REQUEST.value()); // BAD_REQUEST 검증
         })
             .isInstanceOf(FullRoomException.class) // 예외가 발생하는지 검증

@@ -45,10 +45,9 @@ public class RoomController {
                                                   @Validated @ModelAttribute RequestCreateRoomDto data,
                                                   BindingResult bindingResult,
                                                   HttpServletResponse response) {
-        System.out.println("data = " + data);
-        data.valid(bindingResult, "방 생성 에러");
-
         MemberAuthority commonMember = authorizationCheck.getMemberAuthority(response, member);
+
+        data.valid(bindingResult, "방 생성 에러");
         Long roomId = commonMember.createRoom(member, data);
 
         String redirectURI = "/room/" + roomId;
@@ -60,7 +59,6 @@ public class RoomController {
                                                        @PathRoom("room") Room room,
                                                        HttpServletResponse response) {
         authorizationCheck.getManagerAuthority(response, member, room);
-
         ResponseEditRoomForm editRoomForm = roomService.getEditRoomForm(room);
 
         return ResponseEntity.ok(new ResponseObject<>("조회성공", editRoomForm));
@@ -73,7 +71,6 @@ public class RoomController {
                                                 @Validated @ModelAttribute RequestEditRoomDto data,
                                                 BindingResult bindingResult) {
         ManagerAuthority managerMember = authorizationCheck.getManagerAuthority(response, member, room);
-        System.out.println("RequestEditRoomDto = " + data);
 
         data.validEdit(bindingResult, room);
         managerMember.editRoom(room, data);

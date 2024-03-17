@@ -50,7 +50,6 @@ public class MainController {
         Room.ResponseRoomInfo roomInfo = room.getResponseRoomInfo(joinRoom);
 
 
-        model.addAttribute("max", room.getRoomLimit());
         model.addAttribute("memberList", memberList);
         model.addAttribute("roomInfo", roomInfo);
         model.addAttribute("hasPhone", member.hasPhone());

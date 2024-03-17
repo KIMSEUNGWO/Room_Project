@@ -7,7 +7,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import project.study.authority.member.dto.RequestEditRoomDto;
-import project.study.authority.member.dto.RequestNoticeDto;
 import project.study.authority.member.dto.ResponseRoomListDto;
 import project.study.chat.domain.Chat;
 import project.study.constant.WebConst;
@@ -27,7 +26,6 @@ import project.study.repository.JoinRoomRepository;
 import project.study.repository.RoomRepository;
 import project.study.repository.TagRepository;
 
-import java.time.LocalDateTime;
 import java.util.*;
 
 @Service
@@ -55,7 +53,7 @@ public class RoomService {
     public List<ResponseRoomListDto> getMyRoomList(Member member) {
         List<JoinRoom> joinRoomList = member.getJoinRoomList();
 
-        List<ResponseRoomListDto> temp = new ArrayList<>();
+        List<ResponseRoomListDto> temp = new ArrayList<>(joinRoomList.size());
         for (JoinRoom joinRoom : joinRoomList) {
             temp.add(joinRoom.getResponseRoomListDto());
         }
@@ -67,7 +65,7 @@ public class RoomService {
     public List<ResponseRoomListDto> searchRoomList(Long memberId, String word, Pageable pageable) {
         List<Room> roomInfo = joinRoomRepository.search(word, pageable);
 
-        List<ResponseRoomListDto> temp = new ArrayList<>();
+        List<ResponseRoomListDto> temp = new ArrayList<>(roomInfo.size());
         for (Room room : roomInfo) {
             temp.add(room.getResponseRoomListDto(memberId));
         }
@@ -120,13 +118,8 @@ public class RoomService {
         roomRepository.editTag(room, data);
     }
 
-    public RoomNotice saveRoomNotice(Room room, RequestNoticeDto data) {
-        RoomNotice saveRoomNotice = RoomNotice.builder()
-            .room(room)
-            .roomNoticeContent(data.getNotice())
-            .roomNoticeDate(LocalDateTime.now())
-            .build();
-
+    public RoomNotice saveRoomNotice(Room room, RoomNotice.RequestNoticeDto data) {
+        RoomNotice saveRoomNotice = data.saveRoomNotice(room);
         return roomNoticeJpaRepository.save(saveRoomNotice);
     }
 

@@ -12,7 +12,6 @@ import project.study.enums.PublicEnum;
 
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Optional;
 
 @Entity
 @Builder
@@ -138,19 +137,27 @@ public class Room implements ImageFileEntity {
         return roomPassword.compareRoomPassword(password);
     }
 
+    public boolean isFullRoom() {
+        int maxPerson = roomLimit;
+        int nowPerson = joinRoomSize();
+        return nowPerson >= maxPerson;
+    }
+
     @Getter
     @Builder
     public static class ResponseRoomInfo {
 
-        private String roomTitle;
+        private String title;
+        private int max;
         private boolean isPublic;
         private boolean isManager;
 
     }
     public ResponseRoomInfo getResponseRoomInfo(JoinRoom joinRoom) {
         return ResponseRoomInfo.builder()
-                        .roomTitle(roomTitle)
+                        .title(roomTitle)
                         .isPublic(isPublic())
+                        .max(roomLimit)
                         .isManager(joinRoom.isManager())
                         .build();
     }
