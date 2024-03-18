@@ -117,13 +117,19 @@
   - 응답객체는 ResponseDto를 상속받아 사용한다. [ResponseDto 객체](https://github.com/KIMSEUNGWO/Room_Project/blob/develop/src/main/java/project/study/dto/abstractentity/ResponseDto.java)
   - 응답 데이터는 ResponseDto를 상속받은 ResponseObject를 사용한다. [ResponseObject<T>](https://github.com/KIMSEUNGWO/Room_Project/blob/develop/src/main/java/project/study/dto/abstractentity/ResponseObject.java)
   - Controller 반환타입 구현체 변경 시 변경범위 최소화, 새로운 객체를 무분별하게 추가하지 않아 코드복잡성 낮아짐.
+- 하위 Entity는 상위 Entity로부터 접근한다.
+  - Member Entity 안에 Profile Entity가 있다면 Member -> Profile Entity 순서로 접근한다.
+  - ex) member.hasProfile() -> (profile != null) profile.hasProfile() : false;
+  - 코드 복잡성이 낮아진다, 무분별한 조건식을 작성할 가능성이 낮아진다, 예외 null처리가 간편해진다.
   
 
 ### MVC 패턴
 
 - Controller는 최대한 코드가 없어야하고, 결과값을 출력하는 일 만한다.
 - Service 로직은 오로지 Service 내부에서만 진행한다.
-
+- 메서드 내부에 메서드 들여쓰기를 지양한다.
+  - ex) model.addAttribute("memberList", roomService.getResponseRoomMemberList(room, member)); 금지
+  - List<ResponseRoomMemberList> memberList = roomService.getResponseRoomMemberList(room, member); model.addAttribute("memberList", memberList); 반환타입과 변수명을 확인할 수 있도록 분리한다.
 
 
 ## 화면 구성
