@@ -33,6 +33,12 @@
 -   Apache Tomcat 9.0.78
 -   Spring Boot 3.2.2
 -   Git, Github
+-   Thymeleaf 3.1.2
+-   Hibernate 6.3.1 Final
+-   QueryDSL 5.0.0
+-   Apache Tomcat 9.0
+-   KAKAO Login API
+-   Cool SMS API
 
 #### `Front-end`
 
