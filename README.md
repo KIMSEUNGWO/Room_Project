@@ -216,14 +216,16 @@
 
 ### 김승우
 
-- Notion을 통한 프로젝트 개발방향 공유, 협업 및 소통방법 습득
+- Notion을 통한 프로젝트 개발방향 공유, 협업 및 소통방법 습득 [Notion 바로가기](https://tmd8635.notion.site/4b36eab2dd094e8ab0d33081cb9b6e7c)
+  - 기획 및 기능 공유, API 문서, 예외클래스, 기타자료 등 프로젝트에 필요한 정보를 정리해두어서 상당히 유용했고, 차후 규모있는 프로젝트 진행 시 해당 템플릿을 사용할 예정임
+  - 이번에 처음 적용해본 거라 자세히 기록하지 못했지만 다음 프로젝트에서는 Git 코드리뷰, 팀원간 의논한 내용을 정리하는 부분도 추가해 운영해볼 예정
 - ExceptionHandler 를 통한 전역예외처리 및 예외 상속을 통한 세분화 기술 습득 [ExceptionHandler 코드보기](https://github.com/KIMSEUNGWO/Room_Project/blob/develop/src/main/java/project/study/exceptionHandler/RestGlobalExceptionHandler.java)
   - 예외 상속 객체가 증가할 수록 코드 복잡성 증가를 확인, 예외객체에 대한 중요성 인식
-- 권한획득 로직에 대해 ISP 원칙 적용 [코드보기](https://github.com/KIMSEUNGWO/Room_Project/tree/develop/src/main/java/project/study/authority)
-  - 방장 권한을 Bean으로 등록하고 하나의 객체에서 권한관리 [코드보기](https://github.com/KIMSEUNGWO/Room_Project/blob/develop/src/main/java/project/study/authority/member/MemberAuthorizationCheck.java)
+- 사용자 권한획득 로직에 대해 ISP 원칙 적용 [코드보기](https://github.com/KIMSEUNGWO/Room_Project/tree/develop/src/main/java/project/study/authority)
+  - 방장 권한을 Bean으로 등록하고 하나의 객체에서 권한관리 [권한확인 클래스 코드보기](https://github.com/KIMSEUNGWO/Room_Project/blob/develop/src/main/java/project/study/authority/member/MemberAuthorizationCheck.java), [ISP 적용 구현체](https://github.com/KIMSEUNGWO/Room_Project/blob/develop/src/main/java/project/study/authority/admin/OverallAdmin.java)
 - 중첩클래스에 대한 이해도 증가
-  - 한개의 Entity에 종속적이고, 다른 Entity와 상호작용이 없는 객체 다수 확인했고, 내부클래스로 변경 [중첩클래스 코드보기](https://github.com/KIMSEUNGWO/Room_Project/blob/develop/src/main/java/project/study/domain/RoomNotice.java)
-  - 코드 복잡성 낮아짐, Service 로직 간소화, Entity 외부클래스에 직접접근이 가능해 Getter, Setter 사용빈도 낮아짐, 외부로부터 정보은닉이 가능해짐.
+  - 한개의 Entity에 종속적이고, 다른 Entity와 상호작용이 없는 객체 다수 확인했고 이 객체들을 내부클래스로 변경 [중첩클래스 코드보기](https://github.com/KIMSEUNGWO/Room_Project/blob/develop/src/main/java/project/study/domain/RoomNotice.java)
+  - 코드 복잡성 낮아짐, Service 로직 간소화, Entity 외부클래스에 직접접근이 가능해 Getter, Setter 사용빈도 낮아짐, 외부로부터 정보은닉이 가능해짐
   - 내부클래스 static 클래스 사용한 이유 : 외부참조를 가져 메모리 사용량이 증가하고, GC 대상에서 제외되는 문제점이 존재해 static class로 사용
 - 커스텀 어노테이션의 장점 확인 @SessionLogin, @PathRoom 커스텀
   - SessionLoginArgumentResolver [코드보기](https://github.com/KIMSEUNGWO/Room_Project/blob/develop/src/main/java/project/study/customAnnotation/argumentresolver/SessionLoginArgumentResolver.java)
