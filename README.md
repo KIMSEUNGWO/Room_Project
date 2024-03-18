@@ -242,8 +242,10 @@
   - 기존 Oracle -> MySQL 변경 시 QueryDSL 예외 발생하는 것을 확인.
     - 예외 발생 로직 -> QMember.member.eq(member) 각 객체간 비교시 예외발생 -> QMember.member.memberId.eq(member.memberId) 형식으로 실제 내부 값을 비교하는것으로 해결
   - JPA와 QueryDSL 속도 측정 결과 JPA가 20~30%정도의 유의미한 속도향상이 되는것을 확인. 이후 Pagenation이 필요한 데이터를 제외한 대부분의 코드는 JPA로 작성됨
-  - Factory Method 패턴에 대한 이해도 상승 [Validator 코드보기](https://github.com/KIMSEUNGWO/Room_Project/blob/develop/src/main/java/project/study/dto/login/validator/MemberValidator.java)
+- Factory Method 패턴에 대한 이해도 상승 [Validator 코드보기](https://github.com/KIMSEUNGWO/Room_Project/blob/develop/src/main/java/project/study/dto/login/validator/MemberValidator.java)
     - 기존 Factory 내부에 Validator는 Interface였으나 공통로직을 다시 작성해야하는 오류를 발견
     - 따라서 abstract class로 변경하고 validLogin 메서드에 final 키워드를 넣어 Override가 불가능 하도록 변경.
     - 소셜회원과 기본회원은 예외관계까 다르기때문에 exception 반환처리는 상속시켜 하위클래스에서 정의하도록 변경.
     - 따라서 외부API(네이버, 구글 등등)가 추가될 경우 validator에서 해당 예외만 정의하도록 하여 클래스를 추가하기 쉽게 됨.
+- ArrayList의 initialCapacity 존재에 대한 이해증가
+    - List에 대한 최적화 기술은 내 블로그에 서술됨 [블로그 바로가기](https://tmd8633.tistory.com/31)
