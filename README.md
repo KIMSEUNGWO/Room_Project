@@ -20,6 +20,7 @@
 |<img src="https://avatars.githubusercontent.com/u/128001994?v=4" style="width:250px; height:250px;"/>|<img src="https://avatars.githubusercontent.com/u/126455161?s=64&v=4" style="width:250px; height:250px;"/>|
 |[@KIMSEUNGWOO](https://github.com/KIMSEUNGWO)|[@SEUNGCHAN](https://github.com/seungchan5)
 |팀장 백엔드|백엔드|
+|메인페이지, 마이페이지, 채팅방 구현|관리자페이지 구현|
 
 </br>
 
