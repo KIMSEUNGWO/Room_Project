@@ -31,7 +31,7 @@
 -   Java 17 / Gradle
 -   Oracle 11g
 -   Apache Tomcat 9.0.78
--   Spring Boot 2.7.14
+-   Spring Boot 3.2.2
 -   Git, Github
 
 #### `Front-end`
