@@ -115,8 +115,8 @@
   - 필드값 변경시 수정사항 최소화, Collection 의존도 낮아짐
   - 각 객체는 용도에 따라 Request, Response 뒤에 변수명을 붙혀 용도를 명확히한다.
 - ResponseBody 반환객체는 ResponseEntity로 감싸고, 객체는 ResponseDto를 사용한다.
-  - 응답객체는 ResponseDto를 상속받아 사용한다. [ResponseDto 객체](https://github.com/KIMSEUNGWO/Room_Project/blob/develop/src/main/java/project/study/dto/abstractentity/ResponseDto.java)
-  - 응답 데이터는 ResponseDto를 상속받은 ResponseObject를 사용한다. [ResponseObject<T>](https://github.com/KIMSEUNGWO/Room_Project/blob/develop/src/main/java/project/study/dto/abstractentity/ResponseObject.java)
+  - 응답객체는 ResponseDto를 상속받아 사용한다. [ResponseDto 코드보기](https://github.com/KIMSEUNGWO/Room_Project/blob/develop/src/main/java/project/study/dto/abstractentity/ResponseDto.java)
+  - 응답 데이터는 ResponseDto를 상속받은 ResponseObject를 사용한다. [ResponseObject<T\> 코드보기](https://github.com/KIMSEUNGWO/Room_Project/blob/develop/src/main/java/project/study/dto/abstractentity/ResponseObject.java)
   - Controller 반환타입 구현체 변경 시 변경범위 최소화, 새로운 객체를 무분별하게 추가하지 않아 코드복잡성 낮아짐.
 - 하위 Entity는 상위 Entity로부터 접근한다.
   - Member Entity 안에 Profile Entity가 있다면 Member -> Profile Entity 순서로 접근한다.
