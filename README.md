@@ -201,7 +201,7 @@
 |:------:|:------:|
 |<img src="https://github.com/KIMSEUNGWO/Room_Project/assets/128001994/b8b389bf-4a6a-4323-b2cc-410ab71492f9" width="" height=""/>|<img src="https://github.com/KIMSEUNGWO/Room_Project/assets/128001994/849f0aeb-db7b-40cb-8d38-37596062ff99" width="" height=""/>|
 |비밀번호변경|계정삭제|
-|<img src="https://github.com/KIMSEUNGWO/Room_Project/assets/128001994/849f0aeb-db7b-40cb-8d38-37596062ff99" width="" height=""/>|<img src="https://github.com/KIMSEUNGWO/Room_Project/assets/128001994/fe4fc60a-6878-49e9-9c69-b5fe0704b12e" width="" height=""/>|
+|<img src="https://github.com/KIMSEUNGWO/Room_Project/assets/128001994/c719e6b7-ec1a-4d8e-8ac2-b28f54ee0e6e" width="" height=""/>|<img src="https://github.com/KIMSEUNGWO/Room_Project/assets/128001994/fe4fc60a-6878-49e9-9c69-b5fe0704b12e" width="" height=""/>|
 
 1. 개인정보수정, 비밀번호 변경(소셜회원 제외), 계정 삭제 로직 [코드보기](https://github.com/KIMSEUNGWO/Room_Project/blob/develop/src/main/java/project/study/controller/MainController.java)
 
