@@ -128,7 +128,7 @@
 - Controller는 최대한 코드가 없어야하고, 결과값을 출력하는 일 만한다.
 - Service 로직은 오로지 Service 내부에서만 진행한다.
 - 메서드 내부에 메서드 들여쓰기를 지양한다.
-  - ex) model.addAttribute("memberList", roomService.getResponseRoomMemberList(room, member)); 금지
+  - ex) model.addAttribute("memberList", roomService.getResponseRoomMemberList(room, member)); -> 반환타입과 메서드의 일에 대해 파악하기 어려움
   - List<ResponseRoomMemberList> memberList = roomService.getResponseRoomMemberList(room, member); model.addAttribute("memberList", memberList); 반환타입과 변수명을 확인할 수 있도록 분리한다.
 
 
