@@ -105,7 +105,31 @@
 
 </details>
 
+## 프로젝트 방향성
+
+### 객체지향프로그래밍
+
+- Getter, Setter 를 지양한다.
+  - 모든 데이터는 객체 내부에서 처리하도록 한다. -> 캡슐화
+- Request, Response 데이터는 모두 객체화한다.
+  - 필드값 변경시 수정사항 최소화, Collection 의존도 낮아짐
+- ResponseBody 반환객체는 ResponseEntity로 감싸고, 객체는 ResponseDto를 사용한다.
+  - 응답객체는 ResponseDto를 상속받아 사용한다. [ResponseDto 객체](https://github.com/KIMSEUNGWO/Room_Project/blob/develop/src/main/java/project/study/dto/abstractentity/ResponseDto.java)
+  - 응답 데이터는 ResponseDto를 상속받은 ResponseObject를 사용한다. [ResponseObject<T>](https://github.com/KIMSEUNGWO/Room_Project/blob/develop/src/main/java/project/study/dto/abstractentity/ResponseObject.java)
+  - Controller 반환타입 구현체 변경 시 변경범위 최소화, 새로운 객체를 무분별하게 추가하지 않아 코드복잡성 낮아짐.
+  
+
+### MVC 패턴
+
+- Controller는 최대한 코드가 없어야하고, 결과값을 출력하는 일 만한다.
+- Service 로직은 오로지 Service 내부에서만 진행한다.
+
+
+
 ## 화면 구성
+
+<details>
+    <summary>화면 구성 펼쳐보기</summary>
 
 ### 메인
 
@@ -174,3 +198,5 @@
 1. 구현중
 
 <br>
+
+</details>
