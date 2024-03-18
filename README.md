@@ -149,7 +149,9 @@
 |<img src="https://github.com/KIMSEUNGWO/Room_Project/assets/128001994/9328b8f7-4821-48e9-a8ae-44ecd4d2df69" width="" height=""/>|<img src="https://github.com/KIMSEUNGWO/Room_Project/assets/128001994/2a9e5bdf-203f-4120-9e65-bc334c5fedc9" width="" height="400" />|
 
 1. WebSocket 적용, 방 설정변경 -> MessageMapping 결과반환 [코드보기 JAVA](https://github.com/KIMSEUNGWO/Room_Project/blob/develop/src/main/java/project/study/chat/ChatController.java) [코드보기 JS](https://github.com/KIMSEUNGWO/Room_Project/blob/develop/src/main/resources/static/js/socket.js)
-2. 방장의 권한확인 코드 [코드보기](https://github.com/KIMSEUNGWO/Room_Project/blob/develop/src/main/java/project/study/authority/member/MemberAuthorizationCheck.java)
+2. MessageType Enum으로 관리 [코드보기](https://github.com/KIMSEUNGWO/Room_Project/blob/develop/src/main/java/project/study/chat/MessageType.java)
+3. 채팅방 접속 시 AccessToken 발급 [코드보기](https://github.com/KIMSEUNGWO/Room_Project/blob/develop/src/main/java/project/study/chat/component/ChatAccessToken.java)
+4. 방장의 권한확인 코드 [코드보기](https://github.com/KIMSEUNGWO/Room_Project/blob/develop/src/main/java/project/study/authority/member/MemberAuthorizationCheck.java)
 
 <br>
 
