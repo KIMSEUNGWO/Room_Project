@@ -115,8 +115,10 @@
 |로그인|채팅방 나가기|
 |<img src="https://github.com/KIMSEUNGWO/Room_Project/assets/128001994/5be8ca57-2ec3-4e6a-a265-ed220e1b9371">|<img src="https://github.com/KIMSEUNGWO/Room_Project/assets/128001994/d5508481-63ba-420e-81cd-581922a9532e" style="height: 400px">|
 
-1. 구현내용 자유롭게 추가
-2.
+1. 방 리스트 화면 스크롤을 통한 Get API 호출, Jpa Pageable 활용해 Pagenation 구현 [코드보기 search Method](https://github.com/KIMSEUNGWO/Room_Project/blob/develop/src/main/java/project/study/controller/MainController.java)
+2. 검색조건 QueryDSL를 사용해 제목, 소개글, 태그내에서 검색 [코드보기 search Method](https://github.com/KIMSEUNGWO/Room_Project/blob/develop/src/main/java/project/study/repository/JoinRoomRepository.java)
+3. 카카오 로그인 API 적용
+4. 로그인로직 디자인패턴 - 생성패턴 - Factory Method Pattern 적용 [코드보기](https://github.com/KIMSEUNGWO/Room_Project/tree/develop/src/main/java/project/study/dto/login) [적용이유](https://tmd8635.notion.site/59124067d6ab413a84736cc73bf4432f)
 
 <br>
 
