@@ -115,10 +115,10 @@
 |로그인|채팅방 나가기|
 |<img src="https://github.com/KIMSEUNGWO/Room_Project/assets/128001994/5be8ca57-2ec3-4e6a-a265-ed220e1b9371">|<img src="https://github.com/KIMSEUNGWO/Room_Project/assets/128001994/d5508481-63ba-420e-81cd-581922a9532e" style="height: 400px">|
 
-1. 방 리스트 화면 스크롤을 통한 Get API 호출, Jpa Pageable 활용해 Pagenation 구현 [코드보기 search Method](https://github.com/KIMSEUNGWO/Room_Project/blob/develop/src/main/java/project/study/controller/MainController.java)
+1. 방 리스트 화면 스크롤을 통한 Get API 호출, Jpa Pageable 활용해 Pagenation 구현 [코드보기 search Method](https://github.com/KIMSEUNGWO/Room_Project/blob/develop/src/main/java/project/study/controller/MainController.java)
 2. 검색조건 QueryDSL를 사용해 제목, 소개글, 태그내에서 검색 [코드보기 search Method](https://github.com/KIMSEUNGWO/Room_Project/blob/develop/src/main/java/project/study/repository/JoinRoomRepository.java)
 3. 카카오 로그인 API 적용 [코드보기](https://github.com/KIMSEUNGWO/Room_Project/blob/develop/src/main/java/project/study/controller/api/kakaologin/KakaoLoginController.java)
-4. 로그인로직 디자인패턴 - 생성패턴 - Factory Method Pattern 적용 [코드보기](https://github.com/KIMSEUNGWO/Room_Project/tree/develop/src/main/java/project/study/dto/login) [적용이유](https://tmd8635.notion.site/59124067d6ab413a84736cc73bf4432f)
+4. 로그인로직 디자인패턴 - 생성패턴 - Factory Method Pattern 적용 [코드보기](https://github.com/KIMSEUNGWO/Room_Project/tree/develop/src/main/java/project/study/dto/login), [적용이유](https://tmd8635.notion.site/59124067d6ab413a84736cc73bf4432f)
 5. 아이디, 비밀번호 찾기 SMS API 적용 [코드보기](https://github.com/KIMSEUNGWO/Room_Project/blob/develop/src/main/java/project/study/controller/api/sms/SmsController.java)
 
 <br>
@@ -148,8 +148,8 @@
 |신고기능|비공개방 참여|
 |<img src="https://github.com/KIMSEUNGWO/Room_Project/assets/128001994/9328b8f7-4821-48e9-a8ae-44ecd4d2df69" width="" height=""/>|<img src="https://github.com/KIMSEUNGWO/Room_Project/assets/128001994/2a9e5bdf-203f-4120-9e65-bc334c5fedc9" width="" height="400" />|
 
-1. 구현내용 자유롭게 추가
-2.
+1. WebSocket 적용, 방 설정변경 -> MessageMapping 결과반환 [코드보기 JAVA](https://github.com/KIMSEUNGWO/Room_Project/blob/develop/src/main/java/project/study/chat/ChatController.java) [코드보기 JS](https://github.com/KIMSEUNGWO/Room_Project/blob/develop/src/main/resources/static/js/socket.js)
+2. 방장의 권한확인 코드 [코드보기](https://github.com/KIMSEUNGWO/Room_Project/blob/develop/src/main/java/project/study/authority/member/MemberAuthorizationCheck.java)
 
 <br>
 
@@ -160,8 +160,7 @@
 |비밀번호변경|계정삭제|
 |<img src="https://github.com/KIMSEUNGWO/Room_Project/assets/128001994/849f0aeb-db7b-40cb-8d38-37596062ff99" width="" height=""/>|<img src="https://github.com/KIMSEUNGWO/Room_Project/assets/128001994/fe4fc60a-6878-49e9-9c69-b5fe0704b12e" width="" height=""/>|
 
-1. 구현내용 자유롭게 추가
-2.
+1. 개인정보수정, 비밀번호 변경(소셜회원 제외), 계정 삭제 로직 [코드보기](https://github.com/KIMSEUNGWO/Room_Project/blob/develop/src/main/java/project/study/controller/MainController.java)
 
 <br>
 
@@ -169,5 +168,7 @@
 |화상채팅화면|
 |:---:|
 |<img src="https://github.com/KIMSEUNGWO/Room_Project/assets/128001994/e050ccc0-5917-4c36-9321-6d87c76942bd">|
+
+1. 구현중
 
 <br>
