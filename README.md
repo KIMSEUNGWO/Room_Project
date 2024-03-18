@@ -107,12 +107,13 @@
 
 ## 프로젝트 방향성
 
-### 객체지향프로그래밍
+### OOP(객체 지향 프로그래밍)
 
 - Getter, Setter 를 지양한다.
   - 모든 데이터는 객체 내부에서 처리하도록 한다. -> 캡슐화
 - Request, Response 데이터는 모두 객체화한다.
   - 필드값 변경시 수정사항 최소화, Collection 의존도 낮아짐
+  - 각 객체는 용도에 따라 Request, Response 뒤에 변수명을 붙혀 용도를 명확히한다.
 - ResponseBody 반환객체는 ResponseEntity로 감싸고, 객체는 ResponseDto를 사용한다.
   - 응답객체는 ResponseDto를 상속받아 사용한다. [ResponseDto 객체](https://github.com/KIMSEUNGWO/Room_Project/blob/develop/src/main/java/project/study/dto/abstractentity/ResponseDto.java)
   - 응답 데이터는 ResponseDto를 상속받은 ResponseObject를 사용한다. [ResponseObject<T>](https://github.com/KIMSEUNGWO/Room_Project/blob/develop/src/main/java/project/study/dto/abstractentity/ResponseObject.java)
@@ -121,15 +122,18 @@
   - Member Entity 안에 Profile Entity가 있다면 Member -> Profile Entity 순서로 접근한다.
   - ex) member.hasProfile() -> (profile != null) profile.hasProfile() : false;
   - 코드 복잡성이 낮아진다, 무분별한 조건식을 작성할 가능성이 낮아진다, 예외 null처리가 간편해진다.
+- 변경 가능성 있는 class는 인터페이스화 한다. -> 다형성
+  - ex) DB에 의존하는 Native SQL 이 존재하는 Repository는 인터페이스화 해서 Config에 직접 @Bean을 등록시킨다.
   
 
 ### MVC 패턴
 
-- Controller는 최대한 코드가 없어야하고, 결과값을 출력하는 일 만한다.
+- Controller는 최대한 코드가 없어야하고, 결과값을 출력하는 일만 한다.
+- Controller를 보고 무슨 일을 하는지 한눈에 파악할 수 있게 작성한다.
 - Service 로직은 오로지 Service 내부에서만 진행한다.
 - 메서드 내부에 메서드 들여쓰기를 지양한다.
   - ex) model.addAttribute("memberList", roomService.getResponseRoomMemberList(room, member)); -> 반환타입과 메서드의 일에 대해 파악하기 어려움
-  - List<ResponseRoomMemberList> memberList = roomService.getResponseRoomMemberList(room, member); model.addAttribute("memberList", memberList); 반환타입과 변수명을 확인할 수 있도록 분리한다.
+  - List<ResponseRoomMemberList\> memberList = roomService.getResponseRoomMemberList(room, member); model.addAttribute("memberList", memberList); 반환타입과 변수명을 확인할 수 있도록 분리한다.
 
 
 ## 화면 구성
