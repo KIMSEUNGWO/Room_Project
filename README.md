@@ -117,8 +117,9 @@
 
 1. 방 리스트 화면 스크롤을 통한 Get API 호출, Jpa Pageable 활용해 Pagenation 구현 [코드보기 search Method](https://github.com/KIMSEUNGWO/Room_Project/blob/develop/src/main/java/project/study/controller/MainController.java)
 2. 검색조건 QueryDSL를 사용해 제목, 소개글, 태그내에서 검색 [코드보기 search Method](https://github.com/KIMSEUNGWO/Room_Project/blob/develop/src/main/java/project/study/repository/JoinRoomRepository.java)
-3. 카카오 로그인 API 적용
+3. 카카오 로그인 API 적용 [코드보기](https://github.com/KIMSEUNGWO/Room_Project/blob/develop/src/main/java/project/study/controller/api/kakaologin/KakaoLoginController.java)
 4. 로그인로직 디자인패턴 - 생성패턴 - Factory Method Pattern 적용 [코드보기](https://github.com/KIMSEUNGWO/Room_Project/tree/develop/src/main/java/project/study/dto/login) [적용이유](https://tmd8635.notion.site/59124067d6ab413a84736cc73bf4432f)
+5. 아이디, 비밀번호 찾기 SMS API 적용 [코드보기](https://github.com/KIMSEUNGWO/Room_Project/blob/develop/src/main/java/project/study/controller/api/sms/SmsController.java)
 
 <br>
 
