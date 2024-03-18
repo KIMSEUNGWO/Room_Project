@@ -210,3 +210,31 @@
 <br>
 
 </details>
+
+
+## 프로젝트 결과
+
+### 김승우
+
+- Notion을 통한 프로젝트 개발방향 공유, 협업 및 소통방법 습득
+- ExceptionHandler 를 통한 전역예외처리 및 예외 상속을 통한 세분화 기술 습득
+  - 예외 상속 객체가 증가할 수록 코드 복잡성 증가를 확인, 예외객체에 대한 중요성 인식
+- 권한획득 로직에 대해 ISP 원칙 적용 [코드보기](https://github.com/KIMSEUNGWO/Room_Project/tree/develop/src/main/java/project/study/authority)
+  - 방장 권한을 Bean으로 등록하고 하나의 객체에서 권한관리 [코드보기](https://github.com/KIMSEUNGWO/Room_Project/blob/develop/src/main/java/project/study/authority/member/MemberAuthorizationCheck.java)
+- 중첩클래스에 대한 이해도 증가
+  - 한개의 Entity에 종속적이고, 다른 Entity와 상호작용이 없는 객체 다수 확인했고, 내부클래스로 변경 [중첩클래스 코드보기](https://github.com/KIMSEUNGWO/Room_Project/blob/develop/src/main/java/project/study/domain/RoomNotice.java)
+  - 코드 복잡성 낮아짐, Service 로직 간소화, Entity 외부클래스에 직접접근이 가능해 Getter, Setter 사용빈도 낮아짐, 외부로부터 정보은닉이 가능해짐.
+  - 내부클래스 static 클래스 사용한 이유 : 외부참조를 가져 메모리 사용량이 증가하고, GC 대상에서 제외되는 문제점이 존재해 static class로 사용
+- 커스텀 어노테이션의 장점 확인 @SessionLogin, @PathRoom 커스텀
+  - SessionLoginArgumentResolver [코드보기](https://github.com/KIMSEUNGWO/Room_Project/blob/develop/src/main/java/project/study/customAnnotation/argumentresolver/SessionLoginArgumentResolver.java)
+  - PathRoomArgumentResolver [코드보기](https://github.com/KIMSEUNGWO/Room_Project/blob/develop/src/main/java/project/study/customAnnotation/argumentresolver/PathRoomArgumentResolver.java)
+  - PathRoom은 기존의 PathVariable 을 기반으로 커스텀해 예외처리까지 가능하게 작성됨
+  - 커스텀 어노테이션을 사용한 이유
+      - 기존의 조건문을 하나로 통일하고 설정을 변경하여 여러 상황에 대응하도록 작성됨.
+      - 따라서 기존 Controller에서 기본적으로 사용되던 조건문이 삭제되고 어노테이션 하나로 로직을 간소화할 수 있게되었음.
+  - Interceptor를 사용하지 않은 이유
+      - Interceptor를 사용하면 편리하지만 적용되는 범위를 Controller에서 확인할 수 없다는게 가장큰 단점이었음.
+      - 또한 인터셉터가 증가할 수록 이후 service 로직에서 검증로직 방향을 잡기 어렵다는것을 확인함.
+      - SessionLogin은 Interceptor로 적용해도 무방하나. PathRoom의 값을 검증하기 위해서는 PathVariable을 사용할 수 밖에 없었고, PathVariable에서 roomId를 가져와 실제 roomId가 존재하는지 검증하는 로직이 추가되는 것은 불가피 했기에 PathRoom 이라는 어노테이션을 직접 커스텀하게 되었음.
+- QueryDSL에 대한 이해도 증가
+  - 
