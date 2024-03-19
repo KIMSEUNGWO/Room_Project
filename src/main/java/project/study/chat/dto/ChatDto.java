@@ -15,7 +15,7 @@ public class ChatDto {
 
     private MessageType type;
     private Long roomId;
-    private Long token;
+    private String token;
     private String sender;
     private String senderImage;
     private String message;
@@ -29,7 +29,7 @@ public class ChatDto {
         return roomId;
     }
 
-    public Long getToken() {
+    public String getToken() {
         return token;
     }
 

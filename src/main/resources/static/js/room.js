@@ -169,7 +169,7 @@ function validNotify() {
         al('error', '에러', '새로고침 후 다시 시도해주세요.');
         return false;
     }
-    let notifyMessage = document.querySelector('.m_notify');
+    let notifyMessage = document.querySelector('.m-notify');
     if (nickname.value == null || nickname.value.length < 1) {
         printErrorMessage(notifyMessage, '닉네임을 선택해주세요.');
         return false;
@@ -194,13 +194,13 @@ function printErrorMessage(tag, message) {
 }
 
 function notifyResult(json) {
-    if (json.result == 'ok') {
+    if (json.result === 'ok') {
         al(json.result, '성공', '신고가 접수되었습니다.');
         modalExit();
-    } else if (json.result == 'error') {
-        let notifyMessage = document.querySelector('.m_notify');
+    } else if (json.result === 'error') {
+        let notifyMessage = document.querySelector('.m-notify');
         printErrorMessage(notifyMessage, json.message);
-    } else if (json.result == 'notLogin') {
+    } else if (json.result === 'notLogin') {
         alert(json.message);
         window.location.href = '/?redirectURI=/room/' + getRoomId();
     }
@@ -307,7 +307,7 @@ function memberOptionMenuOpen(){
             let memberNickname = e.target.parentElement.parentElement.parentElement.querySelector('.member-data span').textContent;
             console.log(memberNickname);
             insertModalSize('modal-notify');
-            modal_content.innerHTML = createNotify();
+            getNickNameList(modal_content);
             modal.classList.remove('disabled');
         }
 
@@ -430,12 +430,24 @@ function counter() {
 
 }
 
-function createNotify() {
-    return `<div class="notify">
+function createNotify(memberList, modal_content) {
+
+    let nicknameList = '';
+    for (let i=0;i<memberList.length;i++) {
+
+        let nickname = memberList[i];
+        if (i === 0) {
+            nicknameList += `<option value="${nickname}" selected>${nickname}</option>`;
+        } else {
+            nicknameList += `<option value="${nickname}">${nickname}</option>`;
+        }
+    }
+
+    modal_content.innerHTML = `<div class="notify">
                 <div class="benotifiedmember-box">
                     <h4>신고 대상</h4>
                     <select class="notify-name">
-                        ${getNickNameList()}
+                        ${nicknameList}
                     </select>
                 </div>
                 <div class="notify-reason-box">
@@ -469,25 +481,25 @@ function createNotify() {
             </div>`;
 };
 
-function getNickNameList() {
-    let memberList = document.querySelectorAll('.member');
+function getNickNameList(modal_content) {
 
-    if (memberList == null || memberList.length < 1) return;
+    fetch('/room/' + getRoomId() + '/memberList')
+        .then(res => res.json())
+        .then(result => {
 
-    let temp = '';
+            if (result.result === 'ok') {
 
-    for (let i=0;i<memberList.length;i++) {
-        if (memberList[i].querySelector('.isMe') != null) continue;
-        
-        let nickname = memberList[i].querySelector('.member-data span').getAttribute('name');
-        if (i == 0) {
-            temp += `<option value="${nickname}" selected>${nickname}</option>`;
-        } else {
-            temp += `<option value="${nickname}">${nickname}</option>`;
-        }
-    }
+                let memberList = result.data;
 
-    return temp;
+                if (memberList == null || memberList.length < 1) return;
+
+                createNotify(memberList, modal_content);
+
+            } else if (result.result === 'error') {
+                al('error', '권한없음', result.message);
+            }
+
+        });
 }
 
 function editRoomModal(editRoom) {

@@ -117,14 +117,6 @@ public class RoomRepository {
         return authorityEnum.eq(AuthorityMemberEnum.방장);
     }
 
-    public List<Chat> findByChatHistory(Room room) {
-        return query.select(QChat.chat)
-                .from(QChat.chat)
-                .where(QRoom.room.eq(room))
-                .limit(50)
-                .fetch();
-    }
-
     public ResponseEditRoomForm getResponseEditRoomForm(Room room) {
         QRoom r = QRoom.room;
         QRoomImage ri = QRoomImage.roomImage;

@@ -2,6 +2,7 @@ package project.study.chat.domain;
 
 import jakarta.persistence.*;
 import lombok.*;
+import project.study.constant.WebConst;
 import project.study.domain.Member;
 import project.study.domain.Room;
 
@@ -41,9 +42,15 @@ public class Chat {
         private LocalDateTime time;
 
         public ResponseChatHistory(Member sendMember, String message, LocalDateTime sendDate) {
-            this.token = sendMember.getMemberId();
-            this.sender = sendMember.getMemberNickname();
-            this.senderImage = sendMember.getStoreImage();
+            if (sendMember == null) {
+                this.token = 0L;
+                this.sender = "탈퇴한 사용자";
+                this.senderImage = WebConst.EXPIRE_MEMBER_PROFILE;
+            } else {
+                this.token = sendMember.getMemberId();
+                this.sender = sendMember.getMemberNickname();
+                this.senderImage = sendMember.getStoreImage();
+            }
             this.message = message;
             this.time = sendDate;
         }

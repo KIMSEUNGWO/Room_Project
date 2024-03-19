@@ -101,6 +101,7 @@ public class MainController {
         if (member == null) return "redirect:/?redirectURI=/mypage";
 
         MyPageInfo info = member.getMyPageInfo();
+        System.out.println("info = " + info);
 
         model.addAttribute("main", info);
         model.addAttribute("profile", member.getStoreImage());

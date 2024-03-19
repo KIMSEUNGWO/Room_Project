@@ -5,6 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import project.study.constant.WebConst;
 import project.study.controller.api.sms.RequestSms;
 import project.study.dto.abstractentity.ResponseDto;
 import project.study.exceptions.sms.ExceedExpireException;
@@ -43,7 +44,7 @@ public class Certification {
             throw new ExceedExpireException();
         }
         if (!phone.equals(data.getPhone()) || !certificationNumber.equals(data.getCertification())) {
-            throw new SmsException(new ResponseDto("error", "인증에 실패했습니다."));
+            throw new SmsException(new ResponseDto(WebConst.ERROR, "인증에 실패했습니다."));
         }
     }
 }

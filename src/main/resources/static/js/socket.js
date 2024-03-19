@@ -126,7 +126,7 @@ function getToken() {
     .then(res => res.json())
     .then(map => {
         console.log(map);
-        token = Number(map.message);
+        token = map.message;
         connect(); // 웹소켓 연결
     });
 }
@@ -203,12 +203,12 @@ function onMessageReceived(payload) {
         history.innerHTML += centerMessage(chat.message);
         initialMemberCheck(chat);
         managerCheck();
-        moveToOnline(chat.data.currentMemberList);
+        moveToOnline(chat.data);
     }
 
     if (chat.type === 'LEAVE') {
         history.innerHTML += centerMessage(chat.message);
-        moveToOffline(chat.data.currentMemberList);
+        moveToOffline(chat.data);
     }
 
     if (chat.type === 'TALK') {

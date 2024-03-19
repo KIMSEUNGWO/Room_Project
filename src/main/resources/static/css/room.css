@@ -817,7 +817,6 @@ aside .buttons button:hover {
         font-size: 1.1rem;
         display: grid;
         grid-template-columns: 30% 70%;
-        margin-bottom: 2rem;
         align-items: center;
     }
 
@@ -828,8 +827,13 @@ aside .buttons button:hover {
 
     .button-box {
         display: flex;
+        margin-top: 2rem;
         justify-content: center;
         gap: 3rem;
+    }
+
+    .msg {
+        text-align: center;
     }
 
     .button-box > * {

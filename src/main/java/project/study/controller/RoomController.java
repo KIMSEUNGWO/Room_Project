@@ -12,6 +12,7 @@ import project.study.authority.member.authority.ManagerAuthority;
 import project.study.authority.member.authority.MemberAuthority;
 import project.study.authority.member.dto.RequestEditRoomDto;
 import project.study.authority.member.dto.RequestJoinRoomDto;
+import project.study.chat.ChatService;
 import project.study.chat.domain.Chat;
 import project.study.customAnnotation.PathRoom;
 import project.study.customAnnotation.SessionLogin;
@@ -39,6 +40,7 @@ public class RoomController {
     private final MemberAuthorizationCheck authorizationCheck;
     private final RoomService roomService;
     private final JoinRoomService joinRoomService;
+    private final ChatService chatService;
 
     @PostMapping(value = "/create")
     public ResponseEntity<ResponseDto> createRoom(@SessionLogin(required = true) Member member,
@@ -101,7 +103,7 @@ public class RoomController {
     public ResponseEntity<ResponseDto> chatHistory(@PathRoom("room") Room room) {
         // JoinRoom 검증 안되어있음 아직.
 
-        List<Chat.ResponseChatHistory> history = roomService.findByChatHistory(room);
+        List<Chat.ResponseChatHistory> history = chatService.findByChatHistory(room);
         return ResponseEntity.ok(new ResponseObject<>("성공", history));
     }
 
@@ -114,6 +116,17 @@ public class RoomController {
         RoomNotice.ResponseRoomNotice responseRoomNotice = room.getChatInsideNotice();
 
         return ResponseEntity.ok(new ResponseObject<>("성공", responseRoomNotice));
+    }
+
+    @GetMapping("/{room}/memberList")
+    public ResponseEntity<ResponseDto> roomMemberList(@SessionAttribute(name = LOGIN_MEMBER, required = false) Long memberId, @PathRoom("room") Room room) {
+
+        boolean exitsByMemberAndRoom = joinRoomService.exitsByMemberAndRoom(memberId, room);
+        if (!exitsByMemberAndRoom) throw new RestFulException(new ResponseDto(ERROR, "권한 없음"));
+
+        List<String> responseRoomMemberList = chatService.findRecentlyHistoryMemberNickname(memberId, room);
+        System.out.println("채팅기록에 존재하는 닉네임 리스트 : " + responseRoomMemberList);
+        return ResponseEntity.ok(new ResponseObject<>("성공", responseRoomMemberList));
     }
 
 

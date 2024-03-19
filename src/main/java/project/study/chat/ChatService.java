@@ -6,14 +6,16 @@ import org.springframework.stereotype.Service;
 import project.study.chat.component.ChatAccessToken;
 import project.study.chat.component.ChatCurrentMemberManager;
 import project.study.chat.component.ChatManager;
+import project.study.chat.domain.Chat;
 import project.study.chat.dto.*;
 import project.study.domain.JoinRoom;
 import project.study.domain.Member;
 import project.study.domain.Room;
 import project.study.jpaRepository.MemberJpaRepository;
 
+import java.util.Collection;
+import java.util.List;
 import java.util.Optional;
-import java.util.Set;
 
 import static project.study.chat.MessageType.*;
 
@@ -27,25 +29,20 @@ public class ChatService {
     private final ChatAccessToken chatAccessToken;
     private final ChatCurrentMemberManager currentMemberManager;
 
-    public Member getMember(Long memberId, Long roomId) {
-        Long accessMemberId = chatAccessToken.getMemberId(memberId, roomId);
+    public Member getMember(String token, Long roomId) {
+        Long accessMemberId = chatAccessToken.getMemberId(token, roomId);
         Optional<Member> findMember = memberJpaRepository.findById(accessMemberId);
         return findMember.get();
     }
 
-    public void accessCount(ChatDto chat, Member member) {
-        currentMemberManager.plus(chat.getRoomId(), member);
-    }
-
-    public ChatObject<ResponseChatMemberList> changeToMemberListDto(ChatDto chat) {
-        Set<String> memberList = currentMemberManager.getMemberList(chat.getRoomId());
-        ResponseChatMemberList responseChatMemberList = new ResponseChatMemberList(memberList);
-        return new ChatObject<>(chat, responseChatMemberList);
+    public ChatObject<Collection<String>> changeToMemberListDto(ChatDto chat) {
+        Collection<String> memberList = currentMemberManager.getMemberList(chat.getRoomId());
+//        ResponseChatMember responseChatMemberList = new ResponseChatMember(memberList);
+        return new ChatObject<>(chat, memberList);
     }
 
     public void accessRemove(Member member, Long roomId) {
-        chatAccessToken.remove(member.getMemberId());
-        currentMemberManager.minus(roomId, member);
+        chatAccessToken.remove(roomId, member.getMemberId());
     }
 
     public void saveChat(ChatDto chat, Member member, Room room) {
@@ -68,4 +65,14 @@ public class ChatService {
         return new ChatObject<>(chat, responseNextManager);
     }
 
+    public List<String> findRecentlyHistoryMemberNickname(Long memberId, Room room) {
+        return chatRepository.findRecentlyHistoryMemberNickname(memberId, room);
+    }
+
+    public List<Chat.ResponseChatHistory> findByChatHistory(Room room) {
+        // TODO
+        // 채팅기록 pageable 적용예정
+        List<Chat> byChatHistory = chatRepository.findByChatHistory(room);
+        return byChatHistory.stream().map(Chat::getResponseChatHistory).toList();
+    }
 }

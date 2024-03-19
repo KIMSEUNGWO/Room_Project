@@ -5,6 +5,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import project.study.authority.member.dto.RequestNotifyDto;
+import project.study.chat.ChatRepository;
 import project.study.constant.WebConst;
 import project.study.controller.image.FileUpload;
 import project.study.controller.image.FileUploadType;
@@ -27,12 +28,13 @@ import java.util.Optional;
 public class NotifyService {
 
     private final MemberJpaRepository memberJpaRepository;
+    private final ChatRepository chatRepository;
     private final NotifyJpaRepository notifyJpaRepository;
     private final FileUpload fileUpload;
 
 
     public Notify saveNotify(Member reporter, Room room, RequestNotifyDto data) {
-        Optional<Member> findCriminal = memberJpaRepository.findByMemberNickname(data.getNickname());
+        Optional<Member> findCriminal = chatRepository.findByMemberNickname(room, data.getNickname());
 
         Member criminal = findCriminal.orElseThrow(() -> new RestFulException(new ResponseDto(WebConst.ERROR, "존재하지 않는 회원입니다.")));
 

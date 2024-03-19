@@ -21,6 +21,7 @@ import project.study.authority.member.dto.RequestKickDto;
 import project.study.chat.component.ChatAccessToken;
 import project.study.chat.component.ChatManager;
 import project.study.chat.dto.*;
+import project.study.customAnnotation.CallType;
 import project.study.customAnnotation.PathRoom;
 import project.study.customAnnotation.SessionLogin;
 import project.study.domain.Member;
@@ -32,6 +33,7 @@ import project.study.service.JoinRoomService;
 import project.study.service.RoomService;
 
 import java.time.LocalDateTime;
+import java.util.Collection;
 import java.util.Optional;
 
 import static project.study.chat.MessageType.ENTRUST;
@@ -53,19 +55,18 @@ public class ChatController {
 
 
     @GetMapping("/room/{room}/access")
-    public ResponseEntity<ResponseDto> accessToken(@SessionAttribute(name = LOGIN_MEMBER, required = false) Long memberId, @PathRoom("room") Room room) {
-        boolean exitsByMemberAndRoom = joinRoomService.exitsByMemberAndRoom(memberId, room);
+    public ResponseEntity<ResponseDto> accessToken(@SessionLogin Member member, @PathRoom("room") Room room) {
+        boolean exitsByMemberAndRoom = joinRoomService.exitsByMemberAndRoom(member == null ? null : member.getMemberId(), room);
         if (!exitsByMemberAndRoom) throw new RestFulException(new ResponseDto(ERROR, "권한 없음"));
 
-        chatAccessToken.createAccessToken(memberId, room.getRoomId());
-        return ResponseEntity.ok(new ResponseDto(String.valueOf(memberId)));
+        String accessToken = chatAccessToken.createAccessToken(member, room.getRoomId());
+        return ResponseEntity.ok(new ResponseDto(accessToken));
     }
 
     @MessageMapping("/chat/enterUser")
     public void enterUser(@Payload ChatDto chat, SimpMessageHeaderAccessor headerAccessor) {
         System.out.println("enterUser = " + chat);
         Member member  = chatService.getMember(chat.getToken(), chat.getRoomId());
-        chatService.accessCount(chat, member); // 현재 접속중인 회원 리스트에 추가
 
         boolean hasPhone = member.hasPhone();
 
@@ -76,9 +77,9 @@ public class ChatController {
         chat.setSenderImage(member.getStoreImage());
         chat.setSender(member.getMemberNickname());
         chat.setMessage(member.getMemberNickname() + "님이 입장하셨습니다.");
+        chat.setTime(LocalDateTime.now());
 
-        ChatObject<ResponseChatMemberList> responseChatMemberListChatObject = chatService.changeToMemberListDto(chat);
-        templateSendMessage(chat.getRoomId(), responseChatMemberListChatObject);
+        templateSendMessage(chat.getRoomId(), chatService.changeToMemberListDto(chat));
 
         if (!hasPhone) {
             ChatDto requirePhone = ChatDto.builder().type(MessageType.REQUIRE_PHONE).build();
