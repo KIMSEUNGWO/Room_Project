@@ -111,17 +111,6 @@ public class MemberAuthorityImpl implements MemberAuthority{
         // 참가자인지 확인
         JoinRoom joinRoom = joinRoomService.findByMemberAndRoom(member, room, response);
 
-        Optional<JoinRoom> anotherJoinMember = room.getJoinRoomList().stream().filter(innerJoinRoom -> !innerJoinRoom.equals(joinRoom)).findAny();
-
-        if (joinRoom.isManager()) {
-            if (anotherJoinMember.isPresent()) { // 다른회원에게 방장 위임
-                JoinRoom anotherMember = anotherJoinMember.get();
-                anotherMember.changeToAuthority(방장);
-            } else { // 다른 회원이 없는경우 (참여자가 1명인 경우)
-                roomService.deleteRoom(room);
-            }
-        }
-        joinRoomService.deleteJoinRoom(joinRoom);
-
+        joinRoomService.exitRoom(joinRoom);
     }
 }

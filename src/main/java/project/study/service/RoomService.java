@@ -88,20 +88,10 @@ public class RoomService {
         return roomRepository.findById(roomId);
     }
 
-    public void deleteRoom(Room room) {
-        roomRepository.moveToDeleteRoom(room);
-    }
-
     public List<ResponseRoomMemberList> getResponseRoomMemberList(Room room, Member member) {
         return roomRepository.getResponseRoomMemberList(room, member);
     }
 
-    public List<Chat.ResponseChatHistory> findByChatHistory(Room room) {
-        // TODO 
-        // 채팅기록 pageable 적용예정
-        List<Chat> byChatHistory = roomRepository.findByChatHistory(room);
-        return byChatHistory.stream().map(Chat::getResponseChatHistory).toList();
-    }
 
     public ResponseEditRoomForm getEditRoomForm(Room room) {
         ResponseEditRoomForm form = roomRepository.getResponseEditRoomForm(room);

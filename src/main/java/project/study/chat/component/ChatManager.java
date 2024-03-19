@@ -15,7 +15,6 @@ public class ChatManager {
                 .type(messageType)
                 .sender(member.getMemberNickname())
                 .time(LocalDateTime.now())
-                .token(member.getMemberId())
                 .message(message)
                 .build();
     }

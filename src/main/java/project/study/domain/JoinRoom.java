@@ -25,6 +25,7 @@ public class JoinRoom {
     @JoinColumn(name = "MEMBER_ID")
     private Member member;
 
+    @Getter
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "ROOM_ID")
     private Room room;

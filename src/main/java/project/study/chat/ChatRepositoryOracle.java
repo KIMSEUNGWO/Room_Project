@@ -1,18 +1,19 @@
 package project.study.chat;
 
 import com.querydsl.jpa.impl.JPAQueryFactory;
-import jakarta.persistence.EntityManager;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
-import org.springframework.transaction.annotation.Transactional;
 import project.study.chat.domain.Chat;
 import project.study.chat.domain.QChat;
 import project.study.chat.dto.ChatDto;
 import project.study.chat.jparepository.ChatJpaRepository;
 import project.study.domain.Member;
+import project.study.domain.QRoom;
 import project.study.domain.Room;
+
+import java.util.List;
+import java.util.Optional;
 
 
 @Repository
@@ -21,6 +22,7 @@ import project.study.domain.Room;
 public class ChatRepositoryOracle implements ChatRepository {
 
     private final ChatJpaRepository chatJpaRepository;
+    private final JPAQueryFactory query;
 
 
     @Override
@@ -32,5 +34,33 @@ public class ChatRepositoryOracle implements ChatRepository {
                 .sendDate(chat.getTime())
                 .build();
         chatJpaRepository.save(saveChat);
+    }
+
+    @Override
+    public List<String> findRecentlyHistoryMemberNickname(Long memberId, Room room) {
+        return query.selectDistinct(QChat.chat.sendMember.memberNickname)
+            .from(QChat.chat)
+            .where(QRoom.room.eq(room).and(QChat.chat.sendMember.memberId.ne(memberId)))
+            .limit(100)
+            .fetch();
+    }
+
+    @Override
+    public List<Chat> findByChatHistory(Room room) {
+        return query.select(QChat.chat)
+            .from(QChat.chat)
+            .where(QRoom.room.eq(room))
+            .limit(50)
+            .fetch();
+    }
+
+    @Override
+    public Optional<Member> findByMemberNickname(Room room, String nickname) {
+        Member member = query.select(QChat.chat.sendMember)
+            .from(QChat.chat)
+            .where(QRoom.room.eq(room).and(QChat.chat.sendMember.memberNickname.eq(nickname)))
+            .fetchFirst();
+        if (member == null) return Optional.empty();
+        return Optional.of(member);
     }
 }

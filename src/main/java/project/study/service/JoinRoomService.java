@@ -12,6 +12,7 @@ import project.study.exceptions.NotLoginMemberRestException;
 import project.study.exceptions.authority.NotJoinRoomException;
 import project.study.exceptions.authority.joinroom.ExceedJoinRoomException;
 import project.study.repository.JoinRoomRepository;
+import project.study.repository.RoomRepository;
 
 import java.util.Optional;
 
@@ -22,6 +23,7 @@ import static project.study.enums.AuthorityMemberEnum.*;
 @Slf4j
 public class JoinRoomService {
 
+    private final RoomRepository roomRepository;
     private final JoinRoomRepository joinRoomRepository;
 
     public boolean exitsByMemberAndRoom(Long memberId, Room room) {
@@ -48,7 +50,17 @@ public class JoinRoomService {
         return joinRoomRepository.findByMemberAndRoom(member, room);
     }
 
-    public void deleteJoinRoom(JoinRoom joinRoom) {
+
+    public void exitRoom(JoinRoom joinRoom) {
+        Room room = joinRoom.getRoom();
+        Optional<JoinRoom> anotherJoinMember = room.getJoinRoomList().stream().filter(innerJoinRoom -> !innerJoinRoom.equals(joinRoom)).findAny();
+
+        if (joinRoom.isManager()) {
+            anotherJoinMember.ifPresentOrElse(
+                anotherMember -> anotherMember.changeToAuthority(방장), // 다른회원에게 방장 위임
+                () -> roomRepository.moveToDeleteRoom(room)); // 다른 회원이 없는경우 (참여자가 1명인 경우) 방 삭제
+        }
         joinRoomRepository.deleteJoinRoom(joinRoom);
+
     }
 }
