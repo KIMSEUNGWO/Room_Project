@@ -18,6 +18,7 @@ import project.study.dto.abstractentity.ResponseDto;
 import project.study.exceptions.sms.ExceedExpireException;
 import project.study.exceptions.sms.MessageSendException;
 import project.study.exceptions.sms.SmsException;
+import project.study.jpaRepository.BanJpaRepository;
 import project.study.jpaRepository.CertificationJpaRepository;
 import project.study.jpaRepository.MemberJpaRepository;
 
@@ -40,6 +41,7 @@ public class SmsRepository {
 
     private final CertificationJpaRepository certificationJpaRepository;
     private final MemberJpaRepository memberJpaRepository;
+    private final BanJpaRepository banJpaRepository;
 
 
     protected Message createMessage(RequestSms data, String certificationNumber) {
@@ -95,9 +97,14 @@ public class SmsRepository {
         try {
             certification.changePasswordValid(data);
             boolean distinctPhone = memberJpaRepository.existsByPhone(data.getPhone());
+            boolean isBanPhone = banJpaRepository.existsByBanPhone(data.getPhone());
             if (distinctPhone) {
                 certificationJpaRepository.delete(certification);
                 throw new SmsException(new ResponseDto(WebConst.ERROR, "이미 등록된 번호입니다."));
+            }
+            if (isBanPhone) {
+                certificationJpaRepository.delete(certification);
+                throw new SmsException(new ResponseDto(WebConst.ERROR, "사용할 수 없는 번호입니다."));
             }
         } catch (ExceedExpireException e) { // 인증시간 만료이면 인증 삭제 후 Exception 발생
             certificationJpaRepository.delete(certification);

@@ -97,8 +97,7 @@ public class FileUploadRepository {
     }
 
     public void deleteProfile(FileUploadType type, ImageFileEntity parent) {
-        Member member = (Member) parent;
-        String storeName = member.getStoreImage();
+        String storeName = parent.getStoreImage();
         if (DEFAULT_PROFILE.equals(storeName)) return;
 
         File profileFile = new File(getFullPath(type, storeName));
@@ -109,8 +108,7 @@ public class FileUploadRepository {
     }
 
     public void deleteRoomImage(FileUploadType type, ImageFileEntity parent) {
-        Room room = (Room) parent;
-        String storeName = room.getStoreImage();
+        String storeName = parent.getStoreImage();
         if (DEFAULT_ROOM_IMAGE.equals(storeName)) return;
 
         File roomImageFile = new File(getFullPath(type, storeName));
