@@ -38,9 +38,11 @@ public class Room implements ImageFileEntity {
     @Enumerated(EnumType.STRING)
     private PublicEnum roomPublic;
 
+    @Getter
     @OneToMany(mappedBy = "room")
     private List<Tag> tags;
 
+    @Getter
     @OneToOne(mappedBy = "room", fetch = FetchType.LAZY)
     private RoomImage roomImage;
 
@@ -59,6 +61,7 @@ public class Room implements ImageFileEntity {
     @OneToMany(mappedBy = "room", fetch = FetchType.LAZY)
     private List<JoinRoom> joinRoomList;
 
+    @Getter
     @OneToMany(mappedBy = "room", fetch = FetchType.LAZY)
     private List<Chat> chatHistory;
 

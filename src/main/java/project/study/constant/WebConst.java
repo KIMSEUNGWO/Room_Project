@@ -15,4 +15,6 @@ public abstract class WebConst {
     public static final String EXPIRE_MEMBER_PROFILE = "basic-member-profile.jpg";
     public static final String DEFAULT_PROFILE = "basic-member-profile.jpg";
     public static final String DEFAULT_ROOM_IMAGE = "basic-room-profile.jpg";
+
+    public static final int EXPIRE_PLUS_DAY = 14;
 }

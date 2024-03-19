@@ -47,10 +47,10 @@ public class Member implements ImageFileEntity {
     @Getter
     @OneToOne(mappedBy = "member", fetch = FetchType.LAZY)
     private Basic basic;
-
+    @Getter
     @OneToOne(mappedBy = "member", fetch = FetchType.LAZY)
     private Profile profile;
-
+    @Getter
     @OneToMany(mappedBy = "member")
     private List<Freeze> freeze;
 
@@ -68,7 +68,7 @@ public class Member implements ImageFileEntity {
     }
     public void changeStatusToExpire() {
         this.memberStatus = 탈퇴;
-        this.memberExpireDate = LocalDateTime.now();
+        this.memberExpireDate = LocalDateTime.now().plusDays(WebConst.EXPIRE_PLUS_DAY);
     }
     public void changeStatusToFreeze() {
         this.memberStatus = 이용정지;
@@ -89,6 +89,9 @@ public class Member implements ImageFileEntity {
         return basic != null;
     }
 
+    public boolean isOutOfExpireDate() {
+        return memberExpireDate.isAfter(LocalDateTime.now());
+    }
 
     @Override
     public String getStoreImage() {

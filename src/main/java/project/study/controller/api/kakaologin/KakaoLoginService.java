@@ -44,14 +44,14 @@ public class KakaoLoginService {
             loginMember = factory.signup(signupDto);
             session.setAttribute(LOGIN_MEMBER, loginMember.getMemberId());
         }
-        execute(response, null);
+        execute(response);
     }
 
-    private String execute(HttpServletResponse response, String alert) {
+    private String execute(HttpServletResponse response) {
         response.setContentType("text/html; charset=utf-8");
         response.setCharacterEncoding("utf-8");
 
-        String command = "<script> " + getOption(alert) + " window.self.close(); </script>";
+        String command = "<script> opener.location.href='/'; window.self.close(); </script>";
         try (PrintWriter out = response.getWriter()) {
             out.println(command);
             out.flush();
@@ -59,14 +59,6 @@ public class KakaoLoginService {
             log.error("Alert IOException 발생!");
         }
         return null;
-    }
-
-    private String getOption(String option) {
-        // redirect url이 있으면 url로 이동
-        if (option == null) {
-            return "opener.location.href='/';";
-        }
-        return String.format("alert('%s');", option);
     }
 
     public String logout(Member member) {
