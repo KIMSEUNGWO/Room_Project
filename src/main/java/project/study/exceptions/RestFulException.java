@@ -8,11 +8,6 @@ public class RestFulException extends RuntimeException {
 
     private final ResponseDto responseDto;
 
-    public RestFulException(Throwable cause, ResponseDto responseDto) {
-        super(cause);
-        this.responseDto = responseDto;
-    }
-
     public RestFulException(ResponseDto responseDto) {
         this.responseDto = responseDto;
     }

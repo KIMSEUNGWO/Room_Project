@@ -33,9 +33,8 @@ public class NotifyService {
 
     public Notify saveNotify(Member reporter, Room room, RequestNotifyDto data) {
         Optional<Member> findCriminal = memberJpaRepository.findByMemberNickname(data.getNickname());
-        if (findCriminal.isEmpty()) throw new RestFulException(new ResponseDto(WebConst.ERROR, "존재하지 않는 회원입니다."));
 
-        Member criminal = findCriminal.get();
+        Member criminal = findCriminal.orElseThrow(() -> new RestFulException(new ResponseDto(WebConst.ERROR, "존재하지 않는 회원입니다.")));
 
         Notify saveNotify = Notify.builder()
             .reporter(reporter)

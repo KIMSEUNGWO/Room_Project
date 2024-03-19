@@ -5,10 +5,6 @@ import project.study.dto.abstractentity.ResponseDto;
 
 public class NotLoginMemberRestException extends RestFulException {
 
-    public NotLoginMemberRestException(Throwable cause, ResponseDto responseDto) {
-        super(cause, responseDto);
-    }
-
     public NotLoginMemberRestException() {
         super(new ResponseDto(WebConst.NOT_LOGIN, "로그인이 필요합니다."));
     }

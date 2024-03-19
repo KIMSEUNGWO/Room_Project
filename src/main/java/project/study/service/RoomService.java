@@ -81,8 +81,7 @@ public class RoomService {
     public Room findByRoom(String roomIdStr, HttpServletResponse response) {
         Long roomId = roomRepository.getNumberFormat(roomIdStr, response);
         Optional<Room> findRoom = roomRepository.findById(roomId);
-        if (findRoom.isEmpty()) throw new IllegalRoomException(response, "방 정보를 찾을 수 없습니다.");
-        return findRoom.get();
+        return findRoom.orElseThrow(() -> new IllegalRoomException(response, "방 정보를 찾을 수 없습니다."));
     }
     public Optional<Room> findById(Long roomId) {
         if (roomId == null) return Optional.empty();
