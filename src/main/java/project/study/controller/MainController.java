@@ -116,4 +116,10 @@ public class MainController {
         return "redirect:" + mainService.logout(member);
     }
 
+    @GetMapping("/room/{room}/share")
+    public String share(@SessionLogin(required = true, type = CallType.CONTROLLER) Member member, @PathRoom("room") Room room) {
+
+        return "room_share";
+    }
+
 }

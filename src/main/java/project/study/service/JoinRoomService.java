@@ -42,8 +42,7 @@ public class JoinRoomService {
 
     public JoinRoom findByMemberAndRoom(Member member, Room room, HttpServletResponse response) {
         Optional<JoinRoom> findJoinRoom = joinRoomRepository.findByMemberAndRoom(member, room);
-        if (findJoinRoom.isEmpty()) throw new NotJoinRoomException(response);
-        return findJoinRoom.get();
+        return findJoinRoom.orElseThrow(() -> new NotJoinRoomException(response));
     }
     public Optional<JoinRoom> findByMemberAndRoom(Member member, Room room) {
         return joinRoomRepository.findByMemberAndRoom(member, room);
