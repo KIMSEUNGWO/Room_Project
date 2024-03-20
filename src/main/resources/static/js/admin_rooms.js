@@ -1,68 +1,224 @@
-window.addEventListener('load', function(){
+$(function(){
+
+    var word = $('#word');
+    var searchBtn = $('#searchBtn');
+
+    word.on('keydown', function(e){
+        if(e.key == "Enter"){
+            sendRequest();
+            
+        }
+    });
+
+    searchBtn.on('click', function(){
+        sendRequest();
+    });
 
     roomOptionOpen();
     roomOptionClose();
     deleteRoom();
-
 });
 
 function roomOptionOpen(){
-    let optionMores = document.querySelectorAll('.option-more');
-    let optionMenus = document.querySelectorAll('.option-menu');
-
-    optionMores.forEach(function(optionMore){
-        optionMore.addEventListener('click', function(e){
-            if (e.target.classList.contains('option-more')) {
-                initMoreList();
-                let menu = optionMore.children.namedItem('option-menu');
-                menu.classList.remove('disabled');
-
-            }
-        });
+    $('.option-more').on('click', function(e) {
+        if ($(e.target).hasClass('option-more')) {
+            initMoreList();
+            let menu = $(e.target).children('[name="option-menu"]');
+            menu.removeClass('disabled');
+            console.log('open')
+        }
     });
-
 };
 
 function initMoreList() {
-    let list = document.querySelectorAll('.option-menu');
-    list.forEach(li => li.classList.add('disabled'));
-}
-
-function roomOptionClose(){
-    let optionMenus = document.querySelectorAll('.option-menu');
-    let container = document.querySelector(':not(.option-more):not(.option-more *):first-of-type');
-
-    optionMenus.forEach(function(optionMenu){
-        container.addEventListener('click', function(event){
-            let s = event.target;
-    
-            if(!s.classList.contains('option-more') && !s.classList.contains('option-exit')
-                && !optionMenu.classList.contains('disabled')){
-                optionMenu.classList.add('disabled');
-            }
-        });
-    })
-    
+    $('.option-menu').addClass('disabled');
+    console.log('init');
 };
 
-function deleteRoom(){
-    let optionMenus = document.querySelectorAll('.option-menu');
+function roomOptionClose() {
+    let container = $(':not(.option-more):not(.option-more *)').first();
 
-    optionMenus.forEach(function(optionMenu){
-            let exit = optionMenu.children.namedItem('option-exit');
-            exit.addEventListener('click', function(){
-                optionMenu.classList.add('disabled');
-                var roomId = exit.getAttribute('id');
-               
-                $.ajax({
-                    url : '/admin/room/delete',
-                    type : 'POST',
-                    contentType : 'application/json',
-                    data : JSON.stringify({roomId : roomId}),
-                    success : function(){
-                    window.location.reload();
-                    }
-                });
+    container.on('click', function(event) {
+        let target = $(event.target);
+        if (!target.hasClass('option-more') && !target.hasClass('option-exit')) {
+            $('.option-menu').each(function() {
+                let optionMenu = $(this);
+                if (!optionMenu.hasClass('disabled')) {
+                    optionMenu.addClass('disabled');
+                    console.log('close');
+                }
             });
-        });     
+        }
+    });
 }
+
+
+function deleteRoom() {
+    $('.option-menu').each(function() {
+        let exit = $(this).children('[name="option-exit"]');
+        exit.on('click', function() {
+            $(this).closest('.option-menu').addClass('disabled');
+            var roomId = $(this).attr('id');
+
+            $.ajax({
+                url: '/admin/room/delete',
+                type: 'POST',
+                contentType: 'application/json',
+                data: JSON.stringify({ roomId: roomId }),
+                success: function() {
+                    window.location.reload();
+                }
+            });
+        });
+    });
+};
+
+function sendRequest(page) {
+
+    var word = $('#word').val();
+
+    $.ajax({
+        type: 'GET',
+        url: '/admin/rooms/get',
+        data: {
+            word : word,
+            page : page
+        },
+        success: function(response) {
+            roomList(response);
+            paging(response.totalPages, response.number);
+            
+            roomOptionOpen();
+            roomOptionClose();
+            deleteRoom();
+
+            // History API를 사용하여 URL 변경
+            if(page==null){
+                var newUrl = '/admin/rooms?page=1';
+            } else {
+                var newUrl = '/admin/rooms?page=' + page;
+            }
+
+            if(word!=""){
+                newUrl += '&word=' + word;
+            }
+            history.pushState({ path: newUrl }, '', newUrl);
+        }
+    });
+}
+
+function roomList(response) {
+    var rooms = response.content;
+
+    var $list = $('.table-list');
+    $list.empty();
+    rooms.forEach(function(room) {
+        var $entity =  $(`<div class="entity">
+            <div class="roomid">${room.roomId}</div>
+            <div class="roomname">${room.roomTitle}</div>
+            <div class="person">${room.roomMemberCount}</div>
+            <div class="manager">${room.managerName}</div>
+            <div class="createdate">${room.roomCreateDate}</div>
+            <div class="public">${room.publicEnum}</div>
+            <div class="option">
+                <button type="button" class="option-more">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><path d="M8 256a56 56 0 1 1 112 0A56 56 0 1 1 8 256zm160 0a56 56 0 1 1 112 0 56 56 0 1 1 -112 0zm216-56a56 56 0 1 1 0 112 56 56 0 1 1 0-112z"/></svg>
+                        <ul class="option-menu disabled" name="option-menu">
+                            <li class="option-exit" name="option-exit" id="${room.roomId}">
+                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><path d="M377.9 105.9L500.7 228.7c7.2 7.2 11.3 17.1 11.3 27.3s-4.1 20.1-11.3 27.3L377.9 406.1c-6.4 6.4-15 9.9-24 9.9c-18.7 0-33.9-15.2-33.9-33.9l0-62.1-128 0c-17.7 0-32-14.3-32-32l0-64c0-17.7 14.3-32 32-32l128 0 0-62.1c0-18.7 15.2-33.9 33.9-33.9c9 0 17.6 3.6 24 9.9zM160 96L96 96c-17.7 0-32 14.3-32 32l0 256c0 17.7 14.3 32 32 32l64 0c17.7 0 32 14.3 32 32s-14.3 32-32 32l-64 0c-53 0-96-43-96-96L0 128C0 75 43 32 96 32l64 0c17.7 0 32 14.3 32 32s-14.3 32-32 32z"/></svg>
+                                    <span>방 삭제</span>
+                            </li>
+                        </ul>
+                </button>
+            </div>
+        </div>`);
+        $list.append($entity);
+    });
+};
+
+function paging(totalPages, currentPage) {
+    var $pageBox = $('.page-box');
+    $pageBox.empty();
+
+    var pageBtnStart = $(`<div class="pagination">`);
+
+    var pageBtnMid = $(`<div id="page">`);
+
+    if (currentPage > 1) {
+        var pageBtnLastLeft = $(`<div class="buttons">
+                                    <button type="button" id="last-left" class="page-num" value="1">
+                                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><path d="M41.4 233.4c-12.5 12.5-12.5 32.8 0 45.3l160 160c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L109.3 256 246.6 118.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0l-160 160zm352-160l-160 160c-12.5 12.5-12.5 32.8 0 45.3l160 160c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L301.3 256 438.6 118.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0z"/></svg>
+                                    </button>
+                                </div>`);
+        pageBtnStart.append(pageBtnLastLeft);
+    }
+    if(currentPage > 0){
+        var pageBtnLeft = $(`<div class="buttons">
+                                <button type="button" id="left" class="page-num" value="${currentPage}">
+                                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><path d="M41.4 233.4c-12.5 12.5-12.5 32.8 0 45.3l160 160c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L109.3 256 246.6 118.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0l-160 160z"/></svg>
+                                </button>
+                            </div>`);
+        pageBtnStart.append(pageBtnLeft);
+    }
+
+    for (var i = 1; i <= totalPages; i++) {
+        var button = $('<button/>', {
+            type: 'button',
+            class: 'page-num',
+            val: i,
+            text: i
+        });
+        pageBtnMid.append(button);
+    }
+
+    if (currentPage+1 < totalPages) {
+        var pageRightBtn = $(`<div class="buttons">
+                                <button type="button" id="right" class="page-num" value="${currentPage+2}">
+                                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><path d="M278.6 233.4c12.5 12.5 12.5 32.8 0 45.3l-160 160c-12.5 12.5-32.8 12.5-45.3 0s-12.5-32.8 0-45.3L210.7 256 73.4 118.6c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0l160 160z"/></svg>
+                                </button>
+                            </div>`);
+        pageBtnMid.append(pageRightBtn);
+    }
+    
+    if(currentPage+2 < totalPages){
+        var pageLastRight = $(`<div class="buttons">
+                                <button type="button" id="last-right" class="page-num" value="${totalPages}">
+                                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><path d="M470.6 278.6c12.5-12.5 12.5-32.8 0-45.3l-160-160c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3L402.7 256 265.4 393.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0l160-160zm-352 160l160-160c12.5-12.5 12.5-32.8 0-45.3l-160-160c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3L210.7 256 73.4 393.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0z"/></svg>
+                                </button>
+                            </div>`);
+        pageBtnMid.append(pageLastRight);
+    }
+
+    
+    $pageBox.append(pageBtnStart.append(pageBtnMid));
+
+    $('.page-num').on('click', function(){
+        var page =  parseInt($(this).val());
+        sendRequest(page);
+    });
+
+
+};
+
+
+// function deleteRoom(){
+//     let optionMenus = document.querySelectorAll('.option-menu');
+
+//     optionMenus.forEach(function(optionMenu){
+//             let exit = optionMenu.children.namedItem('option-exit');
+//             exit.addEventListener('click', function(){
+//                 optionMenu.classList.add('disabled');
+//                 var roomId = exit.getAttribute('id');
+               
+//                 $.ajax({
+//                     url : '/admin/room/delete',
+//                     type : 'POST',
+//                     contentType : 'application/json',
+//                     data : JSON.stringify({roomId : roomId}),
+//                     success : function(){
+//                     window.location.reload();
+//                     }
+//                 });
+//             });
+//         });     
+// }
