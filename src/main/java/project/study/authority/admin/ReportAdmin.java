@@ -30,6 +30,11 @@ public class ReportAdmin implements NotifyMemberInfoAuthority, BanAuthority {
     }
 
     @Override
+    public Page<SearchNotifyDto> searchNotifyList(int pageNumber, String word, String containComplete) {
+        return notifyMemberInfoAuthority.searchNotifyList(pageNumber, word, containComplete);
+    }
+
+    @Override
     public SearchNotifyReadMoreDto searchNotifyReadMore(Long notifyId) {
         return notifyMemberInfoAuthority.searchNotifyReadMore(notifyId);
     }

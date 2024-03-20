@@ -18,6 +18,11 @@ public class NotifyMemberInfoAuthorityImpl implements NotifyMemberInfoAuthority{
     }
 
     @Override
+    public Page<SearchNotifyDto> searchNotifyList(int pageNumber, String word, String containComplete) {
+        return adminService.searchNotifyList(pageNumber, word, containComplete);
+    }
+
+    @Override
     public SearchNotifyReadMoreDto searchNotifyReadMore(Long notifyId) {
         return adminService.searchNotifyReadMore(notifyId);
     }

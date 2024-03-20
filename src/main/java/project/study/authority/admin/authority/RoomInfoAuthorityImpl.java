@@ -19,6 +19,11 @@ public class RoomInfoAuthorityImpl implements RoomInfoAuthority{
     }
 
     @Override
+    public Page<SearchRoomDto> searchRoomList(int pageNumber, String word) {
+        return adminService.searchRoomList(pageNumber, word);
+    }
+
+    @Override
     public void deleteJoinRoom(RequestDeleteRoomDto dto) {
         adminService.deleteRoom(dto);
     }

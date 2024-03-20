@@ -2,14 +2,27 @@ package project.study.repository;
 
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
+import org.springframework.security.core.parameters.P;
+import project.study.authority.admin.dto.SearchExpireMemberDto;
 import project.study.authority.admin.dto.SearchMemberDto;
+import project.study.authority.admin.dto.SearchNotifyDto;
+import project.study.authority.admin.dto.SearchRoomDto;
 
 import java.util.List;
 
 @Mapper
 public interface AdminMapper {
 
-    List<SearchMemberDto> searchMember(@Param("startNum") int startNum, @Param("endNum") int endNum);
-    int getTotalCnt();
+    List<SearchMemberDto> searchMemberList(@Param("startNum") int startNum, @Param("endNum") int endNum, @Param("word") String word, @Param("freezeOnly") String freezeOnly);
+    int getTotalMemberCnt(@Param("word") String word, @Param("freezeOnly") String freezeOnly);
+
+    List<SearchExpireMemberDto> searchExpireMemberList(@Param("startNum") int startNum, @Param("endNum") int endNum, @Param("word") String word);
+    int getTotalExpireMemberCnt(String word);
+
+    List<SearchRoomDto> searchRoomList(@Param("startNum") int startNum, @Param("endNum") int endNum, @Param("word") String word);
+    int getTotalRoomCnt(String word);
+
+    List<SearchNotifyDto> searchNotifyList(@Param("startNum") int startNum, @Param("endNum") int endNum, @Param("word") String word, @Param("containComplete") String containComplete);
+    int getTotalNotifyCnt(@Param("word") String word, @Param("containComplete") String containComplete);
 
 }
