@@ -20,13 +20,28 @@ public class OverallAdmin implements ExpireMemberInfoAuthority, MemberInfoAuthor
     }
 
     @Override
+    public Page<SearchMemberDto> searchMemberList(int pageNumber, String word, String freezeOnly) {
+        return memberInfoAuthority.searchMemberList(pageNumber, word, freezeOnly );
+    }
+
+    @Override
     public Page<SearchExpireMemberDto> searchExpireMember(String word, int pageNumber) {
         return expireMemberInfoAuthority.searchExpireMember(word, pageNumber);
     }
 
     @Override
+    public Page<SearchExpireMemberDto> searchExpireMemberList(int pageNumber, String word) {
+        return expireMemberInfoAuthority.searchExpireMemberList(pageNumber, word);
+    }
+
+    @Override
     public Page<SearchRoomDto> searchRoom(String word, int pageNumber) {
         return roomInfoAuthority.searchRoom(word, pageNumber);
+    }
+
+    @Override
+    public Page<SearchRoomDto> searchRoomList(int pageNumber, String word) {
+        return roomInfoAuthority.searchRoomList(pageNumber, word);
     }
 
     @Override

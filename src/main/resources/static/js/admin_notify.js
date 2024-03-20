@@ -1,6 +1,6 @@
 window.addEventListener('load', function(){
 
-     let checkbox = document.querySelector('#withComplete');
+     let checkbox = document.querySelector('#containComplete');
      checkbox.addEventListener('change', () => {
         let form = document.querySelector('form.table-option-list');
         form.submit();

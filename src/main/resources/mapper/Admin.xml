@@ -5,31 +5,162 @@
 
 <mapper namespace="project.study.repository.AdminMapper">
 
-    <select id="searchMember" resultType="project.study.authority.admin.dto.SearchMemberDto">
-        <![CDATA[
+    <select id="searchMemberList" resultType="project.study.authority.admin.dto.SearchMemberDto">
             select * from(
                 select
                     row_number() over(order by m.member_create_date desc) as rn,
                     COALESCE(b.account, s.social_email) AS memberAccount,
                     m.member_name as memberName,
                     m.member_nickname as memberNickname,
-                    p.phone as memberPhone,
+                    m.phone as phone,
                     to_char(m.member_create_date, 'yyyy-MM-dd') as memberCreateDate,
                     m.member_notify_count as memberNotifyCount,
                     s.social_type as socialType,
-                    m.member_status as memberStatus
+                    m.member_status as memberStatusEnum
                 from member m
                 left join basic b ON m.member_id = b.member_id
                 left join social s ON m.member_id = s.member_id
-                left join phone p on m.member_id = p.member_id
-                where (m.member_status = '정상' or m.member_status = '이용정지')
-                order by m.member_create_date desc) t
+                where 1=1
+                <include refid="searchMemberWord"></include>
+                <include refid="searchMemberStatus"></include>
+                order by m.member_create_date desc)
             where rn between #{startNum} and #{endNum}
-        ]]>
     </select>
 
-    <select id="getTotalCnt" resultType="int">
-        select count(*) from member
+    <select id="getTotalMemberCnt" resultType="int">
+        select count(*) from member m
+        left join basic b ON m.member_id = b.member_id
+        left join social s ON m.member_id = s.member_id
+        where 1=1
+        <include refid="searchMemberWord"></include>
+        <include refid="searchMemberStatus"></include>
     </select>
+
+    <sql id ="searchMemberStatus">
+        <if test=" freezeOnly == 'false' or freezeOnly == null">
+            and (m.member_status = '정상' or m.member_status = '이용정지')
+        </if>
+        <if test=" freezeOnly == 'true'">
+            and m.member_status = '이용정지'
+        </if>
+    </sql>
+
+    <sql id="searchMemberWord">
+        <if test=" word != null and word != ''">
+            and (lower(COALESCE(b.account, s.social_email)) like '%' || lower(#{word}) || '%'
+            or lower(m.member_name) like '%' || lower(#{word}) || '%'
+            or lower(m.member_nickname) like '%' || lower(#{word}) || '%'
+            or lower(m.phone) like '%' || lower(#{word}) || '%')
+        </if>
+    </sql>
+
+    <select id="searchExpireMemberList" resultType="project.study.authority.admin.dto.SearchExpireMemberDto">
+        select * from(
+            select
+                row_number() over(order by m.member_expire_date desc) as rn,
+                COALESCE(b.account, s.social_email) AS memberAccount,
+                m.member_name as memberName,
+                m.member_nickname as memberNickname,
+                m.phone as memberPhone,
+                to_char(m.member_create_date, 'yyyy-MM-dd') as memberCreateDate,
+                to_char(m.member_expire_date, 'yyyy-MM-dd') as memberExpireDate,
+                s.social_type as socialType,
+                m.member_status as memberStatusEnum
+            from member m
+            left join basic b ON m.member_id = b.member_id
+            left join social s ON m.member_id = s.member_id
+            where m.member_status = '탈퇴'
+            <include refid="searchMemberWord"></include>
+            order by m.member_expire_date desc)
+        where rn between #{startNum} and #{endNum}
+    </select>
+
+    <select id="getTotalExpireMemberCnt" resultType="int">
+        select count(*) from member m
+        left join basic b ON m.member_id = b.member_id
+        left join social s ON m.member_id = s.member_id
+        where m.member_status = '탈퇴'
+        <include refid="searchMemberWord"></include>
+    </select>
+
+    <select id="searchRoomList" resultType="project.study.authority.admin.dto.SearchRoomDto">
+        select * from(
+            select
+                    row_number() over(order by r.room_create_date desc) rn,
+                    j.room_id as roomId,
+                    r.room_title as roomTitle,
+                    ((cast((select count(j.room_id)
+                            from join_room j
+                            where r.room_id = j.room_id) as varchar2(4000 char)))
+                            ||'/'||
+                    cast(r.room_limit as varchar2(4000 char))) as roomMemberCount,
+                    m.member_name as managerName,
+                    to_char(r.room_create_date, 'yyyy-MM-dd') as roomCreateDate,
+                    r.room_public as publicEnum
+            from join_room j
+            left join room r on r.room_id = j.room_id
+            left join member m on m.member_id = j.member_id
+            where j.authority_enum = '방장'
+            <include refid="searchRoomWord"></include>
+            order by r.room_create_date desc)
+        where rn between #{startNum} and #{endNum}
+    </select>
+
+    <select id="getTotalRoomCnt" resultType="int">
+        select count(distinct(j.room_id))
+        from join_room j
+        left join room r on r.room_id = j.room_id
+        left join member m on m.member_id = j.member_id
+        where j.authority_enum = '방장'
+        <include refid="searchRoomWord"></include>
+    </select>
+
+    <sql id="searchRoomWord">
+        <if test=" word != null and word != ''">
+            and (lower(j.room_id) like '%' || lower(#{word}) || '%'
+            or lower(r.room_title) like '%' || lower(#{word}) || '%'
+            or lower(m.member_name) like '%' || lower(#{word}) || '%')
+        </if>
+    </sql>
+
+    <select id="searchNotifyList" resultType="project.study.authority.admin.dto.SearchNotifyDto">
+        select * from(
+            select
+                    row_number() over(order by n.notify_date desc) as rn,
+                    COALESCE(b.account, s.social_email) AS reporterMemberAccount,
+                    COALESCE(b2.account, s2.social_email) AS criminalMemberAccount,
+                    r.room_id as roomId,
+                    to_char(n.notify_date, 'yyyy-MM-dd') as notifyDate,
+                    n.notify_reason as notifyReason,
+                    n.notify_id as notifyId,
+                    n.notify_status as notifyStatus
+            from notify n
+            left join room r on n.room_id = r.room_id
+            left join member m on m.member_id = n.reporter_member_id
+            left join basic b on m.member_id = b.member_id
+            left join social s on m.member_id = s.member_id
+            left join member m2 on m2.member_id = n.criminal_member_id
+            left join basic b2 on m2.member_id = b2.member_id
+            left join social s2 on m2.member_id = s2.member_id
+            where n.notify_status='처리중'
+            order by n.notify_date desc)
+        where rn between #{startNum} and #{endNum}
+    </select>
+
+    <select id="getTotalNotifyCnt" resultType="int">
+        select count(n.notify_id)
+        from notify n
+        left join room r on n.room_id = r.room_id
+        left join member m on m.member_id = n.reporter_member_id
+        left join basic b on m.member_id = b.member_id
+        left join social s on m.member_id = s.member_id
+        left join member m2 on m2.member_id = n.criminal_member_id
+        left join basic b2 on m2.member_id = b2.member_id
+        left join social s2 on m2.member_id = s2.member_id
+        where n.notify_status='처리중'
+    </select>
+
+
+
 
 </mapper>

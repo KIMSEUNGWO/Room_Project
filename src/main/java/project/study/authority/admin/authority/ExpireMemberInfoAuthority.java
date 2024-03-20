@@ -7,4 +7,6 @@ import project.study.authority.admin.dto.SearchExpireMemberDto;
 public interface ExpireMemberInfoAuthority {
 
     Page<SearchExpireMemberDto> searchExpireMember(String word, int pageNumber);
+    Page<SearchExpireMemberDto> searchExpireMemberList(int pageNumber, String word);
+
 }

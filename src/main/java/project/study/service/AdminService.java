@@ -10,6 +10,7 @@ import org.springframework.transaction.annotation.Transactional;
 import project.study.authority.admin.dto.*;
 import project.study.domain.*;
 import project.study.dto.admin.Criteria;
+import project.study.enums.NotifyStatus;
 import project.study.jpaRepository.AdminJpaRepository;
 import project.study.repository.AdminMapper;
 import project.study.repository.AdminRepository;
@@ -29,9 +30,24 @@ public class AdminService {
     private final AdminMapper adminMapper;
     private final Criteria criteria;
 
-    public Page<SearchMemberDto> searchMemberDto(int pageNumber){
-        List<SearchMemberDto> data = adminMapper.searchMember(criteria.getStartNum(pageNumber), criteria.getEndNum(pageNumber));
-        return new PageImpl<>(data, criteria.getPageable(pageNumber), adminMapper.getTotalCnt());
+    public Page<SearchMemberDto> searchMemberList(int pageNumber, String word, String freezeOnly){
+        List<SearchMemberDto> data = adminMapper.searchMemberList(criteria.getStartNum(pageNumber), criteria.getEndNum(pageNumber), word, freezeOnly);
+        return new PageImpl<>(data, criteria.getPageable(pageNumber), adminMapper.getTotalMemberCnt(word, freezeOnly));
+    }
+
+    public Page<SearchExpireMemberDto> searchExpireMemberList(int pageNumber, String word){
+        List<SearchExpireMemberDto> data = adminMapper.searchExpireMemberList(criteria.getStartNum(pageNumber), criteria.getEndNum(pageNumber), word);
+        return new PageImpl<>(data, criteria.getPageable(pageNumber), adminMapper.getTotalExpireMemberCnt(word));
+    }
+
+    public Page<SearchRoomDto> searchRoomList(int pageNumber, String word){
+        List<SearchRoomDto> data = adminMapper.searchRoomList(criteria.getStartNum(pageNumber), criteria.getEndNum(pageNumber), word);
+        return new PageImpl<>(data, criteria.getPageable(pageNumber), adminMapper.getTotalRoomCnt(word));
+    }
+
+    public Page<SearchNotifyDto> searchNotifyList(int pageNumber, String word, String containComplete){
+        List<SearchNotifyDto> data = adminMapper.searchNotifyList(criteria.getStartNum(pageNumber), criteria.getEndNum(pageNumber), word, containComplete);
+        return new PageImpl<>(data, criteria.getPageable(pageNumber), adminMapper.getTotalNotifyCnt(word, containComplete));
     }
 
     @Transactional
@@ -105,7 +121,7 @@ public class AdminService {
         adminRepository.insertRoomDelete(dto);
     }
 
-    public int getTotalCnt() {
-        return adminMapper.getTotalCnt();
+    public int getTotalMemberCnt(String word, String freezeOnly) {
+        return adminMapper.getTotalMemberCnt(word, freezeOnly);
     }
 }

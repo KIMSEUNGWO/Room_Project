@@ -17,10 +17,6 @@ public class Criteria {
         return (pageNumber - 1) * amount + amount;
     }
 
-    public int getTotalPage(int totalCnt) {
-        return (int) Math.ceil( (totalCnt * 1.0) / (amount * 1.0) );
-    }
-
     public Pageable getPageable(int pageNumber) {
         return PageRequest.of(pageNumber - 1, amount);
     }

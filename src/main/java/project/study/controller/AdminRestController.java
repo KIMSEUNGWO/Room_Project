@@ -51,85 +51,83 @@ public class AdminRestController {
     }
 
     @GetMapping("/members/get")
-    public ResponseEntity<Page<SearchMemberDto>> searchNotify(@RequestParam(value = "word", required = false, defaultValue = "") String word,
-                               @RequestParam(value = "onlyFreezeMembers", required = false) String freezeOnly,
+    public ResponseEntity<Page<SearchMemberDto>> searchNotify(@RequestParam(value = "word", required = false) String word,
+                               @RequestParam(value = "onlyFreeze", required = false) String freezeOnly,
                                @RequestParam(defaultValue = "1", value = "page") int pageNumber,
                                @SessionAttribute(name = "adminId", required = false) Long adminId,
                                HttpServletResponse response){
 
         OverallAdmin overallAdmin = check.getOverallAdmin(adminId, response);
-        Admin admin = adminService.findById(adminId).get();
 
-        Page<SearchMemberDto> page = overallAdmin.searchMember(word, freezeOnly, pageNumber);
+        Page<SearchMemberDto> page = overallAdmin.searchMemberList(pageNumber, word, freezeOnly);
 
         return ResponseEntity.ok(page);
     }
 
-    @GetMapping("/admin/expire/get")
+    @GetMapping("/expire/get")
     public ResponseEntity<Page<SearchExpireMemberDto>> searchExpireMember(@RequestParam(value = "word", required = false, defaultValue = "") String word,
                                                                           @RequestParam(defaultValue = "1", value = "page") int pageNumber,
                                                                           @SessionAttribute(name = "adminId", required = false) Long adminId,
                                                                           HttpServletResponse response){
 
         OverallAdmin overallAdmin = check.getOverallAdmin(adminId, response);
-        Admin admin = adminService.findById(adminId).get();
 
-        Page<SearchExpireMemberDto> page = overallAdmin.searchExpireMember(word, pageNumber);
-
-        return ResponseEntity.ok(page);
-    }
-
-    @GetMapping("/admin/rooms/get")
-    public ResponseEntity<Page<SearchRoomDto>> searchRoom(@RequestParam(value = "word", required = false, defaultValue = "") String word,
-                                                          @RequestParam(defaultValue = "1", value = "page") int pageNumber,
-                                                          @SessionAttribute(name = "adminId", required = false) Long adminId,
-                                                          HttpServletResponse response){
-
-        OverallAdmin overallAdmin = check.getOverallAdmin(adminId, response);
-        Admin admin = adminService.findById(adminId).get();
-
-        Page<SearchRoomDto> page = overallAdmin.searchRoom(word, pageNumber);
+        Page<SearchExpireMemberDto> page = overallAdmin.searchExpireMemberList(pageNumber, word);
 
         return ResponseEntity.ok(page);
     }
-
-    @GetMapping("/admin/notify/get")
-    public ResponseEntity<Page<SearchNotifyDto>> searchNotify(@RequestParam(value = "word", required = false, defaultValue = "") String word,
-                                                              @RequestParam(defaultValue = "1", value = "page") int pageNumber,
-                                                              @RequestParam(value = "withComplete", required = false) String containComplete,
-                                                              @SessionAttribute(name = "adminId", required = false) Long adminId,
-                                                              HttpServletResponse response){
-
-        ReportAdmin reportAdmin = check.getReportAdmin(adminId, response);
-        Admin admin = adminService.findById(adminId).get();
-
-        Page<SearchNotifyDto> page = reportAdmin.searchNotify(word, pageNumber, containComplete);
-
-        return ResponseEntity.ok(page);
-    }
-
-    @PostMapping("/admin/notify/status/change")
-    public void notifyStatusChange(@RequestBody RequestNotifyStatusChangeDto dto,
-                                   @SessionAttribute(name = "adminId", required = false) Long adminId,
-                                   HttpServletResponse response){
-        ReportAdmin reportAdmin = check.getReportAdmin(adminId, response);
-        reportAdmin.notifyStatusChange(dto);
-    }
-
-    @PostMapping("/admin/notify/member/freeze")
-    public void notifyMemberFreeze (@RequestBody RequestNotifyMemberFreezeDto dto,
-                                    @SessionAttribute(name = "adminId", required = false) Long adminId,
-                                    HttpServletResponse response){
-        ReportAdmin reportAdmin = check.getReportAdmin(adminId, response);
-        reportAdmin.notifyMemberFreeze(dto);
-
-    }
-
-    @PostMapping("/admin/room/delete")
-    public void deleteRoom(@RequestBody RequestDeleteRoomDto dto,
-                           @SessionAttribute(name = "adminId", required = false) Long adminId,
-                           HttpServletResponse response){
-        OverallAdmin overallAdmin = check.getOverallAdmin(adminId, response);
-        overallAdmin.deleteJoinRoom(dto);
-    }
+//
+//    @GetMapping("/admin/rooms/get")
+//    public ResponseEntity<Page<SearchRoomDto>> searchRoom(@RequestParam(value = "word", required = false, defaultValue = "") String word,
+//                                                          @RequestParam(defaultValue = "1", value = "page") int pageNumber,
+//                                                          @SessionAttribute(name = "adminId", required = false) Long adminId,
+//                                                          HttpServletResponse response){
+//
+//        OverallAdmin overallAdmin = check.getOverallAdmin(adminId, response);
+//        Admin admin = adminService.findById(adminId).get();
+//
+//        Page<SearchRoomDto> page = overallAdmin.searchRoom(word, pageNumber);
+//
+//        return ResponseEntity.ok(page);
+//    }
+//
+//    @GetMapping("/admin/notify/get")
+//    public ResponseEntity<Page<SearchNotifyDto>> searchNotify(@RequestParam(value = "word", required = false, defaultValue = "") String word,
+//                                                              @RequestParam(defaultValue = "1", value = "page") int pageNumber,
+//                                                              @RequestParam(value = "withComplete", required = false) String containComplete,
+//                                                              @SessionAttribute(name = "adminId", required = false) Long adminId,
+//                                                              HttpServletResponse response){
+//
+//        ReportAdmin reportAdmin = check.getReportAdmin(adminId, response);
+//        Admin admin = adminService.findById(adminId).get();
+//
+//        Page<SearchNotifyDto> page = reportAdmin.searchNotify(word, pageNumber, containComplete);
+//
+//        return ResponseEntity.ok(page);
+//    }
+//
+//    @PostMapping("/admin/notify/status/change")
+//    public void notifyStatusChange(@RequestBody RequestNotifyStatusChangeDto dto,
+//                                   @SessionAttribute(name = "adminId", required = false) Long adminId,
+//                                   HttpServletResponse response){
+//        ReportAdmin reportAdmin = check.getReportAdmin(adminId, response);
+//        reportAdmin.notifyStatusChange(dto);
+//    }
+//
+//    @PostMapping("/admin/notify/member/freeze")
+//    public void notifyMemberFreeze (@RequestBody RequestNotifyMemberFreezeDto dto,
+//                                    @SessionAttribute(name = "adminId", required = false) Long adminId,
+//                                    HttpServletResponse response){
+//        ReportAdmin reportAdmin = check.getReportAdmin(adminId, response);
+//        reportAdmin.notifyMemberFreeze(dto);
+//
+//    }
+//
+//    @PostMapping("/admin/room/delete")
+//    public void deleteRoom(@RequestBody RequestDeleteRoomDto dto,
+//                           @SessionAttribute(name = "adminId", required = false) Long adminId,
+//                           HttpServletResponse response){
+//        OverallAdmin overallAdmin = check.getOverallAdmin(adminId, response);
+//        overallAdmin.deleteJoinRoom(dto);
+//    }
 }

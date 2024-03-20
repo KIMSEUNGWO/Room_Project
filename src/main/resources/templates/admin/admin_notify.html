@@ -23,22 +23,22 @@
                 <div class="category">
                     <h4>일반</h4>
                     <div class="menu-list">
-                        <a href="/admin/members/get" aria-selected="false">이용중인 회원</a>
-                        <a href="/admin/expire/get" aria-selected="false">탈퇴한 회원</a>
-                        <a href="/admin/rooms/get" aria-selected="false">방 관리</a>
+                        <a href="/admin/members" aria-selected="false">이용중인 회원</a>
+                        <a href="/admin/expire" aria-selected="false">탈퇴한 회원</a>
+                        <a href="/admin/rooms" aria-selected="false">방 관리</a>
                     </div>
                 </div>
                 <div class="category">
                     <h4>신고</h4>
                     <div class="menu-list">
-                        <a href="/admin/notify/get" aria-selected="true">신고된 회원</a>
+                        <a href="/admin/notify" aria-selected="true">신고된 회원</a>
                     </div>
                 </div>
                 <div class="category">
-                    <h4>문의</h4>
-                    <div class="menu-list">
-                        <a href="/admin/inquiry" aria-selected="false">문의사항</a>
-                    </div>
+<!--                    <h4>문의</h4>-->
+<!--                    <div class="menu-list">-->
+<!--                        <a href="/admin/inquiry" aria-selected="false">문의사항</a>-->
+<!--                    </div>-->
                 </div>
             </div>
         </aside>
@@ -51,8 +51,8 @@
                     <h3>신고된 회원</h3>
                     <form class="table-option-list" method="get" th:action="@{/admin/notify/get}">
                         <li>
-                            <input type="checkbox" name="withComplete" id="withComplete" th:checked="${containComplete}">
-                            <label for="withComplete">처리완료 포함</label>
+                            <input type="checkbox" name="containComplete" id="containComplete" th:checked="${containComplete}">
+                            <label for="containComplete">처리완료 포함</label>
                         </li>
                         <li>
                             <div class="search-wrap">

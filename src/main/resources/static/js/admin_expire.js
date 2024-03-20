@@ -1,11 +1,7 @@
 $(function(){
-    var onlyFreeze = $('#onlyFreeze');
+
     var word = $('#word');
     var searchBtn = $('#searchBtn');
-
-    onlyFreeze.on('change', function(){
-        sendRequest();
-    });
 
     word.on('keydown', function(e){
         if(e.key == "Enter"){
@@ -22,31 +18,24 @@ $(function(){
 
 function sendRequest(page) {
 
-    var onlyFreeze = $('#onlyFreeze').is(':checked');
     var word = $('#word').val();
 
     $.ajax({
         type: 'GET',
-        url: '/admin/members/get',
+        url: '/admin/expire/get',
         data: {
             word : word,
-            onlyFreeze : onlyFreeze,
             page : page
         },
         success: function(response) {
-            console.log(onlyFreeze);
             memberList(response);
             paging(response.totalPages, response.number);
 
             // History API를 사용하여 URL 변경
             if(page==null){
-                var newUrl = '/admin/members?page=1';
+                var newUrl = '/admin/expire?page=1';
             } else {
-                var newUrl = '/admin/members?page=' + page;
-            }
-            
-            if(onlyFreeze==true){
-                newUrl += '&onlyFreeze=' + onlyFreeze;
+                var newUrl = '/admin/expire?page=' + page;
             }
 
             if(word!=""){
@@ -69,7 +58,7 @@ function memberList(response) {
             <div class="nickname">${member.memberNickname}</div>
             <div class="phone">${member.phone}</div>
             <div class="registerdate">${member.memberCreateDate}</div>
-            <div class="notifycount">${member.memberNotifyCount}</div>
+            <div class="expiredate">${member.memberExpireDate}</div>
             <div class="social">${member.socialType != null ? member.socialType : ''}</div>
             <div class="status">${member.memberStatusEnum}</div>
         </div>`);
