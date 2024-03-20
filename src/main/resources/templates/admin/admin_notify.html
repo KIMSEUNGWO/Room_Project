@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="/css/common.css">
-    <link rel="stylesheet" href="/css/header.css">
+    <link rel="stylesheet" href="/css/admin_header.css">
     <link rel="stylesheet" href="/css/admin_menu.css">
     <link rel="stylesheet" href="/css/admin_members.css">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
@@ -88,57 +88,42 @@
                             </div>
                             <div class="status" th:text="${member.notifyStatus}">처리중</div>
                         </div>
-<!--                        <div class="entity">-->
-<!--                            <div class="donotifymember">가나다라마바사아자차</div>-->
-<!--                            <div class="benotifiedmember"><a class="memberInfoPop">차자아사바마라다나가</a></div>-->
-<!--                            <div class="notifyreason">css할줄모름</div>-->
-<!--                            <div class="notifydate">2024-02-07</div>-->
-<!--                            <div class="roomid">1</div>-->
-<!--                            <div class="reed-more">-->
-<!--                                <button type="button" class="reed-moreBtn" id="reed-moreBtn">-->
-<!--                                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><path d="M416 208c0 45.9-14.9 88.3-40 122.7L502.6 457.4c12.5 12.5 12.5 32.8 0 45.3s-32.8 12.5-45.3 0L330.7 376c-34.4 25.2-76.8 40-122.7 40C93.1 416 0 322.9 0 208S93.1 0 208 0S416 93.1 416 208zM208 352a144 144 0 1 0 0-288 144 144 0 1 0 0 288z"/></svg>-->
-<!--                                </button>-->
-<!--                            </div>-->
-<!--                            <div class="status">처리중</div>-->
-<!--                        </div>-->
                     </div>
                 </div>
-                <th:block th:if="${!page.content.isEmpty()}">
-                    <div class="pagination">
+                <div class="page-box">
+                    <div class="pagination" th:if="${!page.content.isEmpty()}">
                         <div class="buttons">
-                            <button type="button" id="last-left" th:if="${page.number > 0}">
-                                <a th:href="@{'?page=' + 1 + '&amp;word=' + ${word}}">
+                            <button type="button" id="last-left" th:if="${page.number > 1}">
+                                <a th:href="@{'?page=' + 1}">
                                     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><path d="M41.4 233.4c-12.5 12.5-12.5 32.8 0 45.3l160 160c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L109.3 256 246.6 118.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0l-160 160zm352-160l-160 160c-12.5 12.5-12.5 32.8 0 45.3l160 160c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L301.3 256 438.6 118.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0z"/></svg>
                                 </a>
                             </button>
                             <button type="button" id="left" th:if="${page.number > 0}">
-                                <a th:href="@{'?page=' + ${page.number} + '&amp;word=' +${word}}">
+                                <a th:href="@{'?page=' + ${page.number}}">
                                     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><path d="M41.4 233.4c-12.5 12.5-12.5 32.8 0 45.3l160 160c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L109.3 256 246.6 118.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0l-160 160z"/></svg>
                                 </a>
                             </button>
                         </div>
                         <div id="page">
                             <button type="button" class="page-num" th:each="i : ${#numbers.sequence(1, page.totalPages)}">
-                                <a th:href="@{'?page=' + ${i} + '&amp;word=' + ${word}}">[[${i}]]</a>
+                                <a th:href="@{'?page=' + ${i}}">[[${i}]]</a>
                             </button>
                         </div>
                         <div class="buttons">
                             <button type="button" id="right" th:if="${!page.last}">
-                                <a th:href="@{'?page=' + ${page.number+2} + '&amp;word=' + ${word}}">
+                                <a th:href="@{'?page=' + ${page.number+2}}">
                                     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><path d="M278.6 233.4c12.5 12.5 12.5 32.8 0 45.3l-160 160c-12.5 12.5-32.8 12.5-45.3 0s-12.5-32.8 0-45.3L210.7 256 73.4 118.6c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0l160 160z"/></svg>
                                 </a>
                             </button>
-                            <button type="button" class="last-right" th:if="${!page.last}">
-                                <a th:href="@{'?page=' + ${page.totalPages} + '&amp;word=' +${word}}">
+                            <button type="button" id="last-right" th:if="${page.number+2 != page.totalPages and !page.last}">
+                                <a th:href="@{'?page=' + ${page.totalPages}}">
                                     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><path d="M470.6 278.6c12.5-12.5 12.5-32.8 0-45.3l-160-160c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3L402.7 256 265.4 393.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0l160-160zm-352 160l160-160c12.5-12.5 12.5-32.8 0-45.3l-160-160c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3L210.7 256 73.4 393.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0z"/></svg>
                                 </a>
                             </button>
                         </div>
                     </div>
-                </th:block>
-                <th:block th:if="${page.content.isEmpty()}">
-                    <div class="errorMsg">결과가 존재하지 않습니다.</div>
-                </th:block>
+                    <div class="errorMsg" th:if="${page.content.isEmpty()}">결과가 존재하지 않습니다.</div>
+                </div>
             </div>
         </div>
     </div>

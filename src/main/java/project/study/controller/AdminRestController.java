@@ -76,20 +76,20 @@ public class AdminRestController {
 
         return ResponseEntity.ok(page);
     }
-//
-//    @GetMapping("/admin/rooms/get")
-//    public ResponseEntity<Page<SearchRoomDto>> searchRoom(@RequestParam(value = "word", required = false, defaultValue = "") String word,
-//                                                          @RequestParam(defaultValue = "1", value = "page") int pageNumber,
-//                                                          @SessionAttribute(name = "adminId", required = false) Long adminId,
-//                                                          HttpServletResponse response){
-//
-//        OverallAdmin overallAdmin = check.getOverallAdmin(adminId, response);
-//        Admin admin = adminService.findById(adminId).get();
-//
-//        Page<SearchRoomDto> page = overallAdmin.searchRoom(word, pageNumber);
-//
-//        return ResponseEntity.ok(page);
-//    }
+
+    @GetMapping("/rooms/get")
+    public ResponseEntity<Page<SearchRoomDto>> searchRoom(@RequestParam(value = "word", required = false, defaultValue = "") String word,
+                                                          @RequestParam(defaultValue = "1", value = "page") int pageNumber,
+                                                          @SessionAttribute(name = "adminId", required = false) Long adminId,
+                                                          HttpServletResponse response){
+
+        OverallAdmin overallAdmin = check.getOverallAdmin(adminId, response);
+        Admin admin = adminService.findById(adminId).get();
+
+        Page<SearchRoomDto> page = overallAdmin.searchRoom(word, pageNumber);
+
+        return ResponseEntity.ok(page);
+    }
 //
 //    @GetMapping("/admin/notify/get")
 //    public ResponseEntity<Page<SearchNotifyDto>> searchNotify(@RequestParam(value = "word", required = false, defaultValue = "") String word,
@@ -123,11 +123,11 @@ public class AdminRestController {
 //
 //    }
 //
-//    @PostMapping("/admin/room/delete")
-//    public void deleteRoom(@RequestBody RequestDeleteRoomDto dto,
-//                           @SessionAttribute(name = "adminId", required = false) Long adminId,
-//                           HttpServletResponse response){
-//        OverallAdmin overallAdmin = check.getOverallAdmin(adminId, response);
-//        overallAdmin.deleteJoinRoom(dto);
-//    }
+    @PostMapping("/room/delete")
+    public void deleteRoom(@RequestBody RequestDeleteRoomDto dto,
+                           @SessionAttribute(name = "adminId", required = false) Long adminId,
+                           HttpServletResponse response){
+        OverallAdmin overallAdmin = check.getOverallAdmin(adminId, response);
+        overallAdmin.deleteJoinRoom(dto);
+    }
 }
