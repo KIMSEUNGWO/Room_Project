@@ -28,6 +28,11 @@ public class NotifyMemberInfoAuthorityImpl implements NotifyMemberInfoAuthority{
     }
 
     @Override
+    public SearchNotifyReadMoreDtoBatis notifyReedMoreBatis(Long notifyId) {
+        return adminService.notifyReedMoreBatis(notifyId);
+    }
+
+    @Override
     public SearchNotifyMemberInfoDto searchNotifyMemberInfo(String account, Long notifyId) {
         return adminService.searchNotifyMemberInfo(account, notifyId);
     }

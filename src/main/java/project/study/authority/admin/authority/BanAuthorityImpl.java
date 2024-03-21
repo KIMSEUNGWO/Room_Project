@@ -18,7 +18,17 @@ public class BanAuthorityImpl implements BanAuthority{
     }
 
     @Override
+    public void notifyComplete(RequestNotifyStatusChangeDto dto) {
+        adminService.notifyComplete(dto);
+    }
+
+    @Override
     public void notifyMemberFreeze(RequestNotifyMemberFreezeDto dto) {
         adminService.notifyMemberFreeze(dto);
+    }
+
+    @Override
+    public void notifyFreeze(RequestNotifyMemberFreezeDto dto) {
+        adminService.notifyFreeze(dto);
     }
 }

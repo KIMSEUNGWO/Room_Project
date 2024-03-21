@@ -53,14 +53,14 @@ public class FreezeRepository {
 
         if(lastFreeze==null){
             Freeze freeze = Freeze.builder()
-                .freezeEndDate(LocalDateTime.now().plusDays(dto.getFreezePeriod()))
+//                .freezeEndDate(LocalDateTime.now().plusDays(dto.getFreezePeriod()))
                 .freezeReason(dto.getFreezeReason())
                 .member(member1)
                 .build();
             return freezeJpaRepository.save(freeze);
         }
             Freeze freeze = Freeze.builder()
-                .freezeEndDate(lastFreeze.plusDays(dto.getFreezePeriod()))
+//                .freezeEndDate(lastFreeze.plusDays(dto.getFreezePeriod()))
                 .freezeReason(dto.getFreezeReason())
                 .member(member1)
                 .build();

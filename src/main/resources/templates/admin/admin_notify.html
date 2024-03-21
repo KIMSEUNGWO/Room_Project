@@ -49,7 +49,7 @@
             <div class="table-form">
                 <div class="table-title">
                     <h3>신고된 회원</h3>
-                    <form class="table-option-list" method="get" th:action="@{/admin/notify/get}">
+                    <ul class="table-option-list">
                         <li>
                             <input type="checkbox" name="containComplete" id="containComplete" th:checked="${containComplete}">
                             <label for="containComplete">처리완료 포함</label>
@@ -57,12 +57,12 @@
                         <li>
                             <div class="search-wrap">
                                 <input type="text" name="word" id="word" placeholder="검색어를 입력하세요" th:value="${word}">
-                                <button type="submit" id="searchBtn">
+                                <button type="button" id="searchBtn">
                                     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><path d="M416 208c0 45.9-14.9 88.3-40 122.7L502.6 457.4c12.5 12.5 12.5 32.8 0 45.3s-32.8 12.5-45.3 0L330.7 376c-34.4 25.2-76.8 40-122.7 40C93.1 416 0 322.9 0 208S93.1 0 208 0S416 93.1 416 208zM208 352a144 144 0 1 0 0-288 144 144 0 1 0 0 288z"/></svg>
                                 </button>
                             </div>
                         </li>
-                    </form>
+                    </ul>
                 </div>
                 <div class="table-content notify">
                     <div class="table-top">
@@ -75,18 +75,18 @@
                         <div class="status">상태</div>
                     </div>
                     <div class="table-list">
-                        <div class="entity" th:each="member : ${page.content}">
-                            <div class="donotifymember" th:text="${member.reporterMemberAccount}">가나다라마바사아자차</div>
-                            <div class="benotifiedmember"><a class="memberInfoPop" href="" th:id="${member.notifyId}" th:text="${member.criminalMemberAccount}">차자아사바마라다나가</a></div>
-                            <div class="notifyreason" th:text="${member.notifyReason}">css할줄모름</div>
-                            <div class="notifydate" th:text="${member.notifyDate}">2024-02-07</div>
-                            <div class="roomid" th:text="${member.roomId}">1</div>
+                        <div class="entity" th:each="notify : ${page.content}">
+                            <div class="donotifymember" th:text="${notify.reporterMemberAccount}">가나다라마바사아자차</div>
+                            <div class="benotifiedmember"><a class="memberInfoPop" href="" th:id="${notify.notifyId}" th:text="${notify.criminalMemberAccount}">차자아사바마라다나가</a></div>
+                            <div class="notifyreason" th:text="${notify.notifyReason.getNotifyType()}">css할줄모름</div>
+                            <div class="notifydate" th:text="${notify.notifyDate}">2024-02-07</div>
+                            <div class="roomid" th:text="${notify.roomId}">1</div>
                             <div class="reed-more">
-                                <button type="button" class="reed-moreBtn" id="reed-moreBtn" th:id="${member.notifyId}">
+                                <button type="button" class="reed-moreBtn" id="reed-moreBtn" th:id="${notify.notifyId}">
                                         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><path d="M416 208c0 45.9-14.9 88.3-40 122.7L502.6 457.4c12.5 12.5 12.5 32.8 0 45.3s-32.8 12.5-45.3 0L330.7 376c-34.4 25.2-76.8 40-122.7 40C93.1 416 0 322.9 0 208S93.1 0 208 0S416 93.1 416 208zM208 352a144 144 0 1 0 0-288 144 144 0 1 0 0 288z"/></svg>
                                 </button>
                             </div>
-                            <div class="status" th:text="${member.notifyStatus}">처리중</div>
+                            <div class="status" th:text="${notify.notifyStatus}">처리중</div>
                         </div>
                     </div>
                 </div>

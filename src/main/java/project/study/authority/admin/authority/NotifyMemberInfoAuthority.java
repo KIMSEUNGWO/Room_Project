@@ -8,6 +8,7 @@ public interface NotifyMemberInfoAuthority {
     Page<SearchNotifyDto> searchNotify(String word, int pageNumber, String containComplete);
     Page<SearchNotifyDto> searchNotifyList(int pageNumber, String word, String containComplete);
     SearchNotifyReadMoreDto searchNotifyReadMore(Long notifyId);
+    SearchNotifyReadMoreDtoBatis notifyReedMoreBatis(Long notifyId);
     SearchNotifyMemberInfoDto searchNotifyMemberInfo(String account, Long notifyId);
 
 }

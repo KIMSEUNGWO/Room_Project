@@ -123,6 +123,15 @@
         </if>
     </sql>
 
+    <delete id="joinRoomDelete">
+        delete from join_room j
+        where j.room_id = ${roomId}
+    </delete>
+    
+    <insert id="insertRoomDelete">
+        insert into room_delete values(add_months(sysdate, 1), seq_room_delete_id.nextval, ${roomId})
+    </insert>
+
     <select id="searchNotifyList" resultType="project.study.authority.admin.dto.SearchNotifyDto">
         select * from(
             select
@@ -142,7 +151,9 @@
             left join member m2 on m2.member_id = n.criminal_member_id
             left join basic b2 on m2.member_id = b2.member_id
             left join social s2 on m2.member_id = s2.member_id
-            where n.notify_status='처리중'
+            where 1=1
+            <include refid="searchNotifyWord"></include>
+            <include refid="searchNotifyStatus"></include>
             order by n.notify_date desc)
         where rn between #{startNum} and #{endNum}
     </select>
@@ -157,10 +168,82 @@
         left join member m2 on m2.member_id = n.criminal_member_id
         left join basic b2 on m2.member_id = b2.member_id
         left join social s2 on m2.member_id = s2.member_id
-        where n.notify_status='처리중'
+        where 1=1
+        <include refid="searchNotifyWord"></include>
+        <include refid="searchNotifyStatus"></include>
     </select>
 
+    <sql id="searchNotifyWord">
+        <if test=" word != null and word != ''">
+            and (lower(COALESCE(b.account, s.social_email)) like '%' || lower(#{word}) || '%'
+            or lower(COALESCE(b2.account, s2.social_email)) like '%' || lower(#{word}) || '%'
+            or lower(r.room_id) like '%' || lower(#{word}) || '%')
+        </if>
+    </sql>
 
+    <sql id ="searchNotifyStatus">
+        <if test=" containComplete == 'false' or containComplete == null">
+            and n.notify_status='처리중'
+        </if>
+        <if test=" containComplete == 'true'">
+            and (n.notify_status='처리중' or n.notify_status='처리완료')
+        </if>
+    </sql>
 
+    <select id="notifyReedMore" resultType="project.study.authority.admin.dto.SearchNotifyReadMoreDtoBatis">
+        select
+            COALESCE(b.account, s.social_email) AS reporterMemberAccount,
+            COALESCE(b2.account, s2.social_email) AS criminalMemberAccount,
+            r.room_id as roomId,
+            to_char(n.notify_date, 'yyyy-MM-dd') as notifyDate,
+            n.notify_reason as notifyReason,
+            n.notify_content as notifyContent,
+            n.notify_id as notifyId,
+            n.notify_status as notifyStatus
+        from notify n
+        left join room r on n.room_id = r.room_id
+        left join member m on m.member_id = n.reporter_member_id
+        left join basic b on m.member_id = b.member_id
+        left join social s on m.member_id = s.member_id
+        left join member m2 on m2.member_id = n.criminal_member_id
+        left join basic b2 on m2.member_id = b2.member_id
+        left join social s2 on m2.member_id = s2.member_id
+        where n.notify_id=${notifyId}
+    </select>
+
+    <select id="notifyImage" resultType="project.study.authority.admin.dto.SearchNotifyImageDtoBatis">
+        select
+            notify_image_store_name as notifyImageStoreName,
+            notify_image_original_name as notifyImageOriginalName
+        from notify_image ni
+        join notify n on ni.notify_id = n.notify_id
+        where n.notify_id=${notifyId}
+    </select>
+
+    <update id="notifyStatusChange">
+        update notify n set n.notify_status='처리완료' where n.notify_id=${notifyId}
+    </update>
+
+    <update id="notifyMemberFreeze">
+        update member m
+        set m.member_notify_count = m.member_notify_count+1, m.member_status = '이용정지'
+        where m.member_id = ${memberId}
+    </update>
+
+    <select id="freezeMemberSelect" resultType="Long">
+        select f.member_id
+        from (
+            SELECT member_id
+            FROM freeze
+            WHERE member_id = ${memberId}
+            ORDER BY freeze_end_date DESC
+        ) f
+        WHERE ROWNUM = 1
+
+    </select>
+    
+    <insert id="newFreeze">
+        insert into freeze values(sysdate + ${freezePeriod}, seq_freeze_id.nextval, ${memberId}, ${freezeReason})
+    </insert>
 
 </mapper>

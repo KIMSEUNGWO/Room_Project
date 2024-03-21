@@ -12,6 +12,7 @@ import project.study.authority.admin.OverallAdmin;
 import project.study.authority.admin.ReportAdmin;
 import project.study.authority.admin.dto.*;
 import project.study.domain.Admin;
+import project.study.enums.BanEnum;
 import project.study.service.AdminService;
 
 import java.util.Optional;
@@ -86,48 +87,47 @@ public class AdminRestController {
         OverallAdmin overallAdmin = check.getOverallAdmin(adminId, response);
         Admin admin = adminService.findById(adminId).get();
 
-        Page<SearchRoomDto> page = overallAdmin.searchRoom(word, pageNumber);
+        Page<SearchRoomDto> page = overallAdmin.searchRoomList(pageNumber, word);
 
         return ResponseEntity.ok(page);
     }
-//
-//    @GetMapping("/admin/notify/get")
-//    public ResponseEntity<Page<SearchNotifyDto>> searchNotify(@RequestParam(value = "word", required = false, defaultValue = "") String word,
-//                                                              @RequestParam(defaultValue = "1", value = "page") int pageNumber,
-//                                                              @RequestParam(value = "withComplete", required = false) String containComplete,
-//                                                              @SessionAttribute(name = "adminId", required = false) Long adminId,
-//                                                              HttpServletResponse response){
-//
-//        ReportAdmin reportAdmin = check.getReportAdmin(adminId, response);
-//        Admin admin = adminService.findById(adminId).get();
-//
-//        Page<SearchNotifyDto> page = reportAdmin.searchNotify(word, pageNumber, containComplete);
-//
-//        return ResponseEntity.ok(page);
-//    }
-//
-//    @PostMapping("/admin/notify/status/change")
-//    public void notifyStatusChange(@RequestBody RequestNotifyStatusChangeDto dto,
-//                                   @SessionAttribute(name = "adminId", required = false) Long adminId,
-//                                   HttpServletResponse response){
-//        ReportAdmin reportAdmin = check.getReportAdmin(adminId, response);
-//        reportAdmin.notifyStatusChange(dto);
-//    }
-//
-//    @PostMapping("/admin/notify/member/freeze")
-//    public void notifyMemberFreeze (@RequestBody RequestNotifyMemberFreezeDto dto,
-//                                    @SessionAttribute(name = "adminId", required = false) Long adminId,
-//                                    HttpServletResponse response){
-//        ReportAdmin reportAdmin = check.getReportAdmin(adminId, response);
-//        reportAdmin.notifyMemberFreeze(dto);
-//
-//    }
-//
+
+    @GetMapping("/notify/get")
+    public ResponseEntity<Page<SearchNotifyDto>> searchNotify(@RequestParam(value = "word", required = false, defaultValue = "") String word,
+                                                              @RequestParam(defaultValue = "1", value = "page") int pageNumber,
+                                                              @RequestParam(value = "containComplete", required = false) String containComplete,
+                                                              @SessionAttribute(name = "adminId", required = false) Long adminId,
+                                                              HttpServletResponse response){
+
+        ReportAdmin reportAdmin = check.getReportAdmin(adminId, response);
+
+        Page<SearchNotifyDto> page = reportAdmin.searchNotifyList(pageNumber, word, containComplete);
+
+        return ResponseEntity.ok(page);
+    }
+
+    @PostMapping("/notify/status/change")
+    public void notifyStatusChange(@RequestBody RequestNotifyStatusChangeDto dto,
+                                   @SessionAttribute(name = "adminId", required = false) Long adminId,
+                                   HttpServletResponse response){
+        ReportAdmin reportAdmin = check.getReportAdmin(adminId, response);
+        reportAdmin.notifyComplete(dto);
+    }
+
+    @PostMapping("/notify/member/freeze")
+    public void notifyMemberFreeze (@RequestBody RequestNotifyMemberFreezeDto dto,
+                                    @SessionAttribute(name = "adminId", required = false) Long adminId,
+                                    HttpServletResponse response){
+        ReportAdmin reportAdmin = check.getReportAdmin(adminId, response);
+        reportAdmin.notifyFreeze(dto);
+
+    }
+
     @PostMapping("/room/delete")
     public void deleteRoom(@RequestBody RequestDeleteRoomDto dto,
                            @SessionAttribute(name = "adminId", required = false) Long adminId,
                            HttpServletResponse response){
         OverallAdmin overallAdmin = check.getOverallAdmin(adminId, response);
-        overallAdmin.deleteJoinRoom(dto);
+        overallAdmin.deleteRoom(dto);
     }
 }
