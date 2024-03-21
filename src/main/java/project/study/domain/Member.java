@@ -63,8 +63,8 @@ public class Member implements ImageFileEntity {
     }
     public void changeStatusToExpire() {
         this.memberStatus = 탈퇴;
-//        this.memberExpireDate = LocalDateTime.now().plusDays(WebConst.EXPIRE_PLUS_DAY);
-        this.memberExpireDate = LocalDateTime.now();
+        this.memberExpireDate = LocalDateTime.now().plusDays(WebConst.EXPIRE_PLUS_DAY);
+//        this.memberExpireDate = LocalDateTime.now();
     }
     public void changeStatusToFreeze() {
         this.memberStatus = 이용정지;
@@ -93,7 +93,7 @@ public class Member implements ImageFileEntity {
     public String getStoreImage() {
         if (profile == null) return "";
         if (isExpireMember()) return WebConst.EXPIRE_MEMBER_PROFILE;
-        return profile.getProfileStoreName();
+        return profile.getStoreName();
     }
     @Override
     public void setImage(String originalName, String storeName) {

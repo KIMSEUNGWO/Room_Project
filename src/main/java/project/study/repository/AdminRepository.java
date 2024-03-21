@@ -308,14 +308,14 @@ public class AdminRepository {
 
     public SearchNotifyImageDto searchNotifyImage(Long notifyId){
         List<Tuple> result = queryFactory
-            .select(notifyImage.notifyImageStoreName, notifyImage.notifyImageOriginalName)
+            .select(notifyImage.storeName, notifyImage.originalName)
             .from(notifyImage)
             .leftJoin(notifyImage.notify, notify)
             .where(notify.notifyId.eq(notifyId))
             .fetch();
 
-        List<String> store = result.stream().map(x -> x.get(notifyImage.notifyImageStoreName)).collect(Collectors.toList());
-        List<String> original = result.stream().map(x -> x.get(notifyImage.notifyImageOriginalName)).collect(Collectors.toList());
+        List<String> store = result.stream().map(x -> x.get(notifyImage.storeName)).collect(Collectors.toList());
+        List<String> original = result.stream().map(x -> x.get(notifyImage.originalName)).collect(Collectors.toList());
 
         return new SearchNotifyImageDto(store, original);
     }
@@ -344,7 +344,7 @@ public class AdminRepository {
 
     public String findMemberProfile(String account){
         return queryFactory
-            .select(profile.profileStoreName)
+            .select(profile.storeName)
             .from(profile)
             .leftJoin(profile.member, member)
             .leftJoin(member.basic, basic)

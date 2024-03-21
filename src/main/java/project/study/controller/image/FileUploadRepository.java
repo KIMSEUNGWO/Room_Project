@@ -1,14 +1,12 @@
 package project.study.controller.image;
 
+import jakarta.persistence.EntityManager;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 import project.study.domain.*;
-import project.study.jpaRepository.NotifyImageJpaRepository;
-import project.study.jpaRepository.ProfileJpaRepository;
-import project.study.jpaRepository.RoomImageJpaRepository;
 
 import java.io.File;
 
@@ -22,64 +20,17 @@ public class FileUploadRepository {
 
     @Value("${file.dir}")
     private String fileDir;
-    private final RoomImageJpaRepository roomImageJpaRepository;
-    private final ProfileJpaRepository profileJpaRepository;
-    private final NotifyImageJpaRepository notifyImageJpaRepository;
+    private final EntityManager em;
 
-    public void saveRoomImage(FileUploadDto data) {
-        RoomImage saveRoomImage;
-        if (isDefaultImage(data)) {
-            saveRoomImage = RoomImage.builder()
-                .roomImageOriginalName(DEFAULT_ROOM_IMAGE)
-                .roomImageStoreName(DEFAULT_ROOM_IMAGE)
-                .room((Room) data.getParent())
-                .build();
-        } else {
-            saveRoomImage = RoomImage.builder()
-                .roomImageOriginalName(data.getImageUploadName())
-                .roomImageStoreName(data.getImageStoreName())
-                .room((Room) data.getParent())
-                .build();
-        }
-        roomImageJpaRepository.save(saveRoomImage);
+    public void saveImage(FileUploadDto data, Class<? extends ImageFileEntityChildren> eClass) {
+        ImageFileEntityChildren entity = data.createEntity(eClass);
+        em.persist(entity);
     }
 
-    public void saveProfile(FileUploadDto data) {
-        Profile saveProfile;
-        if (isDefaultImage(data)) {
-            saveProfile = Profile.builder()
-                .profileOriginalName(DEFAULT_PROFILE)
-                .profileStoreName(DEFAULT_PROFILE)
-                .member((Member) data.getParent())
-                .build();
-        } else {
-            saveProfile = Profile.builder()
-                .profileOriginalName(data.getImageUploadName())
-                .profileStoreName(data.getImageStoreName())
-                .member((Member) data.getParent())
-                .build();
-        }
-        profileJpaRepository.save(saveProfile);
-    }
-
-    public void saveNotifyImage(FileUploadDto data) {
-
-        NotifyImage saveNotifyImage = NotifyImage.builder()
-            .notify((Notify) data.getParent())
-            .notifyImageOriginalName(data.getImageUploadName())
-            .notifyImageStoreName(data.getImageStoreName())
-            .build();
-
-        notifyImageJpaRepository.save(saveNotifyImage);
-    }
-
-    private boolean isDefaultImage(FileUploadDto data) {
-        return data.getImageUploadName() == null || data.getImageStoreName() == null;
-    }
 
     public void editProfile(FileUploadDto data) {
         Member member = (Member) data.getParent();
-        if (isDefaultImage(data)) {
+        if (data.isDefaultImage()) {
             member.setImage(DEFAULT_PROFILE, DEFAULT_PROFILE);
         } else {
             member.setImage(data.getImageUploadName(), data.getImageStoreName());
@@ -89,7 +40,7 @@ public class FileUploadRepository {
     public void editRoomImage(FileUploadDto data) {
         Room room = (Room) data.getParent();
 
-        if (isDefaultImage(data)) {
+        if (data.isDefaultImage()) {
             room.setImage(DEFAULT_ROOM_IMAGE, DEFAULT_ROOM_IMAGE);
         } else {
             room.setImage(data.getImageUploadName(), data.getImageStoreName());

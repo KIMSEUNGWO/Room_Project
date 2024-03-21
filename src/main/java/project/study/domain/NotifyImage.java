@@ -5,13 +5,11 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.NoArgsConstructor;
 
-@AllArgsConstructor
 @NoArgsConstructor
-@Builder
 @Entity
 @Table(name = "NOTIFY_IMAGE")
 @SequenceGenerator(name = "SEQ_NOTIFY_IMAGE", sequenceName = "SEQ_NOTIFY_IMAGE_ID", allocationSize = 1)
-public class NotifyImage {
+public class NotifyImage extends ImageFileEntityChildren {
 
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "SEQ_NOTIFY_IMAGE")
@@ -21,6 +19,9 @@ public class NotifyImage {
     @JoinColumn(name = "NOTIFY_ID")
     private Notify notify;
 
-    private String notifyImageOriginalName;
-    private String notifyImageStoreName;
+    public NotifyImage(Notify notify, String originalName, String storeName) {
+        super(originalName, storeName);
+        this.notify = notify;
+    }
+
 }

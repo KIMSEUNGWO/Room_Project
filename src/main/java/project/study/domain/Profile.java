@@ -1,18 +1,13 @@
 package project.study.domain;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-@Builder
-@AllArgsConstructor
-@NoArgsConstructor
 @Entity
+@NoArgsConstructor
 @Table(name = "PROFILE")
 @SequenceGenerator(name = "SEQ_PROFILE", sequenceName = "SEQ_PROFILE_ID", allocationSize = 1)
-public class Profile implements ImageFileEntityChildren {
+public class Profile extends ImageFileEntityChildren {
 
     @Id @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "SEQ_PROFILE")
     private Long profileId;
@@ -21,13 +16,8 @@ public class Profile implements ImageFileEntityChildren {
     @JoinColumn(name = "MEMBER_ID")
     private Member member;
 
-    private String profileOriginalName;
-    @Getter
-    private String profileStoreName;
-
-    @Override
-    public void setImage(String originalName, String storeName) {
-        this.profileOriginalName = originalName;
-        this.profileStoreName = storeName;
+    public Profile(Member member, String originalName, String storeName) {
+        super(originalName, storeName);
+        this.member = member;
     }
 }
