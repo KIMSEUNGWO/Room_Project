@@ -7,5 +7,7 @@ import project.study.enums.BanEnum;
 public interface BanAuthority {
 
     void notifyStatusChange(RequestNotifyStatusChangeDto dto);
+    void notifyComplete(RequestNotifyStatusChangeDto dto);
     void notifyMemberFreeze(RequestNotifyMemberFreezeDto dto);
+    void notifyFreeze(RequestNotifyMemberFreezeDto dto);
 }

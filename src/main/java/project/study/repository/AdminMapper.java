@@ -3,10 +3,7 @@ package project.study.repository;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 import org.springframework.security.core.parameters.P;
-import project.study.authority.admin.dto.SearchExpireMemberDto;
-import project.study.authority.admin.dto.SearchMemberDto;
-import project.study.authority.admin.dto.SearchNotifyDto;
-import project.study.authority.admin.dto.SearchRoomDto;
+import project.study.authority.admin.dto.*;
 
 import java.util.List;
 
@@ -22,7 +19,16 @@ public interface AdminMapper {
     List<SearchRoomDto> searchRoomList(@Param("startNum") int startNum, @Param("endNum") int endNum, @Param("word") String word);
     int getTotalRoomCnt(String word);
 
+    void joinRoomDelete(RequestDeleteRoomDto dto);
+    void insertRoomDelete(RequestDeleteRoomDto dto);
+
     List<SearchNotifyDto> searchNotifyList(@Param("startNum") int startNum, @Param("endNum") int endNum, @Param("word") String word, @Param("containComplete") String containComplete);
     int getTotalNotifyCnt(@Param("word") String word, @Param("containComplete") String containComplete);
 
+    SearchNotifyReadMoreDtoBatis notifyReedMore(Long notifyId);
+    List<SearchNotifyImageDtoBatis> notifyImage(Long notifyId);
+    void notifyStatusChange(RequestNotifyStatusChangeDto dto);
+    void notifyMemberFreeze(Long memberId);
+    Long freezeMemberSelect(Long memberId);
+    void newFreeze(RequestNotifyMemberFreezeDto dto);
 }

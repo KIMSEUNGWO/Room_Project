@@ -5,9 +5,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="/css/common.css">
     <link rel="stylesheet" href="/css/notify_read_more.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
     <script src="/js/admin_read_more.js"></script>
     <script src="/js/admin_notify.js"></script>
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
     <title>신고 자세히 보기</title>
 </head>
 <body>
@@ -31,7 +31,7 @@
             </div>
             <div class="notify-box">
                 <div class="title-notify-reason">신고 사유</div>
-                <input type="text" name="notify-reason" id="notify-reason" class="notify-reason" th:value="${notifyInfo.notifyReason}" readonly>
+                <input type="text" name="notify-reason" id="notify-reason" class="notify-reason" th:value="${notifyInfo.notifyReason.getNotifyType()}" readonly>
             </div>
             <div class="notify-box">
                 <div class="title-notify-content">신고 내용</div>
@@ -39,37 +39,29 @@
             </div>
             <div class="notify-box">
                 <div class="title-notify-image">첨부파일</div>
-                <th:block th:if="${!notifyInfo.notifyImageOriginalName.isEmpty()}">
-                    <div class="notify-image-box">
-                        <div class="notify-image" th:each="notifyImage, notifyIndex : ${notifyInfo.notifyImageOriginalName}">
-                            <div class="notify-image-name" th:text="${notifyImage}"></div>
-                            <a th:href="|/images/notify_image/${notifyInfo.notifyImageStoreName[__${notifyIndex.index}__]}|" target="_blank">
-                                <img th:src="|/images/notify_image/${notifyInfo.notifyImageStoreName[__${notifyIndex.index}__]}|" alt="" width="100" height="100">
+                    <div class="notify-image-box" th:if="${!notifyInfo.notifyImages.isEmpty()}">
+                        <div class="notify-image" th:each="notifyImage, notifyIndex : ${notifyInfo.notifyImages}">
+                            <div class="notify-image-name" th:text="${notifyImage.notifyImageOriginalName}"></div>
+                            <a class="imagePop" th:href="'/images/notify_image/'+ ${notifyImage.notifyImageStoreName}" target="_blank">
+                                <img th:src="'/images/notify_image/' +${notifyImage.notifyImageStoreName}" alt="" width="100" height="100">
                             </a>
                         </div>
                     </div>
-                </th:block>
-                <th:block th:if="${notifyInfo.notifyImageOriginalName.isEmpty()}">
-                    <div class="notify-image-box">
-                        <div class="notify-image" th:each="notifyImage, notifyIndex : ${notifyInfo.notifyImageOriginalName}">
-                            <div class="notify-image-name" th:text="이미지 없음"></div>
+                    <div class="notify-image-box" th:if="${notifyInfo.notifyImages.isEmpty()}">
+                        <div class="notify-image">
+                            <div class="notify-image-name">이미지 없음</div>
                         </div>
                     </div>
-                </th:block>
             </div>
         <hr>
-            <th:block th:if="${#strings.equals(notifyInfo.notifyStatus, '처리완료')}">
-                <div class="process-box">
-                    <div class="title-process-status">처리 상태</div>
-                    <input type="text" name="process-status" id="process-status" class="process-status" th:value="${notifyInfo.notifyStatus}">
-                </div>
-            </th:block>
-            <th:block th:if="${!#strings.equals(notifyInfo.notifyStatus, '처리완료')}">
-                <div class="process-box">
-                    <div class="title-process-status">처리 상태</div>
-                    <input type="text" name="process-status" id="process-status" class="process-status" placeholder="완료버튼을 누르면 처리완료로 변경됩니다" readonly>
-                </div>
-            </th:block>
+            <div class="process-box" th:if="${#strings.equals(notifyInfo.notifyStatus, '처리완료')}">
+                <div class="title-process-status">처리 상태</div>
+                <input type="text" name="process-status" id="process-status" class="process-status" th:value="${notifyInfo.notifyStatus}">
+            </div>
+            <div class="process-box" th:if="${!#strings.equals(notifyInfo.notifyStatus, '처리완료')}">
+                <div class="title-process-status">처리 상태</div>
+                <input type="text" name="process-status" id="process-status" class="process-status" placeholder="완료버튼을 누르면 처리완료로 변경됩니다" readonly>
+            </div>
         </div>
         <div class="button-box">
             <div class="button">

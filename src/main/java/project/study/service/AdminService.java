@@ -10,11 +10,13 @@ import org.springframework.transaction.annotation.Transactional;
 import project.study.authority.admin.dto.*;
 import project.study.domain.*;
 import project.study.dto.admin.Criteria;
+import project.study.enums.BanEnum;
 import project.study.enums.NotifyStatus;
 import project.study.jpaRepository.AdminJpaRepository;
 import project.study.repository.AdminMapper;
 import project.study.repository.AdminRepository;
 import project.study.repository.FreezeRepository;
+import retrofit2.http.PUT;
 
 import java.util.List;
 import java.util.Optional;
@@ -45,9 +47,38 @@ public class AdminService {
         return new PageImpl<>(data, criteria.getPageable(pageNumber), adminMapper.getTotalRoomCnt(word));
     }
 
+    @Transactional
+    public void roomDelete(RequestDeleteRoomDto dto){
+        adminMapper.joinRoomDelete(dto);
+        adminMapper.insertRoomDelete(dto);
+    }
+
     public Page<SearchNotifyDto> searchNotifyList(int pageNumber, String word, String containComplete){
         List<SearchNotifyDto> data = adminMapper.searchNotifyList(criteria.getStartNum(pageNumber), criteria.getEndNum(pageNumber), word, containComplete);
         return new PageImpl<>(data, criteria.getPageable(pageNumber), adminMapper.getTotalNotifyCnt(word, containComplete));
+    }
+
+    public SearchNotifyReadMoreDtoBatis notifyReedMoreBatis(Long notifyId){
+        SearchNotifyReadMoreDtoBatis searchNotifyReadMoreDtoBatis = adminMapper.notifyReedMore(notifyId);
+        List<SearchNotifyImageDtoBatis> searchNotifyImageDtoBatis = adminMapper.notifyImage(notifyId);
+
+        searchNotifyReadMoreDtoBatis.setNotifyImages(searchNotifyImageDtoBatis);
+        return searchNotifyReadMoreDtoBatis;
+    }
+
+    @Transactional
+    public void notifyComplete(RequestNotifyStatusChangeDto dto){
+        adminMapper.notifyStatusChange(dto);
+    }
+
+    @Transactional
+    public void notifyFreeze(RequestNotifyMemberFreezeDto dto){
+        adminMapper.notifyMemberFreeze(dto.getMemberId());
+        Long select = adminMapper.freezeMemberSelect(dto.getMemberId());
+        if(select==null){
+            int banEnum = dto.getFreezePeriod().getBanEnum();
+            adminMapper.newFreeze(dto);
+        }
     }
 
     @Transactional
@@ -91,7 +122,7 @@ public class AdminService {
         SearchNotifyReadMoreDto readMore = adminRepository.searchNotifyReadMore(notifyId);
         SearchNotifyImageDto notifyImage = adminRepository.searchNotifyImage(notifyId);
 
-        readMore.serImage(notifyImage);
+        readMore.setImage(notifyImage);
 
         return readMore;
     }

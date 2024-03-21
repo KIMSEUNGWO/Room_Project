@@ -1,9 +1,11 @@
 package project.study.enums;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
 @Getter
+@JsonFormat(shape = JsonFormat.Shape.OBJECT)
 @AllArgsConstructor
 public enum NotifyType {
 
@@ -15,10 +17,5 @@ public enum NotifyType {
     TYPE6("기타");
 
     private String notifyType;
-
-    public String getNotifyType() {
-        return notifyType;
-    }
-
 
 }

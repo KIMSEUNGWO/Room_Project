@@ -52,9 +52,21 @@ hr {
     height: 2rem;
 }
 
+.adminProcces > select {
+    margin-left: 1rem;
+    font-size: 0.9rem;
+    background-color: rgb(26, 31, 40);
+    width: 15rem;
+}
+
+.adminProcces > select > option {
+    text-align: center;
+}
+
 .adminProcces > input {
     margin-left: 1rem;
-    font-size: 1rem;
+    font-size: 0.9rem;
+    width: 15rem;
 }
 
 .button-box {

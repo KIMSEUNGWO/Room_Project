@@ -28,4 +28,9 @@ public class RoomInfoAuthorityImpl implements RoomInfoAuthority{
         adminService.deleteRoom(dto);
     }
 
+    @Override
+    public void deleteRoom(RequestDeleteRoomDto dto) {
+        adminService.roomDelete(dto);
+    }
+
 }

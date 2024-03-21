@@ -1,33 +1,28 @@
-window.addEventListener('load', function(){
-
-    let cancelBtn = document.querySelector('.cancelBtn');
-
-    cancelBtn.addEventListener('click', function(){
+$(function(){
+  
+    $('.cancelBtn').on('click', function(){
         close();
     });
-
+  
     processComplete();
+
 });
 
-function processComplete(){
-    
-    let completeBtn = document.querySelector('.completeBtn');
 
-    completeBtn.addEventListener('click', function(){
-        let notifyId = parseInt(document.querySelector('.notify-number').value);
+function processComplete() {
+    $('.completeBtn').on('click', function() {
+        var notifyId = parseInt($('.notify-number').val());
 
         $.ajax({
-            url : '/admin/notify/status/change',
-            type : 'POST',
-            contentType : 'application/json',
-            data : JSON.stringify({notifyId : notifyId}),
-            success : function(){
+            url: '/admin/notify/status/change',
+            type: 'POST',
+            contentType: 'application/json',
+            data: JSON.stringify({ notifyId: notifyId }),
+            success: function() {
                 close();
                 window.opener.location.reload();
-
             }
         });
     });
 };
-
 

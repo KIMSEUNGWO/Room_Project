@@ -49,4 +49,9 @@ public class OverallAdmin implements ExpireMemberInfoAuthority, MemberInfoAuthor
         roomInfoAuthority.deleteJoinRoom(dto);
     }
 
+    @Override
+    public void deleteRoom(RequestDeleteRoomDto dto) {
+        roomInfoAuthority.deleteRoom(dto);
+    }
+
 }

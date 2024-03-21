@@ -1,8 +1,6 @@
-window.addEventListener('click', function(){
+$(function(){
 
-    let cancelBtn = document.querySelector('.cancelBtn');
-
-    cancelBtn.addEventListener('click', function(){
+    $('.cancelBtn').on('click', function(){
         close();
     });
 
@@ -11,13 +9,11 @@ window.addEventListener('click', function(){
 
 function memberFreeze(){
 
-    let freezeBtn = document.querySelector('.freezeBtn');
+    $('.freezeBtn').on('click', function(){
 
-    freezeBtn.addEventListener('click', function(){
-
-        let memberId = parseInt(document.querySelector('#memberId').value);
-        let freezePeriod = parseInt(document.querySelector('#freezePeriod').value);
-        let freezeReason = document.querySelector('#freezeReason').value;
+        var memberId = parseInt($('#memberId').val());
+        var freezePeriod = $('#freezePeriod').val();
+        var freezeReason = $('#freezeReason').val();
 
         $.ajax({
             url : '/admin/notify/member/freeze',
@@ -30,4 +26,4 @@ function memberFreeze(){
             }
         });
     });
-}
+};

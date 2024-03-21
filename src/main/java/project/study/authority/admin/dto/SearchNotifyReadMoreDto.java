@@ -18,7 +18,7 @@ public class SearchNotifyReadMoreDto {
     private String criminalMemberAccount;
     private Long roomId;
     private String notifyDate;
-    private String notifyReason;
+    private NotifyType notifyReason;
     private String notifyContent;
     private Long notifyId;
     private NotifyStatus notifyStatus;
@@ -33,13 +33,13 @@ public class SearchNotifyReadMoreDto {
         this.criminalMemberAccount = criminalMemberAccount;
         this.roomId = roomId;
         this.notifyDate = notifyDate;
-        this.notifyReason = notifyReason.getNotifyType();
+        this.notifyReason = notifyReason;
         this.notifyContent = notifyContent;
         this.notifyId = notifyId;
         this.notifyStatus = notifyStatus;
     }
 
-    public void serImage(SearchNotifyImageDto notifyImage) {
+    public void setImage(SearchNotifyImageDto notifyImage) {
         this.notifyImageOriginalName = notifyImage.getNotifyImageOriginalName();
         this.notifyImageStoreName = notifyImage.getNotifyImageStoreName();
     }

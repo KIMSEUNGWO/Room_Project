@@ -97,7 +97,6 @@ public class AdminController {
                                @SessionAttribute(name = "adminId", required = false) Long adminId,
                                HttpServletResponse response, Model model){
 
-        long startTime = System.currentTimeMillis();
         ReportAdmin reportAdmin = check.getReportAdmin(adminId, response);
         Admin admin = adminService.findById(adminId).get();
 
@@ -109,8 +108,6 @@ public class AdminController {
         model.addAttribute("adminName", admin.getName());
         model.addAttribute("adminEnum", admin.getAdminEnum());
 
-        long endTime = System.currentTimeMillis();
-        System.out.println("걸린시간 : " + (endTime - startTime) + "ms");
         return "admin/admin_notify";
     }
 
@@ -121,8 +118,8 @@ public class AdminController {
                                  HttpServletResponse response){
         ReportAdmin reportAdmin = check.getReportAdmin(adminId, response);
 
-        SearchNotifyReadMoreDto searchNotifyReadMoreDto = reportAdmin.searchNotifyReadMore(notifyId);
-        model.addAttribute("notifyInfo", searchNotifyReadMoreDto);
+        SearchNotifyReadMoreDtoBatis searchNotifyReadMoreDtoBatis = reportAdmin.notifyReedMoreBatis(notifyId);
+        model.addAttribute("notifyInfo", searchNotifyReadMoreDtoBatis);
         return "admin/notify_read_more";
     }
 
