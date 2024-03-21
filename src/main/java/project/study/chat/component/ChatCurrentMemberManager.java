@@ -26,8 +26,10 @@ public class ChatCurrentMemberManager {
     }
     public void minus(Long roomId, Long memberId) {
         List<Long> memberList = currentChatMember.get(roomId);
-        memberList.remove(memberId);
         memberNicknameMap.remove(memberId);
+
+        if (memberList == null) return;
+        memberList.remove(memberId);
 
         if (memberList.isEmpty()) {
             currentChatMember.remove(roomId);
@@ -38,7 +40,7 @@ public class ChatCurrentMemberManager {
         System.out.println("currentChatMember = " + currentChatMember.get(roomId));
 
         List<Long> memberList = currentChatMember.get(roomId);
-        List<String> nicknameList = new ArrayList<>(memberList.size());
+        List<String> nicknameList = new ArrayList<>();
         for (Long memberId : memberList) {
             nicknameList.add(memberNicknameMap.get(memberId));
         }
@@ -49,5 +51,10 @@ public class ChatCurrentMemberManager {
         List<Long> memberList = currentChatMember.get(roomId);
         if (!memberList.contains(memberId)) return null;
         return roomId;
+    }
+
+    public boolean containsInRoom(Long roomId, Long memberId) {
+        List<Long> chatMemberList = currentChatMember.getOrDefault(roomId, new ArrayList<>());
+        return chatMemberList.contains(memberId);
     }
 }

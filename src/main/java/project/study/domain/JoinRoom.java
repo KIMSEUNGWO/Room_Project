@@ -38,6 +38,7 @@ public class JoinRoom {
     }
 
     public boolean isManager() {
+        System.out.println("authorityEnum = " + authorityEnum);
         return this.authorityEnum.isManager();
     }
 

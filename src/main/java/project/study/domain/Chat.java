@@ -1,10 +1,10 @@
-package project.study.chat.domain;
+package project.study.domain;
 
 import jakarta.persistence.*;
 import lombok.*;
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
 import project.study.constant.WebConst;
-import project.study.domain.Member;
-import project.study.domain.Room;
 
 import java.time.LocalDateTime;
 
@@ -25,6 +25,7 @@ public class Chat {
     private Room room;
 
     @ManyToOne
+    @OnDelete(action = OnDeleteAction.SET_NULL)
     @JoinColumn(name = "MEMBER_ID")
     private Member sendMember;
 
@@ -35,19 +36,19 @@ public class Chat {
     @Getter
     public static class ResponseChatHistory {
 
-        private Long token;
-        private String sender;
-        private String senderImage;
-        private String message;
-        private LocalDateTime time;
+        private final boolean isMe;
+        private final String sender;
+        private final String senderImage;
+        private final String message;
+        private final LocalDateTime time;
 
-        public ResponseChatHistory(Member sendMember, String message, LocalDateTime sendDate) {
+        public ResponseChatHistory(Member sendMember, String message, LocalDateTime sendDate, Long memberId) {
             if (sendMember == null) {
-                this.token = 0L;
+                this.isMe = false;
                 this.sender = "탈퇴한 사용자";
                 this.senderImage = WebConst.EXPIRE_MEMBER_PROFILE;
             } else {
-                this.token = sendMember.getMemberId();
+                this.isMe = sendMember.getMemberId().equals(memberId);
                 this.sender = sendMember.getMemberNickname();
                 this.senderImage = sendMember.getStoreImage();
             }
@@ -56,7 +57,7 @@ public class Chat {
         }
 
     }
-    public ResponseChatHistory getResponseChatHistory() {
-        return new ResponseChatHistory(sendMember, message, sendDate);
+    public ResponseChatHistory getResponseChatHistory(Long memberId) {
+        return new ResponseChatHistory(sendMember, message, sendDate, memberId);
     }
 }

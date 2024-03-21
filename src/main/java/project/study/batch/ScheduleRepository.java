@@ -1,23 +1,17 @@
 package project.study.batch;
 
-import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 import project.study.chat.jparepository.ChatJpaRepository;
 import project.study.controller.image.FileTypeConverter;
-import project.study.controller.image.FileUpload;
 import project.study.controller.image.FileUploadType;
 import project.study.domain.*;
-import project.study.enums.MemberStatusEnum;
 import project.study.enums.NotifyStatus;
 import project.study.jpaRepository.*;
 import project.study.service.JoinRoomService;
 
-import java.util.List;
-
-import static project.study.domain.QNotify.*;
 
 @Repository
 @RequiredArgsConstructor
@@ -42,9 +36,8 @@ public class ScheduleRepository {
     private final RoomDeleteJpaRepository roomDeleteJpaRepository;
     private final ChatJpaRepository chatJpaRepository;
     private final RoomJpaRepository roomJpaRepository;
-
+    private final NotifyJpaRepository notifyJpaRepository;
     private final JoinRoomService joinRoomService;
-    private final JPAQueryFactory query;
 
     public void deleteJoinRoom(Member member) {
         member.getJoinRoomList().iterator().forEachRemaining(joinRoomService::exitRoom);
@@ -52,49 +45,49 @@ public class ScheduleRepository {
 
     public void deleteAccount(Member member) {
         if (member.isBasicMember()) {
-            basicJpaRepository.delete(member.getBasic());
+            basicJpaRepository.deleteByMember(member);
         }
         if (member.isSocialMember()) {
-            socialTokenJpaRepository.delete(member.getSocial().getToken());
-            socialJpaRepository.delete(member.getSocial());
+            socialTokenJpaRepository.deleteBySocial(member.getSocial());
+            socialJpaRepository.deleteByMember(member);
         }
     }
 
     public void deleteFreeze(Member member) {
-        freezeJpaRepository.deleteAll(member.getFreeze());
+        freezeJpaRepository.deleteAllByMember(member);
     }
 
     public void deleteMember(Member member) {
         fileTypeConverter.deleteFile(FileUploadType.MEMBER_PROFILE, member);
-        profileJpaRepository.delete(member.getProfile());
+        profileJpaRepository.deleteByMember(member);
         memberJpaRepository.delete(member);
     }
 
     public boolean hasNotifyAsCriminal(Member member) {
-        return !query.select(notify.notifyId)
-                .from(notify)
-                .join(QMember.member, notify.criminal)
-                .where(notify.criminal.eq(member).and(notify.notifyStatus.eq(NotifyStatus.처리중)))
-                .fetch().isEmpty();
+        return notifyJpaRepository.existsByCriminalAndNotifyStatus(member, NotifyStatus.처리중);
     }
 
     public void deleteRoom(RoomDelete roomDelete) {
         Room room = roomDelete.getRoom();
 
         if (room.hasNotice()) {
-            roomNoticeJpaRepository.delete(room.getRoomNotice());
+            roomNoticeJpaRepository.deleteAllByRoom(room);
         }
         if (room.hasRoomPassword()) {
-            roomPasswordJpaRepository.delete(room.getRoomPassword());
+            roomPasswordJpaRepository.deleteByRoom(room);
         }
         fileTypeConverter.deleteFile(FileUploadType.ROOM_PROFILE, room);
-        roomImageJpaRepository.delete(room.getRoomImage());
+        roomImageJpaRepository.deleteByRoom(room);
 
-        tagJpaRepository.deleteAll(room.getTags());
+        tagJpaRepository.deleteAllByRoom(room);
         roomDeleteJpaRepository.delete(roomDelete);
 
-        chatJpaRepository.deleteAll(room.getChatHistory());
+        chatJpaRepository.deleteAllByRoom(room);
 
         roomJpaRepository.delete(room);
+    }
+
+    public void deleteNotify(Member member) {
+        notifyJpaRepository.deleteAllByCriminal(member);
     }
 }

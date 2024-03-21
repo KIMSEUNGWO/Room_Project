@@ -3,8 +3,9 @@ package project.study.domain;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
-import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
 import project.study.enums.NotifyStatus;
 import project.study.enums.NotifyType;
 
@@ -24,6 +25,7 @@ public class Notify implements ImageFileEntity {
     private Long notifyId;
 
     @ManyToOne(fetch = FetchType.LAZY)
+    @OnDelete(action = OnDeleteAction.SET_NULL)
     @JoinColumn(name = "REPORTER_MEMBER_ID")  // reporter 필드에 대한 컬럼명 변경
     private Member reporter;
 
@@ -32,6 +34,7 @@ public class Notify implements ImageFileEntity {
     private Member criminal;
 
     @ManyToOne(fetch = FetchType.LAZY)
+    @OnDelete(action = OnDeleteAction.SET_NULL)
     @JoinColumn(name = "ROOM_ID")
     private Room room;
 

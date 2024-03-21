@@ -11,6 +11,7 @@ import project.study.dto.abstractentity.ResponseDto;
 import project.study.dto.mypage.RequestChangePasswordDto;
 import project.study.dto.mypage.RequestDeleteMemberDto;
 import project.study.dto.mypage.RequestEditInfoDto;
+import project.study.service.JoinRoomService;
 import project.study.service.MypageService;
 
 @RestController
@@ -19,6 +20,7 @@ import project.study.service.MypageService;
 public class MypageController {
 
     private final MypageService mypageService;
+    private final JoinRoomService joinRoomService;
 
     @PostMapping("/member/editInfo")
     public ResponseEntity<ResponseDto> editInfo(@SessionLogin(required = true, type = CallType.REST_CONTROLLER) Member member,
@@ -31,6 +33,7 @@ public class MypageController {
     public ResponseEntity<ResponseDto> deleteMember(@SessionLogin(required = true, type = CallType.REST_CONTROLLER) Member member,
                                                     @RequestBody RequestDeleteMemberDto data) {
         mypageService.deleteMember(member, data);
+        member.getJoinRoomList().iterator().forEachRemaining(joinRoomService::exitRoom);
         return ResponseEntity.ok(new ResponseDto("탈퇴가 완료되었습니다."));
     }
 

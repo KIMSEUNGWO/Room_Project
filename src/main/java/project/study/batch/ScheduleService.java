@@ -9,7 +9,6 @@ import project.study.domain.RoomDelete;
 import project.study.enums.MemberStatusEnum;
 import project.study.jpaRepository.MemberJpaRepository;
 import project.study.jpaRepository.RoomDeleteJpaRepository;
-import project.study.jpaRepository.RoomJpaRepository;
 
 import java.util.List;
 
@@ -26,6 +25,10 @@ public class ScheduleService {
     @Transactional
     public void deleteExpireMember() {
         List<Member> expireMemberList = memberJpaRepository.findAllByMemberStatus(MemberStatusEnum.탈퇴);
+        if (expireMemberList.isEmpty()) {
+            log.info("탈퇴예정 회원 없음");
+            return;
+        }
 
         for (Member member : expireMemberList) {
             if (!member.isOutOfExpireDate()) continue;
@@ -40,12 +43,14 @@ public class ScheduleService {
             scheduleRepository.deleteJoinRoom(member);
             scheduleRepository.deleteAccount(member);
             scheduleRepository.deleteFreeze(member);
+            scheduleRepository.deleteNotify(member);
             scheduleRepository.deleteMember(member);
             log.info("탈퇴완료 닉네임 : {}", nickname);
 
         }
     }
 
+    @Transactional
     public void deleteRoom() {
         List<RoomDelete> roomDeleteList = roomDeleteJpaRepository.findAll();
 

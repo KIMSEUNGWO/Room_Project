@@ -21,7 +21,6 @@ import project.study.authority.member.dto.RequestKickDto;
 import project.study.chat.component.ChatAccessToken;
 import project.study.chat.component.ChatManager;
 import project.study.chat.dto.*;
-import project.study.customAnnotation.CallType;
 import project.study.customAnnotation.PathRoom;
 import project.study.customAnnotation.SessionLogin;
 import project.study.domain.Member;
@@ -33,7 +32,6 @@ import project.study.service.JoinRoomService;
 import project.study.service.RoomService;
 
 import java.time.LocalDateTime;
-import java.util.Collection;
 import java.util.Optional;
 
 import static project.study.chat.MessageType.ENTRUST;
@@ -51,11 +49,14 @@ public class ChatController {
     private final MemberAuthorizationCheck authorizationCheck;
     private final RoomService roomService;
     private final ChatAccessToken chatAccessToken;
+    private final ChatManager chatManager;
     private final JoinRoomService joinRoomService;
 
 
+    @ResponseBody
     @GetMapping("/room/{room}/access")
     public ResponseEntity<ResponseDto> accessToken(@SessionLogin Member member, @PathRoom("room") Room room) {
+        System.out.println("accessToken 실행");
         boolean exitsByMemberAndRoom = joinRoomService.exitsByMemberAndRoom(member == null ? null : member.getMemberId(), room);
         if (!exitsByMemberAndRoom) throw new RestFulException(new ResponseDto(ERROR, "권한 없음"));
 
@@ -113,7 +114,8 @@ public class ChatController {
         Member member = (Member) headerAccessor.getSessionAttributes().get("member");
         Long roomId = (Long) headerAccessor.getSessionAttributes().get("roomId");
         Optional<Room> findRoom = roomService.findById(roomId);
-        if (findRoom.isEmpty()) return;
+        boolean checkJoinRoom = chatAccessToken.hasJoinRoom(chat);
+        if (findRoom.isEmpty() || !checkJoinRoom) return;
         Room room = findRoom.get();
 
         chat.setSenderImage(member.getStoreImage());
@@ -138,7 +140,6 @@ public class ChatController {
 
         chatService.accessRemove(member, room.getRoomId());
 
-        templateSendMessage(room.getRoomId(), chatService.exitRoom(member, room));
         return ResponseEntity.ok(new ResponseDto("방 탈퇴 완료"));
     }
 
@@ -156,7 +157,7 @@ public class ChatController {
 
         chatService.accessRemove(kickMember, room.getRoomId());
 
-        ChatDto kick = ChatManager.sendMessageChatDto(kickMember, room, KICK, kickMember.getMemberNickname() + "님이 강퇴당했습니다.");
+        ChatDto kick = chatManager.sendMessageChatDto(kickMember, room, KICK, kickMember.getMemberNickname() + "님이 강퇴당했습니다.");
         templateSendMessage(room.getRoomId(), kick);
 
         return ResponseEntity.ok(new ResponseDto("성공"));
@@ -171,7 +172,7 @@ public class ChatController {
         ManagerAuthority managerMember = authorizationCheck.getManagerAuthority(response, member, room);
         Member nextManager = managerMember.managerEntrust(member, room, data);
 
-        ChatDto chat = ChatManager.sendMessageChatDto(nextManager, room, ENTRUST, nextManager.getMemberNickname() + "님이 방장이 되셨습니다.");
+        ChatDto chat = chatManager.sendMessageChatDto(nextManager, room, ENTRUST, nextManager.getMemberNickname() + "님이 방장이 되셨습니다.");
 
         templateSendMessage(room.getRoomId(), chat);
         return ResponseEntity.ok(new ResponseDto("성공"));
@@ -187,7 +188,7 @@ public class ChatController {
 
         RoomNotice.ResponseRoomNotice roomNotice = managerMember.uploadNotice(room, data);
 
-        ChatDto chat = ChatManager.sendMessageChatDto(member, room, MessageType.NOTICE, "공지사항이 등록되었습니다.");
+        ChatDto chat = chatManager.sendMessageChatDto(member, room, MessageType.NOTICE, "공지사항이 등록되었습니다.");
 
         templateSendMessage(room.getRoomId(), new ChatObject<>(chat, roomNotice));
         return ResponseEntity.ok(new ResponseDto("성공"));
@@ -207,7 +208,7 @@ public class ChatController {
 
         managerMember.deleteNotice(room);
 
-        ChatDto chat = ChatManager.sendMessageChatDto(member, room, MessageType.NOTICE, "공지사항이 삭제되었습니다.");
+        ChatDto chat = chatManager.sendMessageChatDto(member, room, MessageType.NOTICE, "공지사항이 삭제되었습니다.");
 
         templateSendMessage(room.getRoomId(), chat);
 
@@ -232,7 +233,7 @@ public class ChatController {
 
         log.info("headAccessor {}", headerAccessor);
 
-        ChatDto chat = ChatManager.sendMessageChatDto(member, room, MessageType.LEAVE, member.getMemberNickname() + "님이 채팅방에서 나가셨습니다.");
+        ChatDto chat = chatManager.sendMessageChatDto(member, room, MessageType.LEAVE, member.getMemberNickname() + "님이 채팅방에서 나가셨습니다.");
 
         templateSendMessage(room.getRoomId(), chatService.changeToMemberListDto(chat));
     }
