@@ -97,7 +97,7 @@ public class RoomRepository {
 
         return query.select(Projections.fields(ResponseRoomMemberList.class,
                     m.memberId.as("memberId"),
-                    p.profileStoreName.as("image"),
+                    p.storeName.as("image"),
                     m.memberNickname.as("name"),
                     m.eq(member).as("isMe"),
                     isManager(j.authorityEnum).as("isManager")
@@ -120,7 +120,7 @@ public class RoomRepository {
 
         return query
             .select(Projections.fields(ResponseEditRoomForm.class,
-                ri.roomImageStoreName.as("image"),
+                ri.storeName.as("image"),
                 r.roomTitle.as("title"),
                 r.roomIntro.as("intro"),
                 r.roomLimit.as("max"),
@@ -172,8 +172,8 @@ public class RoomRepository {
     public void moveToDeleteRoom(Room room) {
         RoomDelete saveRoomDelete = RoomDelete.builder()
             .room(room)
-//            .roomDeleteDate(LocalDateTime.now().plusMonths(1))
-            .roomDeleteDate(LocalDateTime.now())
+            .roomDeleteDate(LocalDateTime.now().plusMonths(1))
+//            .roomDeleteDate(LocalDateTime.now())
             .build();
 
         roomDeleteJpaRepository.save(saveRoomDelete);

@@ -95,7 +95,7 @@ public class Room implements ImageFileEntity {
     @Override
     public String getStoreImage() {
         if (roomImage == null) return "";
-        return roomImage.getRoomImageStoreName();
+        return roomImage.getStoreName();
     }
 
     public ResponseRoomListDto getResponseRoomListDto(Long memberId) {
