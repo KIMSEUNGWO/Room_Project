@@ -28,6 +28,6 @@ public class RoomDelete {
     private LocalDateTime roomDeleteDate;
 
     public boolean isOutOfExpireDate() {
-        return roomDeleteDate.isAfter(LocalDateTime.now());
+        return roomDeleteDate.isBefore(LocalDateTime.now());
     }
 }

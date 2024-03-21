@@ -8,7 +8,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import project.study.authority.member.dto.RequestEditRoomDto;
 import project.study.authority.member.dto.ResponseRoomListDto;
-import project.study.chat.domain.Chat;
 import project.study.constant.WebConst;
 import project.study.domain.JoinRoom;
 import project.study.domain.Member;

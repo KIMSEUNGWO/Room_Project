@@ -4,13 +4,9 @@ import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Repository;
-import project.study.chat.domain.Chat;
-import project.study.chat.domain.QChat;
+import project.study.domain.*;
 import project.study.chat.dto.ChatDto;
 import project.study.chat.jparepository.ChatJpaRepository;
-import project.study.domain.Member;
-import project.study.domain.QRoom;
-import project.study.domain.Room;
 
 import java.util.List;
 import java.util.Optional;

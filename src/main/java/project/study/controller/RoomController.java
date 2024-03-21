@@ -13,7 +13,7 @@ import project.study.authority.member.authority.MemberAuthority;
 import project.study.authority.member.dto.RequestEditRoomDto;
 import project.study.authority.member.dto.RequestJoinRoomDto;
 import project.study.chat.ChatService;
-import project.study.chat.domain.Chat;
+import project.study.domain.Chat;
 import project.study.customAnnotation.PathRoom;
 import project.study.customAnnotation.SessionLogin;
 import project.study.domain.Member;
@@ -100,10 +100,10 @@ public class RoomController {
     }
 
     @GetMapping("/{room}/history")
-    public ResponseEntity<ResponseDto> chatHistory(@PathRoom("room") Room room) {
-        // JoinRoom 검증 안되어있음 아직.
+    public ResponseEntity<ResponseDto> chatHistory(@PathRoom("room") Room room, @RequestParam(name = "token") String token) {
+        Member member = chatService.getMember(token, room.getRoomId());
 
-        List<Chat.ResponseChatHistory> history = chatService.findByChatHistory(room);
+        List<Chat.ResponseChatHistory> history = chatService.findByChatHistory(room, member.getMemberId());
         return ResponseEntity.ok(new ResponseObject<>("성공", history));
     }
 

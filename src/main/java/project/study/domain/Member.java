@@ -30,7 +30,7 @@ public class Member implements ImageFileEntity {
     @Id @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "SEQ_MEMBER")
     private Long memberId;
     private String memberName;
-
+    @Getter
     private String memberNickname;
     private LocalDateTime memberCreateDate;
     @Enumerated(EnumType.STRING)
@@ -51,24 +51,20 @@ public class Member implements ImageFileEntity {
     @OneToOne(mappedBy = "member", fetch = FetchType.LAZY)
     private Profile profile;
     @Getter
-    @OneToMany(mappedBy = "member")
+    @OneToMany(mappedBy = "member", fetch = FetchType.LAZY)
     private List<Freeze> freeze;
 
     @Getter
     @OneToMany(mappedBy = "member", fetch = FetchType.LAZY)
     private List<JoinRoom> joinRoomList;
 
-    public String getMemberNickname() {
-        if (isExpireMember()) return "탈퇴한사용자";
-        return memberNickname;
-    }
-
     public void changeStatusToNormal() {
         memberStatus = 정상;
     }
     public void changeStatusToExpire() {
         this.memberStatus = 탈퇴;
-        this.memberExpireDate = LocalDateTime.now().plusDays(WebConst.EXPIRE_PLUS_DAY);
+//        this.memberExpireDate = LocalDateTime.now().plusDays(WebConst.EXPIRE_PLUS_DAY);
+        this.memberExpireDate = LocalDateTime.now();
     }
     public void changeStatusToFreeze() {
         this.memberStatus = 이용정지;
@@ -90,7 +86,7 @@ public class Member implements ImageFileEntity {
     }
 
     public boolean isOutOfExpireDate() {
-        return memberExpireDate.isAfter(LocalDateTime.now());
+        return memberExpireDate.isBefore(LocalDateTime.now());
     }
 
     @Override

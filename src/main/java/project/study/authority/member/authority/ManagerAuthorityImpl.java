@@ -39,8 +39,8 @@ public class ManagerAuthorityImpl implements ManagerAuthority{
         System.out.println("managerEntrust 실행");
         Member nextManagerMember = memberRepository.findByMemberNickname(data.getNickname());
 
-        JoinRoom currentManager = findByJoinRoomMember(room, nextManagerMember, "참여자가 아닙니다.");
-        JoinRoom nextManager = findByJoinRoomMember(room, member, "권한이 없습니다.");
+        JoinRoom currentManager = findByJoinRoomMember(room, member, "참여자가 아닙니다.");
+        JoinRoom nextManager = findByJoinRoomMember(room, nextManagerMember, "권한이 없습니다.");
 
         currentManager.changeToAuthority(일반);
         nextManager.changeToAuthority(방장);

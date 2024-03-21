@@ -3,8 +3,12 @@ package project.study.service;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.messaging.simp.SimpMessageSendingOperations;
 import org.springframework.stereotype.Service;
 import project.study.authority.member.dto.RequestJoinRoomDto;
+import project.study.chat.ChatService;
+import project.study.chat.component.ChatManager;
+import project.study.chat.dto.ChatDto;
 import project.study.domain.JoinRoom;
 import project.study.domain.Member;
 import project.study.domain.Room;
@@ -16,6 +20,7 @@ import project.study.repository.RoomRepository;
 
 import java.util.Optional;
 
+import static project.study.chat.MessageType.ENTRUST;
 import static project.study.enums.AuthorityMemberEnum.*;
 
 @Service
@@ -23,8 +28,11 @@ import static project.study.enums.AuthorityMemberEnum.*;
 @Slf4j
 public class JoinRoomService {
 
+    private final SimpMessageSendingOperations template;
     private final RoomRepository roomRepository;
     private final JoinRoomRepository joinRoomRepository;
+    private final ChatService chatService;
+    private final ChatManager chatManager;
 
     public boolean exitsByMemberAndRoom(Long memberId, Room room) {
         if (memberId == null) throw new NotLoginMemberRestException();
@@ -57,10 +65,20 @@ public class JoinRoomService {
 
         if (joinRoom.isManager()) {
             anotherJoinMember.ifPresentOrElse(
-                anotherMember -> anotherMember.changeToAuthority(방장), // 다른회원에게 방장 위임
+                anotherMember -> {
+                    anotherMember.changeToAuthority(방장);
+                    ChatDto chat = chatManager.sendMessageChatDto(anotherMember.getMember(), room, ENTRUST, anotherMember.getMember().getMemberNickname() + "님이 방장이 되셨습니다.");
+                    templateSendMessage(room.getRoomId(), chat);
+                }, // 다른회원에게 방장 위임
                 () -> roomRepository.moveToDeleteRoom(room)); // 다른 회원이 없는경우 (참여자가 1명인 경우) 방 삭제
         }
-        joinRoomRepository.deleteJoinRoom(joinRoom);
 
+        chatService.accessRemove(joinRoom.getMember(), room.getRoomId());
+        templateSendMessage(room.getRoomId(), chatService.exitRoom(joinRoom.getMember(), room));
+        joinRoomRepository.deleteJoinRoom(joinRoom);
+    }
+
+    private void templateSendMessage(Long roomId, ChatDto chat) {
+        template.convertAndSend("/sub/chat/room/" + roomId, chat);
     }
 }

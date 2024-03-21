@@ -2,9 +2,7 @@ let stompClient = null;
 let token = null;
 let isNewMessage = false;
 window.addEventListener('load', () => {
-    fetchGet('/room/' + getRoomId() + '/history', historyResult) // 이전 기록 불러옴
-    fetchGet('/room/' + getRoomId() + '/notice', noticeResult) // 공지사항 불러옴
-    token = getToken();
+    initialSetting();
 
     managerCheck();
 
@@ -121,12 +119,14 @@ function historyResult(json) {
     scrollToBottom(); 
 }
 
-function getToken() {
+function initialSetting() {
     fetch('/room/' + getRoomId() + '/access')
     .then(res => res.json())
     .then(map => {
         console.log(map);
         token = map.message;
+        fetchGet('/room/' + getRoomId() + '/history?token=' + token, historyResult) // 이전 기록 불러옴
+        fetchGet('/room/' + getRoomId() + '/notice', noticeResult) // 공지사항 불러옴
         connect(); // 웹소켓 연결
     });
 }
@@ -484,12 +484,13 @@ function printMessage(chat) {
 
     nextDate(chat, lastElement);
 
-    if (chat.token == token) { // 내 메세지
+    if (chat.me || chat.token === token) { // 내 메세지
         if (lastElement == null) {
             chatHistory.innerHTML += createMe(chat);
             return;
         }
         if (lastElement.classList.contains('me')) { // 마지막 채팅내역이 나일 경우
+            distinctTime(lastElement, chat);
             lastElement.innerHTML += createMeMessageBox(chat); 
         } else { // 마지막 채팅내역이 내가 아닌경우
             chatHistory.innerHTML += createMe(chat);
@@ -501,7 +502,8 @@ function printMessage(chat) {
             return;
         }
         let name = lastElement.querySelector('.name');
-        if (name != null && name.textContent == chat.sender) { // 마지막 채팅내역이 보낸사람과 일치
+        if (name != null && name.textContent === chat.sender) { // 마지막 채팅내역이 보낸사람과 일치
+            distinctTime(lastElement, chat);
             lastElement.querySelector('.message-wrap').innerHTML += createYouMessageBox(chat);
         } else {
             chatHistory.innerHTML += createYou(chat);
@@ -509,6 +511,15 @@ function printMessage(chat) {
     }
     if (scrollLocation) {
         scrollToBottom();
+    }
+}
+
+function distinctTime(lastElement, chat) {
+    let beforeTimeDiv = lastElement.querySelector('.time');
+
+    let nowTime = foramtTime(chat.time);
+    if (beforeTimeDiv.textContent === nowTime) {
+        beforeTimeDiv.remove();
     }
 }
 
@@ -523,14 +534,8 @@ function nextDate(chat, lastElement) {
     if (lastElement.classList.contains('date')) return; // 마지막 태그가 날짜면 표시하지 않음
 
     let dayTag = chatHistory.querySelector('.message-box:last-child .day');
-    if (dayTag == null) { // 날짜태그가 존재하지않으면 날짜 표시
-        chatHistory.innerHTML += timeMessage(day); // 2021년 1월 1일 월요일 출력
-        return;
-    }
-    console.log('이전 날짜 값 : ' , dayTag.textContent);
-    console.log('이후 날짜 값 : ' , day);
 
-    if (dayTag.textContent != day) { // 날짜태그가 변경되었으면 날짜 표시
+    if (dayTag == null || dayTag.textContent !== day) { // 날짜태그가 존재하지않거나 변경되었으면 날짜 표시
         chatHistory.innerHTML += timeMessage(day); // 2021년 1월 1일 월요일 출력
     }
 }

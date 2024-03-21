@@ -7,7 +7,6 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import project.study.authority.member.dto.RequestEditRoomDto;
 import project.study.authority.member.dto.ResponseRoomListDto;
-import project.study.chat.domain.Chat;
 import project.study.enums.PublicEnum;
 
 import java.time.LocalDateTime;

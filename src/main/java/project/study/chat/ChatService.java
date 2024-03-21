@@ -6,7 +6,7 @@ import org.springframework.stereotype.Service;
 import project.study.chat.component.ChatAccessToken;
 import project.study.chat.component.ChatCurrentMemberManager;
 import project.study.chat.component.ChatManager;
-import project.study.chat.domain.Chat;
+import project.study.domain.Chat;
 import project.study.chat.dto.*;
 import project.study.domain.JoinRoom;
 import project.study.domain.Member;
@@ -28,6 +28,7 @@ public class ChatService {
     private final MemberJpaRepository memberJpaRepository;
     private final ChatAccessToken chatAccessToken;
     private final ChatCurrentMemberManager currentMemberManager;
+    private final ChatManager chatManager;
 
     public Member getMember(String token, Long roomId) {
         Long accessMemberId = chatAccessToken.getMemberId(token, roomId);
@@ -50,7 +51,7 @@ public class ChatService {
     }
 
     public ChatObject<ResponseNextManager> exitRoom(Member member, Room room) {
-        ChatDto chat = ChatManager.sendMessageChatDto(member, room, EXIT, member.getMemberNickname() + "님이 방에서 나가셨습니다.");
+        ChatDto chat = chatManager.sendMessageChatDto(member, room, EXIT, member.getMemberNickname() + "님이 방에서 나가셨습니다.");
 
         Optional<Member> nextManagerMember = room.getJoinRoomList()
                 .stream()
@@ -69,10 +70,10 @@ public class ChatService {
         return chatRepository.findRecentlyHistoryMemberNickname(memberId, room);
     }
 
-    public List<Chat.ResponseChatHistory> findByChatHistory(Room room) {
+    public List<Chat.ResponseChatHistory> findByChatHistory(Room room, Long memberId) {
         // TODO
         // 채팅기록 pageable 적용예정
         List<Chat> byChatHistory = chatRepository.findByChatHistory(room);
-        return byChatHistory.stream().map(Chat::getResponseChatHistory).toList();
+        return byChatHistory.stream().map(x -> x.getResponseChatHistory(memberId)).toList();
     }
 }

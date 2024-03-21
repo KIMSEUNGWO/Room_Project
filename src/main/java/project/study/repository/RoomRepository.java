@@ -10,9 +10,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 import project.study.authority.member.dto.RequestEditRoomDto;
-import project.study.authority.member.dto.RequestJoinRoomDto;
-import project.study.chat.domain.Chat;
-import project.study.chat.domain.QChat;
 import project.study.controller.image.FileUpload;
 import project.study.controller.image.FileUploadType;
 import project.study.domain.*;
@@ -21,7 +18,6 @@ import project.study.dto.room.ResponseEditRoomForm;
 import project.study.dto.room.ResponseRoomMemberList;
 import project.study.enums.AuthorityMemberEnum;
 import project.study.enums.PublicEnum;
-import project.study.exceptions.authority.joinroom.FullRoomException;
 import project.study.exceptions.roomjoin.IllegalRoomException;
 import project.study.jpaRepository.RoomDeleteJpaRepository;
 import project.study.jpaRepository.RoomJpaRepository;
@@ -176,7 +172,8 @@ public class RoomRepository {
     public void moveToDeleteRoom(Room room) {
         RoomDelete saveRoomDelete = RoomDelete.builder()
             .room(room)
-            .roomDeleteDate(LocalDateTime.now().plusMonths(1))
+//            .roomDeleteDate(LocalDateTime.now().plusMonths(1))
+            .roomDeleteDate(LocalDateTime.now())
             .build();
 
         roomDeleteJpaRepository.save(saveRoomDelete);
