@@ -59,7 +59,7 @@ function deleteRoom() {
         exit.on('click', function() {
             $(this).closest('.option-menu').addClass('disabled');
             var roomId = $(this).attr('id');
-
+            
             $.ajax({
                 url: '/admin/room/delete',
                 type: 'POST',

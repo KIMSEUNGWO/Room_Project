@@ -32,12 +32,12 @@ public interface AdminMapper {
     SearchNotifyReadMoreDtoBatis notifyReedMore(Long notifyId);
     List<SearchNotifyImageDtoBatis> notifyImage(Long notifyId);
     void notifyStatusChange(RequestNotifyStatusChangeDto dto);
-
     SearchNotifyMemberInfoDto notifyMemberInfo(Long notifyId);
     String notifyMemberProfile(String account);
+
     void notifyMemberFreeze(Long memberId);
     void notifyMemberBan(Long memberId);
-    Long searchBanOne(Long memberId);
+    Long searchFreezeId(RequestLiftBanDto dto);
     void banInsert(RequestNotifyMemberFreezeDto dto);
     String freezeSelect(Long memberId);
     void banFreeze(RequestNotifyMemberFreezeDto dto);
@@ -46,7 +46,7 @@ public interface AdminMapper {
 
     List<SearchBanDto> searchBanList(@Param("startNum") int startNum, @Param("endNum") int endNum, @Param("word") String word);
     int getTotalBanCnt(@Param("word") String word);
-    Long searchFreezeId(RequestLiftBanDto dto);
+    Long searchBanOne(Long memberId);
     void deleteBan(RequestLiftBanDto dto);
     void deleteFreeze(Long freezeId);
     void banMemberStatusChangeNormal(RequestLiftBanDto dto);
