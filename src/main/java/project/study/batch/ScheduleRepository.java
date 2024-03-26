@@ -5,7 +5,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 import project.study.chat.jparepository.ChatJpaRepository;
-import project.study.controller.image.FileTypeConverter;
+import project.study.controller.image.FileUploadRepository;
 import project.study.controller.image.FileUploadType;
 import project.study.domain.*;
 import project.study.enums.NotifyStatus;
@@ -19,8 +19,7 @@ import project.study.service.JoinRoomService;
 @Transactional
 public class ScheduleRepository {
 
-
-    private final FileTypeConverter fileTypeConverter;
+    private final FileUploadRepository fileUploadRepository;
 
     private final MemberJpaRepository memberJpaRepository;
     private final BasicJpaRepository basicJpaRepository;
@@ -58,7 +57,8 @@ public class ScheduleRepository {
     }
 
     public void deleteMember(Member member) {
-        fileTypeConverter.deleteFile(FileUploadType.MEMBER_PROFILE, member);
+
+        fileUploadRepository.deleteImage(FileUploadType.MEMBER_PROFILE, member);
         profileJpaRepository.deleteByMember(member);
         memberJpaRepository.delete(member);
     }
@@ -76,7 +76,7 @@ public class ScheduleRepository {
         if (room.hasRoomPassword()) {
             roomPasswordJpaRepository.deleteByRoom(room);
         }
-        fileTypeConverter.deleteFile(FileUploadType.ROOM_PROFILE, room);
+        fileUploadRepository.deleteImage(FileUploadType.ROOM_PROFILE, room);
         roomImageJpaRepository.deleteByRoom(room);
 
         tagJpaRepository.deleteAllByRoom(room);

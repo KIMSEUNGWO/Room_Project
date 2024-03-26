@@ -5,7 +5,6 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import project.study.constant.WebConst;
 import project.study.controller.api.sms.FindAccount;
 import project.study.dto.MyPageInfo;
 import project.study.dto.mypage.RequestEditInfoDto;
@@ -16,6 +15,7 @@ import project.study.enums.SocialEnum;
 import java.time.LocalDateTime;
 import java.util.List;
 
+import static project.study.constant.WebConst.*;
 import static project.study.enums.MemberStatusEnum.*;
 
 @AllArgsConstructor
@@ -63,7 +63,7 @@ public class Member implements ImageFileEntity {
     }
     public void changeStatusToExpire() {
         this.memberStatus = 탈퇴;
-        this.memberExpireDate = LocalDateTime.now().plusDays(WebConst.EXPIRE_PLUS_DAY);
+        this.memberExpireDate = LocalDateTime.now().plusDays(EXPIRE_PLUS_DAY);
 //        this.memberExpireDate = LocalDateTime.now();
     }
     public void changeStatusToFreeze() {
@@ -92,9 +92,15 @@ public class Member implements ImageFileEntity {
     @Override
     public String getStoreImage() {
         if (profile == null) return "";
-        if (isExpireMember()) return WebConst.EXPIRE_MEMBER_PROFILE;
+        if (isExpireMember()) return EXPIRE_MEMBER_PROFILE;
         return profile.getStoreName();
     }
+
+    @Override
+    public boolean isDefaultImage() {
+        return DEFAULT_PROFILE.equals(getStoreImage());
+    }
+
     @Override
     public void setImage(String originalName, String storeName) {
         if (profile == null) return;
@@ -135,7 +141,7 @@ public class Member implements ImageFileEntity {
     }
 
     public boolean isExceedJoinRoom(AuthorityMemberEnum authority) {
-        return joinRoomCount(authority) >= WebConst.MAX_JOIN_ROOM_COUNT;
+        return joinRoomCount(authority) >= MAX_JOIN_ROOM_COUNT;
     }
 
 

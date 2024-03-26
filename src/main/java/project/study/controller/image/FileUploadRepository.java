@@ -10,8 +10,6 @@ import project.study.domain.*;
 
 import java.io.File;
 
-import static project.study.constant.WebConst.*;
-
 @Repository
 @RequiredArgsConstructor
 @Transactional
@@ -22,49 +20,27 @@ public class FileUploadRepository {
     private String fileDir;
     private final EntityManager em;
 
-    public void saveImage(FileUploadDto data, Class<? extends ImageFileEntityChildren> eClass) {
-        ImageFileEntityChildren entity = data.createEntity(eClass);
+    public void saveImage(FileUploadDto data) {
+        FileUploadType type = data.getType();
+        ImageFileEntityChildren entity = data.createEntity(type.getAClass());
         em.persist(entity);
     }
 
 
-    public void editProfile(FileUploadDto data) {
-        Member member = (Member) data.getParent();
-        if (data.isDefaultImage()) {
-            member.setImage(DEFAULT_PROFILE, DEFAULT_PROFILE);
-        } else {
-            member.setImage(data.getImageUploadName(), data.getImageStoreName());
-        }
+    public void editImage(FileUploadDto data) {
+        data.defaultImageCheck();
+
+        ImageFileEntity parent = data.getParent();
+
+        parent.setImage(data.getImageUploadName(), data.getImageStoreName());
     }
 
-    public void editRoomImage(FileUploadDto data) {
-        Room room = (Room) data.getParent();
+    public void deleteImage(FileUploadType type, ImageFileEntity parent) {
+        if (parent.isDefaultImage()) return;
 
-        if (data.isDefaultImage()) {
-            room.setImage(DEFAULT_ROOM_IMAGE, DEFAULT_ROOM_IMAGE);
-        } else {
-            room.setImage(data.getImageUploadName(), data.getImageStoreName());
-        }
-    }
-
-    public void deleteProfile(FileUploadType type, ImageFileEntity parent) {
-        String storeName = parent.getStoreImage();
-        if (DEFAULT_PROFILE.equals(storeName)) return;
-
-        File profileFile = new File(getFullPath(type, storeName));
+        File profileFile = new File(getFullPath(type, parent.getStoreImage()));
         if (profileFile.delete()) {
-            log.error("Profile 파일 삭제");
-        }
-
-    }
-
-    public void deleteRoomImage(FileUploadType type, ImageFileEntity parent) {
-        String storeName = parent.getStoreImage();
-        if (DEFAULT_ROOM_IMAGE.equals(storeName)) return;
-
-        File roomImageFile = new File(getFullPath(type, storeName));
-        if (roomImageFile.delete()) {
-            log.error("RoomImage 파일 삭제");
+            log.error("{} 파일 삭제", getFullPath(type, parent.getStoreImage()));
         }
 
     }

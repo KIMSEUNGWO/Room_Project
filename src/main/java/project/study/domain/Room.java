@@ -7,6 +7,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import project.study.authority.member.dto.RequestEditRoomDto;
 import project.study.authority.member.dto.ResponseRoomListDto;
+import project.study.constant.WebConst;
 import project.study.enums.PublicEnum;
 
 import java.time.LocalDateTime;
@@ -96,6 +97,11 @@ public class Room implements ImageFileEntity {
     public String getStoreImage() {
         if (roomImage == null) return "";
         return roomImage.getStoreName();
+    }
+
+    @Override
+    public boolean isDefaultImage() {
+        return WebConst.DEFAULT_ROOM_IMAGE.equals(getStoreImage());
     }
 
     public ResponseRoomListDto getResponseRoomListDto(Long memberId) {

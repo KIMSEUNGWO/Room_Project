@@ -20,7 +20,7 @@ public class FileUpload {
     @Value("${file.dir}")
     private String fileDir;
 
-    private final FileTypeConverter fileTypeConverter;
+    private final FileUploadRepository fileUploadRepository;
 
     public void saveFile(MultipartFile imageFile, FileUploadType fileType, ImageFileEntity parentEntity) {
         if (imageFile == null) {
@@ -28,7 +28,7 @@ public class FileUpload {
                             .parent(parentEntity)
                             .type(fileType)
                             .build();
-            fileTypeConverter.saveFile(fileUploadDto);
+            fileUploadRepository.saveImage(fileUploadDto);
             return;
         }
 
@@ -56,8 +56,7 @@ public class FileUpload {
                                                 .imageStoreName(storeFileName)
                                                 .type(fileType)
                                                 .build();
-
-        fileTypeConverter.saveFile(fileUploadDto);
+        fileUploadRepository.saveImage(fileUploadDto);
     }
 
 
@@ -67,7 +66,7 @@ public class FileUpload {
                 .parent(parentEntity)
                 .type(fileType)
                 .build();
-            fileTypeConverter.editFile(fileUploadDto);
+            fileUploadRepository.editImage(fileUploadDto);
             return;
         }
         byte[] fileBytes = getBytes(imageFile);
@@ -88,7 +87,7 @@ public class FileUpload {
             return;
         }
 
-        fileTypeConverter.deleteFile(fileType, parentEntity);
+        fileUploadRepository.deleteImage(fileType, parentEntity);
 
         FileUploadDto fileUploadDto = FileUploadDto.builder()
             .parent(parentEntity)
@@ -97,7 +96,7 @@ public class FileUpload {
             .type(fileType)
             .build();
 
-        fileTypeConverter.editFile(fileUploadDto);
+        fileUploadRepository.editImage(fileUploadDto);
     }
 
     private String getFullPath(String fileName, FileUploadType fileType) {
