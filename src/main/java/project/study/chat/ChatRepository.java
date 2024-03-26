@@ -14,7 +14,7 @@ public interface ChatRepository {
 
     List<String> findRecentlyHistoryMemberNickname(Long memberId, Room room);
 
-    List<Chat> findByChatHistory(Room room);
+    List<Chat> findByChatHistory(Room room, Long pageValue);
 
     Optional<Member> findByMemberNickname(Room room, String nickname);
 }

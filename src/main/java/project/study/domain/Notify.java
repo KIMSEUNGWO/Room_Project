@@ -51,9 +51,7 @@ public class Notify implements ImageFileEntity {
     private List<NotifyImage> notifyImage;
 
     @Override
-    public void setImage(String originalName, String storeName) {
-
-    }
+    public void setImage(String originalName, String storeName) {}
 
     @Override
     public String getStoreImage() {

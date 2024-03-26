@@ -1,6 +1,9 @@
 let stompClient = null;
 let token = null;
 let isNewMessage = false;
+let page = 0;
+let loadingChatHistory = false;
+
 window.addEventListener('load', () => {
     initialSetting();
 
@@ -9,12 +12,12 @@ window.addEventListener('load', () => {
     const chatHistory = document.querySelector('.chat-history');
     chatHistory.addEventListener('scroll', () => {
 
-        const triggerScroll = isBottom();
-
-        if (triggerScroll) { // 스크롤이 맨 밑에 있을 때
+        if (isBottom()) { // 스크롤이 맨 밑에 있을 때
             isNewMessage = false;
             let newMessage = document.querySelector('.newMessageWrap');
             newMessage.classList.add('disabled');
+        } else if (isTop()) {
+            fetchGet(`/room/${getRoomId()}/history?token=${token}&page=${page}`, additionalHistoryResult) // 이전 기록 추가로 불러옴
         }
     })
 
@@ -72,7 +75,7 @@ function createNotice(notice) {
                 <svg class="speaker" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512"><path d="M544 32c17.7 0 32 14.3 32 32V448c0 17.7-14.3 32-32 32s-32-14.3-32-32V64c0-17.7 14.3-32 32-32zM64 190.3L480 64V448L348.9 408.2C338.2 449.5 300.7 480 256 480c-53 0-96-43-96-96c0-11 1.9-21.7 5.3-31.5L64 321.7C63.1 338.6 49.1 352 32 352c-17.7 0-32-14.3-32-32V192c0-17.7 14.3-32 32-32c17.1 0 31.1 13.4 32 30.3zm239 203.9l-91.6-27.8c-2.1 5.4-3.3 11.4-3.3 17.6c0 26.5 21.5 48 48 48c23 0 42.2-16.2 46.9-37.8z"/></svg>
                 <div class="room-notice-content">
                     <pre class="notice-text">${notice.content}</pre>
-                    <div class="notice-time">${formatDay(notice.time) + ' ' + foramtTime(notice.time)}</div>
+                    <div class="notice-time">${formatDay(notice.time) + ' ' + formatTime(notice.time)}</div>
                 </div>
                 <button type="button" class="folder">
                     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><path d="M201.4 342.6c12.5 12.5 32.8 12.5 45.3 0l160-160c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L224 274.7 86.6 137.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3l160 160z"/></svg>
@@ -90,6 +93,13 @@ function isBottom() {
     const threshold = 100;
     const triggerScroll = scrollPosition >= (scrollHeight - clientHeight - threshold);
     return triggerScroll;
+}
+function isTop() {
+    const chatHistory = document.querySelector('.chat-history');
+
+    const scrollPosition = chatHistory.scrollTop;
+
+    return scrollPosition === 0;
 }
 
 function deleteNewMessageAlert() {
@@ -110,13 +120,50 @@ function newMessageAlert() {
     }
 }
 
-function historyResult(json) {
+function  historyResult(json) {
     console.log(json);
     let list = json.data;
     for (let i=0;i<list.length;i++) {
         printMessage(list[i]);
     }
+    if (list != undefined && list.length > 0) {
+        page = list[0].pageValue;
+    }
     scrollToBottom(); 
+}
+function additionalHistoryResult(json) {
+    console.log(json);
+    let list = json.data;
+
+    for (let i=list.length-1;i>=0;i--) {
+        insertChat(list[i]);
+    }
+    if (list !== undefined && list.length > 0) {
+        page = list[0].pageValue;
+    }
+}
+function insertChat(chat) {
+    const chatHistory = document.querySelector('.chat-history');
+    let firstChild = chatHistory.firstElementChild;
+
+    let onlyChat = document.querySelector('.chat-history > *:not(.date, .alram)');
+
+    if (chat.me || chat.token === token) { // 내 메세지
+        if (onlyChat.classList.contains('me')) { // 마지막 채팅내역이 나일 경우
+            onlyChat.insertBefore(createMeMessageBoxNode(chat, onlyChat), onlyChat.firstElementChild);
+        } else { // 마지막 채팅내역이 내가 아닌경우
+            chatHistory.insertBefore(createMeNode(chat), firstChild);
+        }
+    } else { // 상대방 메세지
+        let name = onlyChat.querySelector('.name');
+        if (name != null && name.textContent === chat.sender) { // 마지막 채팅내역이 보낸사람과 일치
+            let messageWarpIntoFirstChild = onlyChat.querySelector('.message-wrap');
+            messageWarpIntoFirstChild.insertBefore(createYouMessageBoxNode(chat, onlyChat), messageWarpIntoFirstChild.querySelector('.message-box'));
+        } else {
+            chatHistory.insertBefore(createYouNode(chat, firstChild), firstChild);
+        }
+    }
+    nextDateReverse(chat);
 }
 
 function initialSetting() {
@@ -515,18 +562,23 @@ function printMessage(chat) {
 }
 
 function distinctTime(lastElement, chat) {
-    let beforeTimeDiv = lastElement.querySelector('.time');
+    let beforeTimeDiv = lastElement.querySelector('.message-box:last-child .time');
 
-    let nowTime = foramtTime(chat.time);
+    let nowTime = formatTime(chat.time);
     if (beforeTimeDiv.textContent === nowTime) {
         beforeTimeDiv.remove();
     }
+}
+function distinctTimeReverse(chat, firstChild) {
+    let beforeTimeDiv = firstChild.querySelector('.time');
+    let nowTime = formatTime(chat.time);
+    return beforeTimeDiv.textContent === nowTime;
 }
 
 function nextDate(chat, lastElement) {
     const chatHistory = document.querySelector('.chat-history');
     let day = formatDay(chat.time);
-    
+
     if (lastElement == null) { // 태그가 하나도 없으면 날짜 표시
         chatHistory.innerHTML += timeMessage(day); // 2021년 1월 1일 월요일 출력
         return;
@@ -540,6 +592,32 @@ function nextDate(chat, lastElement) {
     }
 }
 
+function nextDateReverse(chat) {
+    const chatHistory = document.querySelector('.chat-history');
+    let firstElement = chatHistory.firstElementChild;
+    while (firstElement.classList.contains('date')) {
+        firstElement = firstElement.nextElementSibling;
+    }
+    let day = formatDay(chat.time);
+
+    let dayTag = chatHistory.querySelector('.date span');
+    if (dayTag != null && dayTag.textContent === day) {
+        chatHistory.insertBefore(chatHistory.querySelector('.date'), firstElement);
+    } else {
+        chatHistory.insertBefore(newDate(day), firstElement);
+    }
+
+}
+function newDate(day) {
+    let dateDiv = document.createElement('div');
+    dateDiv.classList.add('date');
+
+    let span = document.createElement('span');
+    span.innerHTML = day;
+    dateDiv.append(span);
+    return dateDiv;
+}
+
 function formatDay(time) {
     console.log(time);
     let dateObject = new Date(time);
@@ -550,33 +628,86 @@ function formatDay(time) {
                 weekday: 'long'
             }).format(dateObject);
 }
-function foramtTime(time) {
+function formatTime(time) {
     let dateObject = new Date(time);
     return ('0' + dateObject.getHours()).slice(-2) + ':' + ('0' + dateObject.getMinutes()).slice(-2);
 }
 function createMeMessageBox(chat) {
     return `<div class="message-box">
                 <span class="day" style="display: none;">` + formatDay(chat.time) +`</span>
-                <span class="time">` + foramtTime(chat.time) + `</span>
+                <span class="time">` + formatTime(chat.time) + `</span>
                 <pre class="message-content">
                     ${chat.message}
                 </pre>
             </div>`
+}
+function createMeMessageBoxNode(chat, firstChild) {
+    let messageBox = document.createElement('div');
+    messageBox.classList.add('message-box');
+
+    let daySpan = document.createElement('span');
+    daySpan.style.display = 'none';
+    daySpan.innerHTML = formatDay(chat.time);
+
+    let timeSpan = document.createElement('span');
+    timeSpan.classList.add('time');
+    timeSpan.innerHTML = formatTime(chat.time);
+
+    let contentPre = document.createElement('pre');
+    contentPre.classList.add('message-content');
+    contentPre.innerHTML = chat.message;
+
+    // messageBox.append(daySpan, timeSpan, contentPre);
+    messageBox.append(daySpan);
+    if (!distinctTimeReverse(chat, firstChild)) {
+        messageBox.append(timeSpan);
+    }
+    messageBox.append(contentPre);
+    return messageBox;
 }
 function createYouMessageBox(chat) {
     return `<div class="message-box">
                 <pre class="message-content">
                     ${chat.message}
                 </pre>
-                <span class="time">` + foramtTime(chat.time) + `</span>
+                <span class="time">` + formatTime(chat.time) + `</span>
                 <span class="day" style="display: none;">` + formatDay(chat.time) +`</span>
             </div>`
+}
+function createYouMessageBoxNode(chat, firstChild) {
+    let messageBoxDiv = document.createElement('div');
+    messageBoxDiv.classList.add('message-box');
+
+    let contentPre = document.createElement('pre');
+    contentPre.classList.add('message-content');
+    contentPre.innerHTML = chat.message;
+
+    let timeSpan = document.createElement('span');
+    timeSpan.classList.add('time');
+    timeSpan.innerHTML = formatTime(chat.time);
+
+    let daySpan = document.createElement('span');
+    daySpan.style.display = 'none';
+    daySpan.innerHTML = formatDay(chat.time);
+
+    messageBoxDiv.append(contentPre);
+    if (!distinctTimeReverse(chat, firstChild)) {
+        messageBoxDiv.append(timeSpan);
+    }
+    messageBoxDiv.append(daySpan);
+    return messageBoxDiv;
 }
 
 function createMe(chat) {
     return `<div class="me">
                 ` + createMeMessageBox(chat) + `
             </div>`
+}
+function createMeNode(chat) {
+    let div = document.createElement('div');
+    div.classList.add('me');
+    div.innerHTML = createMeMessageBox(chat);
+    return div;
 }
 function createYou(chat) {
     return `<div class="you">
@@ -590,7 +721,30 @@ function createYou(chat) {
                     ` + createYouMessageBox(chat) + `
                 </div>
             </div>`
-    
+}
+function createYouNode(chat, firstElement) {
+    let youDiv = document.createElement('div');
+    youDiv.classList.add('you');
+
+    let profileDiv = document.createElement('div');
+    profileDiv.classList.add('profile-box');
+    let img = document.createElement('img');
+    img.setAttribute('src', '/images/member_profile/' + chat.senderImage);
+    profileDiv.append(img);
+
+    let messageWrapDiv = document.createElement('div');
+    messageWrapDiv.classList.add('message-wrap');
+    let nameBoxDiv = document.createElement('div');
+    nameBoxDiv.classList.add('name-box');
+    let nameSpan = document.createElement('span');
+    nameSpan.classList.add('name');
+    nameSpan.innerHTML = chat.sender;
+    nameBoxDiv.append(nameSpan);
+    messageWrapDiv.append(nameBoxDiv);
+
+    messageWrapDiv.append(createYouMessageBoxNode(chat, firstElement));
+
+    return messageWrapDiv;
 }
 
 function createMember(chat) {

@@ -100,10 +100,13 @@ public class RoomController {
     }
 
     @GetMapping("/{room}/history")
-    public ResponseEntity<ResponseDto> chatHistory(@PathRoom("room") Room room, @RequestParam(name = "token") String token) {
+    public ResponseEntity<ResponseDto> chatHistory(@PathRoom("room") Room room,
+                                                   @RequestParam(name = "token") String token,
+                                                   @RequestParam(name = "page", required = false, defaultValue = "0") Long pageValue ) {
+        System.out.println("pageValue = " + pageValue);
         Member member = chatService.getMember(token, room.getRoomId());
 
-        List<Chat.ResponseChatHistory> history = chatService.findByChatHistory(room, member.getMemberId());
+        List<Chat.ResponseChatHistory> history = chatService.findByChatHistory(room, pageValue, member.getMemberId());
         return ResponseEntity.ok(new ResponseObject<>("성공", history));
     }
 
