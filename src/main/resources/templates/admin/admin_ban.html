@@ -9,7 +9,7 @@
     <link rel="stylesheet" href="/css/admin_members.css">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
     <script src="/js/admin_header.js"></script>
-    <script src="/js/admin_members.js"></script>
+    <script src="/js/admin_ban.js"></script>
     <title>이용중인 회원</title>
 </head>
 <body>
@@ -23,7 +23,7 @@
                 <div class="category">
                     <h4>일반</h4>
                     <div class="menu-list">
-                        <a href="/admin/members" aria-selected="true">이용중인 회원</a>
+                        <a href="/admin/members" aria-selected="false">이용중인 회원</a>
                         <a href="/admin/expire" aria-selected="false">탈퇴한 회원</a>
                         <a href="/admin/rooms" aria-selected="false">방 관리</a>
                     </div>
@@ -32,7 +32,7 @@
                     <h4>신고</h4>
                     <div class="menu-list">
                         <a href="/admin/notify" aria-selected="false">신고된 회원</a>
-                        <a href="/admin/bans" aria-selected="false">영구정지 회원</a>
+                        <a href="/admin/bans" aria-selected="true">영구정지 회원</a>
                     </div>
                 </div>
             </div>
@@ -40,12 +40,8 @@
         <div class="main-content">
             <div class="table-form">
                 <div class="table-title">
-                    <h3>회원 리스트</h3>
+                    <h3>영구 정지 회원 리스트</h3>
                     <ul class="table-option-list">
-                        <li>
-                            <input type="checkbox" name="onlyFreeze" id="onlyFreeze" th:checked="${freezeOnly}">
-                            <label for="onlyFreeze">정지된 회원만 보기</label>
-                        </li>
                         <li>
                             <div class="search-wrap">
                                 <input type="text" name="word" id="word" placeholder="검색어를 입력하세요" th:value="${word}">
@@ -56,27 +52,35 @@
                         </li>
                     </ul>
                 </div>
-                <div class="table-content members">
+                <div class="table-content bans">
                     <div class="table-top">
-                        <div class="email">이메일</div>
-                        <div class="name">이름</div>
-                        <div class="nickname">닉네임</div>
+                        <div class="banId">정지 번호</div>
+                        <div class="memberAccount">아이디</div>
+                        <div class="memberName">이름</div>
+                        <div class="memberNickname">닉네임</div>
                         <div class="phone">휴대폰</div>
-                        <div class="registerdate">가입일</div>
-                        <div class="notifycount">누적신고수</div>
-                        <div class="social">소셜</div>
-                        <div class="status">상태</div>
+                        <div class="suspendedDate">정지 날짜</div>
+                        <div class="option">설정</div>
                     </div>
                     <div class="table-list">
-                        <div class="entity" th:if="${!page.content.isEmpty()}" th:each="member : ${page.content}">
-                            <div class="email" th:text="${member.memberAccount}">starosc</div>
-                            <div class="name" th:text="${member.memberName}">오승찬하하</div>
-                            <div class="nickname" th:text="${member.memberNickname}">닉네임</div>
-                            <div class="phone" th:text="${member.phone}">010-3567-4431</div>
-                            <div class="registerdate" th:text="${member.memberCreateDate}">2024-02-07</div>
-                            <div class="notifycount" th:text="${member.memberNotifyCount}">2회</div>
-                            <div class="social" th:text="${member.socialType}">소셜</div>
-                            <div class="status" th:text="${member.memberStatusEnum}">상태</div>
+                        <div class="entity" th:if="${!page.content.isEmpty()}" th:each="ban : ${page.content}">
+                            <div class="banId" th:text="${ban.banId}">1</div>
+                            <div class="memberAccount" th:text="${ban.memberAccount}">asdf</div>
+                            <div class="memberName" th:text="${ban.memberName}">ssss</div>
+                            <div class="memberNickname" th:text="${ban.memberNickname}">json</div>
+                            <div class="phone" th:text="${ban.phone}">01012345678</div>
+                            <div class="suspendedDate" th:text="${ban.suspendedDate}">dd</div>
+                            <div class="option">
+                                <button type="button" class="option-more">
+                                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><path d="M8 256a56 56 0 1 1 112 0A56 56 0 1 1 8 256zm160 0a56 56 0 1 1 112 0 56 56 0 1 1 -112 0zm216-56a56 56 0 1 1 0 112 56 56 0 1 1 0-112z"/></svg>
+                                    <ul class="option-menu disabled" name="option-menu">
+                                        <li class="option-change" name="option-change" th:id="${ban.memberId}">
+                                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><path d="M377.9 105.9L500.7 228.7c7.2 7.2 11.3 17.1 11.3 27.3s-4.1 20.1-11.3 27.3L377.9 406.1c-6.4 6.4-15 9.9-24 9.9c-18.7 0-33.9-15.2-33.9-33.9l0-62.1-128 0c-17.7 0-32-14.3-32-32l0-64c0-17.7 14.3-32 32-32l128 0 0-62.1c0-18.7 15.2-33.9 33.9-33.9c9 0 17.6 3.6 24 9.9zM160 96L96 96c-17.7 0-32 14.3-32 32l0 256c0 17.7 14.3 32 32 32l64 0c17.7 0 32 14.3 32 32s-14.3 32-32 32l-64 0c-53 0-96-43-96-96L0 128C0 75 43 32 96 32l64 0c17.7 0 32 14.3 32 32s-14.3 32-32 32z"/></svg>
+                                            <span>정지 해제</span>
+                                        </li>
+                                    </ul>
+                                </button>
+                            </div>
                         </div>
                     </div>
                 </div>

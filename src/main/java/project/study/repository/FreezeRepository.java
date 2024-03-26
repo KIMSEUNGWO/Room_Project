@@ -36,34 +36,34 @@ public class FreezeRepository {
         member.changeStatusToNormal();
     }
 
-    public Freeze save(RequestNotifyMemberFreezeDto dto){
-
-        Member member1 = query
-            .select(member)
-            .from(member)
-            .where(member.memberId.eq(dto.getMemberId()))
-            .fetchOne();
-
-        LocalDateTime lastFreeze = query
-            .select(freeze.freezeEndDate)
-            .from(freeze)
-            .orderBy(freeze.freezeEndDate.desc())
-            .where(freeze.member.memberId.eq(dto.getMemberId()))
-            .fetchFirst();
-
-        if(lastFreeze==null){
-            Freeze freeze = Freeze.builder()
-//                .freezeEndDate(LocalDateTime.now().plusDays(dto.getFreezePeriod()))
-                .freezeReason(dto.getFreezeReason())
-                .member(member1)
-                .build();
-            return freezeJpaRepository.save(freeze);
-        }
-            Freeze freeze = Freeze.builder()
-//                .freezeEndDate(lastFreeze.plusDays(dto.getFreezePeriod()))
-                .freezeReason(dto.getFreezeReason())
-                .member(member1)
-                .build();
-            return freezeJpaRepository.save(freeze);
-    }
+//    public Freeze save(RequestNotifyMemberFreezeDto dto){
+//
+//        Member member1 = query
+//            .select(member)
+//            .from(member)
+//            .where(member.memberId.eq(dto.getMemberId()))
+//            .fetchOne();
+//
+//        LocalDateTime lastFreeze = query
+//            .select(freeze.freezeEndDate)
+//            .from(freeze)
+//            .orderBy(freeze.freezeEndDate.desc())
+//            .where(freeze.member.memberId.eq(dto.getMemberId()))
+//            .fetchFirst();
+//
+//        if(lastFreeze==null){
+//            Freeze freeze = Freeze.builder()
+////                .freezeEndDate(LocalDateTime.now().plusDays(dto.getFreezePeriod()))
+//                .freezeReason(dto.getFreezeReason())
+//                .member(member1)
+//                .build();
+//            return freezeJpaRepository.save(freeze);
+//        }
+//            Freeze freeze = Freeze.builder()
+////                .freezeEndDate(lastFreeze.plusDays(dto.getFreezePeriod()))
+//                .freezeReason(dto.getFreezeReason())
+//                .member(member1)
+//                .build();
+//            return freezeJpaRepository.save(freeze);
+//    }
 }

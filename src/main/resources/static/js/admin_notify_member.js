@@ -12,6 +12,10 @@ function memberFreeze(){
     $('.freezeBtn').on('click', function(){
 
         var memberId = parseInt($('#memberId').val());
+        var memberAccount = $('#memberAccount').val();
+        var memberName = $('#memberName').val();
+        var memberNickname = $('#memberNickname').val();
+        var phone = $('#memberPhone').val();
         var freezePeriod = $('#freezePeriod').val();
         var freezeReason = $('#freezeReason').val();
 
@@ -19,10 +23,20 @@ function memberFreeze(){
             url : '/admin/notify/member/freeze',
             type : 'POST',
             contentType : 'application/json',
-            data : JSON.stringify({memberId : memberId, freezePeriod : freezePeriod, freezeReason : freezeReason}),
+            data : JSON.stringify({
+                memberId : memberId, 
+                memberAccount:memberAccount,
+                memberName : memberName,
+                memberNickname : memberNickname,
+                phone : phone,
+                freezePeriod : freezePeriod, 
+                freezeReason : freezeReason}),
             success : function(){
                 close();
                 window.opener.location.reload();
+            },
+             error: function(xhr, status, error) {
+                alert('이미 영구된 정지 회원입니다');
             }
         });
     });

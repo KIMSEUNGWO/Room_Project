@@ -6,7 +6,6 @@ $(function(){
     word.on('keydown', function(e){
         if(e.key == "Enter"){
             sendRequest();
-            
         }
     });
 
@@ -14,57 +13,54 @@ $(function(){
         sendRequest();
     });
 
-    roomOptionOpen();
-    roomOptionClose();
-    deleteRoom();
+    liftTheBan();
+    banOptionOpen();
+    banOptionClose();
+
 });
 
-function roomOptionOpen(){
+function banOptionOpen(){
     $('.option-more').on('click', function(e) {
         if ($(e.target).hasClass('option-more')) {
             initMoreList();
             let menu = $(e.target).children('[name="option-menu"]');
             menu.removeClass('disabled');
-            console.log('open')
         }
     });
 };
 
 function initMoreList() {
     $('.option-menu').addClass('disabled');
-    console.log('init');
 };
 
-function roomOptionClose() {
+function banOptionClose() {
     let container = $(':not(.option-more):not(.option-more *)').first();
 
     container.on('click', function(event) {
         let target = $(event.target);
-        if (!target.hasClass('option-more') && !target.hasClass('option-exit')) {
+        if (!target.hasClass('option-more') && !target.hasClass('option-change')) {
             $('.option-menu').each(function() {
                 let optionMenu = $(this);
                 if (!optionMenu.hasClass('disabled')) {
                     optionMenu.addClass('disabled');
-                    console.log('close');
                 }
             });
         }
     });
 }
 
-
-function deleteRoom() {
+function liftTheBan() {
     $('.option-menu').each(function() {
-        let exit = $(this).children('[name="option-exit"]');
-        exit.on('click', function() {
+        let change  = $(this).children('[name="option-change"]');
+        change.on('click', function() {
             $(this).closest('.option-menu').addClass('disabled');
-            var roomId = $(this).attr('id');
+            var memberId = $(this).attr('id');
 
             $.ajax({
-                url: '/admin/room/delete',
+                url: '/admin/ban/lift',
                 type: 'POST',
                 contentType: 'application/json',
-                data: JSON.stringify({ roomId: roomId }),
+                data: JSON.stringify({ memberId: memberId }),
                 success: function() {
                     window.location.reload();
                 }
@@ -79,24 +75,23 @@ function sendRequest(page) {
 
     $.ajax({
         type: 'GET',
-        url: '/admin/rooms/get',
+        url: '/admin/bans/get',
         data: {
             word : word,
             page : page
         },
         success: function(response) {
-            roomList(response);
+            banList(response);
             paging(response.totalPages, response.number);
             
-            roomOptionOpen();
-            roomOptionClose();
-            deleteRoom();
+            banOptionOpen();
+            banOptionClose();
+            liftTheBan();
 
-            // History API를 사용하여 URL 변경
             if(page==null){
-                var newUrl = '/admin/rooms?page=1';
+                var newUrl = '/admin/bans?page=1';
             } else {
-                var newUrl = '/admin/rooms?page=' + page;
+                var newUrl = '/admin/bans?page=' + page;
             }
 
             if(word!=""){
@@ -107,26 +102,26 @@ function sendRequest(page) {
     });
 }
 
-function roomList(response) {
-    var rooms = response.content;
+function banList(response) {
+    var bans = response.content;
 
     var $list = $('.table-list');
     $list.empty();
-    rooms.forEach(function(room) {
+    bans.forEach(function(ban) {
         var $entity =  $(`<div class="entity">
-            <div class="roomid">${room.roomId}</div>
-            <div class="roomname">${room.roomTitle}</div>
-            <div class="person">${room.roomMemberCount}</div>
-            <div class="manager">${room.managerName}</div>
-            <div class="createdate">${room.roomCreateDate}</div>
-            <div class="public">${room.publicEnum}</div>
+        <div class="banId">${ban.banId}</div>
+        <div class="memberAccount">${ban.memberAccount}</div>
+        <div class="memberName">${ban.memberName}</div>
+        <div class="memberNickname">${ban.memberNickname}</div>
+        <div class="phone">${ban.phone}</div>
+        <div class="suspendedDate">${ban.suspendedDate}</div>
             <div class="option">
                 <button type="button" class="option-more">
                     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><path d="M8 256a56 56 0 1 1 112 0A56 56 0 1 1 8 256zm160 0a56 56 0 1 1 112 0 56 56 0 1 1 -112 0zm216-56a56 56 0 1 1 0 112 56 56 0 1 1 0-112z"/></svg>
                         <ul class="option-menu disabled" name="option-menu">
-                            <li class="option-exit" name="option-exit" id="${room.roomId}">
+                            <li class="option-change" name="option-change" id="${ban.memberId}">
                                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><path d="M377.9 105.9L500.7 228.7c7.2 7.2 11.3 17.1 11.3 27.3s-4.1 20.1-11.3 27.3L377.9 406.1c-6.4 6.4-15 9.9-24 9.9c-18.7 0-33.9-15.2-33.9-33.9l0-62.1-128 0c-17.7 0-32-14.3-32-32l0-64c0-17.7 14.3-32 32-32l128 0 0-62.1c0-18.7 15.2-33.9 33.9-33.9c9 0 17.6 3.6 24 9.9zM160 96L96 96c-17.7 0-32 14.3-32 32l0 256c0 17.7 14.3 32 32 32l64 0c17.7 0 32 14.3 32 32s-14.3 32-32 32l-64 0c-53 0-96-43-96-96L0 128C0 75 43 32 96 32l64 0c17.7 0 32 14.3 32 32s-14.3 32-32 32z"/></svg>
-                                    <span>방 삭제</span>
+                                    <span>정지 해제</span>
                             </li>
                         </ul>
                 </button>
@@ -205,46 +200,3 @@ function paging(totalPages, currentPage) {
         $pageBox.append(errorMsg);
     }
 };
-
-function deleteRoom() {
-    $('.option-menu').each(function() {
-        var exit = $(this).find('[name="option-exit"]');
-        exit.on('click', function() {
-            $(this).closest('.option-menu').addClass('disabled');
-            var roomId = $(this).attr('id');
-
-            $.ajax({
-                url: '/admin/room/delete',
-                type: 'POST',
-                contentType: 'application/json',
-                data: JSON.stringify({ roomId: roomId }),
-                success: function() {
-                    window.location.reload();
-                }
-            });
-        });
-    });
-};
-
-
-// function deleteRoom(){
-//     let optionMenus = document.querySelectorAll('.option-menu');
-
-//     optionMenus.forEach(function(optionMenu){
-//             let exit = optionMenu.children.namedItem('option-exit');
-//             exit.addEventListener('click', function(){
-//                 optionMenu.classList.add('disabled');
-//                 var roomId = exit.getAttribute('id');
-               
-//                 $.ajax({
-//                     url : '/admin/room/delete',
-//                     type : 'POST',
-//                     contentType : 'application/json',
-//                     data : JSON.stringify({roomId : roomId}),
-//                     success : function(){
-//                     window.location.reload();
-//                     }
-//                 });
-//             });
-//         });     
-// }

@@ -5,6 +5,7 @@ public enum MemberStatusEnum {
 
     정상,
     이용정지,
+    영구정지,
     탈퇴;
 
     public boolean isFreezeMember() {

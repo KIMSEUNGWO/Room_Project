@@ -1,23 +1,22 @@
 package project.study.service;
 
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import project.study.authority.admin.dto.*;
 import project.study.domain.*;
 import project.study.dto.admin.Criteria;
-import project.study.enums.BanEnum;
-import project.study.enums.NotifyStatus;
+import project.study.exceptions.admin.AdminException;
+import project.study.exceptions.admin.AlreadyBanMemberException;
 import project.study.jpaRepository.AdminJpaRepository;
 import project.study.repository.AdminMapper;
 import project.study.repository.AdminRepository;
-import project.study.repository.FreezeRepository;
-import retrofit2.http.PUT;
-
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Optional;
 
@@ -28,7 +27,6 @@ public class AdminService {
 
     private final AdminJpaRepository adminJpaRepository;
     private final AdminRepository adminRepository;
-    private final FreezeRepository freezeRepository;
     private final AdminMapper adminMapper;
     private final Criteria criteria;
 
@@ -71,13 +69,66 @@ public class AdminService {
         adminMapper.notifyStatusChange(dto);
     }
 
+    public SearchNotifyMemberInfoDto searchNotifyMemberInfo(Long notifyId, String account){
+        SearchNotifyMemberInfoDto searchNotifyMemberInfoDto = adminMapper.notifyMemberInfo(notifyId);
+        String s = adminMapper.notifyMemberProfile(account);
+        searchNotifyMemberInfoDto.setMemberProfile(s);
+
+        return searchNotifyMemberInfoDto;
+    }
+
     @Transactional
-    public void notifyFreeze(RequestNotifyMemberFreezeDto dto){
-        adminMapper.notifyMemberFreeze(dto.getMemberId());
-        Long select = adminMapper.freezeMemberSelect(dto.getMemberId());
-        if(select==null){
-            int banEnum = dto.getFreezePeriod().getBanEnum();
-            adminMapper.newFreeze(dto);
+    public void notifyFreeze(RequestNotifyMemberFreezeDto dto, HttpServletResponse response){
+        int freezePeriod = dto.getFreezePeriod().getBanEnum();
+        Long countBanMember = adminMapper.searchBanOne(dto.getMemberId());
+        if(countBanMember!=null){
+            throw new AlreadyBanMemberException(response, "이미 영구 정지된 회원입니다");
+        }
+
+        if(freezePeriod == 9999){
+            adminMapper.notifyMemberBan(dto.getMemberId());
+            adminMapper.banFreeze(dto);
+            adminMapper.banInsert(dto);
+        } else {
+
+            String selectString = adminMapper.freezeSelect(dto.getMemberId());
+            if (selectString == null) {
+                adminMapper.notifyMemberFreeze(dto.getMemberId());
+                adminMapper.newFreeze(freezePeriod, dto.getMemberId(), dto.getFreezeReason());
+
+            } else {
+                DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+                LocalDateTime dateTime = LocalDateTime.parse(selectString, formatter);
+                LocalDateTime localDateTime = dateTime.plusDays(freezePeriod);
+                String newFreezePeriod = localDateTime.format(formatter);
+                adminMapper.plusFreeze(newFreezePeriod, dto.getMemberId(), dto.getFreezeReason());
+                }
+            }
+
+    }
+
+    public Page<SearchBanDto> searchBanList(int pageNumber, String word){
+        List<SearchBanDto> data = adminMapper.searchBanList(criteria.getStartNum(pageNumber), criteria.getEndNum(pageNumber), word);
+        return new PageImpl<>(data, criteria.getPageable(pageNumber), adminMapper.getTotalBanCnt(word));
+    }
+
+    @Transactional
+    public void liftTheBan(RequestLiftBanDto dto){
+        adminMapper.deleteBan(dto);
+        Long freezeId = adminMapper.searchFreezeId(dto);
+        adminMapper.deleteFreeze(freezeId);
+        String freezeDate = adminMapper.freezeSelect(dto.getMemberId());
+        if(freezeDate == null){
+            adminMapper.banMemberStatusChangeNormal(dto);
+        } else {
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+            LocalDateTime freezeEndDate = LocalDateTime.parse(freezeDate, formatter);
+            LocalDateTime now = LocalDateTime.now();
+            if(now.isAfter(freezeEndDate)){
+                adminMapper.banMemberStatusChangeNormal(dto);
+            } else {
+                adminMapper.banMemberStatusChangeFreeze(dto);
+            }
         }
     }
 
@@ -143,7 +194,7 @@ public class AdminService {
     @Transactional
     public void notifyMemberFreeze(RequestNotifyMemberFreezeDto dto){
         adminRepository.notifyMemberFreeze(dto);
-        freezeRepository.save(dto);
+//        freezeRepository.save(dto);
     }
 
     @Transactional
@@ -152,7 +203,4 @@ public class AdminService {
         adminRepository.insertRoomDelete(dto);
     }
 
-    public int getTotalMemberCnt(String word, String freezeOnly) {
-        return adminMapper.getTotalMemberCnt(word, freezeOnly);
-    }
 }

@@ -23,7 +23,7 @@ public class SearchNotifyMemberInfoDto {
     private int memberNotifyCount;
     private SocialEnum socialType;
     private MemberStatusEnum memberStatusEnum;
-    private String notifyReason;
+    private NotifyType notifyReason;
 
     @Setter
     private String memberProfile;
@@ -39,6 +39,6 @@ public class SearchNotifyMemberInfoDto {
         this.memberNotifyCount = memberNotifyCount;
         this.socialType = socialType;
         this.memberStatusEnum = memberStatusEnum;
-        this.notifyReason = notifyReason.getNotifyType();
+        this.notifyReason = notifyReason;
     }
 }

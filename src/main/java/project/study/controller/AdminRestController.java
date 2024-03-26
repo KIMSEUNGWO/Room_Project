@@ -85,7 +85,6 @@ public class AdminRestController {
                                                           HttpServletResponse response){
 
         OverallAdmin overallAdmin = check.getOverallAdmin(adminId, response);
-        Admin admin = adminService.findById(adminId).get();
 
         Page<SearchRoomDto> page = overallAdmin.searchRoomList(pageNumber, word);
 
@@ -119,7 +118,7 @@ public class AdminRestController {
                                     @SessionAttribute(name = "adminId", required = false) Long adminId,
                                     HttpServletResponse response){
         ReportAdmin reportAdmin = check.getReportAdmin(adminId, response);
-        reportAdmin.notifyFreeze(dto);
+        reportAdmin.notifyFreeze(dto, response);
 
     }
 
@@ -129,5 +128,27 @@ public class AdminRestController {
                            HttpServletResponse response){
         OverallAdmin overallAdmin = check.getOverallAdmin(adminId, response);
         overallAdmin.deleteRoom(dto);
+    }
+
+    @GetMapping("/bans/get")
+    public ResponseEntity<Page<SearchBanDto>> searchBan(@RequestParam(value = "word", required = false, defaultValue = "") String word,
+                                                          @RequestParam(defaultValue = "1", value = "page") int pageNumber,
+                                                          @SessionAttribute(name = "adminId", required = false) Long adminId,
+                                                          HttpServletResponse response){
+
+        ReportAdmin reportAdmin = check.getReportAdmin(adminId, response);
+
+        Page<SearchBanDto> page = reportAdmin.searchBanList(pageNumber, word);
+
+        return ResponseEntity.ok(page);
+    }
+
+    @PostMapping("/ban/lift")
+    public void liftTheBan(@RequestBody RequestLiftBanDto dto,
+                           @SessionAttribute(name = "adminId", required = false) Long adminId,
+                           HttpServletResponse response){
+        
+        ReportAdmin reportAdmin = check.getReportAdmin(adminId, response);
+        reportAdmin.liftTheBan(dto);
     }
 }

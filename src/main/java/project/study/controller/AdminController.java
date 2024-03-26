@@ -130,9 +130,26 @@ public class AdminController {
                                    HttpServletResponse response) {
         ReportAdmin reportAdmin = check.getReportAdmin(adminId, response);
 
-        SearchNotifyMemberInfoDto searchNotifyMemberInfoDto = reportAdmin.searchNotifyMemberInfo(account, notifyId);
+        SearchNotifyMemberInfoDto searchNotifyMemberInfoDto = reportAdmin.searchNotifyMemberInfo(notifyId, account);
         model.addAttribute("memberInfo", searchNotifyMemberInfoDto);
-        return "/admin/notify_member";
+        return "admin/notify_member";
     }
 
+    @GetMapping("/bans")
+    public String searchBan(@RequestParam(value = "word", required = false, defaultValue = "") String word,
+                            @RequestParam(defaultValue = "1", value = "page") int pageNumber,
+                            @SessionAttribute(name = "adminId", required = false) Long adminId,
+                            HttpServletResponse response, Model model){
+
+        ReportAdmin reportAdmin = check.getReportAdmin(adminId, response);
+        Admin admin = adminService.findById(adminId).get();
+
+        Page<SearchBanDto> searchBanDto = reportAdmin.searchBanList(pageNumber, word);
+        model.addAttribute("page", searchBanDto);
+        model.addAttribute("word", word);
+        model.addAttribute("adminName", admin.getName());
+        model.addAttribute("adminEnum", admin.getAdminEnum());
+
+        return "admin/admin_ban";
+    }
 }

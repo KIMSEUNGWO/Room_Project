@@ -1,5 +1,6 @@
 package project.study.authority.admin;
 
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Component;
@@ -30,8 +31,8 @@ public class ReportAdmin implements NotifyMemberInfoAuthority, BanAuthority {
     }
 
     @Override
-    public void notifyFreeze(RequestNotifyMemberFreezeDto dto) {
-        banAuthority.notifyFreeze(dto);
+    public void notifyFreeze(RequestNotifyMemberFreezeDto dto, HttpServletResponse response) {
+        banAuthority.notifyFreeze(dto, response);
     }
 
     @Override
@@ -57,5 +58,20 @@ public class ReportAdmin implements NotifyMemberInfoAuthority, BanAuthority {
     @Override
     public SearchNotifyMemberInfoDto searchNotifyMemberInfo(String account, Long notifyId) {
         return notifyMemberInfoAuthority.searchNotifyMemberInfo(account, notifyId);
+    }
+
+    @Override
+    public SearchNotifyMemberInfoDto searchNotifyMemberInfo(Long notifyId, String account) {
+        return notifyMemberInfoAuthority.searchNotifyMemberInfo(notifyId, account);
+    }
+
+    @Override
+    public Page<SearchBanDto> searchBanList(int pageNumber, String word) {
+        return banAuthority.searchBanList(pageNumber, word);
+    }
+
+    @Override
+    public void liftTheBan(RequestLiftBanDto dto) {
+        banAuthority.liftTheBan(dto);
     }
 }
