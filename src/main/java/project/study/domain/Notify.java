@@ -60,8 +60,4 @@ public class Notify implements ImageFileEntity {
         return null;
     }
 
-    @Override
-    public boolean isDefaultImage() {
-        return false;
-    }
 }

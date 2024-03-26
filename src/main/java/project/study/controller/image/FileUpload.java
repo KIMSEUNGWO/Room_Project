@@ -1,9 +1,10 @@
 package project.study.controller.image;
 
-import jakarta.annotation.Nullable;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.lang.Nullable;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import project.study.domain.ImageFileEntity;
@@ -22,7 +23,7 @@ public class FileUpload {
 
     private final FileUploadRepository fileUploadRepository;
 
-    public void saveFile(MultipartFile imageFile, FileUploadType fileType, ImageFileEntity parentEntity) {
+    public void saveFile(@Nullable MultipartFile imageFile, FileUploadType fileType, ImageFileEntity parentEntity) {
         if (imageFile == null) {
             FileUploadDto fileUploadDto = FileUploadDto.builder()
                             .parent(parentEntity)
@@ -32,19 +33,15 @@ public class FileUpload {
             return;
         }
 
-        byte[] fileBytes = getBytes(imageFile);
-        String contentType = imageFile.getContentType();
-
-        if (fileBytes == null || contentType == null || !contentType.startsWith("image/") || imageFile.isEmpty()) {
+        if (getBytes(imageFile) == null || isNotImageContentType(imageFile.getContentType()) || imageFile.isEmpty()) {
             return;
         }
 
         String originalFileName = imageFile.getOriginalFilename();
         String storeFileName = createFileName(originalFileName);
 
-        String fullPath = getFullPath(storeFileName, fileType);
         try {
-            imageFile.transferTo(new File(fullPath));
+            imageFile.transferTo(new File(getFullPath(storeFileName, fileType)));
         } catch (IOException e) {
             log.error("saveFile transferTo error = {}", imageFile.getName());
             return;
@@ -59,8 +56,7 @@ public class FileUpload {
         fileUploadRepository.saveImage(fileUploadDto);
     }
 
-
-    public void editFile(MultipartFile imageFile, FileUploadType fileType, ImageFileEntity parentEntity) {
+    public void editFile(@Nullable MultipartFile imageFile, FileUploadType fileType, ImageFileEntity parentEntity) {
         if (imageFile == null) {
             FileUploadDto fileUploadDto = FileUploadDto.builder()
                 .parent(parentEntity)
@@ -69,24 +65,22 @@ public class FileUpload {
             fileUploadRepository.editImage(fileUploadDto);
             return;
         }
-        byte[] fileBytes = getBytes(imageFile);
-        String contentType = imageFile.getContentType();
 
-        if (fileBytes == null || contentType == null || !contentType.startsWith("image/") || imageFile.isEmpty()) {
+        if (getBytes(imageFile) == null || isNotImageContentType(imageFile.getContentType()) || imageFile.isEmpty()) {
             return;
         }
 
         String originalFileName = imageFile.getOriginalFilename();
         String storeFileName = createFileName(originalFileName);
 
-        String fullPath = getFullPath(storeFileName, fileType);
         try {
-            imageFile.transferTo(new File(fullPath));
+            imageFile.transferTo(new File(getFullPath(storeFileName, fileType)));
         } catch (IOException e) {
-            log.error("saveFile transferTo error = {}", imageFile.getName());
+            log.error("editFile transferTo error = {}", imageFile.getName());
             return;
         }
 
+        // 이전 이미지 파일 삭제
         fileUploadRepository.deleteImage(fileType, parentEntity);
 
         FileUploadDto fileUploadDto = FileUploadDto.builder()
@@ -99,16 +93,17 @@ public class FileUpload {
         fileUploadRepository.editImage(fileUploadDto);
     }
 
-    private String getFullPath(String fileName, FileUploadType fileType) {
-        StringBuffer sb = new StringBuffer(fileDir);
+    private boolean isNotImageContentType(String contentType) {
+        return contentType == null || !contentType.startsWith("image/");
+    }
 
-        if (fileType == null) {
-            return sb.append("/").append(fileName).toString();
-        }
+    private String getFullPath(String fileName, FileUploadType fileType) {
+        StringBuilder sb = new StringBuilder(fileDir);
+
+        if (fileType == null) return sb.append(fileName).toString();
 
         String folderName = fileType.getDir();
-        sb.append(folderName).append("/").append(fileName);
-        return sb.toString();
+        return sb.append(folderName).append("/").append(fileName).toString();
     }
 
     private byte[] getBytes(MultipartFile imageFile) {
@@ -120,8 +115,7 @@ public class FileUpload {
         }
     }
 
-
-    @Nullable
+    @NotNull
     private String createFileName(String originalFilename) {
         String uuid = UUID.randomUUID().toString();
 
