@@ -4,7 +4,11 @@ import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 import org.springframework.security.core.parameters.P;
 import project.study.authority.admin.dto.*;
+import project.study.enums.NotifyType;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.util.Date;
 import java.util.List;
 
 @Mapper
@@ -28,7 +32,23 @@ public interface AdminMapper {
     SearchNotifyReadMoreDtoBatis notifyReedMore(Long notifyId);
     List<SearchNotifyImageDtoBatis> notifyImage(Long notifyId);
     void notifyStatusChange(RequestNotifyStatusChangeDto dto);
+
+    SearchNotifyMemberInfoDto notifyMemberInfo(Long notifyId);
+    String notifyMemberProfile(String account);
     void notifyMemberFreeze(Long memberId);
-    Long freezeMemberSelect(Long memberId);
-    void newFreeze(RequestNotifyMemberFreezeDto dto);
+    void notifyMemberBan(Long memberId);
+    Long searchBanOne(Long memberId);
+    void banInsert(RequestNotifyMemberFreezeDto dto);
+    String freezeSelect(Long memberId);
+    void banFreeze(RequestNotifyMemberFreezeDto dto);
+    void newFreeze(@Param("freezePeriod") int freezePeriod, @Param("memberId") Long memberId, @Param("freezeReason") NotifyType freezeReason);
+    void plusFreeze(@Param("newFreezePeriod") String newFreezePeriod, @Param("memberId") Long memberId, @Param("freezeReason") NotifyType freezeReason);
+
+    List<SearchBanDto> searchBanList(@Param("startNum") int startNum, @Param("endNum") int endNum, @Param("word") String word);
+    int getTotalBanCnt(@Param("word") String word);
+    Long searchFreezeId(RequestLiftBanDto dto);
+    void deleteBan(RequestLiftBanDto dto);
+    void deleteFreeze(Long freezeId);
+    void banMemberStatusChangeNormal(RequestLiftBanDto dto);
+    void banMemberStatusChangeFreeze(RequestLiftBanDto dto);
 }

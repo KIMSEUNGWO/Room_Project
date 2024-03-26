@@ -4,22 +4,22 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
-import project.study.domain.Member;
-import project.study.enums.BanEnum;
 import project.study.enums.NotifyType;
+import project.study.enums.SocialEnum;
+
+import java.time.LocalDateTime;
 
 @Getter
 @ToString
 @NoArgsConstructor
 @AllArgsConstructor
-public class RequestNotifyMemberFreezeDto {
+public class SearchBanDto {
 
+    private Long banId;
     private Long memberId;
     private String memberAccount;
     private String memberName;
     private String memberNickname;
     private String phone;
-    private BanEnum freezePeriod;
-    private NotifyType freezeReason;
-
+    private String suspendedDate;
 }

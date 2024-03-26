@@ -84,6 +84,11 @@ input[type="checkbox"] {
 .notify .table-top, .notify .entity {
     grid-template-columns: 18% 18% 25% 12% 7% 10% 10%;
 }
+
+.bans .table-top, .bans .entity {
+    grid-template-columns: 10% 22% 14% 14% 15% 15% 10%;
+}
+
 .notify .entity > * {
     text-overflow: ellipsis;
     white-space: nowrap;
@@ -162,12 +167,12 @@ input[type="checkbox"] {
 .option-menu li:hover {
     background-color: rgb(48, 59, 74);
 }
-.option-menu li.option-exit * {
+.option-menu li.option-exit *,  .option-menu li.option-change *{
     fill: rgb(240, 72, 72);
     color: rgb(240, 72, 72);
 }
 
-.expire .entity > *, .members .entity > *, .rooms .entity > *, .notify .entity {
+.expire .entity > *, .members .entity > *, .rooms .entity > *, .notify .entity > *, .bans .entity > * {
     padding: 0;
     text-align: center;
 }

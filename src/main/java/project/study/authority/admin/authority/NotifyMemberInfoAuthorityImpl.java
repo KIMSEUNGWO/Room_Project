@@ -37,5 +37,10 @@ public class NotifyMemberInfoAuthorityImpl implements NotifyMemberInfoAuthority{
         return adminService.searchNotifyMemberInfo(account, notifyId);
     }
 
+    @Override
+    public SearchNotifyMemberInfoDto searchNotifyMemberInfo(Long notifyId, String account) {
+        return adminService.searchNotifyMemberInfo(notifyId, account);
+    }
+
 
 }

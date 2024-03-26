@@ -10,5 +10,6 @@ public interface NotifyMemberInfoAuthority {
     SearchNotifyReadMoreDto searchNotifyReadMore(Long notifyId);
     SearchNotifyReadMoreDtoBatis notifyReedMoreBatis(Long notifyId);
     SearchNotifyMemberInfoDto searchNotifyMemberInfo(String account, Long notifyId);
+    SearchNotifyMemberInfoDto searchNotifyMemberInfo(Long notifyId, String account);
 
 }

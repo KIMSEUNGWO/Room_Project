@@ -5,6 +5,8 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDateTime;
+
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
@@ -16,9 +18,11 @@ public class Ban {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "SEQ_BAN")
     private Long banId;
+    private Long memberId;
     private String banAccount;
     private String banName;
     private String banNickname;
     private String banPhone;
+    private LocalDateTime suspendedDate;
 
 }
