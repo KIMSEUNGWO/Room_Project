@@ -36,7 +36,7 @@ function memberFreeze(){
                 window.opener.location.reload();
             },
              error: function(xhr, status, error) {
-                alert('이미 영구된 정지 회원입니다');
+                alert('이미 영구 정지된 회원입니다');
             }
         });
     });

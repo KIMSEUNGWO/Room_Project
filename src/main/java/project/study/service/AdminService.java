@@ -10,7 +10,6 @@ import org.springframework.transaction.annotation.Transactional;
 import project.study.authority.admin.dto.*;
 import project.study.domain.*;
 import project.study.dto.admin.Criteria;
-import project.study.exceptions.admin.AdminException;
 import project.study.exceptions.admin.AlreadyBanMemberException;
 import project.study.jpaRepository.AdminJpaRepository;
 import project.study.repository.AdminMapper;
