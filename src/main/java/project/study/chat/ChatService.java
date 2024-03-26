@@ -70,10 +70,9 @@ public class ChatService {
         return chatRepository.findRecentlyHistoryMemberNickname(memberId, room);
     }
 
-    public List<Chat.ResponseChatHistory> findByChatHistory(Room room, Long memberId) {
-        // TODO
-        // 채팅기록 pageable 적용예정
-        List<Chat> byChatHistory = chatRepository.findByChatHistory(room);
+    public List<Chat.ResponseChatHistory> findByChatHistory(Room room, Long pageValue, Long memberId) {
+        List<Chat> byChatHistory = chatRepository.findByChatHistory(room, pageValue);
+        byChatHistory.sort(Chat::compareTo);
         return byChatHistory.stream().map(x -> x.getResponseChatHistory(memberId)).toList();
     }
 }

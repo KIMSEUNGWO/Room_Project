@@ -1,5 +1,7 @@
 package project.study.chat;
 
+import com.querydsl.core.types.Predicate;
+import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -42,12 +44,19 @@ public class ChatRepositoryOracle implements ChatRepository {
     }
 
     @Override
-    public List<Chat> findByChatHistory(Room room) {
+    public List<Chat> findByChatHistory(Room room, Long pageValue) {
         return query.select(QChat.chat)
             .from(QChat.chat)
-            .where(QRoom.room.eq(room))
-            .limit(50)
+            .where(QRoom.room.eq(room), pageable(pageValue))
+            .orderBy(QChat.chat.chatId.desc())
+            .limit(20)
             .fetch();
+    }
+
+    private BooleanExpression pageable(Long pageValue) {
+        if (pageValue.equals(0L)) return null;
+
+        return QChat.chat.chatId.lt(pageValue);
     }
 
     @Override

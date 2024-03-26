@@ -4,9 +4,11 @@ import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
+import org.jetbrains.annotations.NotNull;
 import project.study.constant.WebConst;
 
 import java.time.LocalDateTime;
+import java.util.Comparator;
 
 @Builder
 @Entity
@@ -14,7 +16,7 @@ import java.time.LocalDateTime;
 @SequenceGenerator(name = "SEQ_CHAT", sequenceName = "SEQ_CHAT_ID", allocationSize = 1)
 @NoArgsConstructor
 @AllArgsConstructor
-public class Chat {
+public class Chat implements Comparable<Chat> {
 
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "SEQ_CHAT")
@@ -33,16 +35,23 @@ public class Chat {
     private String message;
     private LocalDateTime sendDate;
 
+    @Override
+    public int compareTo(@NotNull Chat o) {
+        return (int) (this.chatId - o.chatId);
+    }
+
+
     @Getter
     public static class ResponseChatHistory {
 
         private final boolean isMe;
+        private final Long pageValue;
         private final String sender;
         private final String senderImage;
         private final String message;
         private final LocalDateTime time;
 
-        public ResponseChatHistory(Member sendMember, String message, LocalDateTime sendDate, Long memberId) {
+        public ResponseChatHistory(Long chatId, Member sendMember, String message, LocalDateTime sendDate, Long memberId) {
             if (sendMember == null) {
                 this.isMe = false;
                 this.sender = "탈퇴한 사용자";
@@ -52,12 +61,13 @@ public class Chat {
                 this.sender = sendMember.getMemberNickname();
                 this.senderImage = sendMember.getStoreImage();
             }
+            this.pageValue = chatId;
             this.message = message;
             this.time = sendDate;
         }
 
     }
     public ResponseChatHistory getResponseChatHistory(Long memberId) {
-        return new ResponseChatHistory(sendMember, message, sendDate, memberId);
+        return new ResponseChatHistory(chatId, sendMember, message, sendDate, memberId);
     }
 }
