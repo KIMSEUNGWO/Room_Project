@@ -59,4 +59,9 @@ public class Notify implements ImageFileEntity {
     public String getStoreImage() {
         return null;
     }
+
+    @Override
+    public boolean isDefaultImage() {
+        return false;
+    }
 }

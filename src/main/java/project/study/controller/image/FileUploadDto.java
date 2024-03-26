@@ -17,18 +17,27 @@ public class FileUploadDto {
     private String imageStoreName;
     private FileUploadType type;
 
+    public void defaultImageCheck() {
+        if (imageUploadName == null || imageUploadName.isEmpty() || imageStoreName == null || imageStoreName.isEmpty()) {
+
+            switch (type) {
+                case MEMBER_PROFILE -> imageUploadName = imageStoreName = DEFAULT_PROFILE;
+                case ROOM_PROFILE -> imageUploadName = imageStoreName = DEFAULT_ROOM_IMAGE;
+            }
+        }
+    }
     public boolean isDefaultImage() {
         return imageUploadName == null || imageStoreName == null;
     }
 
     public ImageFileEntityChildren createEntity(Class<? extends ImageFileEntityChildren> eClass) {
 
+        defaultImageCheck();
+
         if (Profile.class.isAssignableFrom(eClass)) {
-            if (isDefaultImage()) return new Profile((Member) parent, DEFAULT_PROFILE, DEFAULT_PROFILE);
             return new Profile((Member) parent, imageUploadName, imageStoreName);
 
         } else if (RoomImage.class.isAssignableFrom(eClass)) {
-            if (isDefaultImage()) return new RoomImage((Room) parent, DEFAULT_ROOM_IMAGE, DEFAULT_ROOM_IMAGE);
             return new RoomImage((Room) parent, imageUploadName, imageStoreName);
 
         } else if (NotifyImage.class.isAssignableFrom(eClass)) {
