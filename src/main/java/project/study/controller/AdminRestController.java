@@ -12,7 +12,6 @@ import project.study.authority.admin.OverallAdmin;
 import project.study.authority.admin.ReportAdmin;
 import project.study.authority.admin.dto.*;
 import project.study.domain.Admin;
-import project.study.enums.BanEnum;
 import project.study.service.AdminService;
 
 import java.util.Optional;

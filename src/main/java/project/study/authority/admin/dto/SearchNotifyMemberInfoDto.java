@@ -1,10 +1,7 @@
 package project.study.authority.admin.dto;
 
 import com.querydsl.core.annotations.QueryProjection;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
-import lombok.ToString;
+import lombok.*;
 import project.study.enums.MemberStatusEnum;
 import project.study.enums.NotifyType;
 import project.study.enums.SocialEnum;
@@ -12,6 +9,7 @@ import project.study.enums.SocialEnum;
 @Getter
 @ToString
 @NoArgsConstructor
+@AllArgsConstructor
 public class SearchNotifyMemberInfoDto {
 
     private Long memberId;
@@ -28,17 +26,4 @@ public class SearchNotifyMemberInfoDto {
     @Setter
     private String memberProfile;
 
-    @QueryProjection
-    public SearchNotifyMemberInfoDto(Long memberId, String memberAccount, String memberName, String memberNickname, String memberPhone, String memberCreateDate, int memberNotifyCount, SocialEnum socialType, MemberStatusEnum memberStatusEnum, NotifyType notifyReason) {
-        this.memberId = memberId;
-        this.memberAccount = memberAccount;
-        this.memberName = memberName;
-        this.memberNickname = memberNickname;
-        this.memberPhone = memberPhone;
-        this.memberCreateDate = memberCreateDate;
-        this.memberNotifyCount = memberNotifyCount;
-        this.socialType = socialType;
-        this.memberStatusEnum = memberStatusEnum;
-        this.notifyReason = notifyReason;
-    }
 }

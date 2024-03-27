@@ -2,13 +2,8 @@ package project.study.repository;
 
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
-import org.springframework.security.core.parameters.P;
 import project.study.authority.admin.dto.*;
 import project.study.enums.NotifyType;
-
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.util.Date;
 import java.util.List;
 
 @Mapper

@@ -4,7 +4,6 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
-import project.study.domain.Member;
 import project.study.enums.BanEnum;
 import project.study.enums.NotifyType;
 

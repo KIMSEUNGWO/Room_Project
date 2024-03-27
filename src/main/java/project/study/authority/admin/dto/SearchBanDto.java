@@ -4,10 +4,6 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
-import project.study.enums.NotifyType;
-import project.study.enums.SocialEnum;
-
-import java.time.LocalDateTime;
 
 @Getter
 @ToString
