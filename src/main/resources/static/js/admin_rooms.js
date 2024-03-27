@@ -25,14 +25,12 @@ function roomOptionOpen(){
             initMoreList();
             let menu = $(e.target).children('[name="option-menu"]');
             menu.removeClass('disabled');
-            console.log('open')
         }
     });
 };
 
 function initMoreList() {
     $('.option-menu').addClass('disabled');
-    console.log('init');
 };
 
 function roomOptionClose() {
@@ -45,7 +43,6 @@ function roomOptionClose() {
                 let optionMenu = $(this);
                 if (!optionMenu.hasClass('disabled')) {
                     optionMenu.addClass('disabled');
-                    console.log('close');
                 }
             });
         }
@@ -92,7 +89,6 @@ function sendRequest(page) {
             roomOptionClose();
             deleteRoom();
 
-            // History API를 사용하여 URL 변경
             if(page==null){
                 var newUrl = '/admin/rooms?page=1';
             } else {
