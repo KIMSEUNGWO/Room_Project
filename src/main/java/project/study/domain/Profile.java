@@ -6,10 +6,9 @@ import lombok.NoArgsConstructor;
 @Entity
 @NoArgsConstructor
 @Table(name = "PROFILE")
-@SequenceGenerator(name = "SEQ_PROFILE", sequenceName = "SEQ_PROFILE_ID", allocationSize = 1)
 public class Profile extends ImageFileEntityChildren {
 
-    @Id @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "SEQ_PROFILE")
+    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long profileId;
 
     @OneToOne(fetch = FetchType.LAZY)

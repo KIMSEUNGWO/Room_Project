@@ -18,11 +18,10 @@ import java.time.LocalDateTime;
 @Builder
 @Entity
 @Table(name = "CERTIFICATION")
-@SequenceGenerator(name = "SEQ_CERTIFICATION", sequenceName = "SEQ_CERTIFICATION_ID", allocationSize = 1)
 public class Certification {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "SEQ_CERTIFICATION")
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long certificationId;
     private String name;
     @Getter

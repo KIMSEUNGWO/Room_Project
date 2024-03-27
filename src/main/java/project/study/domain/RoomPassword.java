@@ -10,10 +10,9 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @Builder
 @Table(name = "ROOM_PASSWORD")
-@SequenceGenerator(name = "SEQ_ROOM_PASSWORD", sequenceName = "SEQ_ROOM_PASSWORD_ID", allocationSize = 1)
 public class RoomPassword {
 
-    @Id @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "SEQ_ROOM_PASSWORD")
+    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "ROOM_PASSWORD_ID")
     private Long roomPasswordId;
 

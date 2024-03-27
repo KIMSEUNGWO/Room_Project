@@ -13,11 +13,10 @@ import project.study.controller.api.sms.FindAccount;
 @AllArgsConstructor
 @Entity
 @Table(name = "BASIC")
-@SequenceGenerator(name = "SEQ_BASIC", sequenceName = "SEQ_BASIC_ID", allocationSize = 1)
 public class Basic implements MemberType {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "SEQ_BASIC")
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long basicId;
 
     private String account;

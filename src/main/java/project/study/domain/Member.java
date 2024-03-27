@@ -23,11 +23,10 @@ import static project.study.enums.MemberStatusEnum.*;
 @Builder
 @Entity
 @Table(name = "MEMBER")
-@SequenceGenerator(name = "SEQ_MEMBER", sequenceName = "SEQ_MEMBER_ID", allocationSize = 1)
 public class Member implements ImageFileEntity {
 
     @Getter
-    @Id @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "SEQ_MEMBER")
+    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long memberId;
     private String memberName;
     @Getter

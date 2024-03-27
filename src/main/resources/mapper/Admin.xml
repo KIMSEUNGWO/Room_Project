@@ -6,25 +6,24 @@
 <mapper namespace="project.study.repository.AdminMapper">
 
     <select id="searchMemberList" resultType="project.study.authority.admin.dto.SearchMemberDto">
-            select * from(
-                select
-                    row_number() over(order by m.member_create_date desc) as rn,
-                    COALESCE(b.account, s.social_email) AS memberAccount,
-                    m.member_name as memberName,
-                    m.member_nickname as memberNickname,
-                    m.phone as phone,
-                    to_char(m.member_create_date, 'yyyy-MM-dd') as memberCreateDate,
-                    m.member_notify_count as memberNotifyCount,
-                    s.social_type as socialType,
-                    m.member_status as memberStatusEnum
-                from member m
-                left join basic b ON m.member_id = b.member_id
-                left join social s ON m.member_id = s.member_id
-                where 1=1
-                <include refid="searchMemberWord"></include>
-                <include refid="searchMemberStatus"></include>
-                order by m.member_create_date desc)
-            where rn between #{startNum} and #{endNum}
+        select
+            COALESCE(b.account, s.social_email) AS memberAccount,
+            m.member_name AS memberName,
+            m.member_nickname AS memberNickname,
+            m.phone AS phone,
+            date_format(m.member_create_date, '%Y-%m-%d') AS memberCreateDate,
+            m.member_notify_count AS memberNotifyCount,
+            s.social_type AS socialType,
+            m.member_status AS memberStatusEnum
+        from member m
+        left join basic b ON m.member_id = b.member_id
+        left join social s ON m.member_id = s.member_id
+        where 1=1
+        <include refid="searchMemberWord"></include>
+        <include refid="searchMemberStatus"></include>
+        order by m.member_create_date desc
+        limit #{startNum}, #{endNum}
+
     </select>
 
     <select id="getTotalMemberCnt" resultType="int">
@@ -47,32 +46,30 @@
 
     <sql id="searchMemberWord">
         <if test=" word != null and word != ''">
-            and (lower(COALESCE(b.account, s.social_email)) like '%' || lower(#{word}) || '%'
-            or lower(m.member_name) like '%' || lower(#{word}) || '%'
-            or lower(m.member_nickname) like '%' || lower(#{word}) || '%'
-            or lower(m.phone) like '%' || lower(#{word}) || '%')
+            and (lower(COALESCE(b.account, s.social_email)) like concat ('%', lower(#{word}), '%')
+            or lower(m.member_name)like concat ('%', lower(#{word}), '%')
+            or lower(m.member_nickname) like concat ('%', lower(#{word}), '%')
+            or lower(m.phone) like concat ('%', lower(#{word}), '%'))
         </if>
     </sql>
 
     <select id="searchExpireMemberList" resultType="project.study.authority.admin.dto.SearchExpireMemberDto">
-        select * from(
-            select
-                row_number() over(order by m.member_expire_date desc) as rn,
-                COALESCE(b.account, s.social_email) AS memberAccount,
-                m.member_name as memberName,
-                m.member_nickname as memberNickname,
-                m.phone as memberPhone,
-                to_char(m.member_create_date, 'yyyy-MM-dd') as memberCreateDate,
-                to_char(m.member_expire_date, 'yyyy-MM-dd') as memberExpireDate,
-                s.social_type as socialType,
-                m.member_status as memberStatusEnum
-            from member m
-            left join basic b ON m.member_id = b.member_id
-            left join social s ON m.member_id = s.member_id
-            where m.member_status = '탈퇴'
-            <include refid="searchMemberWord"></include>
-            order by m.member_expire_date desc)
-        where rn between #{startNum} and #{endNum}
+        select
+            COALESCE(b.account, s.social_email) AS memberAccount,
+            m.member_name as memberName,
+            m.member_nickname as memberNickname,
+            m.phone as memberPhone,
+            date_format(m.member_create_date, '%Y-%m-%d') as memberCreateDate,
+            date_format(m.member_expire_date, '%Y-%m-%d') as memberExpireDate,
+            s.social_type as socialType,
+            m.member_status as memberStatusEnum
+        from member m
+        left join basic b on m.member_id = b.member_id
+        left join social s on m.member_id = s.member_id
+        where m.member_status = '탈퇴'
+        <include refid="searchMemberWord"></include>
+        order by m.member_expire_date desc
+        limit #{startNum}, #{endNum}
     </select>
 
     <select id="getTotalExpireMemberCnt" resultType="int">
@@ -84,26 +81,22 @@
     </select>
 
     <select id="searchRoomList" resultType="project.study.authority.admin.dto.SearchRoomDto">
-        select * from(
-            select
-                    row_number() over(order by r.room_create_date desc) rn,
-                    j.room_id as roomId,
-                    r.room_title as roomTitle,
-                    ((cast((select count(j.room_id)
-                            from join_room j
-                            where r.room_id = j.room_id) as varchar2(4000 char)))
-                            ||'/'||
-                    cast(r.room_limit as varchar2(4000 char))) as roomMemberCount,
-                    m.member_name as managerName,
-                    to_char(r.room_create_date, 'yyyy-MM-dd') as roomCreateDate,
-                    r.room_public as publicEnum
-            from join_room j
-            left join room r on r.room_id = j.room_id
-            left join member m on m.member_id = j.member_id
-            where j.authority_enum = '방장'
-            <include refid="searchRoomWord"></include>
-            order by r.room_create_date desc)
-        where rn between #{startNum} and #{endNum}
+        select
+            j.room_id as roomId,
+            r.room_title as roomTitle,
+            concat(cast((select count(j.room_id) from join_room j where r.room_id = j.room_id) as char),
+            '/',
+            cast(r.room_limit as char)) as roomMemberCount,
+            m.member_name as managerName,
+            date_format(r.room_create_date, '%Y-%m-%d') as roomCreateDate,
+            r.room_public as publicEnum
+        from join_room j
+        left join room r on r.room_id = j.room_id
+        left join member m on m.member_id = j.member_id
+        where j.authority_enum = '방장'
+        <include refid="searchRoomWord"></include>
+        order by r.room_create_date desc
+        limit #{startNum}, #{endNum}
     </select>
 
     <select id="getTotalRoomCnt" resultType="int">
@@ -117,9 +110,9 @@
 
     <sql id="searchRoomWord">
         <if test=" word != null and word != ''">
-            and (lower(j.room_id) like '%' || lower(#{word}) || '%'
-            or lower(r.room_title) like '%' || lower(#{word}) || '%'
-            or lower(m.member_name) like '%' || lower(#{word}) || '%')
+            and (lower(j.room_id) like concat ('%', lower(#{word}), '%')
+            or lower(r.room_title) like concat ('%', lower(#{word}), '%')
+            or lower(m.member_name) like concat ('%', lower(#{word}), '%')
         </if>
     </sql>
 
@@ -129,33 +122,30 @@
     </delete>
     
     <insert id="insertRoomDelete">
-        insert into room_delete values(add_months(sysdate, 1), seq_room_delete_id.nextval, #{roomId})
+        insert into room_delete (room_delete_date, room_id) values (date_add(now(), interval 1 month), #{roomId})
     </insert>
 
     <select id="searchNotifyList" resultType="project.study.authority.admin.dto.SearchNotifyDto">
-        select * from(
-            select
-                    row_number() over(order by n.notify_date desc) as rn,
-                    COALESCE(b.account, s.social_email) AS reporterMemberAccount,
-                    COALESCE(b2.account, s2.social_email) AS criminalMemberAccount,
-                    r.room_id as roomId,
-                    to_char(n.notify_date, 'yyyy-MM-dd') as notifyDate,
-                    n.notify_reason as notifyReason,
-                    n.notify_id as notifyId,
-                    n.notify_status as notifyStatus
-            from notify n
-            left join room r on n.room_id = r.room_id
-            left join member m on m.member_id = n.reporter_member_id
-            left join basic b on m.member_id = b.member_id
-            left join social s on m.member_id = s.member_id
-            left join member m2 on m2.member_id = n.criminal_member_id
-            left join basic b2 on m2.member_id = b2.member_id
-            left join social s2 on m2.member_id = s2.member_id
-            where 1=1
-            <include refid="searchNotifyWord"></include>
-            <include refid="searchNotifyStatus"></include>
-            order by n.notify_date desc)
-        where rn between #{startNum} and #{endNum}
+        select
+            COALESCE(b.account, s.social_email) AS reporterMemberAccount,
+            COALESCE(b2.account, s2.social_email) AS criminalMemberAccount,
+            r.room_id as roomId,
+            date_format(n.notify_date, '%y-%m-%d') as notifyDate,
+            n.notify_reason as notifyReason,
+            n.notify_id as notifyId,
+            n.notify_status as notifyStatus
+        from notify n
+        left join room r on n.room_id = r.room_id
+        left join member m on m.member_id = n.reporter_member_id
+        left join basic b on m.member_id = b.member_id
+        left join social s on m.member_id = s.member_id
+        left join member m2 on m2.member_id = n.criminal_member_id
+        left join basic b2 on m2.member_id = b2.member_id
+        left join social s2 on m2.member_id = s2.member_id
+        where 1=1
+        <include refid="searchNotifyWord"></include>
+        <include refid="searchNotifyStatus"></include>
+        order by n.notify_date desc
     </select>
 
     <select id="getTotalNotifyCnt" resultType="int">
@@ -175,9 +165,9 @@
 
     <sql id="searchNotifyWord">
         <if test=" word != null and word != ''">
-            and (lower(COALESCE(b.account, s.social_email)) like '%' || lower(#{word}) || '%'
-            or lower(COALESCE(b2.account, s2.social_email)) like '%' || lower(#{word}) || '%'
-            or lower(r.room_id) like '%' || lower(#{word}) || '%')
+            and (lower(COALESCE(b.account, s.social_email)) like concat ('%', lower(#{word}), '%')
+            or lower(COALESCE(b2.account, s2.social_email)) like concat ('%', lower(#{word}), '%')
+            or lower(r.room_id) like concat ('%', lower(#{word}), '%')
         </if>
     </sql>
 
@@ -195,7 +185,7 @@
             COALESCE(b.account, s.social_email) AS reporterMemberAccount,
             COALESCE(b2.account, s2.social_email) AS criminalMemberAccount,
             r.room_id as roomId,
-            to_char(n.notify_date, 'yyyy-MM-dd') as notifyDate,
+            date_format(n.notify_date, '%y-%m-%d') as notifyDate,
             n.notify_reason as notifyReason,
             n.notify_content as notifyContent,
             n.notify_id as notifyId,
@@ -213,8 +203,8 @@
 
     <select id="notifyImage" resultType="project.study.authority.admin.dto.SearchNotifyImageDtoBatis">
         select
-            notify_image_store_name as notifyImageStoreName,
-            notify_image_original_name as notifyImageOriginalName
+            store_name as notifyImageStoreName,
+            original_name as notifyImageOriginalName
         from notify_image ni
         join notify n on ni.notify_id = n.notify_id
         where n.notify_id=#{notifyId}
@@ -231,7 +221,7 @@
             m.member_name as memberName,
             m.member_nickname as memberNickname,
             m.phone as memberPhone,
-            to_char(m.member_create_date, 'yyyy-MM-dd') as memberCreateDate,
+            date_format(m.member_create_date, '%y-%m-%d') as memberCreateDate,
             m.member_notify_count as memberNotifyCount,
             s.social_type as socialType,
             m.member_status as memberStatusEnum,
@@ -245,7 +235,7 @@
 
     <select id="notifyMemberProfile" resultType="String">
         select
-            p.profile_store_name as memberProfile
+            p.store_name as memberProfile
         from profile p
         left join member m on p.member_id = m.member_id
         left join basic b on m.member_id = b.member_id
@@ -267,44 +257,39 @@
 
 
     <select id="freezeSelect" resultType="String">
-        select f.freeze_end_date
-        from (
-            select freeze_end_date
-            from freeze
-            where member_id = #{memberId}
-            order by freeze_end_date DESC
-        ) f
-        where rownum = 1
+        select freeze_end_date
+        from freeze
+        where member_id = #{memberId}
+        order by freeze_end_date desc
+        limit 1
     </select>
 
     <insert id="banFreeze">
-        insert into freeze values(to_timestamp('9999-01-01', 'YYYY-MM-DD HH24:MI:SS'), seq_freeze_id.nextval, #{memberId}, #{freezeReason})
+        insert into freeze (freeze_end_date, member_id, freeze_reason) values(str_to_date('9999-01-01', '%y-%m-%d %H:%i:%s'), #{memberId}, #{freezeReason})
     </insert>
 
     <insert id="newFreeze">
-        insert into freeze values(sysdate + #{freezePeriod}, seq_freeze_id.nextval, #{memberId}, #{freezeReason})
+        insert into freeze (freeze_end_date, member_id, freeze_reason) values(date_add(current_timestamp, interval #{freezePeriod} day), #{memberId}, #{freezeReason})
     </insert>
 
     <insert id="plusFreeze">
-        insert into freeze values(to_timestamp(#{newFreezePeriod}, 'YYYY-MM-DD HH24:MI:SS'), seq_freeze_id.nextval, #{memberId}, #{freezeReason})
+        insert into freeze (freeze_end_date, member_id, freeze_reason) values(str_to_date(#{newFreezePeriod}, '%y-%m-%d %H:%i:%s'), #{memberId}, #{freezeReason})
     </insert>
 
     <select id="searchBanList" resultType="project.study.authority.admin.dto.SearchBanDto">
-        select * from(
-            select
-                row_number() over(order by b.ban_id desc) as rn,
-                b.ban_id as banId,
-                b.ban_account AS memberAccount,
-                b.ban_name as memberName,
-                b.ban_nickname as memberNickname,
-                b.ban_phone as phone,
-                to_char(b.suspended_date, 'yyyy-MM-dd') as suspendedDate,
-                b.member_id as memberId
-            from ban b
-            where 1=1
-            <include refid="searchBanWord"></include>
-            order by b.ban_id desc)
-        where rn between #{startNum} and #{endNum}
+        select
+            b.ban_id as banId,
+            b.ban_account AS memberAccount,
+            b.ban_name as memberName,
+            b.ban_nickname as memberNickname,
+            b.ban_phone as phone,
+            date_format(b.suspended_date, '%y-%m-%d') as suspendedDate,
+            b.member_id as memberId
+        from ban b
+        where 1=1
+        <include refid="searchBanWord"></include>
+        order by b.ban_id desc
+        limit #{startNum}, #{endNum}
     </select>
 
     <select id="getTotalBanCnt" resultType="int">
@@ -315,10 +300,10 @@
 
     <sql id="searchBanWord">
         <if test=" word != null and word != ''">
-            and (lower(b.ban_Id) like '%' || lower(#{word}) || '%'
-            or lower(b.ban_account) like '%' || lower(#{word}) || '%'
-            or lower(b.ban_name) like '%' || lower(#{word}) || '%'
-            or lower(b.ban_nickname) like '%' || lower(#{word}) || '%')
+            and (lower(b.ban_Id) like concat('%', lower(#{word}), '%')
+            or lower(b.ban_account) like concat('%', lower(#{word}), '%')
+            or lower(b.ban_name) like concat('%', lower(#{word}), '%')
+            or lower(b.ban_nickname) like concat('%', lower(#{word}), '%')
         </if>
     </sql>
 
@@ -329,7 +314,7 @@
     </select>
 
     <insert id="banInsert">
-        insert into ban values (seq_ban_id.nextval, #{memberAccount}, #{memberName}, #{memberNickname}, #{phone}, sysdate, #{memberId})
+        insert into ban (member_id, suspended_date, ban_account, ban_name, ban_nickname, ban_phone) values (#{memberId}, sysdate, #{memberAccount}, #{memberName}, #{memberNickname}, #{phone})
     </insert>
 
     <delete id="deleteBan">
@@ -337,14 +322,11 @@
     </delete>
 
     <select id="searchFreezeId" resultType="Long">
-        select f.freeze_id
-        from (
-            select freeze_id
-            from freeze
-            where member_id = #{memberId}
-            order by freeze_end_date DESC
-        ) f
-        where rownum = 1
+        select freeze_id
+        from freeze
+        where member_id = #{memberId}
+        order by freeze_end_date DESC
+        limit 1
     </select>
 
     <delete id="deleteFreeze">

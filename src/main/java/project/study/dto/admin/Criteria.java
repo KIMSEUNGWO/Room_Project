@@ -10,14 +10,14 @@ public class Criteria {
     private final int amount = 10;
 
     public int getStartNum(int pageNumber) {
-        return (pageNumber - 1) * amount + 1;
+        return (pageNumber-1) * amount;
     }
 
     public int getEndNum(int pageNumber) {
-        return (pageNumber - 1) * amount + amount;
+        return (pageNumber-1) * amount + amount;
     }
 
     public Pageable getPageable(int pageNumber) {
-        return PageRequest.of(pageNumber - 1, amount);
+        return PageRequest.of(pageNumber-1, amount);
     }
 }

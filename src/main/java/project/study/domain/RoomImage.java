@@ -6,10 +6,9 @@ import lombok.NoArgsConstructor;
 @Entity
 @NoArgsConstructor
 @Table(name = "ROOM_IMAGE")
-@SequenceGenerator(name = "SEQ_ROOM_IMAGE", sequenceName = "SEQ_ROOM_IMAGE_ID", allocationSize = 1)
 public class RoomImage extends ImageFileEntityChildren {
 
-    @Id @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "SEQ_ROOM_IMAGE")
+    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "ROOM_IMAGE_ID")
     private Long roomImageId;
 

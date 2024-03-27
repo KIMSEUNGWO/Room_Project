@@ -7,10 +7,9 @@ import lombok.NoArgsConstructor;
 @Entity
 @NoArgsConstructor
 @Table(name = "TAG")
-@SequenceGenerator(name = "SEQ_TAG", sequenceName = "SEQ_TAG_ID", allocationSize = 1)
 public class Tag {
 
-    @Id @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "SEQ_TAG")
+    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "TAG_ID")
     private Long tagId;
 

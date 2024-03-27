@@ -17,11 +17,10 @@ import java.util.List;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@SequenceGenerator(name = "SEQ_ROOM", sequenceName = "SEQ_ROOM_ID", allocationSize = 1)
 public class Room implements ImageFileEntity {
 
     @Getter
-    @Id @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "SEQ_ROOM")
+    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long roomId;
 
     @Getter

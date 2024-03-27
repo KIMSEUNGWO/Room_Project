@@ -99,13 +99,13 @@ public class RoomRepository {
                     m.memberId.as("memberId"),
                     p.storeName.as("image"),
                     m.memberNickname.as("name"),
-                    m.eq(member).as("isMe"),
-                    isManager(j.authorityEnum).as("isManager")
+                    m.memberId.eq(member.getMemberId()).as("isMe"),
+                    j.authorityEnum.stringValue().eq(AuthorityMemberEnum.방장.name()).as("isManager")
                 ))
                 .from(j)
-                .join(m).on(j.member.eq(m))
-                .leftJoin(p).on(p.member.eq(m))
-                .where(j.room.eq(room))
+                .join(m).on(j.member.memberId.eq(m.memberId))
+                .leftJoin(p).on(p.member.memberId.eq(m.memberId))
+                .where(j.room.roomId.eq(room.getRoomId()))
                 .fetch();
     }
 
@@ -128,9 +128,9 @@ public class RoomRepository {
                 p.roomPassword.as("password")
             ))
             .from(r)
-            .join(ri).on(r.roomImage.eq(ri))
-            .leftJoin(r.roomPassword, p)
-            .where(r.eq(room))
+            .join(ri).on(r.roomImage.roomImageId.eq(ri.roomImageId))
+            .leftJoin(p).on(r.roomId.eq(p.room.roomId))
+            .where(r.roomId.eq(room.getRoomId()))
             .fetchFirst();
     }
 

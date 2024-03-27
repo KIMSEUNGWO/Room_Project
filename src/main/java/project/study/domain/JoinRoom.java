@@ -13,11 +13,10 @@ import project.study.enums.AuthorityMemberEnum;
 @Builder
 @Entity
 @Table(name = "JOIN_ROOM")
-@SequenceGenerator(name = "SEQ_JOIN_ROOM", sequenceName = "SEQ_JOIN_ROOM_ID", allocationSize = 1)
 public class JoinRoom {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "SEQ_JOIN_ROOM")
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long joinRoomId;
 
     @Getter

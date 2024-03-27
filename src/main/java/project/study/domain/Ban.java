@@ -12,11 +12,10 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @Entity
 @Table(name = "BAN")
-@SequenceGenerator(name = "SEQ_BAN", sequenceName = "SEQ_BAN_ID", allocationSize = 1)
 public class Ban {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "SEQ_BAN")
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long banId;
     private Long memberId;
     private String banAccount;

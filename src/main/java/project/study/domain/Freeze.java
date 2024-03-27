@@ -13,11 +13,10 @@ import java.time.format.DateTimeFormatter;
 @Builder
 @Entity
 @Table(name = "FREEZE")
-@SequenceGenerator(name = "SEQ_FREEZE", sequenceName = "SEQ_FREEZE_ID", allocationSize = 1)
 public class Freeze {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "SEQ_FREEZE")
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long freezeId;
 
     @ManyToOne(fetch = FetchType.LAZY)
