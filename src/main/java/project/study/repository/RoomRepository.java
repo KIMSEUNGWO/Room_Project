@@ -173,7 +173,6 @@ public class RoomRepository {
         RoomDelete saveRoomDelete = RoomDelete.builder()
             .room(room)
             .roomDeleteDate(LocalDateTime.now().plusMonths(1))
-//            .roomDeleteDate(LocalDateTime.now())
             .build();
 
         roomDeleteJpaRepository.save(saveRoomDelete);

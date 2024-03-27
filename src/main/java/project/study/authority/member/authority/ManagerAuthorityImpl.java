@@ -30,13 +30,11 @@ public class ManagerAuthorityImpl implements ManagerAuthority{
 
     @Override
     public void editRoom(Room room, RequestEditRoomDto data) {
-        System.out.println("editRoom 실행");
         roomService.editRoom(room, data);
     }
 
     @Override
     public Member managerEntrust(Member member, Room room, RequestEntrustDto data) {
-        System.out.println("managerEntrust 실행");
         Member nextManagerMember = memberRepository.findByMemberNickname(data.getNickname());
 
         JoinRoom currentManager = findByJoinRoomMember(room, member, "참여자가 아닙니다.");
@@ -70,7 +68,6 @@ public class ManagerAuthorityImpl implements ManagerAuthority{
 
     @Override
     public Member kickMember(HttpServletResponse response, Room room, RequestKickDto data) {
-        System.out.println("kickMember 실행");
         Member kickMember = memberRepository.findByMemberNickname(data.getNickname());
 
         JoinRoom joinRoom = findByJoinRoomMember(room, kickMember, "참여자가 아닙니다.");
@@ -83,8 +80,7 @@ public class ManagerAuthorityImpl implements ManagerAuthority{
     @NotNull
     private JoinRoom findByJoinRoomMember(Room room, Member member, String errorMessage) {
         Optional<JoinRoom> findJoinRoom = room.getJoinRoomList().stream().filter(joinRoom -> joinRoom.compareMember(member)).findFirst();
-        if (findJoinRoom.isEmpty()) throw new RestFulException(new ResponseDto(WebConst.ERROR, errorMessage));
-        return findJoinRoom.get();
+        return findJoinRoom.orElseThrow(() -> new RestFulException(new ResponseDto(WebConst.ERROR, errorMessage)));
     }
     
 }

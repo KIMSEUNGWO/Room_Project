@@ -1,6 +1,5 @@
 package project.study.chat;
 
-import com.querydsl.core.types.Predicate;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
@@ -8,7 +7,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Repository;
 import project.study.domain.*;
 import project.study.chat.dto.ChatDto;
-import project.study.chat.jparepository.ChatJpaRepository;
+import project.study.jpaRepository.ChatJpaRepository;
 
 import java.util.List;
 import java.util.Optional;

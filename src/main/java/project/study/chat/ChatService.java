@@ -38,7 +38,6 @@ public class ChatService {
 
     public ChatObject<Collection<String>> changeToMemberListDto(ChatDto chat) {
         Collection<String> memberList = currentMemberManager.getMemberList(chat.getRoomId());
-//        ResponseChatMember responseChatMemberList = new ResponseChatMember(memberList);
         return new ChatObject<>(chat, memberList);
     }
 

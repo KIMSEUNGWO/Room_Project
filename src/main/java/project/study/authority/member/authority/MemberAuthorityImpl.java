@@ -8,7 +8,6 @@ import project.study.authority.member.dto.RequestCreateRoomDto;
 import project.study.authority.member.dto.RequestJoinRoomDto;
 import project.study.authority.member.dto.RequestNotifyDto;
 import project.study.authority.member.dto.ResponseRoomListDto;
-import project.study.constant.WebConst;
 import project.study.domain.JoinRoom;
 import project.study.domain.Member;
 import project.study.domain.Notify;
@@ -25,7 +24,8 @@ import java.io.PrintWriter;
 import java.util.List;
 import java.util.Optional;
 
-import static project.study.enums.AuthorityMemberEnum.방장;
+import static project.study.constant.WebConst.*;
+
 
 @RequiredArgsConstructor
 @Component
@@ -54,11 +54,11 @@ public class MemberAuthorityImpl implements MemberAuthority{
     private void validNotify(RequestNotifyDto data) {
         String nickname = data.getNickname();
         if (nickname == null) {
-            throw new RestFulException(new ResponseDto(WebConst.ERROR, "신고하는 유저를 선택해주세요."));
+            throw new RestFulException(new ResponseDto(ERROR, "신고하는 유저를 선택해주세요."));
         }
         String content = data.getNotifyContent();
         if (content == null || content.length() > 1000) {
-            throw new RestFulException(new ResponseDto(WebConst.ERROR, "신고내용을 1000자 이내로 작성해주세요."));
+            throw new RestFulException(new ResponseDto(ERROR, "신고내용을 1000자 이내로 작성해주세요."));
         }
     }
 

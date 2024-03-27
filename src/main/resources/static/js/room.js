@@ -223,7 +223,6 @@ function getNoticeResult(json) {
     modal.classList.remove('disabled');
 }
 function entrustResult(json) {
-    console.log(json);
     if (json.result == 'ok') {
         al(json.result, '성공', '위임되었습니다.');
     } else if (json.result == 'error') {
@@ -237,7 +236,6 @@ function entrustResult(json) {
     }
 }
 function kickResult(json) {
-    console.log(json);
     if (json.result == 'ok') {
         al(json.result, '성공', '강퇴되었습니다.');
     } else if (json.result == 'error') {
@@ -305,7 +303,6 @@ function memberOptionMenuOpen(){
 
         if (e.target.classList.contains('member-notify-box')) {
             let memberNickname = e.target.parentElement.parentElement.parentElement.querySelector('.member-data span').textContent;
-            console.log(memberNickname);
             insertModalSize('modal-notify');
             getNickNameList(modal_content);
             modal.classList.remove('disabled');

@@ -103,7 +103,6 @@ public class RoomController {
     public ResponseEntity<ResponseDto> chatHistory(@PathRoom("room") Room room,
                                                    @RequestParam(name = "token") String token,
                                                    @RequestParam(name = "page", required = false, defaultValue = "0") Long pageValue ) {
-        System.out.println("pageValue = " + pageValue);
         Member member = chatService.getMember(token, room.getRoomId());
 
         List<Chat.ResponseChatHistory> history = chatService.findByChatHistory(room, pageValue, member.getMemberId());
@@ -128,7 +127,6 @@ public class RoomController {
         if (!exitsByMemberAndRoom) throw new RestFulException(new ResponseDto(ERROR, "권한 없음"));
 
         List<String> responseRoomMemberList = chatService.findRecentlyHistoryMemberNickname(memberId, room);
-        System.out.println("채팅기록에 존재하는 닉네임 리스트 : " + responseRoomMemberList);
         return ResponseEntity.ok(new ResponseObject<>("성공", responseRoomMemberList));
     }
 

@@ -12,7 +12,7 @@ public class ScheduleManager {
 
     private final ScheduleService scheduleService;
 
-    @Scheduled(cron = "0 0/1 * * * ?")
+    @Scheduled(cron = "0 0 0 1 * ?")
     public void deleteExpireMember() {
 
         log.info("탈퇴 예정 회원 삭제 로직 시작");

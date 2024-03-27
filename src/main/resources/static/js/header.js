@@ -270,18 +270,7 @@ function signupPost() {
     fetchPost('/signup', json, signupResult);
 }
 function signupResult(json) {
-    console.log(json);
-    if (json.result == 'error') {
-        // 예상 JSON 형식
-        /*
-            {
-                result : 'error',
-                errorList : [ 
-                                {location : account, message : message}, 
-                                {location : password, message : message}, 
-                            ]
-            }
-        */
+    if (json.result === 'error') {
         json.errorList.forEach(error => {
             let msgBox = document.querySelector('.m-' + error.location);
             let result = {result : 'error', message : error.message};
@@ -289,7 +278,7 @@ function signupResult(json) {
         })
         return;
     }
-    if (json.result == 'ok') {
+    if (json.result === 'ok') {
         al('ok', '성공', json.message);
         setTimeout(() => changeToLogin(), 500);
     }

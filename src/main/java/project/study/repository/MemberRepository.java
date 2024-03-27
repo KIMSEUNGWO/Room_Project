@@ -20,7 +20,6 @@ public class MemberRepository {
 
     public Member findByMemberNickname(String nickname) {
         Optional<Member> findMember = memberJpaRepository.findByMemberNickname(nickname);
-        if (findMember.isEmpty()) throw new RestFulException(new ResponseDto(WebConst.ERROR, "존재하지 않는 회원입니다."));
-        return findMember.get();
+        return findMember.orElseThrow(() -> new RestFulException(new ResponseDto(WebConst.ERROR, "존재하지 않는 회원입니다.")));
     }
 }

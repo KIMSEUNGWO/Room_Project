@@ -27,7 +27,6 @@ import java.util.Optional;
 @Slf4j
 public class NotifyService {
 
-    private final MemberJpaRepository memberJpaRepository;
     private final ChatRepository chatRepository;
     private final NotifyJpaRepository notifyJpaRepository;
     private final FileUpload fileUpload;
