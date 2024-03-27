@@ -8,11 +8,6 @@ public class ResponseAccountDto extends ResponseDto {
 
     private final FindAccount findAccount;
 
-    public ResponseAccountDto(String result, String message, FindAccount findAccount) {
-        super(result, message);
-        this.findAccount = findAccount;
-    }
-
     public ResponseAccountDto(String message, FindAccount findAccount) {
         super(message);
         this.findAccount = findAccount;

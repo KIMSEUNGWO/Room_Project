@@ -19,7 +19,7 @@ public class ImageController {
 
     @GetMapping(value = "/images/{fileUploadType}/{filename}", produces = {"image/png", "image/jpg", "image/jpeg"})
     public Resource downloadImage1(@PathVariable(name = "fileUploadType") String fileUploadType, @PathVariable(name = "filename") String filename) throws MalformedURLException {
-        FileUploadType type = FileUploadType.findDir(fileUploadType);
+        FileUploadType type = FileUploadType.valueOf(fileUploadType);
         return new UrlResource("file:" + getFullPath(filename, type));
     }
     @GetMapping("/images/{filename}")
@@ -30,12 +30,9 @@ public class ImageController {
     private String getFullPath(String fileName, FileUploadType type) {
         StringBuilder sb = new StringBuilder(fileDir);
 
-        if (type == null) {
-            return sb.append("/").append(fileName).toString();
-        }
+        if (type == null) return sb.append("/").append(fileName).toString();
 
         String folderName = type.getDir();
-        sb.append(folderName).append("/").append(fileName);
-        return sb.toString();
+        return sb.append(folderName).append("/").append(fileName).toString();
     }
 }

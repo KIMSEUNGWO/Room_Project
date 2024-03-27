@@ -23,7 +23,6 @@ public class SmsController {
 
     @PostMapping("/sms/send")
     public ResponseEntity<ResponseDto> sendSMS(@RequestBody RequestSms data) {
-        System.out.println("/account/find data = " + data);
 
         smsService.regexPhone(data.getPhone());
 
@@ -37,7 +36,6 @@ public class SmsController {
     @PostMapping("/sms/account/confirm")
     public ResponseEntity<ResponseDto> accountConfirm(@RequestBody RequestSms data) {
 
-        System.out.println("data = " + data);
         Certification certification = smsService.findCertification(data.getCertification());
 
         smsService.validCertification(certification, data);
@@ -80,7 +78,7 @@ public class SmsController {
     @PostMapping("/changePhone")
     public ResponseEntity<ResponseDto> changePhone(@SessionLogin(required = true, type = CallType.REST_CONTROLLER) Member member,
                                                    @RequestBody RequestSms data) {
-        System.out.println("data = " + data);
+
         Certification certification = smsService.findCertification(data.getCertification());
 
         smsService.validCertificationPhone(certification, data);
