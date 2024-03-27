@@ -15,8 +15,6 @@ import project.study.dto.admin.Criteria;
 import project.study.repository.AdminMapper;
 import project.study.service.AdminService;
 
-import java.util.List;
-
 @Controller
 @RequiredArgsConstructor
 @RequestMapping("/admin")

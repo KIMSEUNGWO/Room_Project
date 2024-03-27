@@ -10,8 +10,6 @@ import java.util.List;
 
 public interface RoomInfoAuthority {
 
-    Page<SearchRoomDto> searchRoom(String word, int pageNumber);
     Page<SearchRoomDto> searchRoomList(int pageNumber, String word);
-    void deleteJoinRoom(RequestDeleteRoomDto dto);
     void deleteRoom(RequestDeleteRoomDto dto);
 }

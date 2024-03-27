@@ -15,18 +15,8 @@ public class OverallAdmin implements ExpireMemberInfoAuthority, MemberInfoAuthor
     private final RoomInfoAuthority roomInfoAuthority;
 
     @Override
-    public Page<SearchMemberDto> searchMember(String word, String freezeOnly, int pageNumber) {
-        return memberInfoAuthority.searchMember(word, freezeOnly, pageNumber);
-    }
-
-    @Override
     public Page<SearchMemberDto> searchMemberList(int pageNumber, String word, String freezeOnly) {
         return memberInfoAuthority.searchMemberList(pageNumber, word, freezeOnly );
-    }
-
-    @Override
-    public Page<SearchExpireMemberDto> searchExpireMember(String word, int pageNumber) {
-        return expireMemberInfoAuthority.searchExpireMember(word, pageNumber);
     }
 
     @Override
@@ -35,18 +25,8 @@ public class OverallAdmin implements ExpireMemberInfoAuthority, MemberInfoAuthor
     }
 
     @Override
-    public Page<SearchRoomDto> searchRoom(String word, int pageNumber) {
-        return roomInfoAuthority.searchRoom(word, pageNumber);
-    }
-
-    @Override
     public Page<SearchRoomDto> searchRoomList(int pageNumber, String word) {
         return roomInfoAuthority.searchRoomList(pageNumber, word);
-    }
-
-    @Override
-    public void deleteJoinRoom(RequestDeleteRoomDto dto) {
-        roomInfoAuthority.deleteJoinRoom(dto);
     }
 
     @Override

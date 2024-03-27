@@ -13,11 +13,6 @@ public class ExpireMemberInfoAuthorityImpl implements ExpireMemberInfoAuthority{
     private final AdminService adminService;
 
     @Override
-    public Page<SearchExpireMemberDto> searchExpireMember(String word, int pageNumber) {
-        return adminService.searchExpireMember(word, pageNumber);
-    }
-
-    @Override
     public Page<SearchExpireMemberDto> searchExpireMemberList(int pageNumber, String word) {
         return adminService.searchExpireMemberList(pageNumber, word);
     }
