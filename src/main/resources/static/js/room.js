@@ -95,6 +95,7 @@ window.addEventListener('load', () => {
             // 방장 위임 로직
             let json = {nickname : target.value};
             fetchPost('/room/' + getRoomId() + '/entrust', json, entrustResult);
+            managerCheck();
             modalExit();
             return;
         }
