@@ -425,7 +425,7 @@ function removeMember(sender) {
     })
 }
 function updateApply(roomInfo) {
-    if (!roomInfo.isPublic) changeLockSvg();
+     changeLockSvg(roomInfo.public);
 
     let title = document.querySelector('#roomTitle');
     title.innerHTML = roomInfo.title;
@@ -433,18 +433,24 @@ function updateApply(roomInfo) {
     let maximum = document.querySelector('#maximum');
     maximum.innerHTML = roomInfo.max;
 }
-function changeLockSvg() {
+function changeLockSvg(isPublic) {
     let roomTitleWrap = document.querySelector('.room-title');
     let roomTitle = document.querySelector('#roomTitle');
 
-    if (roomTitleWrap.children.namedItem('private') == null) {
+    let privateSvg = roomTitleWrap.children.private;
+
+    if (isPublic && privateSvg !== undefined) {
+        privateSvg.remove();
+        return;
+    }
+    if (!isPublic && privateSvg === undefined) {
         roomTitleWrap.insertBefore(getPrivateSvg(), roomTitle);
     }
 }
 function getPrivateSvg() {
     let svgElement = document.createElementNS("http://www.w3.org/2000/svg", "svg");
     svgElement.setAttribute("xmlns", "http://www.w3.org/2000/svg");
-    svgElement.setAttribute("name", "private");
+    svgElement.setAttribute("id", "private");
     svgElement.setAttribute("viewBox", "0 0 448 512");
 
     // Create the path element
