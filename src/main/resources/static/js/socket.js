@@ -47,15 +47,11 @@ function isManager() {
         let me = meTagList[i].querySelector('.isMe');
         let manager = meTagList[i].querySelector('.manager');
 
-        if (me != null && manager != null) {
-            console.log('방장임');
-            return true;
-        }
+        if (me != null && manager != null) return true;
     }
     return false;
 }
 function noticeResult(json) {
-    console.log(json);
     updateNotice(json.data);
 }
 function updateNotice(notice) {
@@ -121,7 +117,6 @@ function newMessageAlert() {
 }
 
 function  historyResult(json) {
-    console.log(json);
     let list = json.data;
     for (let i=0;i<list.length;i++) {
         printMessage(list[i]);
@@ -132,7 +127,6 @@ function  historyResult(json) {
     scrollToBottom(); 
 }
 function additionalHistoryResult(json) {
-    console.log(json);
     let list = json.data;
 
     for (let i=list.length-1;i>=0;i--) {
@@ -170,7 +164,6 @@ function initialSetting() {
     fetch('/room/' + getRoomId() + '/access')
     .then(res => res.json())
     .then(map => {
-        console.log(map);
         token = map.message;
         fetchGet('/room/' + getRoomId() + '/history?token=' + token, historyResult) // 이전 기록 불러옴
         fetchGet('/room/' + getRoomId() + '/notice', noticeResult) // 공지사항 불러옴
@@ -196,7 +189,6 @@ function sendRoomInfoUpdate() {
 }
 
 function onConnected() {
-    console.log('token = ', token);
     let roomId = getRoomId();
     // sub 할 url => /sub/chat/room/enter/roomId 로 구독한다
     stompClient.subscribe('/sub/chat/room/' + roomId, onMessageReceived);
@@ -245,7 +237,6 @@ function onMessageReceived(payload) {
 
     let chat = JSON.parse(payload.body);
 
-    console.log(chat);
     if (chat.type === 'ENTER') {
         history.innerHTML += centerMessage(chat.message);
         initialMemberCheck(chat);
@@ -619,7 +610,6 @@ function newDate(day) {
 }
 
 function formatDay(time) {
-    console.log(time);
     let dateObject = new Date(time);
     return new Intl.DateTimeFormat('ko-KR', {
                 year: 'numeric',

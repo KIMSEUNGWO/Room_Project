@@ -18,16 +18,13 @@ public class FileUploadDto {
     private FileUploadType type;
 
     public void defaultImageCheck() {
-        if (imageUploadName == null || imageUploadName.isEmpty() || imageStoreName == null || imageStoreName.isEmpty()) {
+        if (imageUploadName == null || imageStoreName == null || imageUploadName.isEmpty() || imageStoreName.isEmpty()) {
 
             switch (type) {
                 case MEMBER_PROFILE -> imageUploadName = imageStoreName = DEFAULT_PROFILE;
                 case ROOM_PROFILE -> imageUploadName = imageStoreName = DEFAULT_ROOM_IMAGE;
             }
         }
-    }
-    public boolean isDefaultImage() {
-        return imageUploadName == null || imageStoreName == null;
     }
 
     public ImageFileEntityChildren createEntity(Class<? extends ImageFileEntityChildren> eClass) {

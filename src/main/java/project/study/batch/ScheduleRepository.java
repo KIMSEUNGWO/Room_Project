@@ -4,7 +4,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
-import project.study.chat.jparepository.ChatJpaRepository;
+import project.study.jpaRepository.ChatJpaRepository;
 import project.study.controller.image.FileUploadRepository;
 import project.study.controller.image.FileUploadType;
 import project.study.domain.*;

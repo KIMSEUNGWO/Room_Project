@@ -81,18 +81,7 @@ public class MainController {
     @ResponseBody
     @GetMapping("/search")
     public ResponseEntity<ResponseDto> search(@SessionAttribute(name = LOGIN_MEMBER, required = false) Long memberId, @RequestParam("word") String word, Pageable pageable) {
-        System.out.println("word = " + word + " pageable = " + pageable.getPageNumber());
-
-        long startTime = System.currentTimeMillis();
         List<ResponseRoomListDto> roomList = roomService.searchRoomList(memberId, word, pageable);
-        long endTime = System.currentTimeMillis();
-
-        System.out.println("걸린시간 = " + (endTime - startTime) + "ms");
-
-        for (ResponseRoomListDto data : roomList) {
-            System.out.println("data = " + data);
-        }
-
         return ResponseEntity.ok(new SearchRoomListDto("검색성공", word, roomList));
     }
 
@@ -101,7 +90,6 @@ public class MainController {
         if (member == null) return "redirect:/?redirectURI=/mypage";
 
         MyPageInfo info = member.getMyPageInfo();
-        System.out.println("info = " + info);
 
         model.addAttribute("main", info);
         model.addAttribute("profile", member.getStoreImage());
@@ -117,10 +105,9 @@ public class MainController {
         return "redirect:" + mainService.logout(member);
     }
 
-    @GetMapping("/room/{room}/share")
-    public String share(@SessionLogin(required = true, type = CallType.CONTROLLER) Member member, @PathRoom("room") Room room) {
-
-        return "room_share";
-    }
+//    @GetMapping("/room/{room}/share")
+//    public String share(@SessionLogin(required = true, type = CallType.CONTROLLER) Member member, @PathRoom("room") Room room) {
+//        return "room_share";
+//    }
 
 }

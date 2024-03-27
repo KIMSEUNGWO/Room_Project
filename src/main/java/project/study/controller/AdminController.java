@@ -22,8 +22,6 @@ public class AdminController {
 
     private final AdminService adminService;
     private final AdminAuthorizationCheck check;
-    private final AdminMapper adminMapper;
-    private final Criteria criteria;
 
     @GetMapping("/login")
     public String adminLogin(){

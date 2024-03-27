@@ -137,7 +137,6 @@ window.addEventListener('load', () => {
             }
     
             let json = {phone : phone.value, certification : certification.value};
-            console.log(json);
             fetchPost('/changePhone', json, resultPhone);
         }) 
     }
@@ -190,7 +189,6 @@ function deleteResult(json) {
  * }
  */
 function passwordResult(json) {
-    console.log(json);
 
     if (json.result === 'ok') {
         al(json.result, '성공', json.message);
@@ -365,7 +363,6 @@ function removeNotNumber(text) {
 }
 
 function sendSMS(result) {
-    console.log(result);
     if (result.result == 'ok') {
         if (clickLimit) {
             alert("잠시 후에 시도해주세요.");

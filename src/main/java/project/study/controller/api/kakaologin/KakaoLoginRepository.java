@@ -56,7 +56,7 @@ public class KakaoLoginRepository {
             bufferedWriter.flush();
 
             int responseCode = conn.getResponseCode();
-            System.out.println("responseCode : " + responseCode);
+            log.info("responseCode : {}", responseCode);
 
             // 요청을 통해 얻은 데이터를 InputStreamReader을 통해 읽어 오기
             BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(conn.getInputStream()));
@@ -66,15 +66,15 @@ public class KakaoLoginRepository {
             while ((line = bufferedReader.readLine()) != null) {
                 result.append(line);
             }
-            System.out.println("response body : " + result);
+            log.info("response body : {}", result);
 
             JsonElement element = JsonParser.parseString(result.toString());
 
             accessToken = element.getAsJsonObject().get("access_token").getAsString();
             refreshToken = element.getAsJsonObject().get("refresh_token").getAsString();
 
-            System.out.println("accessToken : " + accessToken);
-            System.out.println("refreshToken : " + refreshToken);
+            log.info("accessToken : {}", accessToken);
+            log.info("refreshToken : {}", refreshToken);
 
             bufferedReader.close();
             bufferedWriter.close();
@@ -96,7 +96,7 @@ public class KakaoLoginRepository {
             conn.setRequestProperty("Authorization", "Bearer " + socialToken.getAccess_token());
 
             int responseCode = conn.getResponseCode();
-            System.out.println("responseCode : " + responseCode);
+            log.info("responseCode : {}", responseCode);
 
             BufferedReader br = new BufferedReader(new InputStreamReader(conn.getInputStream()));
             String line = "";
@@ -105,7 +105,7 @@ public class KakaoLoginRepository {
             while ((line = br.readLine()) != null) {
                 result.append(line);
             }
-            System.out.println("response body : " + result);
+            log.info("response body : {}", result);
 
             JsonElement element = JsonParser.parseString(result.toString());
             String id = element.getAsJsonObject().get("id").getAsString();
@@ -139,17 +139,10 @@ public class KakaoLoginRepository {
     public void updateKakaoToken(Member loginMember, SocialToken newToken) {
         SocialToken socialToken = loginMember.getSocial().getToken();
 
-        System.out.println("업데이트 토큰 시작");
-        System.out.println("access token = " + socialToken.getAccess_token());
-        System.out.println("refresh token = " + socialToken.getRefresh_token());
-
         socialToken.setAccess_token(newToken.getAccess_token());
         socialToken.setRefresh_token(newToken.getRefresh_token());
         String postURL = "https://kauth.kakao.com/oauth/token";
 
-        System.out.println("==================================");
-        System.out.println("access token = " + socialToken.getAccess_token());
-        System.out.println("refresh token = " + socialToken.getRefresh_token());
         try {
             URL url = new URL(postURL);
             HttpURLConnection conn = (HttpURLConnection) url.openConnection();
@@ -158,9 +151,7 @@ public class KakaoLoginRepository {
 
             // POST 요청에 필요한 파라미터를 OutputStream을 통해 전송
             BufferedWriter bufferedWriter = new BufferedWriter(new OutputStreamWriter(conn.getOutputStream()));
-            String sb = "grant_type=refresh_token" +
-                "&client_id=" + restApiKey + // REST_API_KEY
-                "&refresh_token=" + socialToken.getRefresh_token(); // REFRESH_TOKEN
+            String sb = String.format("grant_type=refresh_token&client_id=%s&refresh_token=%s", restApiKey, socialToken.getRefresh_token());
             bufferedWriter.write(sb);
             bufferedWriter.flush();
 
@@ -172,7 +163,7 @@ public class KakaoLoginRepository {
             while ((line = bufferedReader.readLine()) != null) {
                 result.append(line);
             }
-            System.out.println("response body : " + result);
+            log.info("response body : {}", result);
 
             JsonElement element = JsonParser.parseString(result.toString());
 
@@ -208,8 +199,6 @@ public class KakaoLoginRepository {
         log.info("카카오 로그아웃 시작");
         String logoutUrl = "https://kapi.kakao.com/v1/user/logout";
 
-        System.out.println("access token = " + token.getAccess_token());
-        System.out.println("refresh token = " + token.getRefresh_token());
         try {
             URL url = new URL(logoutUrl);
 
@@ -224,7 +213,7 @@ public class KakaoLoginRepository {
             bufferedWriter.flush();
 
             int responseCode = conn.getResponseCode();
-            System.out.println("responseCode : " + responseCode);
+            log.info("responseCode : {}", responseCode);
 
             // 요청을 통해 얻은 데이터를 InputStreamReader을 통해 읽어 오기
             BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(conn.getInputStream()));
@@ -234,7 +223,7 @@ public class KakaoLoginRepository {
             while ((line = bufferedReader.readLine()) != null) {
                 result.append(line);
             }
-            System.out.println("response body : " + result);
+            log.info("response body : {}", result);
 
             JsonElement element = JsonParser.parseString(result.toString());
 
@@ -253,8 +242,6 @@ public class KakaoLoginRepository {
     }
 
     public String redirectLogout() {
-        return "https://kauth.kakao.com/oauth/logout" +
-            "?client_id=" + restApiKey +
-            "&logout_redirect_uri=http://localhost:8080";
+        return String.format("https://kauth.kakao.com/oauth/logout?client_id=%s&logout_redirect_uri=/", restApiKey);
     }
 }

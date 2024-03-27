@@ -62,14 +62,12 @@ dependencies {
 	// gson
 	implementation 'com.google.code.gson:gson:2.9.0'
 
-
-	/* Kurento 미디어 서버 관련 2개 */
-	implementation group: 'org.kurento', name: 'kurento-client', version: '6.18.0'
-	implementation group: 'org.kurento', name: 'kurento-utils-js', version: '6.18.0'
-
 	// Spring Batch
 	implementation 'org.springframework.boot:spring-boot-starter-batch'
 	testImplementation 'org.springframework.batch:spring-batch-test'
+
+	// 썸네일
+	implementation group: 'net.coobird', name: 'thumbnailator', version: '0.4.20'
 
 }
 

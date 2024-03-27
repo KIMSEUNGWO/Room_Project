@@ -2,6 +2,7 @@ package project.study.controller.image;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import net.coobird.thumbnailator.Thumbnails;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.lang.Nullable;
@@ -11,6 +12,7 @@ import project.study.domain.ImageFileEntity;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.UUID;
 
 @Service
@@ -41,7 +43,7 @@ public class FileUpload {
         String storeFileName = createFileName(originalFileName);
 
         try {
-            imageFile.transferTo(new File(getFullPath(storeFileName, fileType)));
+            createImageFile(imageFile, fileType, storeFileName);
         } catch (IOException e) {
             log.error("saveFile transferTo error = {}", imageFile.getName());
             return;
@@ -54,6 +56,18 @@ public class FileUpload {
                                                 .type(fileType)
                                                 .build();
         fileUploadRepository.saveImage(fileUploadDto);
+    }
+
+    // 신고하기 첨부파일은 썸네일을 적용하지 않음
+    private void createImageFile(MultipartFile imageFile, FileUploadType fileType, String storeFileName) throws IOException {
+        if (FileUploadType.NOTIFY_IMAGE.equals(fileType)) {
+            imageFile.transferTo(new File(getFullPath(storeFileName, fileType)));
+            return;
+        }
+
+        Thumbnails.of(imageFile.getInputStream())
+            .size(100, 100)
+            .toFile(new File(getFullPath(storeFileName, fileType)));
     }
 
     public void editFile(@Nullable MultipartFile imageFile, FileUploadType fileType, ImageFileEntity parentEntity) {
@@ -74,7 +88,11 @@ public class FileUpload {
         String storeFileName = createFileName(originalFileName);
 
         try {
-            imageFile.transferTo(new File(getFullPath(storeFileName, fileType)));
+            InputStream imgFileInputStream = imageFile.getInputStream();
+            Thumbnails.of(imgFileInputStream)
+                .size(100, 100)
+                .toFile(new File(getFullPath(storeFileName, fileType)));
+//            imageFile.transferTo(new File(getFullPath(storeFileName, fileType)));
         } catch (IOException e) {
             log.error("editFile transferTo error = {}", imageFile.getName());
             return;

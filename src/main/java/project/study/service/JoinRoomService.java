@@ -54,10 +54,10 @@ public class JoinRoomService {
         Optional<JoinRoom> findJoinRoom = joinRoomRepository.findByMemberAndRoom(member, room);
         return findJoinRoom.orElseThrow(() -> new NotJoinRoomException(response));
     }
+
     public Optional<JoinRoom> findByMemberAndRoom(Member member, Room room) {
         return joinRoomRepository.findByMemberAndRoom(member, room);
     }
-
 
     public void exitRoom(JoinRoom joinRoom) {
         Room room = joinRoom.getRoom();

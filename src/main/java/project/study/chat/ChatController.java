@@ -56,7 +56,6 @@ public class ChatController {
     @ResponseBody
     @GetMapping("/room/{room}/access")
     public ResponseEntity<ResponseDto> accessToken(@SessionLogin Member member, @PathRoom("room") Room room) {
-        System.out.println("accessToken 실행");
         boolean exitsByMemberAndRoom = joinRoomService.exitsByMemberAndRoom(member == null ? null : member.getMemberId(), room);
         if (!exitsByMemberAndRoom) throw new RestFulException(new ResponseDto(ERROR, "권한 없음"));
 
@@ -66,7 +65,6 @@ public class ChatController {
 
     @MessageMapping("/chat/enterUser")
     public void enterUser(@Payload ChatDto chat, SimpMessageHeaderAccessor headerAccessor) {
-        System.out.println("enterUser = " + chat);
         Member member  = chatService.getMember(chat.getToken(), chat.getRoomId());
 
         boolean hasPhone = member.hasPhone();
@@ -122,7 +120,6 @@ public class ChatController {
         chat.setSender(member.getMemberNickname());
         chat.setMessage(chat.getMessage());
         chat.setTime(LocalDateTime.now());
-        System.out.println("chat = " + chat);
 
         chatService.saveChat(chat, member, room);
 
@@ -151,7 +148,6 @@ public class ChatController {
                                                 @PathRoom("room") Room room,
                                                 HttpServletResponse response,
                                                 @RequestBody RequestKickDto data) {
-        System.out.println("강퇴당하는 회원의 닉네임 = " + data.getNickname());
         ManagerAuthority managerMember = authorizationCheck.getManagerAuthority(response, member, room);
         Member kickMember = managerMember.kickMember(response, room, data);
 
@@ -168,7 +164,6 @@ public class ChatController {
     public ResponseEntity<ResponseDto> roomManagerEntrust(@SessionLogin(required = true) Member member, @PathRoom("room") Room room,
                                             HttpServletResponse response,
                                             @RequestBody RequestEntrustDto data) {
-        System.out.println("방장 위임 회원의 닉네임 : " + data.getNickname());
         ManagerAuthority managerMember = authorizationCheck.getManagerAuthority(response, member, room);
         Member nextManager = managerMember.managerEntrust(member, room, data);
 
@@ -183,7 +178,6 @@ public class ChatController {
     public ResponseEntity<ResponseDto> roomUploadNotice(@SessionLogin(required = true) Member member, @PathRoom("room") Room room,
                                             HttpServletResponse response,
                                             @RequestBody RoomNotice.RequestNoticeDto data) {
-        System.out.println("data = " + data);
         ManagerAuthority managerMember = authorizationCheck.getManagerAuthority(response, member, room);
 
         RoomNotice.ResponseRoomNotice roomNotice = managerMember.uploadNotice(room, data);
@@ -218,8 +212,6 @@ public class ChatController {
 
     @EventListener
     public void webSocketDisconnectListener(SessionDisconnectEvent event) {
-        System.out.println("Disconnect " + event);
-
         StompHeaderAccessor headerAccessor = StompHeaderAccessor.wrap(event.getMessage());
 
         // stomp 세션에 있던 uuid 와 roomId 를 확인해서 채팅방 유저 리스트와 room 에서 해당 유저를 삭제

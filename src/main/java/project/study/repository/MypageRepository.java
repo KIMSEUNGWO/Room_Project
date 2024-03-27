@@ -5,7 +5,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
-import project.study.constant.WebConst;
 import project.study.domain.Basic;
 import project.study.domain.Member;
 import project.study.dto.abstractentity.ResponseDto;

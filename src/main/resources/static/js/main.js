@@ -75,7 +75,6 @@ function addQueryStringRedirect(redirectURI) {
     history.pushState(null, null, newUrl);
 }
 function exitRoomResult(json) {
-    console.log(json);
     if (json.result == 'ok') {
         al(json.result, '성공', '방을 나갔습니다.');
         setTimeout(() => {
