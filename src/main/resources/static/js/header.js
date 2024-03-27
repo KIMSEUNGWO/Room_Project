@@ -219,8 +219,9 @@ function distinctAccountResult(json) {
 }
 
 function printMessage(json, msgBox) {
+    if (json.result === 'none') return;
     messageInit(msgBox);
-    if (json.result == 'ok') {
+    if (json.result === 'ok') {
         msgBox.classList.add('non-error');
     } else {
         msgBox.classList.add('error');
@@ -236,7 +237,7 @@ function fetchPost(url, json, callback) {
 					, body : JSON.stringify(json)
 				})
     .then(res => res.json())
-    .then(map => callback(map));;
+    .then(map => callback(map));
 }
 function fetchDistinct(url, data, callback) {
     fetch(url , { method : 'post'
@@ -250,7 +251,7 @@ function fetchDistinct(url, data, callback) {
 function signup() {
     let errorList = [];
     signupValidation(errorList);
-    if (errorList.length != 0) return;
+    if (errorList.length !== 0) return;
     signupPost();
     
     
@@ -308,7 +309,7 @@ function signupValidation(errorList) {
 function validAccount(errorList, accountInput) {
     let m_account = document.querySelector('.m-account');
     let account = accountInput.value;
-    if (account.length == 0) {
+    if (account.length === 0) {
         let result = {result : 'error', message : '아이디를 입력해주세요.'};
         printMessage(result, m_account);
         if (errorList != null) {

@@ -36,12 +36,16 @@ public class LoginController {
     }
 
     @PostMapping("/distinct/account")
-    public ResponseEntity<ResponseDto> distinctAccount(@RequestBody String account) {
+    public ResponseEntity<ResponseDto> distinctAccount(@RequestBody(required = false) String account) {
+        if (account == null || account.isBlank()) return ResponseEntity.ok(new ResponseDto("none", ""));
+
         signupService.distinctAccount(account);
         return ResponseEntity.ok(new ResponseDto("사용할 수 있는 아이디입니다."));
     }
     @PostMapping("/distinct/nickname")
-    public ResponseEntity<ResponseDto> distinctNickname(@RequestBody String nickname) {
+    public ResponseEntity<ResponseDto> distinctNickname(@RequestBody(required = false) String nickname) {
+        if (nickname == null || nickname.isBlank()) return ResponseEntity.ok(new ResponseDto("none", ""));
+
         signupService.distinctNickname(nickname);
         return ResponseEntity.ok(new ResponseDto("사용할 수 있는 닉네임입니다."));
     }

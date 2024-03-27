@@ -21,8 +21,9 @@ public class FileUploadRepository {
     private final EntityManager em;
 
     public void saveImage(FileUploadDto data) {
+        data.defaultImageCheck();
         FileUploadType type = data.getType();
-        ImageFileEntityChildren entity = data.createEntity(type.getAClass());
+        ImageFileEntityChildren entity = type.createEntity(data);
         em.persist(entity);
     }
 

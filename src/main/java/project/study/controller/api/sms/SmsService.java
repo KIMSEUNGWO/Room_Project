@@ -2,6 +2,7 @@ package project.study.controller.api.sms;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import net.nurigo.sdk.message.model.Message;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -31,10 +32,9 @@ public class SmsService {
 
     protected void sendSMS(RequestSms data) {
         String certificationNumber = smsRepository.createCertificationNumber();
-        System.out.println("certificationNumber = " + certificationNumber);
-//        Message message = smsRepository.createMessage(data, certificationNumber);
+        Message message = smsRepository.createMessage(data, certificationNumber);
 //
-//        smsRepository.sendSms(message);
+        smsRepository.sendSms(message);
 
         data.setCertification(certificationNumber);
     }
@@ -60,10 +60,7 @@ public class SmsService {
 
     protected Certification findCertification(String certification) {
         Optional<Certification> findCertification = certificationJpaRepository.findTopByCertificationNumberOrderByCertificationId(certification);
-        if (findCertification.isEmpty()) {
-            throw new NotFoundCertificationNumberException(new ResponseDto(ERROR, "인증번호가 틀렸습니다."));
-        }
-        return findCertification.get();
+        return findCertification.orElseThrow(() -> new NotFoundCertificationNumberException(new ResponseDto(ERROR, "인증번호가 틀렸습니다.")));
     }
 
     protected void validCertification(Certification certification, RequestSms data) {
@@ -90,40 +87,28 @@ public class SmsService {
     }
 
     public FindAccount getFindAccount(RequestSms data) {
-        System.out.println("getFindAccount()");
-        Optional<Member> findMember = smsRepository.findByNameAndPhone(data.getName(), data.getPhone());
-        if (findMember.isEmpty()) {
+        try {
+            Member member = smsRepository.findByNameAndPhone(data.getName(), data.getPhone());
+            return member.findAccount();
+        } catch (NotExistsMemberException e) {
             return new FindAccount(null, "회원 정보가 없습니다.");
         }
-        Member member = findMember.get();
-
-        return member.findAccount();
     }
 
     public void checkSocialMember(RequestFindPassword data) {
-        Optional<Member> findMember = smsRepository.findByNameAndPhone(data.getName(), data.getPhone());
-        if (findMember.isEmpty()) {
-            throw new NotExistsMemberException();
-        }
-        Member member = findMember.get();
+        Member member = smsRepository.findByNameAndPhone(data.getName(), data.getPhone());
         if (member.isSocialMember()) {
             Social social = member.getSocial();
             SocialEnum type = social.getSocialType();
-            throw new NotSupportedSocialMemberException(new ResponseDto("error",  "해당계정은 " + type.getKorName() + "계정입니다."));
+            throw new NotSupportedSocialMemberException(new ResponseDto(ERROR,  "해당계정은 " + type.getKorName() + "계정입니다."));
         }
     }
 
 
     @Transactional
     public void changePassword(RequestChangePassword data) {
-        Optional<Member> findMember = smsRepository.findByNameAndPhone(data.getName(), data.getPhone());
-        if (findMember.isEmpty()) {
-            throw new NotExistsMemberException();
-        }
-
-        Member member = findMember.get();
+        Member member = smsRepository.findByNameAndPhone(data.getName(), data.getPhone());
         Basic basic = member.getBasic();
-
         basic.changePassword(encoder, data.getPassword());
 
     }

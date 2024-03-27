@@ -11,12 +11,12 @@ import net.nurigo.sdk.message.service.DefaultMessageService;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
-import project.study.constant.WebConst;
 import project.study.domain.Certification;
 import project.study.domain.Member;
 import project.study.dto.abstractentity.ResponseDto;
 import project.study.exceptions.sms.ExceedExpireException;
 import project.study.exceptions.sms.MessageSendException;
+import project.study.exceptions.sms.NotExistsMemberException;
 import project.study.exceptions.sms.SmsException;
 import project.study.jpaRepository.BanJpaRepository;
 import project.study.jpaRepository.CertificationJpaRepository;
@@ -25,6 +25,8 @@ import project.study.jpaRepository.MemberJpaRepository;
 import java.util.Optional;
 import java.util.Random;
 import java.util.stream.Collectors;
+
+import static project.study.constant.WebConst.*;
 
 @Repository
 @RequiredArgsConstructor
@@ -79,40 +81,39 @@ public class SmsRepository {
                 .collect(Collectors.joining());
     }
 
-    // TODO
-    // noRollbackFor 나중에 확인해봐야 함
     @Transactional(noRollbackFor = {SmsException.class})
     protected void validCertification(Certification certification, RequestSms data) {
         try {
             certification.valid(data);
         } catch (ExceedExpireException e) { // 인증시간 만료이면 인증 삭제 후 Exception 발생
             certificationJpaRepository.delete(certification);
-            throw new SmsException(new ResponseDto("error", "인증이 만료되었습니다."));
+            throw new SmsException(new ResponseDto(ERROR, "인증이 만료되었습니다."));
         }
     }
-    // TODO
-    // noRollbackFor 나중에 확인해봐야 함
+
     @Transactional(noRollbackFor = {SmsException.class})
     protected void validCertificationPhone(Certification certification, RequestSms data) {
         try {
             certification.changePasswordValid(data);
             boolean distinctPhone = memberJpaRepository.existsByPhone(data.getPhone());
-            boolean isBanPhone = banJpaRepository.existsByBanPhone(data.getPhone());
             if (distinctPhone) {
                 certificationJpaRepository.delete(certification);
-                throw new SmsException(new ResponseDto(WebConst.ERROR, "이미 등록된 번호입니다."));
+                throw new SmsException(new ResponseDto(ERROR, "이미 등록된 번호입니다."));
             }
+
+            boolean isBanPhone = banJpaRepository.existsByBanPhone(data.getPhone());
             if (isBanPhone) {
                 certificationJpaRepository.delete(certification);
-                throw new SmsException(new ResponseDto(WebConst.ERROR, "사용할 수 없는 번호입니다."));
+                throw new SmsException(new ResponseDto(ERROR, "사용할 수 없는 번호입니다."));
             }
         } catch (ExceedExpireException e) { // 인증시간 만료이면 인증 삭제 후 Exception 발생
             certificationJpaRepository.delete(certification);
-            throw new SmsException(new ResponseDto(WebConst.ERROR, "인증이 만료되었습니다."));
+            throw new SmsException(new ResponseDto(ERROR, "인증이 만료되었습니다."));
         }
     }
 
-    public Optional<Member> findByNameAndPhone(String name, String phone) {
-        return memberJpaRepository.findByMemberNameAndPhone(name, phone);
+    public Member findByNameAndPhone(String name, String phone) throws NotExistsMemberException {
+        Optional<Member> findMember = memberJpaRepository.findByMemberNameAndPhone(name, phone);
+        return findMember.orElseThrow(NotExistsMemberException::new);
     }
 }

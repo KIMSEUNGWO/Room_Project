@@ -27,21 +27,4 @@ public class FileUploadDto {
         }
     }
 
-    public ImageFileEntityChildren createEntity(Class<? extends ImageFileEntityChildren> eClass) {
-
-        defaultImageCheck();
-
-        if (Profile.class.isAssignableFrom(eClass)) {
-            return new Profile((Member) parent, imageUploadName, imageStoreName);
-
-        } else if (RoomImage.class.isAssignableFrom(eClass)) {
-            return new RoomImage((Room) parent, imageUploadName, imageStoreName);
-
-        } else if (NotifyImage.class.isAssignableFrom(eClass)) {
-            return new NotifyImage((Notify) parent, imageUploadName, imageStoreName);
-        }
-        return null;
-    }
-
-
 }
