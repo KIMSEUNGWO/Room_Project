@@ -38,7 +38,6 @@ function sendRequest(page) {
             memberList(response);
             paging(response.totalPages, response.number);
 
-            // History API를 사용하여 URL 변경
             if(page==null){
                 var newUrl = '/admin/members?page=1';
             } else {

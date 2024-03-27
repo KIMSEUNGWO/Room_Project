@@ -225,26 +225,3 @@ function deleteRoom() {
         });
     });
 };
-
-
-// function deleteRoom(){
-//     let optionMenus = document.querySelectorAll('.option-menu');
-
-//     optionMenus.forEach(function(optionMenu){
-//             let exit = optionMenu.children.namedItem('option-exit');
-//             exit.addEventListener('click', function(){
-//                 optionMenu.classList.add('disabled');
-//                 var roomId = exit.getAttribute('id');
-               
-//                 $.ajax({
-//                     url : '/admin/room/delete',
-//                     type : 'POST',
-//                     contentType : 'application/json',
-//                     data : JSON.stringify({roomId : roomId}),
-//                     success : function(){
-//                     window.location.reload();
-//                     }
-//                 });
-//             });
-//         });     
-// }
