@@ -13,11 +13,10 @@ import project.study.enums.SocialEnum;
 @NoArgsConstructor
 @Entity
 @Table(name = "SOCIAL")
-@SequenceGenerator(name = "SEQ_SOCIAL", sequenceName = "SEQ_SOCIAL_ID", allocationSize = 1)
 public class Social implements MemberType {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "SEQ_SOCIAL")
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long socialId;
 
     @Getter

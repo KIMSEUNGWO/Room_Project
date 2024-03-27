@@ -13,11 +13,10 @@ import project.study.enums.AuthorityAdminEnum;
 @NoArgsConstructor
 @AllArgsConstructor
 @Table(name = "ADMIN")
-@SequenceGenerator(name = "SEQ_ADMIN", sequenceName = "SEQ_ADMIN_ID", allocationSize = 1)
 public class Admin {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "SEQ_ADMIN")
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long adminId;
 
     private String account;

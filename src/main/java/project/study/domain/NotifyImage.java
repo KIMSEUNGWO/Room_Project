@@ -8,11 +8,10 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @Entity
 @Table(name = "NOTIFY_IMAGE")
-@SequenceGenerator(name = "SEQ_NOTIFY_IMAGE", sequenceName = "SEQ_NOTIFY_IMAGE_ID", allocationSize = 1)
 public class NotifyImage extends ImageFileEntityChildren {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "SEQ_NOTIFY_IMAGE")
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long notifyImageId;
 
     @ManyToOne(fetch = FetchType.LAZY)

@@ -13,13 +13,12 @@ import java.util.Comparator;
 @Builder
 @Entity
 @Table(name = "CHAT")
-@SequenceGenerator(name = "SEQ_CHAT", sequenceName = "SEQ_CHAT_ID", allocationSize = 1)
 @NoArgsConstructor
 @AllArgsConstructor
 public class Chat implements Comparable<Chat> {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "SEQ_CHAT")
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long chatId;
 
     @ManyToOne

@@ -7,12 +7,11 @@ import lombok.Setter;
 
 @Entity
 @Table(name = "SOCIAL_TOKEN")
-@SequenceGenerator(name = "SEQ_SOCIAL_TOKEN", sequenceName = "SEQ_SOCIAL_TOKEN_ID", allocationSize = 1)
 @NoArgsConstructor
 public class SocialToken {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "SEQ_SOCIAL_TOKEN")
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long socialTokenId;
 
     @Setter

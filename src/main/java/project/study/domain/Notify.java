@@ -17,11 +17,10 @@ import java.util.List;
 @Builder
 @Entity
 @Table(name = "NOTIFY")
-@SequenceGenerator(name = "SEQ_NOTIFY", sequenceName = "SEQ_NOTIFY_ID", allocationSize = 1)
 public class Notify implements ImageFileEntity {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "SEQ_NOTIFY")
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long notifyId;
 
     @ManyToOne(fetch = FetchType.LAZY)
