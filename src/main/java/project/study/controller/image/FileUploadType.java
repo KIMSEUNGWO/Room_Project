@@ -15,20 +15,29 @@ public enum FileUploadType {
     private String dir;
     private Class<? extends ImageFileEntityChildren> aClass;
 
+    public static FileUploadType findDir(String dir) {
+        FileUploadType[] values = FileUploadType.values();
+        for (FileUploadType value : values) {
+            if (value.dir.equals(dir)) {
+                return value;
+            }
+        }
+        return null;
+    }
+
     public ImageFileEntityChildren createEntity(FileUploadDto data) {
 
-        if (aClass.isAssignableFrom(Profile.class)) {
+        if (this.aClass.isAssignableFrom(Profile.class)) {
             return new Profile((Member) data.getParent(), data.getImageUploadName(), data.getImageStoreName());
 
         }
-        if (aClass.isAssignableFrom(RoomImage.class)) {
+        if (this.aClass.isAssignableFrom(RoomImage.class)) {
             return new RoomImage((Room) data.getParent(), data.getImageUploadName(), data.getImageStoreName());
 
         }
-        if (aClass.isAssignableFrom(NotifyImage.class)) {
+        if (this.aClass.isAssignableFrom(NotifyImage.class)) {
             return new NotifyImage((Notify) data.getParent(), data.getImageUploadName(), data.getImageStoreName());
         }
-
         return null;
     }
 }

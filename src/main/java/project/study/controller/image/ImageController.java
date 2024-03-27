@@ -19,7 +19,7 @@ public class ImageController {
 
     @GetMapping(value = "/images/{fileUploadType}/{filename}", produces = {"image/png", "image/jpg", "image/jpeg"})
     public Resource downloadImage1(@PathVariable(name = "fileUploadType") String fileUploadType, @PathVariable(name = "filename") String filename) throws MalformedURLException {
-        FileUploadType type = FileUploadType.valueOf(fileUploadType);
+        FileUploadType type = FileUploadType.findDir(fileUploadType);
         return new UrlResource("file:" + getFullPath(filename, type));
     }
     @GetMapping("/images/{filename}")
