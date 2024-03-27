@@ -473,7 +473,7 @@ function createNotify(memberList, modal_content) {
                 <span class="msg disabled m-notify"></span>
                 <div class="button-box">
                     <button type="button" id="do-notify">신고하기</button>
-                    <button type="button" id="cancel-notify">취소</button>
+                    <button type="button" id="room-cancel">취소</button>
                 </div>
             </div>`;
 };
