@@ -146,6 +146,7 @@
         <include refid="searchNotifyWord"></include>
         <include refid="searchNotifyStatus"></include>
         order by n.notify_date desc
+        limit #{startNum}, #{endNum}
     </select>
 
     <select id="getTotalNotifyCnt" resultType="int">
@@ -167,7 +168,7 @@
         <if test=" word != null and word != ''">
             and (lower(COALESCE(b.account, s.social_email)) like concat ('%', lower(#{word}), '%')
             or lower(COALESCE(b2.account, s2.social_email)) like concat ('%', lower(#{word}), '%')
-            or lower(r.room_id) like concat ('%', lower(#{word}), '%')
+            or lower(r.room_id) like concat ('%', lower(#{word}), '%'))
         </if>
     </sql>
 
@@ -265,7 +266,7 @@
     </select>
 
     <insert id="banFreeze">
-        insert into freeze (freeze_end_date, member_id, freeze_reason) values(str_to_date('9999-01-01', '%y-%m-%d %H:%i:%s'), #{memberId}, #{freezeReason})
+        insert into freeze (freeze_end_date, member_id, freeze_reason) values(date_format('9999-01-01', '%y-%m-%d %H:%i:%s'), #{memberId}, #{freezeReason})
     </insert>
 
     <insert id="newFreeze">
@@ -314,7 +315,7 @@
     </select>
 
     <insert id="banInsert">
-        insert into ban (member_id, suspended_date, ban_account, ban_name, ban_nickname, ban_phone) values (#{memberId}, sysdate, #{memberAccount}, #{memberName}, #{memberNickname}, #{phone})
+        insert into ban (member_id, suspended_date, ban_account, ban_name, ban_nickname, ban_phone) values (#{memberId}, current_timestamp, #{memberAccount}, #{memberName}, #{memberNickname}, #{phone})
     </insert>
 
     <delete id="deleteBan">
