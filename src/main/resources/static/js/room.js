@@ -368,7 +368,6 @@ function memberOptionMenuInitial() {
     optionMenuList.forEach(el => el.classList.add('disabled'));
 }
 
-
 function editResult(json) {
     const modal = document.querySelector('.modal');
     const modal_content = document.querySelector('.modal-content');
@@ -487,8 +486,6 @@ function getNickNameList(modal_content) {
             if (result.result === 'ok') {
 
                 let memberList = result.data;
-
-                if (memberList == null || memberList.length < 1) return;
 
                 createNotify(memberList, modal_content);
 
