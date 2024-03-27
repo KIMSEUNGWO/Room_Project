@@ -34,7 +34,6 @@ function sendRequest(page) {
             page : page
         },
         success: function(response) {
-            console.log(onlyFreeze);
             memberList(response);
             paging(response.totalPages, response.number);
 
