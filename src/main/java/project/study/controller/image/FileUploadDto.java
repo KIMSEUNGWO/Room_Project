@@ -8,7 +8,6 @@ import project.study.domain.*;
 import static project.study.constant.WebConst.*;
 
 @Getter
-@Setter
 @Builder
 public class FileUploadDto {
 
@@ -27,4 +26,8 @@ public class FileUploadDto {
         }
     }
 
+    public void setImage(String originalFileName, String storeFileName) {
+        this.imageUploadName = originalFileName;
+        this.imageStoreName = storeFileName;
+    }
 }
