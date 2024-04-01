@@ -4,6 +4,8 @@ import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.NoArgsConstructor;
+import project.study.enums.NotifyStatus;
+import project.study.enums.NotifyType;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -31,7 +33,7 @@ public class Freeze {
     }
 
     public String printMessage() {
-        return combineMessage(freezeEndDate, freezeReason);
+        return combineMessage(freezeEndDate, NotifyType.getReason(freezeReason));
     }
 
     private String combineMessage(LocalDateTime endDate, String reason) {
