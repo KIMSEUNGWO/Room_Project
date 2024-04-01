@@ -9,7 +9,7 @@ public enum MemberStatusEnum {
     탈퇴;
 
     public boolean isFreezeMember() {
-        return this == 이용정지;
+        return this == 이용정지 || this == 영구정지;
     }
 
     public boolean isExpireMember() {

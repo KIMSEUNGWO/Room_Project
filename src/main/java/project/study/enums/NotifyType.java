@@ -18,4 +18,13 @@ public enum NotifyType {
 
     private String notifyType;
 
+    public static String getReason(String notifyType) {
+        NotifyType[] notifyTypes = NotifyType.values();
+        for (NotifyType type : notifyTypes) {
+            if (type.name().equals(notifyType)) {
+                return type.notifyType;
+            }
+        }
+        return "";
+    }
 }
