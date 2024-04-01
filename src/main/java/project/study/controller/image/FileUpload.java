@@ -126,7 +126,7 @@ public class FileUpload {
     }
 
     private String getFullPathS3(String fileName, FileUploadType fileType) {
-        StringBuilder sb = new StringBuilder("/");
+        StringBuilder sb = new StringBuilder("images/");
 
         if (fileType == null) return sb.append(fileName).toString();
 

@@ -25,12 +25,12 @@ public class ImageController {
     public Resource downloadImage1(@PathVariable(name = "fileUploadType") String fileUploadType, @PathVariable(name = "filename") String filename) throws MalformedURLException {
         FileUploadType type = FileUploadType.findDir(fileUploadType);
 //        return new UrlResource("file:" + getFullPath(filename, type));
-        return new UrlResource("file:" + amazonS3.getUrl(bucketName, getFullPathS3(filename, type)));
+        return new UrlResource(amazonS3.getUrl(bucketName, getFullPathS3(filename, type)));
     }
     @GetMapping("/images/{filename}")
     public Resource downloadImage2(@PathVariable(name = "filename") String filename) throws MalformedURLException {
 //        return new UrlResource("file:" + getFullPath(filename, null));
-        return new UrlResource("file:" + amazonS3.getUrl(bucketName, getFullPathS3(filename, null)));
+        return new UrlResource(amazonS3.getUrl(bucketName, getFullPathS3(filename, null)));
     }
 
     private String getFullPath(String fileName, FileUploadType type) {
@@ -43,7 +43,7 @@ public class ImageController {
     }
 
     private String getFullPathS3(String fileName, FileUploadType fileType) {
-        StringBuilder sb = new StringBuilder("/");
+        StringBuilder sb = new StringBuilder("images/");
 
         if (fileType == null) return sb.append(fileName).toString();
 
