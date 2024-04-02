@@ -69,6 +69,7 @@ dependencies {
 	// 썸네일
 	implementation group: 'net.coobird', name: 'thumbnailator', version: '0.4.20'
 
+	implementation 'org.springframework.cloud:spring-cloud-starter-aws:2.2.6.RELEASE'
 }
 
 tasks.named('test') {

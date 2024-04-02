@@ -16,7 +16,7 @@ public class HttpToHttpsRedirectConfig {
     @Value("${server.port.http}")
     private int httpPort;
 
-    @Value("${server.port.https}")
+    @Value("${server.port}")
     private int httpsPort;
 
 
