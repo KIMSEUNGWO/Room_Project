@@ -13,10 +13,10 @@ import org.springframework.web.bind.annotation.RestController;
 public class KakaoLoginController {
 
     private final KakaoLoginService kakaoLoginService;
-    @GetMapping("/login/kakao")
-    public void kakaologin(@RequestParam(name = "code") String code, HttpServletRequest request, HttpServletResponse response) {
-        HttpSession session = request.getSession();
-        kakaoLoginService.login(code, session, response);
-    }
+//    @GetMapping("/login/kakao")
+//    public void kakaologin(@RequestParam(name = "code") String code, HttpServletRequest request, HttpServletResponse response) {
+//        HttpSession session = request.getSession();
+//        kakaoLoginService.login(code, session, response);
+//    }
 
 }
