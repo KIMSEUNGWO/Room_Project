@@ -21,8 +21,9 @@ public class SmsController {
 
     private final SmsService smsService;
 
-//    @PostMapping("/sms/send")
-//    public ResponseEntity<ResponseDto> sendSMS(@RequestBody RequestSms data) {
+    @PostMapping("/sms/send")
+    public ResponseEntity<ResponseDto> sendSMS(@RequestBody RequestSms data) {
+        return ResponseEntity.badRequest().body(new ResponseDto("error", "배포용 페이지는 이 기능을 사용할 수 없습니다."));
 //
 //        smsService.regexPhone(data.getPhone());
 //
@@ -31,7 +32,7 @@ public class SmsController {
 //        smsService.saveCertification(data);
 //
 //        return ResponseEntity.ok(new ResponseDto("인증번호를 발송했습니다."));
-//    }
+    }
 //
 //    @PostMapping("/sms/account/confirm")
 //    public ResponseEntity<ResponseDto> accountConfirm(@RequestBody RequestSms data) {

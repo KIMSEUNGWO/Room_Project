@@ -378,6 +378,8 @@ function sendSMS(result) {
 
         timerInterval = limitTimer();
         clickLimit = limitClick();
+    } else if (result.result === 'error') {
+        al('error', '에러', result.message);
     }
 }
 
