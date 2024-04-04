@@ -116,8 +116,11 @@ function smsSend(json) {
             findAccount_result.classList.add('disabled');
         }
     }
-    if (json.result == 'NotConnected') {
+    else if (json.result == 'NotConnected') {
         al('error', 'SMS 서버 연결 실패', error.message);
+    }
+    else if (json.result === 'error') {
+        al('error', '에러', json.message);
     }
 }
 function accountConfirm(json) {
