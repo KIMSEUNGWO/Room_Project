@@ -54,18 +54,19 @@ function deleteRoom() {
     $('.option-menu').each(function() {
         let exit = $(this).children('[name="option-exit"]');
         exit.on('click', function() {
-            $(this).closest('.option-menu').addClass('disabled');
-            var roomId = $(this).attr('id');
+            // $(this).closest('.option-menu').addClass('disabled');
+            // var roomId = $(this).attr('id');
             
-            $.ajax({
-                url: '/admin/room/delete',
-                type: 'POST',
-                contentType: 'application/json',
-                data: JSON.stringify({ roomId: roomId }),
-                success: function() {
-                    window.location.reload();
-                }
-            });
+            // $.ajax({
+            //     url: '/admin/room/delete',
+            //     type: 'POST',
+            //     contentType: 'application/json',
+            //     data: JSON.stringify({ roomId: roomId }),
+            //     success: function() {
+            //         window.location.reload();
+            //     }
+            // });
+            alert('현재 비활성화된 기능입니다');
         });
     });
 };
@@ -202,22 +203,4 @@ function paging(totalPages, currentPage) {
     }
 };
 
-function deleteRoom() {
-    $('.option-menu').each(function() {
-        var exit = $(this).find('[name="option-exit"]');
-        exit.on('click', function() {
-            $(this).closest('.option-menu').addClass('disabled');
-            var roomId = $(this).attr('id');
 
-            $.ajax({
-                url: '/admin/room/delete',
-                type: 'POST',
-                contentType: 'application/json',
-                data: JSON.stringify({ roomId: roomId }),
-                success: function() {
-                    window.location.reload();
-                }
-            });
-        });
-    });
-};

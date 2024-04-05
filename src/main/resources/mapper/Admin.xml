@@ -7,14 +7,14 @@
 
     <select id="searchMemberList" resultType="project.study.authority.admin.dto.SearchMemberDto">
         select
-            COALESCE(b.account, s.social_email) AS memberAccount,
-            m.member_name AS memberName,
-            m.member_nickname AS memberNickname,
-            m.phone AS phone,
-            date_format(m.member_create_date, '%Y-%m-%d') AS memberCreateDate,
-            m.member_notify_count AS memberNotifyCount,
-            s.social_type AS socialType,
-            m.member_status AS memberStatusEnum
+        COALESCE(b.account, s.social_email) AS memberAccount,
+        m.member_name AS memberName,
+        m.member_nickname AS memberNickname,
+        replace(m.phone, substr(m.phone, 5, 11), '*******') as phone,
+        date_format(m.member_create_date, '%Y-%m-%d') AS memberCreateDate,
+        m.member_notify_count AS memberNotifyCount,
+        s.social_type AS socialType,
+        m.member_status AS memberStatusEnum
         from member m
         left join basic b ON m.member_id = b.member_id
         left join social s ON m.member_id = s.member_id
@@ -48,21 +48,20 @@
         <if test=" word != null and word != ''">
             and (lower(COALESCE(b.account, s.social_email)) like concat ('%', lower(#{word}), '%')
             or lower(m.member_name)like concat ('%', lower(#{word}), '%')
-            or lower(m.member_nickname) like concat ('%', lower(#{word}), '%')
-            or lower(m.phone) like concat ('%', lower(#{word}), '%'))
+            or lower(m.member_nickname) like concat ('%', lower(#{word}), '%'))
         </if>
     </sql>
 
     <select id="searchExpireMemberList" resultType="project.study.authority.admin.dto.SearchExpireMemberDto">
         select
-            COALESCE(b.account, s.social_email) AS memberAccount,
-            m.member_name as memberName,
-            m.member_nickname as memberNickname,
-            m.phone as memberPhone,
-            date_format(m.member_create_date, '%Y-%m-%d') as memberCreateDate,
-            date_format(m.member_expire_date, '%Y-%m-%d') as memberExpireDate,
-            s.social_type as socialType,
-            m.member_status as memberStatusEnum
+        COALESCE(b.account, s.social_email) AS memberAccount,
+        m.member_name as memberName,
+        m.member_nickname as memberNickname,
+        replace(m.phone, substr(m.phone, 5, 11), '*******') as memberPhone,
+        date_format(m.member_create_date, '%Y-%m-%d') as memberCreateDate,
+        date_format(m.member_expire_date, '%Y-%m-%d') as memberExpireDate,
+        s.social_type as socialType,
+        m.member_status as memberStatusEnum
         from member m
         left join basic b on m.member_id = b.member_id
         left join social s on m.member_id = s.member_id
@@ -82,14 +81,14 @@
 
     <select id="searchRoomList" resultType="project.study.authority.admin.dto.SearchRoomDto">
         select
-            j.room_id as roomId,
-            r.room_title as roomTitle,
-            concat(cast((select count(j.room_id) from join_room j where r.room_id = j.room_id) as char),
-            '/',
-            cast(r.room_limit as char)) as roomMemberCount,
-            m.member_name as managerName,
-            date_format(r.room_create_date, '%Y-%m-%d') as roomCreateDate,
-            r.room_public as publicEnum
+        j.room_id as roomId,
+        r.room_title as roomTitle,
+        concat(cast((select count(j.room_id) from join_room j where r.room_id = j.room_id) as char),
+        '/',
+        cast(r.room_limit as char)) as roomMemberCount,
+        m.member_name as managerName,
+        date_format(r.room_create_date, '%Y-%m-%d') as roomCreateDate,
+        r.room_public as publicEnum
         from join_room j
         left join room r on r.room_id = j.room_id
         left join member m on m.member_id = j.member_id
@@ -112,7 +111,7 @@
         <if test=" word != null and word != ''">
             and (lower(j.room_id) like concat ('%', lower(#{word}), '%')
             or lower(r.room_title) like concat ('%', lower(#{word}), '%')
-            or lower(m.member_name) like concat ('%', lower(#{word}), '%')
+            or lower(m.member_name) like concat ('%', lower(#{word}), '%'))
         </if>
     </sql>
 
@@ -120,20 +119,20 @@
         delete from join_room j
         where j.room_id = #{roomId}
     </delete>
-    
+
     <insert id="insertRoomDelete">
         insert into room_delete (room_delete_date, room_id) values (date_add(now(), interval 1 month), #{roomId})
     </insert>
 
     <select id="searchNotifyList" resultType="project.study.authority.admin.dto.SearchNotifyDto">
         select
-            COALESCE(b.account, s.social_email) AS reporterMemberAccount,
-            COALESCE(b2.account, s2.social_email) AS criminalMemberAccount,
-            r.room_id as roomId,
-            date_format(n.notify_date, '%Y-%m-%d') as notifyDate,
-            n.notify_reason as notifyReason,
-            n.notify_id as notifyId,
-            n.notify_status as notifyStatus
+        COALESCE(b.account, s.social_email) AS reporterMemberAccount,
+        COALESCE(b2.account, s2.social_email) AS criminalMemberAccount,
+        r.room_id as roomId,
+        date_format(n.notify_date, '%Y-%m-%d') as notifyDate,
+        n.notify_reason as notifyReason,
+        n.notify_id as notifyId,
+        n.notify_status as notifyStatus
         from notify n
         left join room r on n.room_id = r.room_id
         left join member m on m.member_id = n.reporter_member_id
@@ -183,14 +182,14 @@
 
     <select id="notifyReedMore" resultType="project.study.authority.admin.dto.SearchNotifyReadMoreDtoBatis">
         select
-            COALESCE(b.account, s.social_email) AS reporterMemberAccount,
-            COALESCE(b2.account, s2.social_email) AS criminalMemberAccount,
-            r.room_id as roomId,
-            date_format(n.notify_date, '%Y-%m-%d') as notifyDate,
-            n.notify_reason as notifyReason,
-            n.notify_content as notifyContent,
-            n.notify_id as notifyId,
-            n.notify_status as notifyStatus
+        COALESCE(b.account, s.social_email) AS reporterMemberAccount,
+        COALESCE(b2.account, s2.social_email) AS criminalMemberAccount,
+        r.room_id as roomId,
+        date_format(n.notify_date, '%Y-%m-%d') as notifyDate,
+        n.notify_reason as notifyReason,
+        n.notify_content as notifyContent,
+        n.notify_id as notifyId,
+        n.notify_status as notifyStatus
         from notify n
         left join room r on n.room_id = r.room_id
         left join member m on m.member_id = n.reporter_member_id
@@ -204,8 +203,8 @@
 
     <select id="notifyImage" resultType="project.study.authority.admin.dto.SearchNotifyImageDtoBatis">
         select
-            store_name as notifyImageStoreName,
-            original_name as notifyImageOriginalName
+        store_name as notifyImageStoreName,
+        original_name as notifyImageOriginalName
         from notify_image ni
         join notify n on ni.notify_id = n.notify_id
         where n.notify_id=#{notifyId}
@@ -217,16 +216,16 @@
 
     <select id="notifyMemberInfo" resultType="project.study.authority.admin.dto.SearchNotifyMemberInfoDto">
         select
-            m.member_id as memberId,
-            COALESCE(b.account, s.social_email) as memberAccount,
-            m.member_name as memberName,
-            m.member_nickname as memberNickname,
-            m.phone as memberPhone,
-            date_format(m.member_create_date, '%Y-%m-%d') as memberCreateDate,
-            m.member_notify_count as memberNotifyCount,
-            s.social_type as socialType,
-            m.member_status as memberStatusEnum,
-            n.notify_reason as notifyReason
+        m.member_id as memberId,
+        COALESCE(b.account, s.social_email) as memberAccount,
+        m.member_name as memberName,
+        m.member_nickname as memberNickname,
+        replace(m.phone, substr(m.phone, 5, 11), '*******') as memberPhone,
+        date_format(m.member_create_date, '%Y-%m-%d') as memberCreateDate,
+        m.member_notify_count as memberNotifyCount,
+        s.social_type as socialType,
+        m.member_status as memberStatusEnum,
+        n.notify_reason as notifyReason
         from notify n
         left join member m on n.criminal_member_id = m.member_id
         left join basic b on m.member_id = b.member_id
@@ -236,7 +235,7 @@
 
     <select id="notifyMemberProfile" resultType="String">
         select
-            p.store_name as memberProfile
+        p.store_name as memberProfile
         from profile p
         left join member m on p.member_id = m.member_id
         left join basic b on m.member_id = b.member_id
@@ -279,13 +278,13 @@
 
     <select id="searchBanList" resultType="project.study.authority.admin.dto.SearchBanDto">
         select
-            b.ban_id as banId,
-            b.ban_account AS memberAccount,
-            b.ban_name as memberName,
-            b.ban_nickname as memberNickname,
-            b.ban_phone as phone,
-            date_format(b.suspended_date, '%Y-%m-%d') as suspendedDate,
-            b.member_id as memberId
+        b.ban_id as banId,
+        b.ban_account AS memberAccount,
+        b.ban_name as memberName,
+        b.ban_nickname as memberNickname,
+        replace(b.ban_phone, substr(b.ban_phone, 5, 11), '*******') as phone,
+        date_format(b.suspended_date, '%Y-%m-%d') as suspendedDate,
+        b.member_id as memberId
         from ban b
         where 1=1
         <include refid="searchBanWord"></include>
@@ -304,7 +303,7 @@
             and (lower(b.ban_Id) like concat('%', lower(#{word}), '%')
             or lower(b.ban_account) like concat('%', lower(#{word}), '%')
             or lower(b.ban_name) like concat('%', lower(#{word}), '%')
-            or lower(b.ban_nickname) like concat('%', lower(#{word}), '%')
+            or lower(b.ban_nickname) like concat('%', lower(#{word}), '%'))
         </if>
     </sql>
 
