@@ -104,30 +104,30 @@ public class AdminRestController {
         return ResponseEntity.ok(page);
     }
 
-    @PostMapping("/notify/status/change")
-    public void notifyStatusChange(@RequestBody RequestNotifyStatusChangeDto dto,
-                                   @SessionAttribute(name = "adminId", required = false) Long adminId,
-                                   HttpServletResponse response){
-        ReportAdmin reportAdmin = check.getReportAdmin(adminId, response);
-        reportAdmin.notifyComplete(dto);
-    }
-
-    @PostMapping("/notify/member/freeze")
-    public void notifyMemberFreeze (@RequestBody RequestNotifyMemberFreezeDto dto,
-                                    @SessionAttribute(name = "adminId", required = false) Long adminId,
-                                    HttpServletResponse response){
-        ReportAdmin reportAdmin = check.getReportAdmin(adminId, response);
-        reportAdmin.notifyFreeze(dto, response);
-
-    }
-
-    @PostMapping("/room/delete")
-    public void deleteRoom(@RequestBody RequestDeleteRoomDto dto,
-                           @SessionAttribute(name = "adminId", required = false) Long adminId,
-                           HttpServletResponse response){
-        OverallAdmin overallAdmin = check.getOverallAdmin(adminId, response);
-        overallAdmin.deleteRoom(dto);
-    }
+//    @PostMapping("/notify/status/change")
+//    public void notifyStatusChange(@RequestBody RequestNotifyStatusChangeDto dto,
+//                                   @SessionAttribute(name = "adminId", required = false) Long adminId,
+//                                   HttpServletResponse response){
+//        ReportAdmin reportAdmin = check.getReportAdmin(adminId, response);
+//        reportAdmin.notifyComplete(dto);
+//    }
+//
+//    @PostMapping("/notify/member/freeze")
+//    public void notifyMemberFreeze (@RequestBody RequestNotifyMemberFreezeDto dto,
+//                                    @SessionAttribute(name = "adminId", required = false) Long adminId,
+//                                    HttpServletResponse response){
+//        ReportAdmin reportAdmin = check.getReportAdmin(adminId, response);
+//        reportAdmin.notifyFreeze(dto, response);
+//
+//    }
+//
+//    @PostMapping("/room/delete")
+//    public void deleteRoom(@RequestBody RequestDeleteRoomDto dto,
+//                           @SessionAttribute(name = "adminId", required = false) Long adminId,
+//                           HttpServletResponse response){
+//        OverallAdmin overallAdmin = check.getOverallAdmin(adminId, response);
+//        overallAdmin.deleteRoom(dto);
+//    }
 
     @GetMapping("/bans/get")
     public ResponseEntity<Page<SearchBanDto>> searchBan(@RequestParam(value = "word", required = false, defaultValue = "") String word,
@@ -142,12 +142,12 @@ public class AdminRestController {
         return ResponseEntity.ok(page);
     }
 
-    @PostMapping("/ban/lift")
-    public void liftTheBan(@RequestBody RequestLiftBanDto dto,
-                           @SessionAttribute(name = "adminId", required = false) Long adminId,
-                           HttpServletResponse response){
-        
-        ReportAdmin reportAdmin = check.getReportAdmin(adminId, response);
-        reportAdmin.liftTheBan(dto);
-    }
+//    @PostMapping("/ban/lift")
+//    public void liftTheBan(@RequestBody RequestLiftBanDto dto,
+//                           @SessionAttribute(name = "adminId", required = false) Long adminId,
+//                           HttpServletResponse response){
+//
+//        ReportAdmin reportAdmin = check.getReportAdmin(adminId, response);
+//        reportAdmin.liftTheBan(dto);
+//    }
 }

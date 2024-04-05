@@ -53,18 +53,19 @@ function liftTheBan() {
     $('.option-menu').each(function() {
         let change  = $(this).children('[name="option-change"]');
         change.on('click', function() {
-            $(this).closest('.option-menu').addClass('disabled');
-            var memberId = $(this).attr('id');
-
-            $.ajax({
-                url: '/admin/ban/lift',
-                type: 'POST',
-                contentType: 'application/json',
-                data: JSON.stringify({ memberId: memberId }),
-                success: function() {
-                    window.location.reload();
-                }
-            });
+            // $(this).closest('.option-menu').addClass('disabled');
+            // var memberId = $(this).attr('id');
+            
+            // $.ajax({
+            //     url: '/admin/ban/lift',
+            //     type: 'POST',
+            //     contentType: 'application/json',
+            //     data: JSON.stringify({ memberId: memberId }),
+            //     success: function() {
+            //         window.location.reload();
+            //     }
+            // });
+            alert('현재 비활성화중인 기능입니다');
         });
     });
 };
