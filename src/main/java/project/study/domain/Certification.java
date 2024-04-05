@@ -5,6 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import project.study.common.CustomDateTime;
 import project.study.constant.WebConst;
 import project.study.controller.api.sms.RequestSms;
 import project.study.dto.abstractentity.ResponseDto;
@@ -30,7 +31,7 @@ public class Certification {
     private LocalDateTime expireDate;
 
     public void valid(RequestSms data) throws ExceedExpireException {
-        if (LocalDateTime.now().isAfter(expireDate)) {
+        if (CustomDateTime.now().isAfter(expireDate)) {
             throw new ExceedExpireException();
         }
         if (!name.equals(data.getName()) || !phone.equals(data.getPhone()) || !certificationNumber.equals(data.getCertification())) {
@@ -39,7 +40,7 @@ public class Certification {
     }
 
     public void changePasswordValid(RequestSms data) throws ExceedExpireException {
-        if (LocalDateTime.now().isAfter(expireDate)) {
+        if (CustomDateTime.now().isAfter(expireDate)) {
             throw new ExceedExpireException();
         }
         if (!phone.equals(data.getPhone()) || !certificationNumber.equals(data.getCertification())) {

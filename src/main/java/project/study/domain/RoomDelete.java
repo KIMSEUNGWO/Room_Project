@@ -5,6 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import project.study.common.CustomDateTime;
 
 import java.time.LocalDateTime;
 
@@ -27,6 +28,6 @@ public class RoomDelete {
     private LocalDateTime roomDeleteDate;
 
     public boolean isOutOfExpireDate() {
-        return roomDeleteDate.isBefore(LocalDateTime.now());
+        return roomDeleteDate.isBefore(CustomDateTime.now());
     }
 }

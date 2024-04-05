@@ -6,6 +6,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.transaction.annotation.Transactional;
+import project.study.common.CustomDateTime;
 import project.study.domain.Member;
 import project.study.domain.MockMember;
 import project.study.dto.login.responsedto.ErrorList;
@@ -116,8 +117,8 @@ class MypageRepositoryTest {
         Member validMember1 = mockMember.createMember().setSocial(KAKAO).build();
         Member validMember2 = mockMember.createMember().setBasic().build();
         Member inValidMember3 = mockMember.createMember().setSocial(KAKAO).setExpire().build();
-        Member inValidMember4 = mockMember.createMember().setSocial(KAKAO).setFreeze(LocalDateTime.now().plusDays(1)).build();
-        Member inValidMember5 = mockMember.createMember().setBasic().setFreeze(LocalDateTime.now().plusDays(1)).build();
+        Member inValidMember4 = mockMember.createMember().setSocial(KAKAO).setFreeze(CustomDateTime.now().plusDays(1)).build();
+        Member inValidMember5 = mockMember.createMember().setBasic().setFreeze(CustomDateTime.now().plusDays(1)).build();
         Member inValidMember6 = mockMember.createMember().setBasic().setExpire().build();
 
         // 정상로직

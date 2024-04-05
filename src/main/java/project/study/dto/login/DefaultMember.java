@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.transaction.annotation.Transactional;
+import project.study.common.CustomDateTime;
 import project.study.domain.Basic;
 import project.study.domain.Member;
 import project.study.dto.login.requestdto.RequestDefaultLoginDto;
@@ -36,7 +37,7 @@ public class DefaultMember implements MemberInterface {
         Member saveMember = Member.builder()
                 .memberName(data.getName())
                 .memberNickname(data.getNickName())
-                .memberCreateDate(LocalDateTime.now())
+                .memberCreateDate(CustomDateTime.now())
                 .memberStatus(MemberStatusEnum.정상)
                 .build();
         memberJpaRepository.save(saveMember);

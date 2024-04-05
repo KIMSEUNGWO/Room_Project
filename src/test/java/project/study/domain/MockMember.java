@@ -4,6 +4,7 @@ import jakarta.persistence.EntityManager;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Component;
+import project.study.common.CustomDateTime;
 import project.study.controller.image.FileUpload;
 import project.study.controller.image.FileUploadType;
 import project.study.enums.MemberStatusEnum;
@@ -46,7 +47,7 @@ public class MockMember {
             .memberNickname(nickname + index)
             .memberName(name)
             .memberStatus(MemberStatusEnum.정상)
-            .memberCreateDate(LocalDateTime.now())
+            .memberCreateDate(CustomDateTime.now())
             .build();
     }
 
