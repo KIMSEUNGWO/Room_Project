@@ -5,6 +5,7 @@ import jakarta.persistence.EntityManager;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
+import project.study.common.CustomDateTime;
 import project.study.controller.image.FileUpload;
 import project.study.controller.image.FileUploadType;
 import project.study.enums.AuthorityMemberEnum;
@@ -35,7 +36,7 @@ public class MockRoom {
             .roomIntro("테스트용 방 소개글")
             .roomPublic(PublicEnum.PUBLIC)
             .roomLimit(4)
-            .roomCreateDate(LocalDateTime.now())
+            .roomCreateDate(CustomDateTime.now())
             .build();
         em.persist(saveRoom);
 
@@ -50,7 +51,7 @@ public class MockRoom {
             .roomPublic(publicEnum)
             .roomPassword(roomPassword)
             .roomLimit(4)
-            .roomCreateDate(LocalDateTime.now())
+            .roomCreateDate(CustomDateTime.now())
             .build();
         em.persist(saveRoom);
         return new MockRoomBuilder(roomJpaRepository, mockMember, em, saveRoom);

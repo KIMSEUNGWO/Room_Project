@@ -6,13 +6,13 @@ import net.nurigo.sdk.message.model.Message;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import project.study.common.CustomDateTime;
 import project.study.domain.*;
 import project.study.dto.abstractentity.ResponseDto;
 import project.study.enums.SocialEnum;
 import project.study.exceptions.sms.*;
 import project.study.jpaRepository.CertificationJpaRepository;
 
-import java.time.LocalDateTime;
 import java.util.Optional;
 
 import static project.study.constant.WebConst.ERROR;
@@ -52,7 +52,7 @@ public class SmsService {
                 .name(data.getName())
                 .phone(data.getPhone())
                 .certificationNumber(data.getCertification())
-                .expireDate(LocalDateTime.now().plusMinutes(EXPIRE_TIME))
+                .expireDate(CustomDateTime.now().plusMinutes(EXPIRE_TIME))
                 .build();
 
         certificationJpaRepository.save(saveCertification);

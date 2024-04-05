@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 import project.study.chat.MessageType;
 import project.study.chat.dto.ChatDto;
+import project.study.common.CustomDateTime;
 import project.study.domain.Member;
 import project.study.domain.Room;
 
@@ -21,7 +22,7 @@ public class ChatManager {
                 .token(chatAccessToken.getToken(member.getMemberId()))
                 .type(messageType)
                 .sender(member.getMemberNickname())
-                .time(LocalDateTime.now())
+                .time(CustomDateTime.now())
                 .message(message)
                 .build();
     }

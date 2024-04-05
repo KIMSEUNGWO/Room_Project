@@ -5,6 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import project.study.common.CustomDateTime;
 import project.study.controller.api.sms.FindAccount;
 import project.study.dto.MyPageInfo;
 import project.study.dto.mypage.RequestEditInfoDto;
@@ -62,7 +63,7 @@ public class Member implements ImageFileEntity {
     }
     public void changeStatusToExpire() {
         this.memberStatus = 탈퇴;
-        this.memberExpireDate = LocalDateTime.now().plusDays(EXPIRE_PLUS_DAY);
+        this.memberExpireDate = CustomDateTime.now().plusDays(EXPIRE_PLUS_DAY);
 //        this.memberExpireDate = LocalDateTime.now();
     }
     public void changeStatusToFreeze() {
@@ -85,7 +86,7 @@ public class Member implements ImageFileEntity {
     }
 
     public boolean isOutOfExpireDate() {
-        return memberExpireDate.isBefore(LocalDateTime.now());
+        return memberExpireDate.isBefore(CustomDateTime.now());
     }
 
     @Override

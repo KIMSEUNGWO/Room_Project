@@ -7,6 +7,7 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import project.study.authority.admin.dto.*;
+import project.study.common.CustomDateTime;
 import project.study.domain.*;
 import project.study.dto.admin.Criteria;
 import project.study.exceptions.admin.AlreadyBanMemberException;
@@ -119,7 +120,7 @@ public class AdminService {
         } else {
             DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
             LocalDateTime freezeEndDate = LocalDateTime.parse(freezeDate, formatter);
-            LocalDateTime now = LocalDateTime.now();
+            LocalDateTime now = CustomDateTime.now();
             if(now.isAfter(freezeEndDate)){
                 adminMapper.banMemberStatusChangeNormal(dto);
             } else {

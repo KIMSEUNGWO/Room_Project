@@ -6,6 +6,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import project.study.authority.member.dto.RequestNotifyDto;
 import project.study.chat.ChatRepository;
+import project.study.common.CustomDateTime;
 import project.study.constant.WebConst;
 import project.study.controller.image.FileUpload;
 import project.study.controller.image.FileUploadType;
@@ -40,7 +41,7 @@ public class NotifyService {
         Notify saveNotify = Notify.builder()
             .reporter(reporter)
             .criminal(criminal)
-            .notifyDate(LocalDateTime.now())
+            .notifyDate(CustomDateTime.now())
             .room(room)
             .notifyContent(data.getNotifyContent())
             .notifyStatus(NotifyStatus.처리중)

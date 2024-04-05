@@ -10,6 +10,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 import project.study.authority.member.dto.RequestEditRoomDto;
+import project.study.common.CustomDateTime;
 import project.study.controller.image.FileUpload;
 import project.study.controller.image.FileUploadType;
 import project.study.domain.*;
@@ -48,7 +49,7 @@ public class RoomRepository {
             .roomIntro(data.getIntro())
             .roomLimit(data.getMax())
             .roomPublic(data.getRoomPublic())
-            .roomCreateDate(LocalDateTime.now())
+            .roomCreateDate(CustomDateTime.now())
             .build();
         return roomJpaRepository.save(saveRoom);
     }
@@ -172,7 +173,7 @@ public class RoomRepository {
     public void moveToDeleteRoom(Room room) {
         RoomDelete saveRoomDelete = RoomDelete.builder()
             .room(room)
-            .roomDeleteDate(LocalDateTime.now().plusMonths(1))
+            .roomDeleteDate(CustomDateTime.now().plusMonths(1))
             .build();
 
         roomDeleteJpaRepository.save(saveRoomDelete);

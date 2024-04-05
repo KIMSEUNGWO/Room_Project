@@ -7,6 +7,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.mock.web.MockHttpServletResponse;
 import org.springframework.mock.web.MockHttpSession;
 import org.springframework.transaction.annotation.Transactional;
+import project.study.common.CustomDateTime;
 import project.study.constant.WebConst;
 import project.study.domain.Freeze;
 import project.study.domain.Member;
@@ -63,7 +64,7 @@ class BasicLoginServiceTest {
         MockHttpServletResponse response = new MockHttpServletResponse();
         MockHttpSession session = new MockHttpSession();
         // 이용정지기간이 하루 남은 회원
-        Member basicMember = mockMember.createMember().setBasic().setFreeze(LocalDateTime.now().plusDays(1)).build();
+        Member basicMember = mockMember.createMember().setBasic().setFreeze(CustomDateTime.now().plusDays(1)).build();
 
         RequestDefaultLoginDto data = new RequestDefaultLoginDto();
         data.setAccount("test" + (basicMember.getMemberId() - 1));
@@ -81,7 +82,7 @@ class BasicLoginServiceTest {
         MockHttpServletResponse response = new MockHttpServletResponse();
         MockHttpSession session = new MockHttpSession();
         // 이용정지기간이 어제까지였던 회원
-        Member basicMember = mockMember.createMember().setBasic().setFreeze(LocalDateTime.now().minusDays(1)).build();
+        Member basicMember = mockMember.createMember().setBasic().setFreeze(CustomDateTime.now().minusDays(1)).build();
 
         RequestDefaultLoginDto data = new RequestDefaultLoginDto();
         data.setAccount("test" + (basicMember.getMemberId() - 1));
