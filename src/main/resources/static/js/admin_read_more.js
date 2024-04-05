@@ -23,7 +23,7 @@ function processComplete() {
         //         window.opener.location.reload();
         //     }
         // });
-        alert('현재 비활성화중인 기능입니다');
+        alert('현재 비활성화된 기능입니다');
     });
 };
 
