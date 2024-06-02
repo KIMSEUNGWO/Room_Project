@@ -66,6 +66,7 @@ public class MainController {
         return "room_private";
     }
 
+
     @GetMapping("/")
     public String main(@SessionLogin Member member, Model model, HttpServletResponse response){
         if (member != null) {
