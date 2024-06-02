@@ -4,7 +4,7 @@ import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.NoArgsConstructor;
-import project.study.enums.NotifyStatus;
+import project.study.common.CustomDateTime;
 import project.study.enums.NotifyType;
 
 import java.time.LocalDateTime;
@@ -29,7 +29,7 @@ public class Freeze {
 
 
     public boolean isFinish() {
-        return LocalDateTime.now().isAfter(freezeEndDate);
+        return CustomDateTime.now().isAfter(freezeEndDate);
     }
 
     public String printMessage() {

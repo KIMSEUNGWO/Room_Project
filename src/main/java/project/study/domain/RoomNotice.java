@@ -2,6 +2,7 @@ package project.study.domain;
 
 import jakarta.persistence.*;
 import lombok.*;
+import project.study.common.CustomDateTime;
 import project.study.constant.WebConst;
 import project.study.dto.abstractentity.ResponseDto;
 import project.study.exceptions.RestFulException;
@@ -28,7 +29,7 @@ public class RoomNotice {
 
     public void updateNotice(String notice) {
         this.roomNoticeContent = notice;
-        this.roomNoticeDate = LocalDateTime.now();
+        this.roomNoticeDate = CustomDateTime.now();
     }
 
     public ResponseRoomNotice buildResponseRoomNotice() {
@@ -64,7 +65,7 @@ public class RoomNotice {
             return RoomNotice.builder()
                     .room(room)
                     .roomNoticeContent(this.notice)
-                    .roomNoticeDate(LocalDateTime.now())
+                    .roomNoticeDate(CustomDateTime.now())
                     .build();
         }
     }

@@ -65,7 +65,7 @@ function memberList(response) {
             <div class="email">${member.memberAccount}</div>
             <div class="name">${member.memberName}</div>
             <div class="nickname">${member.memberNickname}</div>
-            <div class="phone">${member.phone}</div>
+            <div class="phone">${member.phone != null ? member.phone : ''}</div>
             <div class="registerdate">${member.memberCreateDate}</div>
             <div class="notifycount">${member.memberNotifyCount}</div>
             <div class="social">${member.socialType != null ? member.socialType : ''}</div>

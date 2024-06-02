@@ -2,6 +2,7 @@ package project.study.dto.login;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.transaction.annotation.Transactional;
+import project.study.common.CustomDateTime;
 import project.study.controller.api.kakaologin.KakaoLoginRepository;
 import project.study.domain.SocialToken;
 import project.study.domain.Member;
@@ -32,7 +33,7 @@ public class KakaoMember implements MemberInterface{
         Member saveMember = Member.builder()
                 .memberName(data.getName())
                 .memberNickname(data.getNickName())
-                .memberCreateDate(LocalDateTime.now())
+                .memberCreateDate(CustomDateTime.now())
                 .memberStatus(MemberStatusEnum.정상)
                 .phone(data.getPhone())
                 .build();

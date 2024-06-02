@@ -9,6 +9,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import project.study.constant.WebConst;
+import project.study.exceptions.authority.AdminAuthorizationException;
 import project.study.exceptions.authority.AuthorizationException;
 import project.study.dto.abstractentity.ResponseDto;
 import project.study.exceptions.RestFulException;
@@ -51,6 +52,25 @@ public class RestGlobalExceptionHandler {
         response.setCharacterEncoding("utf-8");
 
         String command = "<script> " + getOption(alert) + " window.location.href='/'; </script>";
+        try (PrintWriter out = response.getWriter()) {
+            out.println(command);
+            out.flush();
+        } catch (IOException ex) {
+            log.error("Alert IOException 발생!");
+        }
+        return new ResponseEntity<>(e.getResponseDto(), HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler(AdminAuthorizationException.class)
+    public ResponseEntity<ResponseDto> globalAdminAuthorizationException(AdminAuthorizationException e) {
+        e.printStackTrace();
+        log.error("[Global AuthorizationException Exception 발생!]");
+        HttpServletResponse response = e.getResponse();
+        String alert = e.getAlertMessage();
+        response.setContentType("text/html; charset=utf-8");
+        response.setCharacterEncoding("utf-8");
+
+        String command = "<script> " + getOption(alert) + " window.location.href='/admin/login'; </script>";
         try (PrintWriter out = response.getWriter()) {
             out.println(command);
             out.flush();

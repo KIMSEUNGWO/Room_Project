@@ -21,6 +21,7 @@ import project.study.authority.member.dto.RequestKickDto;
 import project.study.chat.component.ChatAccessToken;
 import project.study.chat.component.ChatManager;
 import project.study.chat.dto.*;
+import project.study.common.CustomDateTime;
 import project.study.customAnnotation.PathRoom;
 import project.study.customAnnotation.SessionLogin;
 import project.study.domain.Member;
@@ -31,7 +32,6 @@ import project.study.exceptions.RestFulException;
 import project.study.service.JoinRoomService;
 import project.study.service.RoomService;
 
-import java.time.LocalDateTime;
 import java.util.Optional;
 
 import static project.study.chat.MessageType.ENTRUST;
@@ -76,7 +76,7 @@ public class ChatController {
         chat.setSenderImage(member.getStoreImage());
         chat.setSender(member.getMemberNickname());
         chat.setMessage(member.getMemberNickname() + "님이 입장하셨습니다.");
-        chat.setTime(LocalDateTime.now());
+        chat.setTime(CustomDateTime.now());
 
         templateSendMessage(chat.getRoomId(), chatService.changeToMemberListDto(chat));
 
@@ -96,7 +96,7 @@ public class ChatController {
         Room.ResponseRoomUpdateInfo roomInfo = room.getResponseRoomUpdateInfo();
 
         chat.setMessage("방 설정이 변경되었습니다.");
-        chat.setTime(LocalDateTime.now());
+        chat.setTime(CustomDateTime.now());
 
         templateSendMessage(roomId, new ChatObject<>(chat, roomInfo));
 
@@ -119,7 +119,7 @@ public class ChatController {
         chat.setSenderImage(member.getStoreImage());
         chat.setSender(member.getMemberNickname());
         chat.setMessage(chat.getMessage());
-        chat.setTime(LocalDateTime.now());
+        chat.setTime(CustomDateTime.now());
 
         chatService.saveChat(chat, member, room);
 
