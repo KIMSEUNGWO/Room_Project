@@ -17,8 +17,8 @@ public class FileUploadDto {
     private FileUploadType type;
 
     public void defaultImageCheck() {
-        if (imageUploadName == null || imageStoreName == null || imageUploadName.isEmpty() || imageStoreName.isEmpty()) {
-
+        if (imageUploadName == null || imageStoreName == null ||
+            imageUploadName.isEmpty() || imageStoreName.isEmpty()) {
             switch (type) {
                 case MEMBER_PROFILE -> imageUploadName = imageStoreName = DEFAULT_PROFILE;
                 case ROOM_PROFILE -> imageUploadName = imageStoreName = DEFAULT_ROOM_IMAGE;
