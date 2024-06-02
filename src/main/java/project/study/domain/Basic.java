@@ -13,7 +13,7 @@ import project.study.controller.api.sms.FindAccount;
 @AllArgsConstructor
 @Entity
 @Table(name = "BASIC")
-public class Basic implements MemberType {
+public class Basic {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -28,21 +28,4 @@ public class Basic implements MemberType {
     @JoinColumn(name = "MEMBER_ID")
     private Member member;
 
-    public boolean isValidPassword(BCryptPasswordEncoder encoder, String comparePassword) {
-        String loginPassword = combineSalt(comparePassword);
-        return encoder.matches(loginPassword, password);
-    }
-
-    public void changePassword(BCryptPasswordEncoder encoder, String changePassword) {
-        password = encoder.encode(combineSalt(changePassword));
-    }
-
-    private String combineSalt(String encodedBeforePassword) {
-        return encodedBeforePassword + salt;
-    }
-
-    @Override
-    public FindAccount findAccount() {
-        return new FindAccount(null, account);
-    }
 }

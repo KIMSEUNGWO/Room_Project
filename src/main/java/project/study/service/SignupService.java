@@ -5,7 +5,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import project.study.exceptions.signup.DistinctAccountException;
 import project.study.exceptions.signup.DistinctNicknameException;
-import project.study.jpaRepository.BasicJpaRepository;
 import project.study.jpaRepository.MemberJpaRepository;
 
 @Service
@@ -13,11 +12,10 @@ import project.study.jpaRepository.MemberJpaRepository;
 @Slf4j
 public class SignupService {
 
-    private final BasicJpaRepository basicJpaRepository;
     private final MemberJpaRepository memberJpaRepository;
 
     public void distinctAccount(String account) {
-        boolean existsByAccount = basicJpaRepository.existsByAccount(account);
+        boolean existsByAccount = memberJpaRepository.existsByAccount(account);
         if (existsByAccount) throw new DistinctAccountException();
     }
 

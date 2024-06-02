@@ -108,8 +108,7 @@ public class SmsService {
     @Transactional
     public void changePassword(RequestChangePassword data) {
         Member member = smsRepository.findByNameAndPhone(data.getName(), data.getPhone());
-        Basic basic = member.getBasic();
-        basic.changePassword(encoder, data.getPassword());
+        member.changePassword(encoder, data.getPassword());
 
     }
 

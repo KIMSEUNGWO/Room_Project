@@ -22,7 +22,6 @@ public class ScheduleRepository {
     private final FileStorage fileStorage;
 
     private final MemberJpaRepository memberJpaRepository;
-    private final BasicJpaRepository basicJpaRepository;
     private final SocialTokenJpaRepository socialTokenJpaRepository;
     private final SocialJpaRepository socialJpaRepository;
     private final ProfileJpaRepository profileJpaRepository;
@@ -43,9 +42,6 @@ public class ScheduleRepository {
     }
 
     public void deleteAccount(Member member) {
-        if (member.isBasicMember()) {
-            basicJpaRepository.deleteByMember(member);
-        }
         if (member.isSocialMember()) {
             socialTokenJpaRepository.deleteBySocial(member.getSocial());
             socialJpaRepository.deleteByMember(member);

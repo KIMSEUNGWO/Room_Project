@@ -83,7 +83,7 @@ window.addEventListener('load', () => {
             return;
         }
 
-        if ((target.id === 'loginAccount' || target.id === 'loginPassword') && e.key === 'Enter') {
+        if ((target.id === 'account' || target.id === 'password') && e.key === 'Enter') {
             login();
         }
 
@@ -153,19 +153,19 @@ function modalExit() {
     }, 200);
 }
 function login() {
-    let loginAccount = document.querySelector('input[name="loginAccount"]');
-    let loginPassword = document.querySelector('input[name="loginPassword"]');
-    if (loginAccount == null || loginPassword == null) {
+    let account = document.querySelector('input[name="account"]');
+    let password = document.querySelector('input[name="password"]');
+    if (account == null || password == null) {
         alert('잘못된 접근입니다. 다시 시도해주세요');
         location.reload();
         return;
     }
 
-    let json = {account : loginAccount.value, password : loginPassword.value};
+    let json = {account : account.value, password : password.value};
     fetchPost('/login', json, loginResult);
 }
 function loginResult(json) {
-    if (json.result == 'ok') {
+    if (json.result === 'ok') {
         modalExit();
         let redirectURI = getRedirectURI();
         if (redirectURI != null) {
@@ -173,12 +173,10 @@ function loginResult(json) {
         } else {
             location.reload();
         }
-    } else if (json.result == 'error') {
+    } else if (json.result === 'error') {
         let m_login = document.querySelector('.m-login');
-        let loginAccount = document.querySelector('input[name="loginAccount"]');
-        let loginPassword = document.querySelector('input[name="loginPassword"]');
-        loginAccount.value = '';
-        loginPassword.value = '';
+        let password = document.querySelector('input[name="password"]');
+        password.value = '';
         printMessage(json, m_login);
     }
 }
@@ -206,10 +204,14 @@ function focusEventListener() {
 }
 
 function messageInit(messageTag) {
-    messageTag.classList.add('disabled');
-    messageTag.classList.remove('non-error');
-    messageTag.classList.remove('error');
-    messageTag.innerHTML = '';
+    if (messageTag != null) {
+        messageTag.classList.add('disabled');
+        messageTag.classList.remove('non-error');
+        messageTag.classList.remove('error');
+        messageTag.innerHTML = '';
+        return
+    }
+    console.log('messageTag is Null')
 }
 
 function distinctNameResult(json) {
@@ -262,8 +264,8 @@ function signup() {
 }
 function signupPost() {
     // TODO 배포용
-    al('error', '배포용', '이 기능은 사용할 수 없습니다.');
-    return;
+    // al('error', '배포용', '이 기능은 사용할 수 없습니다.');
+    // return;
 
     let account = document.querySelector('input[name="account"]');
     let password = document.querySelector('input[name="password"]');
@@ -598,8 +600,8 @@ return `<div class="modal-logo">
             <img src="/images/DAGONG.png" alt="">
         </div>
         <div class="modal-input-box">
-            <input type="text" name="loginAccount" id="loginAccount" placeholder="아이디">
-            <input type="password" name="loginPassword" id="loginPassword" placeholder="비밀번호" minlength="8">
+            <input type="text" name="account" id="account" placeholder="아이디">
+            <input type="password" name="password" id="password" placeholder="비밀번호" minlength="8">
         </div>
         <div class="error-box">
             <span class="error m-login"></span>

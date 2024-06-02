@@ -22,18 +22,12 @@ public class LoginController {
     private final LoginService loginService;
     private final SignupService signupService;
 
-    @PostMapping("/login")
-    public ResponseEntity<ResponseDto> defaultLogin(@RequestBody RequestDefaultLoginDto data, HttpSession session, HttpServletResponse response) {
-        loginService.login(data, session, response);
-        return ResponseEntity.ok(new ResponseDto("로그인 성공"));
 
+    @PostMapping("/signup")
+    public ResponseEntity<ResponseDto> defaultSignup(@RequestBody RequestDefaultSignupDto data) {
+        loginService.signup(data);
+        return ResponseEntity.ok(new ResponseDto("회원가입 성공"));
     }
-
-//    @PostMapping("/signup")
-//    public ResponseEntity<ResponseDto> defaultSignup(@RequestBody RequestDefaultSignupDto data) {
-//        loginService.signup(data);
-//        return ResponseEntity.ok(new ResponseDto("회원가입 성공"));
-//    }
 
     @PostMapping("/distinct/account")
     public ResponseEntity<ResponseDto> distinctAccount(@RequestBody(required = false) String account) {

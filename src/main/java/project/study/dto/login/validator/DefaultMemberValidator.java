@@ -12,7 +12,6 @@ import project.study.dto.login.responsedto.ResponseSignupdto;
 import project.study.exceptions.login.ExpireMemberLoginException;
 import project.study.exceptions.login.FreezeMemberLoginException;
 import project.study.exceptions.signup.SignupException;
-import project.study.jpaRepository.BasicJpaRepository;
 import project.study.jpaRepository.MemberJpaRepository;
 import project.study.repository.FreezeRepository;
 
@@ -23,12 +22,10 @@ import java.util.regex.Pattern;
 @Component
 public class DefaultMemberValidator extends MemberValidator {
 
-    private final BasicJpaRepository basicJpaRepository;
     private final MemberJpaRepository memberJpaRepository;
 
-    public DefaultMemberValidator(FreezeRepository freezeRepository, BasicJpaRepository basicJpaRepository, MemberJpaRepository memberJpaRepository) {
+    public DefaultMemberValidator(FreezeRepository freezeRepository, MemberJpaRepository memberJpaRepository) {
         super(freezeRepository);
-        this.basicJpaRepository = basicJpaRepository;
         this.memberJpaRepository = memberJpaRepository;
     }
 
@@ -151,7 +148,7 @@ public class DefaultMemberValidator extends MemberValidator {
         }
 
         // 아이디 중복 확인
-        boolean distinctAccount = basicJpaRepository.existsByAccount(account);
+        boolean distinctAccount = memberJpaRepository.existsByAccount(account);
         if (distinctAccount) {
             errorList.addError(new Error("account", "이미 사용중인 아이디입니다."));
         }

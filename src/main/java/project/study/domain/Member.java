@@ -5,12 +5,14 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import project.study.common.CustomDateTime;
 import project.study.controller.api.sms.FindAccount;
 import project.study.dto.MyPageInfo;
 import project.study.dto.mypage.RequestEditInfoDto;
 import project.study.enums.AuthorityMemberEnum;
 import project.study.enums.MemberStatusEnum;
+import project.study.enums.Role;
 import project.study.enums.SocialEnum;
 
 import java.time.LocalDateTime;
@@ -29,6 +31,12 @@ public class Member implements ImageFileEntity {
     @Getter
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long memberId;
+
+    @Getter
+    private String account;
+    @Getter
+    private String password;
+
     private String memberName;
     @Getter
     private String memberNickname;
@@ -39,14 +47,13 @@ public class Member implements ImageFileEntity {
     private LocalDateTime memberExpireDate;
     @Getter
     private String phone;
+    @Enumerated(EnumType.STRING) @Getter
+    private Role role;
 
     // Not Columns
     @Getter
     @OneToOne(mappedBy = "member", fetch = FetchType.LAZY)
     private Social social;
-    @Getter
-    @OneToOne(mappedBy = "member", fetch = FetchType.LAZY)
-    private Basic basic;
     @Getter
     @OneToOne(mappedBy = "member", fetch = FetchType.LAZY)
     private Profile profile;
@@ -79,10 +86,6 @@ public class Member implements ImageFileEntity {
 
     public boolean isSocialMember() {
         return social != null;
-    }
-
-    public boolean isBasicMember() {
-        return basic != null;
     }
 
     public boolean isOutOfExpireDate() {
@@ -127,12 +130,10 @@ public class Member implements ImageFileEntity {
     }
 
     public FindAccount findAccount() {
-        if (isBasicMember()) {
-            return basic.findAccount();
-        } else if (isSocialMember()) {
+        if (isSocialMember()) {
             return social.findAccount();
         }
-        return new FindAccount(null, "다시 시도해주세요.");
+        return new FindAccount(null, account);
     }
 
     public boolean isKakao() {
@@ -151,5 +152,13 @@ public class Member implements ImageFileEntity {
 
     public void changePhone(String phone) {
         this.phone = phone;
+    }
+
+    public void changePassword(BCryptPasswordEncoder encoder, String changePassword) {
+        this.password = encoder.encode(changePassword);
+    }
+
+    public boolean isValidPassword(BCryptPasswordEncoder encoder, String comparePassword) {
+        return encoder.matches(comparePassword, password);
     }
 }

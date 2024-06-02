@@ -45,8 +45,7 @@ public class MypageRepository {
         }
         if (errorList.hasError()) return;
 
-        Basic basic = member.getBasic();
-        boolean matches = basic.isValidPassword(encoder, nowPassword);
+        boolean matches = member.isValidPassword(encoder, nowPassword);
         if (!matches) {
             errorList.addError(new Error("bfpw", "비밀번호가 일치하지 않습니다."));
             return;
@@ -66,8 +65,7 @@ public class MypageRepository {
 
     @Transactional
     public void changePassword(Member member, RequestChangePasswordDto data) {
-        Basic basic = member.getBasic();
-        basic.changePassword(encoder, data.getChangePassword());
+        member.changePassword(encoder, data.getChangePassword());
     }
 
     public void validNickname(Member member, RequestEditInfoDto data) {
@@ -80,8 +78,7 @@ public class MypageRepository {
     public void validDeleteMember(Member member, String password) {
         if (member.isSocialMember()) return;
 
-        Basic basic = member.getBasic();
-        boolean isValidPassword = basic.isValidPassword(encoder, password);
+        boolean isValidPassword = member.isValidPassword(encoder, password);
         if (!isValidPassword) {
             throw new RestFulException(new ResponseDto(ERROR, "비밀번호가 일치하지 않습니다."));
         }

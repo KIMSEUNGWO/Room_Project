@@ -1,6 +1,7 @@
 package project.study.jpaRepository;
 
 import org.springframework.data.jpa.repository.JpaRepository;
+import project.study.domain.Basic;
 import project.study.domain.Member;
 import project.study.enums.MemberStatusEnum;
 
@@ -15,4 +16,8 @@ public interface MemberJpaRepository extends JpaRepository<Member, Long> {
     Optional<Member> findByMemberNickname(String nickname);
     boolean existsByPhone(String phone);
     List<Member> findAllByMemberStatus(MemberStatusEnum status);
+
+    Optional<Member> findByAccount(String account);
+
+    boolean existsByAccount(String account);
 }
