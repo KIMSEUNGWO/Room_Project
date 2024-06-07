@@ -1,5 +1,6 @@
 package project.study.dto.abstractentity;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import project.study.constant.WebConst;

@@ -6,6 +6,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -51,7 +52,6 @@ public class MainController {
 
         List<ResponseRoomMemberList> memberList = roomService.getResponseRoomMemberList(room, member);
         Room.ResponseRoomInfo roomInfo = room.getResponseRoomInfo(joinRoom);
-
 
         model.addAttribute("memberList", memberList);
         model.addAttribute("roomInfo", roomInfo);

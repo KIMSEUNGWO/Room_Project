@@ -7,6 +7,7 @@ import project.study.domain.Member;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 
 @Getter
 public class PrincipalDetails implements UserDetails {
@@ -20,10 +21,7 @@ public class PrincipalDetails implements UserDetails {
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         System.out.println("getAuthorities 실행");
-        Collection<GrantedAuthority> authorities = new ArrayList<>();
-        System.out.println(member.getRole());
-        authorities.add(() -> member.getRole().getRoleName());
-        return authorities;
+        return List.of(() -> member.getRole().getRoleName());
     }
 
     @Override

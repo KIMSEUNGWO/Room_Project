@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -32,7 +32,7 @@
                 <span class="slogan-text"><b class="typing"></b>하자</span>
             </div>
         </div>
-        <div class="search-form">
+        <div class="search-form" sec:authorize="isAuthenticated()">
             <div class="search-wrapper">
                 <div class="search-wrap">
                     <input type="text" name="word" id="word" placeholder="제목 또는 태그를 입력해주세요." maxlength="10">
