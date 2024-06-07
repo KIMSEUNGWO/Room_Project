@@ -62,7 +62,7 @@ public class Member implements ImageFileEntity {
     private List<Freeze> freeze;
 
     @Getter
-    @OneToMany(mappedBy = "member", fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "member", fetch = FetchType.EAGER)
     private List<JoinRoom> joinRoomList;
 
     public void changeStatusToNormal() {

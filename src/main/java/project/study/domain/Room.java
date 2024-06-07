@@ -7,6 +7,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import project.study.authority.member.dto.RequestEditRoomDto;
 import project.study.authority.member.dto.ResponseRoomListDto;
+import project.study.config.outh.PrincipalDetails;
 import project.study.constant.WebConst;
 import project.study.enums.PublicEnum;
 
@@ -38,30 +39,30 @@ public class Room implements ImageFileEntity {
     private PublicEnum roomPublic;
 
     @Getter
-    @OneToMany(mappedBy = "room")
+    @OneToMany(mappedBy = "room", fetch = FetchType.EAGER)
     private List<Tag> tags;
 
     @Getter
-    @OneToOne(mappedBy = "room", fetch = FetchType.LAZY)
+    @OneToOne(mappedBy = "room", fetch = FetchType.EAGER)
     private RoomImage roomImage;
 
     @Getter
-    @OneToOne(mappedBy = "room", fetch = FetchType.LAZY)
+    @OneToOne(mappedBy = "room", fetch = FetchType.EAGER)
     private RoomPassword roomPassword;
 
     @Getter
-    @OneToOne(mappedBy = "room", fetch = FetchType.LAZY)
+    @OneToOne(mappedBy = "room", fetch = FetchType.EAGER)
     private RoomNotice roomNotice;
 
-    @OneToOne(mappedBy = "room", fetch = FetchType.LAZY)
+    @OneToOne(mappedBy = "room", fetch = FetchType.EAGER)
     private RoomDelete roomDelete;
 
     @Getter
-    @OneToMany(mappedBy = "room", fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "room", fetch = FetchType.EAGER)
     private List<JoinRoom> joinRoomList;
 
     @Getter
-    @OneToMany(mappedBy = "room", fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "room", fetch = FetchType.EAGER)
     private List<Chat> chatHistory;
 
     public boolean isPublic() {
@@ -103,14 +104,14 @@ public class Room implements ImageFileEntity {
         return WebConst.DEFAULT_ROOM_IMAGE.equals(getStoreImage());
     }
 
-    public ResponseRoomListDto getResponseRoomListDto(Long memberId) {
+    public ResponseRoomListDto getResponseRoomListDto(PrincipalDetails user) {
         return ResponseRoomListDto.builder()
                 .roomId(roomId)
                 .roomImage(getStoreImage())
                 .roomTitle(roomTitle)
                 .roomIntro(roomIntro)
                 .roomPublic(isPublic())
-                .roomJoin(memberId != null && joinRoomList.stream().anyMatch(joinRoom -> joinRoom.getMember().getMemberId().equals(memberId)))
+                .roomJoin(user != null && joinRoomList.stream().anyMatch(joinRoom -> joinRoom.getMember().getMemberId().equals(user.getMember().getMemberId())))
                 .nowPerson(joinRoomSize())
                 .maxPerson(roomLimit)
                 .tagList(tags.stream().map(Tag::getTagName).toList())

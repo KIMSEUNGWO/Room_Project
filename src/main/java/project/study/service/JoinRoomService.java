@@ -9,6 +9,7 @@ import project.study.authority.member.dto.RequestJoinRoomDto;
 import project.study.chat.ChatService;
 import project.study.chat.component.ChatManager;
 import project.study.chat.dto.ChatDto;
+import project.study.config.outh.PrincipalDetails;
 import project.study.domain.JoinRoom;
 import project.study.domain.Member;
 import project.study.domain.Room;
@@ -34,9 +35,9 @@ public class JoinRoomService {
     private final ChatService chatService;
     private final ChatManager chatManager;
 
-    public boolean exitsByMemberAndRoom(Long memberId, Room room) {
-        if (memberId == null) throw new NotLoginMemberRestException();
-        return joinRoomRepository.exitsByMemberAndRoom(memberId, room);
+    public boolean exitsByMemberAndRoom(PrincipalDetails user, Room room) {
+        if (user == null) throw new NotLoginMemberRestException();
+        return joinRoomRepository.exitsByMemberAndRoom(user.getMember().getMemberId(), room);
     }
 
     public void validMaxJoinRoom(Member member, HttpServletResponse response) {

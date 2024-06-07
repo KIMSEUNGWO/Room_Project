@@ -32,8 +32,6 @@ public class SecurityConfig {
 
     @Bean
     SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-        JsonUsernamePasswordAuthenticationFilter customFilter = new JsonUsernamePasswordAuthenticationFilter(principalDetailsService, bCryptPasswordEncoder());
-        customFilter.setFilterProcessesUrl("/login");
 
         http.csrf(AbstractHttpConfigurer::disable)
             .authorizeHttpRequests( request ->
@@ -46,16 +44,15 @@ public class SecurityConfig {
         http.formLogin(formLogin ->
             formLogin
                 .loginProcessingUrl("/login")
-                .usernameParameter("account")
-                .passwordParameter("password")
-            )
-            .addFilterAt(customFilter, UsernamePasswordAuthenticationFilter.class)
+                .usernameParameter("login_account")
+                .passwordParameter("login_password")
+            );
             // TODO
             // OncePerRequestFilter 를 상속받아 사용했음에도 여러번 호출되는 문제확인 (모든 요청에 여러번 호출됨)
             // 여기에 구현해야할건 로그인 validation 에 있는것들 그대로 가져와야함.
             // input name이 loginAccount -> account 로 변경되면서 로그인화면에서 회원가입 이벤트리스너가 자꾸 작동됨. ( 회원가입 중복확인, 패스워드 일치여부 )
             // usernameParameter account -> loginAccount, password -> loginPassword로 다시 변경시키고 적용시키자!
-            .addFilterAfter(new ValidationFilter(), JsonUsernamePasswordAuthenticationFilter.class);
+//            .addFilterAfter(new ValidationFilter(), JsonUsernamePasswordAuthenticationFilter.class);
 
         http.logout(logout ->
             logout

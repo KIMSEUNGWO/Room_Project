@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import project.study.authority.member.dto.RequestEditRoomDto;
 import project.study.authority.member.dto.ResponseRoomListDto;
+import project.study.config.outh.PrincipalDetails;
 import project.study.constant.WebConst;
 import project.study.domain.JoinRoom;
 import project.study.domain.Member;
@@ -61,12 +62,12 @@ public class RoomService {
     }
 
 
-    public List<ResponseRoomListDto> searchRoomList(Long memberId, String word, Pageable pageable) {
+    public List<ResponseRoomListDto> searchRoomList(PrincipalDetails user, String word, Pageable pageable) {
         List<Room> roomInfo = joinRoomRepository.search(word, pageable);
 
         List<ResponseRoomListDto> temp = new ArrayList<>(roomInfo.size());
         for (Room room : roomInfo) {
-            temp.add(room.getResponseRoomListDto(memberId));
+            temp.add(room.getResponseRoomListDto(user));
         }
         return temp;
     }

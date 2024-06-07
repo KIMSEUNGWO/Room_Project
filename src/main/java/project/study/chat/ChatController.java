@@ -10,6 +10,7 @@ import org.springframework.messaging.handler.annotation.Payload;
 import org.springframework.messaging.simp.SimpMessageHeaderAccessor;
 import org.springframework.messaging.simp.SimpMessageSendingOperations;
 import org.springframework.messaging.simp.stomp.StompHeaderAccessor;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.socket.messaging.SessionDisconnectEvent;
@@ -22,6 +23,7 @@ import project.study.chat.component.ChatAccessToken;
 import project.study.chat.component.ChatManager;
 import project.study.chat.dto.*;
 import project.study.common.CustomDateTime;
+import project.study.config.outh.PrincipalDetails;
 import project.study.customAnnotation.PathRoom;
 import project.study.customAnnotation.SessionLogin;
 import project.study.domain.Member;
@@ -55,11 +57,12 @@ public class ChatController {
 
     @ResponseBody
     @GetMapping("/room/{room}/access")
-    public ResponseEntity<ResponseDto> accessToken(@SessionLogin Member member, @PathRoom("room") Room room) {
-        boolean exitsByMemberAndRoom = joinRoomService.exitsByMemberAndRoom(member == null ? null : member.getMemberId(), room);
+    public ResponseEntity<ResponseDto> accessToken(@AuthenticationPrincipal PrincipalDetails user, @PathRoom("room") Room room) {
+
+        boolean exitsByMemberAndRoom = joinRoomService.exitsByMemberAndRoom(user, room);
         if (!exitsByMemberAndRoom) throw new RestFulException(new ResponseDto(ERROR, "권한 없음"));
 
-        String accessToken = chatAccessToken.createAccessToken(member, room.getRoomId());
+        String accessToken = chatAccessToken.createAccessToken(user.getMember(), room.getRoomId());
         return ResponseEntity.ok(new ResponseDto(accessToken));
     }
 

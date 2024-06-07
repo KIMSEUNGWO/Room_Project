@@ -153,16 +153,18 @@ function modalExit() {
     }, 200);
 }
 function login() {
-    let account = document.querySelector('input[name="account"]');
-    let password = document.querySelector('input[name="password"]');
+    let account = document.querySelector('input[name="login_account"]');
+    let password = document.querySelector('input[name="login_password"]');
     if (account == null || password == null) {
         alert('잘못된 접근입니다. 다시 시도해주세요');
         location.reload();
         return;
     }
 
-    let json = {account : account.value, password : password.value};
-    fetchPost('/login', json, loginResult);
+    let formData = new FormData();
+    formData.append('login_account', account.value);
+    formData.append('login_password', password.value);
+    fetchFormData('/login', formData, loginResult);
 }
 function loginResult(json) {
     if (json.result === 'ok') {
@@ -175,7 +177,7 @@ function loginResult(json) {
         }
     } else if (json.result === 'error') {
         let m_login = document.querySelector('.m-login');
-        let password = document.querySelector('input[name="password"]');
+        let password = document.querySelector('input[name="login_password"]');
         password.value = '';
         printMessage(json, m_login);
     }
@@ -600,8 +602,8 @@ return `<div class="modal-logo">
             <img src="/images/DAGONG.png" alt="">
         </div>
         <div class="modal-input-box">
-            <input type="text" name="account" id="account" placeholder="아이디">
-            <input type="password" name="password" id="password" placeholder="비밀번호" minlength="8">
+            <input type="text" name="login_account" id="account" placeholder="아이디">
+            <input type="password" name="login_password" id="password" placeholder="비밀번호" minlength="8">
         </div>
         <div class="error-box">
             <span class="error m-login"></span>

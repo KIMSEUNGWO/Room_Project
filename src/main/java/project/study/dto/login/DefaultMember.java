@@ -11,6 +11,7 @@ import project.study.dto.login.requestdto.RequestDefaultSignupDto;
 import project.study.dto.login.requestdto.RequestLoginDto;
 import project.study.dto.login.requestdto.RequestSignupDto;
 import project.study.enums.MemberStatusEnum;
+import project.study.enums.Role;
 import project.study.exceptions.login.InvalidLoginException;
 import project.study.jpaRepository.MemberJpaRepository;
 
@@ -35,6 +36,7 @@ public class DefaultMember implements MemberInterface {
                 .memberNickname(data.getNickName())
                 .memberCreateDate(CustomDateTime.now())
                 .memberStatus(MemberStatusEnum.정상)
+                .role(Role.USER)
                 .build();
         return memberJpaRepository.save(saveMember);
     }

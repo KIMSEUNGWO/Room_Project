@@ -5,6 +5,7 @@ import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -15,6 +16,7 @@ import project.study.authority.member.MemberAuthorizationCheck;
 import project.study.authority.member.authority.MemberAuthority;
 import project.study.authority.member.dto.RequestJoinRoomDto;
 import project.study.authority.member.dto.ResponseRoomListDto;
+import project.study.config.outh.PrincipalDetails;
 import project.study.customAnnotation.CallType;
 import project.study.customAnnotation.PathRoom;
 import project.study.customAnnotation.SessionLogin;
@@ -42,7 +44,8 @@ public class MainController {
     private final MainService mainService;
 
     @GetMapping("/room/{room}")
-    public String joinRoom(@SessionLogin(required = true, type = CallType.CONTROLLER) Member member, @PathRoom("room") Room room, HttpServletResponse response, Model model){
+    public String joinRoom(@AuthenticationPrincipal PrincipalDetails user, @PathRoom("room") Room room, HttpServletResponse response, Model model){
+        Member member = user.getMember();
         MemberAuthority commonMember = memberAuthorizationCheck.getMemberAuthority(response, member);
         JoinRoom joinRoom = commonMember.joinRoom(new RequestJoinRoomDto(member, room, response, null));
 
@@ -58,7 +61,7 @@ public class MainController {
     }
 
     @GetMapping("/room/{room}/private")
-    public String roomPrivate(@SessionLogin(required = true, type = CallType.CONTROLLER) Member member, @PathRoom("room") Room room, Model model) {
+    public String roomPrivate(@PathRoom("room") Room room, Model model) {
         if (room.isPublic()) return "redirect:/";
 
         Room.ResponsePrivateRoomInfoDto data = room.getResponsePrivateRoomInfo();
@@ -68,8 +71,10 @@ public class MainController {
 
 
     @GetMapping("/")
-    public String main(@SessionLogin Member member, Model model, HttpServletResponse response){
-        if (member != null) {
+    public String main(@AuthenticationPrincipal PrincipalDetails user, Model model, HttpServletResponse response){
+
+        if (user != null) {
+            Member member = user.getMember();
             MemberAuthority commonMember = memberAuthorizationCheck.getMemberAuthority(response, member);
             List<ResponseRoomListDto> myRoomList = commonMember.getMyRoomList(member);
             model.addAttribute("myRoomList", myRoomList);
@@ -81,15 +86,17 @@ public class MainController {
 
     @ResponseBody
     @GetMapping("/search")
-    public ResponseEntity<ResponseDto> search(@SessionAttribute(name = LOGIN_MEMBER, required = false) Long memberId, @RequestParam("word") String word, Pageable pageable) {
-        List<ResponseRoomListDto> roomList = roomService.searchRoomList(memberId, word, pageable);
+    public ResponseEntity<ResponseDto> search(@AuthenticationPrincipal PrincipalDetails user, @RequestParam("word") String word, Pageable pageable) {
+        List<ResponseRoomListDto> roomList = roomService.searchRoomList(user, word, pageable);
         return ResponseEntity.ok(new SearchRoomListDto("검색성공", word, roomList));
     }
 
     @GetMapping("/mypage")
-    public String mypage(@SessionLogin Member member, Model model) {
-        if (member == null) return "redirect:/?redirectURI=/mypage";
+    public String mypage(@AuthenticationPrincipal PrincipalDetails user, Model model) {
+        System.out.println("user = " + user);
+        if (user == null) return "redirect:/?redirectURI=/mypage";
 
+        Member member = user.getMember();
         MyPageInfo info = member.getMyPageInfo();
 
         model.addAttribute("main", info);

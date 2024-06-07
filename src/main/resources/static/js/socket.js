@@ -4,12 +4,68 @@ let isNewMessage = false;
 let page = 0;
 let loadingChatHistory = false;
 
+class Chat {
+
+    constructor(data) {
+        this.token = data.token;
+        this.sender = data.sender;
+        this.senderImage = data.senderImage;
+        this.message = data.message;
+        this.time = new Date(data.time);
+    }
+
+}
+
+class ChatHistory {
+
+    constructor() {
+        this.list = [];
+    }
+
+    setElement(element) {
+        this.chatHistory = element;
+    }
+
+    insert(chatList) {
+        for (let i = 0; i < chatList.length; i++) {
+            const data = new Chat(chatList[i]);
+            this.list.push(data);
+        }
+        this.list.sort((a, b) => a.time - b.time);
+        console.log(this.list);
+
+        this.printHistory();
+    }
+
+    printHistory() {
+        for (let i = 0; i < this.list.length; i++) {
+            const chat = this.list[i];
+
+            if (i === 0 || chat.getDate() !== this.list[i-1].getDate()) {
+                this.chatHistory.innerHTML += `<div class="date"> <span>${chat.message}</span> </div>`
+            }
+
+            if (chat.me || chat.token === token) { // 내 메세지
+
+            }
+
+        }
+    }
+
+    // TODO
+
+}
+let history = new ChatHistory();
+
 window.addEventListener('load', () => {
     initialSetting();
 
     managerCheck();
 
     const chatHistory = document.querySelector('.chat-history');
+
+    history.setElement(chatHistory);
+
     chatHistory.addEventListener('scroll', () => {
 
         if (isBottom()) { // 스크롤이 맨 밑에 있을 때
@@ -118,6 +174,8 @@ function newMessageAlert() {
 
 function  historyResult(json) {
     let list = json.data;
+    history.insert(list);
+
     for (let i=0;i<list.length;i++) {
         printMessage(list[i]);
     }
@@ -227,7 +285,7 @@ function sendMessage() {
         }
 
         stompClient.send('/pub/chat/sendMessage', {}, JSON.stringify(chatMessage));
-        message.value = '';
+        messageInput.value = '';
     }
 }
 
@@ -769,3 +827,5 @@ function createMember(chat) {
             </button>
             </div>`
 }
+
+

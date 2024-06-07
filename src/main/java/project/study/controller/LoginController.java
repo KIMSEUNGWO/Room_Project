@@ -5,7 +5,9 @@ import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
+import project.study.config.outh.PrincipalDetails;
 import project.study.dto.abstractentity.ResponseDto;
 import project.study.dto.login.requestdto.RequestDefaultLoginDto;
 import project.study.dto.login.requestdto.RequestDefaultSignupDto;
@@ -45,7 +47,7 @@ public class LoginController {
     }
 
     @GetMapping("/login/check")
-    public ResponseEntity<ResponseDto> hasLogin(@SessionAttribute(value = LOGIN_MEMBER, required = false) Long memberId) {
-        return ResponseEntity.ok(new ResponseDto( (memberId != null) ? "Login User" : "Require Login"));
+    public ResponseEntity<ResponseDto> hasLogin(@AuthenticationPrincipal PrincipalDetails user) {
+        return ResponseEntity.ok(new ResponseDto( (user != null) ? "Login User" : "Require Login"));
     }
 }
