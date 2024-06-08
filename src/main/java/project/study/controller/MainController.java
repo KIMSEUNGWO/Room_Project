@@ -60,6 +60,14 @@ public class MainController {
         return "room";
     }
 
+    @ResponseBody
+    @GetMapping("/room/{room}/members")
+    public List<ResponseRoomMemberList> getResponseRoomMemberList(@AuthenticationPrincipal PrincipalDetails user,
+                                                                  @PathRoom("room") Room room){
+        System.out.println("getResponseRoomMemberList");
+        return roomService.getResponseRoomMemberList(room, user.getMember());
+    }
+
     @GetMapping("/room/{room}/private")
     public String roomPrivate(@PathRoom("room") Room room, Model model) {
         if (room.isPublic()) return "redirect:/";

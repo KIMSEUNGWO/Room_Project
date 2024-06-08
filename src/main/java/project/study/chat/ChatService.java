@@ -36,8 +36,8 @@ public class ChatService {
         return findMember.get();
     }
 
-    public ChatObject<Collection<String>> changeToMemberListDto(ChatDto chat) {
-        Collection<String> memberList = currentMemberManager.getMemberList(chat.getRoomId());
+    public ChatObject<Collection<Long>> changeToMemberListDto(ChatDto chat) {
+        Collection<Long> memberList = currentMemberManager.getMemberList(chat.getRoomId());
         return new ChatObject<>(chat, memberList);
     }
 

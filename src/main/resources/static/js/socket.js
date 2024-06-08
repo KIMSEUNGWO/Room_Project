@@ -11,44 +11,418 @@ class Chat {
         this.sender = data.sender;
         this.senderImage = data.senderImage;
         this.message = data.message;
-        this.time = new Date(data.time);
+        this.date = new Date(data.time);
+        this.day = this.formatDay();
+        this.time = this.formatTime();
+        this.me = data.me;
     }
+
+    createMeMessageBox() {
+        return `<div class="message-box">
+                    <span class="day" style="display: none;"></span>
+                    <span class="time">${this.time ?? ''}</span>
+                    <pre class="message-content"> ${this.message} </pre>
+                </div>`
+    }
+    createMe() {
+        return `<div class="me"> ${this.createMeMessageBox()} </div>`
+    }
+    createYouMessageBox() {
+        return `<div class="message-box">
+                    <pre class="message-content">${this.message}</pre>
+                    <span class="time">${this.time ?? ''}</span>
+                    <span class="day" style="display: none;"></span>
+                </div>`
+    }
+    createYou() {
+        return `<div class="you">
+                    <div class="profile-box">
+                        <img src="/images/member_profile/${this.senderImage}" alt="">
+                    </div>
+                    <div class="message-wrap">
+                        <div class="name-box">
+                            <span class="name">${this.sender}</span>
+                        </div>
+                        ${this.createYouMessageBox()}
+                    </div>
+                </div>`
+    }
+
+
+    formatDay() {
+        if (this.date === undefined) return '';
+        return new Intl.DateTimeFormat('ko-KR', {
+            year: 'numeric',
+            month: 'long',
+            day: 'numeric',
+            weekday: 'long'
+        }).format(this.date);
+    }
+    formatTime() {
+        if (this.date === undefined) return '';
+        return ('0' + this.date.getHours()).slice(-2) + ':' + ('0' + this.date.getMinutes()).slice(-2);
+    }
+
 
 }
 
+class Notice {
+
+    constructor(notice) {
+        this.content = notice.content;
+        this.date = new Date(notice.time);
+        this.day = this.formatDay();
+        this.time = this.formatTime();
+    }
+
+    createNotice() {
+        return `<div class="notice">
+                <svg class="speaker" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512"><path d="M544 32c17.7 0 32 14.3 32 32V448c0 17.7-14.3 32-32 32s-32-14.3-32-32V64c0-17.7 14.3-32 32-32zM64 190.3L480 64V448L348.9 408.2C338.2 449.5 300.7 480 256 480c-53 0-96-43-96-96c0-11 1.9-21.7 5.3-31.5L64 321.7C63.1 338.6 49.1 352 32 352c-17.7 0-32-14.3-32-32V192c0-17.7 14.3-32 32-32c17.1 0 31.1 13.4 32 30.3zm239 203.9l-91.6-27.8c-2.1 5.4-3.3 11.4-3.3 17.6c0 26.5 21.5 48 48 48c23 0 42.2-16.2 46.9-37.8z"/></svg>
+                <div class="room-notice-content">
+                    <pre class="notice-text">${this.content}</pre>
+                    <div class="notice-time">${this.day + ' ' + this.time}</div>
+                </div>
+                <button type="button" class="folder">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><path d="M201.4 342.6c12.5 12.5 32.8 12.5 45.3 0l160-160c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L224 274.7 86.6 137.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3l160 160z"/></svg>
+                </button>
+            </div>`
+    }
+
+    formatDay() {
+        if (this.date === undefined) return '';
+        return new Intl.DateTimeFormat('ko-KR', {
+            year: 'numeric',
+            month: 'long',
+            day: 'numeric',
+            weekday: 'long'
+        }).format(this.date);
+    }
+    formatTime() {
+        if (this.date === undefined) return '';
+        return ('0' + this.date.getHours()).slice(-2) + ':' + ('0' + this.date.getMinutes()).slice(-2);
+    }
+}
+
+class Member {
+    // TODO
+    // 최초 입장시에는 memberId 를가져오지만
+    // 입장 후 다른사람 입장시네는 memberId가 존재하지않음.
+    // 메세지형식이기때문에 name이 아니고 sender로 들어옴
+    // 당연히 manager, me도 없음 이거 해결해야함
+    // 물론 나갈때도 메세지 형식이라서 그것도 손봐야함
+    constructor(data) {
+        this.memberId = data.memberId;
+        this.image = data.image;
+        this.name = data.name;
+        this.manager = data.manager;
+        this.me = data.me;
+    }
+
+    createElement() {
+        return `<div class="member" data-is="${this.memberId}">
+                    <div class="member-data">
+                        <img src="/images/member_profile/${this.image}" alt="">
+                            <span name="${this.name}">${this.name}</span>
+                            <div class="meTag">
+                                ${this.me         ? '<div class="isMe">나</div>' : ''}
+                                ${this.manager    ? '<div class="manager">방장</div>' : ''}
+                            </div>
+                    </div>
+                    ${!this.me ?
+                        `<button type="button" class="member-more">
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><path d="M8 256a56 56 0 1 1 112 0A56 56 0 1 1 8 256zm160 0a56 56 0 1 1 112 0 56 56 0 1 1 -112 0zm216-56a56 56 0 1 1 0 112 56 56 0 1 1 0-112z"/></svg>
+                            <ul class="member-option-menu disabled" name="option-menu">
+                                <li class="member-option-box member-entrust-box">
+                                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 512"><path d="M224 0a128 128 0 1 1 0 256A128 128 0 1 1 224 0zM178.3 304h91.4c11.8 0 23.4 1.2 34.5 3.3c-2.1 18.5 7.4 35.6 21.8 44.8c-16.6 10.6-26.7 31.6-20 53.3c4 12.9 9.4 25.5 16.4 37.6s15.2 23.1 24.4 33c15.7 16.9 39.6 18.4 57.2 8.7v.9c0 9.2 2.7 18.5 7.9 26.3H29.7C13.3 512 0 498.7 0 482.3C0 383.8 79.8 304 178.3 304zM436 218.2c0-7 4.5-13.3 11.3-14.8c10.5-2.4 21.5-3.7 32.7-3.7s22.2 1.3 32.7 3.7c6.8 1.5 11.3 7.8 11.3 14.8v17.7c0 7.8 4.8 14.8 11.6 18.7c6.8 3.9 15.1 4.5 21.8 .6l13.8-7.9c6.1-3.5 13.7-2.7 18.5 2.4c7.6 8.1 14.3 17.2 20.1 27.2s10.3 20.4 13.5 31c2.1 6.7-1.1 13.7-7.2 17.2l-14.4 8.3c-6.5 3.7-10 10.9-10 18.4s3.5 14.7 10 18.4l14.4 8.3c6.1 3.5 9.2 10.5 7.2 17.2c-3.3 10.6-7.8 21-13.5 31s-12.5 19.1-20.1 27.2c-4.8 5.1-12.5 5.9-18.5 2.4l-13.8-7.9c-6.7-3.9-15.1-3.3-21.8 .6c-6.8 3.9-11.6 10.9-11.6 18.7v17.7c0 7-4.5 13.3-11.3 14.8c-10.5 2.4-21.5 3.7-32.7 3.7s-22.2-1.3-32.7-3.7c-6.8-1.5-11.3-7.8-11.3-14.8V467.8c0-7.9-4.9-14.9-11.7-18.9c-6.8-3.9-15.2-4.5-22-.6l-13.5 7.8c-6.1 3.5-13.7 2.7-18.5-2.4c-7.6-8.1-14.3-17.2-20.1-27.2s-10.3-20.4-13.5-31c-2.1-6.7 1.1-13.7 7.2-17.2l14-8.1c6.5-3.8 10.1-11.1 10.1-18.6s-3.5-14.8-10.1-18.6l-14-8.1c-6.1-3.5-9.2-10.5-7.2-17.2c3.3-10.6 7.7-21 13.5-31s12.5-19.1 20.1-27.2c4.8-5.1 12.4-5.9 18.5-2.4l13.6 7.8c6.8 3.9 15.2 3.3 22-.6c6.9-3.9 11.7-11 11.7-18.9V218.2zm92.1 133.5a48.1 48.1 0 1 0 -96.1 0 48.1 48.1 0 1 0 96.1 0z"/></svg>
+                                    <span>방장 위임</span>
+                                </li>
+                                <li class="member-option-box member-kick-box">
+                                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 512"><path d="M96 128a128 128 0 1 1 256 0A128 128 0 1 1 96 128zM0 482.3C0 383.8 79.8 304 178.3 304h91.4C368.2 304 448 383.8 448 482.3c0 16.4-13.3 29.7-29.7 29.7H29.7C13.3 512 0 498.7 0 482.3zM472 200H616c13.3 0 24 10.7 24 24s-10.7 24-24 24H472c-13.3 0-24-10.7-24-24s10.7-24 24-24z"/></svg>
+                                    <span>내보내기</span>
+                                </li>
+                                <li class="member-option-box member-notify-box">
+                                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512"><path fill="#ff0000" d="M272 384c9.6-31.9 29.5-59.1 49.2-86.2l0 0c5.2-7.1 10.4-14.2 15.4-21.4c19.8-28.5 31.4-63 31.4-100.3C368 78.8 289.2 0 192 0S16 78.8 16 176c0 37.3 11.6 71.9 31.4 100.3c5 7.2 10.2 14.3 15.4 21.4l0 0c19.8 27.1 39.7 54.4 49.2 86.2H272zM192 512c44.2 0 80-35.8 80-80V416H112v16c0 44.2 35.8 80 80 80zM112 176c0 8.8-7.2 16-16 16s-16-7.2-16-16c0-61.9 50.1-112 112-112c8.8 0 16 7.2 16 16s-7.2 16-16 16c-44.2 0-80 35.8-80 80z"/></svg>
+                                    <span>신고하기</span>
+                                </li>
+                            </ul>
+                        </button>` : ''}
+                </div>`;
+    }
+
+
+
+}
+class MemberList {
+
+    constructor() {
+        this.onlineList = [];
+        this.offlineList = [];
+        this.online = document.querySelector('.member-list[data-is-online="true"]');
+        this.offline = document.querySelector('.member-list[data-is-online="false"]');
+        this.current = document.querySelector('#current');
+        this.fetchInit().then(members => this.init(members));
+    }
+
+    async fetchInit() {
+        return await fetch(`/room/${getRoomId()}/members`)
+            .then(res => res.json());
+    }
+
+    init(members) {
+        console.log(members);
+        members.forEach(member => this.addMember(new Member(member)));
+        this.printMembers();
+        this.reloadCount();
+    }
+    addMember(member) {
+        if (!this.hasInOnline(member.name) && !this.hasInOffline(member.name)) {
+            this.offlineList.push(member);
+        }
+        this.reloadCount();
+    }
+    printMembers() {
+        this.offlineList.forEach(member => this.offline.innerHTML += member.createElement());
+        this.onlineList.forEach(member => this.online.innerHTML += member.createElement());
+    }
+
+    hasInOffline(name) {
+        return this.offlineList.find(member => member.name === name) !== undefined;
+    }
+
+    hasInOnline(name) {
+        return this.onlineList.find(member => member.name === name) !== undefined;
+    }
+
+    reloadCount() {
+        if (this.current === null) return;
+        this.current.innerHTML = this.onlineList.length + this.offlineList.length
+    }
+
+    getOnlineMember(memberId) {
+        return this.online.querySelector(`.member[data-is="${memberId}"]`);
+    }
+    getOfflineMember(memberId) {
+        return this.offline.querySelector(`.member[data-is="${memberId}"]`);
+    }
+
+    checkOnline(currentMemberList) {
+
+        const newOfflineList = [];
+        const newOnlineList = [];
+        for (let i = 0; i < currentMemberList.length ?? 0; i++) {
+            this.offlineList.forEach(member => member.memberId === currentMemberList[i] ? newOnlineList.push(member) : null);
+            this.onlineList.forEach(member => member.memberId !== currentMemberList[i] ? newOfflineList.push(member) : null);
+        }
+        this.offlineList = newOfflineList;
+        this.onlineList = newOnlineList;
+
+        this.offlineList.forEach(member => {
+            const element = this.getOnlineMember(member.memberId);
+            if (element) this.offline.appendChild(element);
+        });
+        this.onlineList.forEach(member => {
+            const element = this.getOfflineMember(member.memberId);
+            if (element) this.online.appendChild(element);
+        });
+    }
+
+    removeKickMember(chat) {
+        kickMemberCheck(chat.token);
+        let memberInOnline = this.onlineList.find(member => member.name === chat.sender);
+        let memberInOffline = this.offlineList.find(member => member.name === chat.sender);
+
+        if (memberInOnline) {
+            this.onlineList = this.onlineList.filter(member => member.name === chat.sender);
+            this.getOnlineMember(memberInOnline.memberId)?.remove();
+        }
+        if (memberInOffline) {
+            this.offlineList = this.offlineList.filter(member => member.name === chat.sender);
+            this.getOfflineMember(memberInOffline.memberId)?.remove();
+        }
+        this.reloadCount();
+    }
+}
 class ChatHistory {
 
     constructor() {
-        this.list = [];
+        this.chatList = [];
+        this.chatHistory = document.querySelector('.chat-history');
+        this.notice = document.querySelector('.room-notice');
+        this.memberList = new MemberList();
     }
 
-    setElement(element) {
-        this.chatHistory = element;
+    noticeUpdate(notice) {
+        if (notice == null) {
+            this.chatHistory.style.paddingTop = '1rem';
+            this.notice.innerHTML = '';
+            this.noticeContent = null;
+        } else {
+            this.chatHistory.style.paddingTop = '8rem';
+            this.noticeContent = new Notice(notice);
+            this.notice.innerHTML = this.noticeContent.createNotice();
+        }
+        this.reloadNotice();
+    }
+
+    reloadHistory() {
+        return document.querySelector('.chat-history');
+    }
+    reloadNotice() {
+        return document.querySelector('.room-notice');
     }
 
     insert(chatList) {
-        for (let i = 0; i < chatList.length; i++) {
-            const data = new Chat(chatList[i]);
-            this.list.push(data);
-        }
-        this.list.sort((a, b) => a.time - b.time);
-        console.log(this.list);
-
-        this.printHistory();
+        chatList.forEach(data => this.chatList.push(new Chat(data))); // 데이터 담기
+        this.chatList.sort((a, b) => a.date - b.date);
+        this.distinctTimeRemove(); // 이전 채팅기록과 현재 채팅기록의 데이터가 일치하면 이전 채팅기록에서 날짜삭제
+        this.groupByDate(); // 날짜별로 데이터 묶음
+        this.printHistory(); // 출력
     }
 
     printHistory() {
-        for (let i = 0; i < this.list.length; i++) {
-            const chat = this.list[i];
+        for (const date in this.chatList) {
+            this.insertDate(date);
 
-            if (i === 0 || chat.getDate() !== this.list[i-1].getDate()) {
-                this.chatHistory.innerHTML += `<div class="date"> <span>${chat.message}</span> </div>`
+            for (let i = 0; i < this.chatList[date].length; i++) {
+                this.printChat(i, this.chatList[date][i], this.chatList[date][i-1]);
             }
+        }
+    }
 
-            if (chat.me || chat.token === token) { // 내 메세지
+    printChat(index, chat, beforeChat) {
 
+        if (index === 0) {
+            this.insertElement(this.isMe(chat) ? chat.createMe() : chat.createYou());
+            this.reloadHistory(); // 태그 새로고침
+            return;
+        }
+
+        if (this.isMe(chat)) {
+            if (beforeChat.me)  this.insertElementLastChild(chat.createMeMessageBox());
+            else                this.insertElement(chat.createMe());
+        } else {
+            if (chat.sender === beforeChat.sender)  this.insertElementLastChildYou(chat.createYouMessageBox());
+            else                                    this.insertElement(chat.createYou());
+        }
+        this.reloadHistory(); // 태그 새로고침
+    }
+
+    onMessageReceive(chatData) {
+
+        switch (chatData.type) {
+            case 'TALK' :
+                this.addChat(new Chat(chatData));
+                break
+            case 'ENTER' :
+                this.memberList.addMember()
+            case 'LEAVE' :
+                this.insertElement(this.centerMessage(chatData.message));
+                this.memberList.checkOnline(chatData.data);
+                break
+            case 'UPDATE' :
+                this.insertElement(this.centerMessage(chatData.message));
+                break
+            case 'EXIT' :
+                this.insertElement(this.centerMessage(chatData.message));
+                break
+            case 'NOTICE':
+            case 'NOTICE_DELETE' :
+                this.noticeUpdate(chatData.data)
+                this.insertElement(this.centerMessage(chatData.message));
+                break
+            case 'KICK' :
+                this.insertElement(this.centerMessage(chatData.message));
+                this.memberList.removeKickMember(chatData.token);
+                this.memberList.checkOnline(chatData.data);
+                this.memberList.reloadCount();
+                break
+            case 'ENTRUST':
+                this.insertElement(this.centerMessage(chatData.message));
+                break
+
+        }
+        this.reloadHistory();
+        return;
+        if (chat.type === 'UPDATE') {
+            updateApply(chat.data);
+            // history.innerHTML += centerMessage(chat.message);
+        }
+
+        if (chat.type === 'EXIT') {
+            removeMember(chat.sender);
+            changeManager(chat.nextManager);
+            setting(chat.token);
+            updateMemberOption(chat.token);
+            // history.innerHTML += centerMessage(chat.message);
+        }
+
+        if (chat.type === 'KICK') {
+            kickMemberCheck(chat.token);
+            removeMember(chat.sender);
+            // history.innerHTML += centerMessage(chat.message);
+        }
+
+        if (chat.type === 'ENTRUST') {
+            changeManager(chat.sender);
+            setting(chat.token);
+            updateMemberOption(chat.token);
+            // history.innerHTML += centerMessage(chat.message);
+        }
+    }
+
+    insertElement(element) {
+        this.chatHistory.innerHTML += element;
+    }
+    insertElementLastChild(element) {
+        this.chatHistory.lastElementChild.innerHTML += element;
+    }
+    insertElementLastChildYou(element) {
+        this.chatHistory.querySelector('.message-wrap').innerHTML += element;
+    }
+    centerMessage(message) {
+        return `<div class="alram"><span>${message}</span></div>`
+    }
+
+    isMe(chat) {
+        return chat.me || chat.token === token
+    }
+
+    addChat(chat) {
+        const dateKey = chat.day;
+        if (!this.chatList.hasOwnProperty(dateKey)) {
+            this.insertDate(dateKey);
+            this.chatList[dateKey] = [];
+        }
+        this.chatList[dateKey].push(chat);
+
+        let index = this.chatList[dateKey].length;
+        this.printChat(index, chat, this.chatList[dateKey][index-1]);
+    }
+    insertDate(date) {
+        this.insertElement(`<div class="date"> <span>${date}</span> </div>`);
+    }
+    groupByDate() {
+        this.chatList = this.chatList.reduce((acc, chat) => {
+            // 날짜 문자열을 얻기 위해 년-월-일 포맷으로 변환
+            const dateKey = chat.day;
+            if (!acc[dateKey]) {
+                acc[dateKey] = [];
             }
+            acc[dateKey].push(chat);
+            return acc;
+        }, {});
+    }
+    distinctTimeRemove() {
+        const seenTimes = new Set();
 
+        for (let i = this.chatList.length - 1; i >= 0; i--) {
+            const chat = this.chatList[i];
+            const timeKey = chat.time;
+            if (seenTimes.has(timeKey)) {
+                chat.time = undefined;
+            } else {
+                seenTimes.add(timeKey);
+            }
         }
     }
 
@@ -57,33 +431,29 @@ class ChatHistory {
 }
 let history = new ChatHistory();
 
-window.addEventListener('load', () => {
-    initialSetting();
+initialSetting();
 
-    managerCheck();
+managerCheck();
 
-    const chatHistory = document.querySelector('.chat-history');
+const chatHistory = document.querySelector('.chat-history');
 
-    history.setElement(chatHistory);
+chatHistory.addEventListener('scroll', () => {
 
-    chatHistory.addEventListener('scroll', () => {
-
-        if (isBottom()) { // 스크롤이 맨 밑에 있을 때
-            isNewMessage = false;
-            let newMessage = document.querySelector('.newMessageWrap');
-            newMessage.classList.add('disabled');
-        } else if (isTop()) {
-            fetchGet(`/room/${getRoomId()}/history?token=${token}&page=${page}`, additionalHistoryResult) // 이전 기록 추가로 불러옴
-        }
-    })
-
-    const newMessage = document.querySelector('#newMessage');
-    newMessage.addEventListener('click', () => {
-        scrollToBottom();
-        deleteNewMessageAlert();
-    })
-
+    if (isBottom()) { // 스크롤이 맨 밑에 있을 때
+        isNewMessage = false;
+        let newMessage = document.querySelector('.newMessageWrap');
+        newMessage.classList.add('disabled');
+    } else if (isTop()) {
+        fetchGet(`/room/${getRoomId()}/history?token=${token}&page=${page}`, additionalHistoryResult) // 이전 기록 추가로 불러옴
+    }
 })
+
+const newMessage = document.querySelector('#newMessage');
+newMessage.addEventListener('click', () => {
+    scrollToBottom();
+    deleteNewMessageAlert();
+})
+
 
 function managerCheck() {
     if (!isManager()) {
@@ -176,9 +546,9 @@ function  historyResult(json) {
     let list = json.data;
     history.insert(list);
 
-    for (let i=0;i<list.length;i++) {
-        printMessage(list[i]);
-    }
+    // for (let i=0;i<list.length;i++) {
+    //     printMessage(list[i]);
+    // }
     if (list != undefined && list.length > 0) {
         page = list[0].pageValue;
     }
@@ -220,13 +590,13 @@ function insertChat(chat) {
 
 function initialSetting() {
     fetch('/room/' + getRoomId() + '/access')
-    .then(res => res.json())
-    .then(map => {
-        token = map.message;
-        fetchGet('/room/' + getRoomId() + '/history?token=' + token, historyResult) // 이전 기록 불러옴
-        fetchGet('/room/' + getRoomId() + '/notice', noticeResult) // 공지사항 불러옴
-        connect(); // 웹소켓 연결
-    });
+        .then(res => res.json())
+        .then(map => {
+            token = map.message;
+            fetchGet('/room/' + getRoomId() + '/history?token=' + token, historyResult) // 이전 기록 불러옴
+            fetchGet('/room/' + getRoomId() + '/notice', noticeResult) // 공지사항 불러옴
+            connect(); // 웹소켓 연결
+        });
 }
 
 function connect() {
@@ -291,10 +661,12 @@ function sendMessage() {
 
 function onMessageReceived(payload) {
 
-    const history = document.querySelector('.chat-history');
+    // const history = document.querySelector('.chat-history');
 
     let chat = JSON.parse(payload.body);
 
+    history.onMessageReceive(chat);
+    return;
     if (chat.type === 'ENTER') {
         history.innerHTML += centerMessage(chat.message);
         initialMemberCheck(chat);

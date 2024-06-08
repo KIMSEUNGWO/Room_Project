@@ -36,15 +36,9 @@ public class ChatCurrentMemberManager {
         }
     }
 
-    public Collection<String> getMemberList(Long roomId) {
+    public Collection<Long> getMemberList(Long roomId) {
         System.out.println("currentChatMember = " + currentChatMember.get(roomId));
-
-        List<Long> memberList = currentChatMember.getOrDefault(roomId, new ArrayList<>());
-        List<String> nicknameList = new ArrayList<>();
-        for (Long memberId : memberList) {
-            nicknameList.add(memberNicknameMap.get(memberId));
-        }
-        return nicknameList;
+        return currentChatMember.getOrDefault(roomId, new ArrayList<>());
     }
 
     public Long getRoomId(Long memberId, Long roomId) {
